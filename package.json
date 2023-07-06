@@ -1,10 +1,10 @@
 {
-  "name": "@edx/frontend-template-application",
+  "name": "frontend-app-institution-portal",
   "version": "0.1.0",
-  "description": "Frontend application template",
+  "description": "Frontend App Institution Portal",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openedx/frontend-template-application.git"
+    "url": "git+https://github.com/Pearson-Advance/frontend-app-institution-portal.git"
   },
   "browserslist": [
     "extends @edx/browserslist-config"
@@ -23,34 +23,26 @@
       "pre-commit": "npm run lint"
     }
   },
-  "author": "edX",
-  "license": "AGPL-3.0",
-  "homepage": "https://github.com/openedx/frontend-template-application#readme",
+  "author": "eduNEXT contact@edunext.co",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/Pearson-Advance/frontend-app-institution-portal#readme",
   "publishConfig": {
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/openedx/frontend-template-application/issues"
+    "url": "https://github.com/Pearson-Advance/frontend-app-institution-portal/issues"
   },
   "dependencies": {
     "@edx/brand": "npm:@edx/brand-openedx@1.2.0",
     "@edx/frontend-component-footer": "12.0.0",
     "@edx/frontend-component-header": "4.2.3",
     "@edx/frontend-platform": "4.5.1",
-    "@edx/paragon": "^20.20.0",
-    "@fortawesome/fontawesome-svg-core": "1.2.36",
-    "@fortawesome/free-brands-svg-icons": "5.15.4",
-    "@fortawesome/free-regular-svg-icons": "5.15.4",
-    "@fortawesome/free-solid-svg-icons": "5.15.4",
-    "@fortawesome/react-fontawesome": "0.2.0",
+    "@edx/paragon": "^20.45.0",
     "core-js": "3.31.0",
     "prop-types": "15.8.1",
     "react": "16.14.0",
     "react-dom": "16.14.0",
-    "react-redux": "7.2.9",
     "react-router": "5.3.4",
-    "react-router-dom": "5.3.4",
-    "redux": "4.2.1",
     "regenerator-runtime": "0.13.11"
   },
   "devDependencies": {
