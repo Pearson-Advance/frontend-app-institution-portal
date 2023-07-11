@@ -7,10 +7,12 @@ import {
 import { AppProvider, ErrorPage } from '@edx/frontend-platform/react';
 import ReactDOM from 'react-dom';
 
-import Header from '@edx/frontend-component-header';
-import Footer from '@edx/frontend-component-footer';
-import messages from './i18n';
-import ExamplePage from './example/ExamplePage';
+import Header, { messages as headerMessages } from '@edx/frontend-component-header';
+import Footer, { messages as footerMessages } from '@edx/frontend-component-footer';
+import { Route, Switch } from 'react-router';
+import institutionAdmin from 'features/institutionAdmin';
+
+import appMessages from './i18n';
 
 import './index.scss';
 
@@ -18,7 +20,9 @@ subscribe(APP_READY, () => {
   ReactDOM.render(
     <AppProvider>
       <Header />
-      <ExamplePage />
+      <Switch>
+        <Route path="/" exact component={institutionAdmin} />
+      </Switch>
       <Footer />
     </AppProvider>,
     document.getElementById('root'),
@@ -30,5 +34,10 @@ subscribe(APP_INIT_ERROR, (error) => {
 });
 
 initialize({
-  messages,
+  messages: [
+    appMessages,
+    headerMessages,
+    footerMessages,
+  ],
+  requireAuthenticatedUser: true,
 });
