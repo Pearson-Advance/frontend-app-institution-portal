@@ -1,0 +1,30 @@
+@import "assets/colors.scss";
+
+footer {
+	padding: 46px 24px 136px;
+	display: block;
+	ul.footer-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 24px;
+		justify-content: center;
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		li {
+			margin: 0;
+			padding: 0;
+			a {
+				color: #60646d;
+				font-size: 14px;
+				line-height: 1.143;
+				text-decoration: none;
+				white-space: nowrap;
+				&:hover {
+					color: $color-black;
+					text-decoration: underline;
+				}
+			}
+		}
+	}
+}

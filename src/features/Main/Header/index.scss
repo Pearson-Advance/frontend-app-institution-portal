@@ -1,0 +1,112 @@
+@import "assets/colors.scss";
+@import "assets/variables.scss";
+
+.pageWrapper {
+	main {
+		>header {
+			padding: 32px 80px;
+			display: flex;
+		}
+	}
+}
+header {
+	justify-content: space-between;
+	align-items: center;
+	display: flex;
+	.actions {
+		align-items: center;
+		display: flex;
+	}
+}
+.account-menu-container {
+	position: relative;
+	z-index: 11;
+	.button-unstyled {
+		padding-right: 18px;
+		position: relative;
+	}
+	.avatar {
+		border: 2px solid $color-black;
+		border-radius: 100px;
+		display: block;
+		font-weight: 700;
+		height: 36px;
+		line-height: 36px;
+		overflow: hidden;
+		padding-top: 0;
+		width: 36px;
+		img {
+			height: 110%;
+			width: auto;
+		}
+	}
+	.account-menu {
+		background: $color-white;
+		border-radius: 5px;
+		box-shadow: 2px 3px 8px 0 rgba(0,0,0,.5);
+		display: block;
+		padding: 10px;
+		position: absolute;
+		right: -13px;
+		text-align: right;
+		top: 50px;
+		width: 200px;
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			li {
+				font-size: 1rem;
+				padding: 8px 12px;
+				text-align: left;
+				a {
+					color: $hyperlink-color;
+					text-decoration: underline;
+				}
+			}
+		}
+		a {
+			display: block;
+			&:hover {
+				text-decoration: none;
+			}
+		}
+	}
+	.icon-18 {
+		svg {
+			fill: currentColor;
+		}
+		color: $color-black;
+		position: absolute;
+		right: 0;
+		top: 4px;
+	}
+	.button-unstyled[aria-expanded="true"] {
+		.icon-18 {
+			-webkit-transform: rotate(180deg);
+			transform: rotate(180deg);
+		}
+	}
+}
+.institution-name {
+	align-items: center;
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
+}
+.button-unstyled {
+	background-color: initial;
+	border: none;
+	color: inherit;
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	margin: 0;
+	padding: 0;
+	padding-right: 0px;
+}
+a {
+	&:hover {
+		text-decoration: none;
+	}
+}
