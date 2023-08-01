@@ -7,10 +7,7 @@ import {
 import { AppProvider, ErrorPage } from '@edx/frontend-platform/react';
 import ReactDOM from 'react-dom';
 
-import Header, { messages as headerMessages } from '@edx/frontend-component-header';
-import Footer, { messages as footerMessages } from '@edx/frontend-component-footer';
-import { Route, Switch } from 'react-router';
-import institutionAdmin from 'features/institutionAdmin';
+import Main from 'features/Main';
 
 import appMessages from './i18n';
 
@@ -19,11 +16,7 @@ import './index.scss';
 subscribe(APP_READY, () => {
   ReactDOM.render(
     <AppProvider>
-      <Header />
-      <Switch>
-        <Route path="/" exact component={institutionAdmin} />
-      </Switch>
-      <Footer />
+      <Main />
     </AppProvider>,
     document.getElementById('root'),
   );
@@ -36,8 +29,6 @@ subscribe(APP_INIT_ERROR, (error) => {
 initialize({
   messages: [
     appMessages,
-    headerMessages,
-    footerMessages,
   ],
   requireAuthenticatedUser: true,
 });
