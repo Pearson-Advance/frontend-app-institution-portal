@@ -1,0 +1,74 @@
+* {
+  box-sizing: border-box;
+}
+
+.account-menu-container {
+    position: relative;
+    z-index: 11;
+}
+
+div {
+  display: block;
+}
+
+.institution-name {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.account-menu-container .button-unstyled {
+    padding-right: 18px;
+    position: relative;
+}
+
+
+.account-menu-container .avatar {
+    border: 2px solid #020917;
+    border-radius: 100px;
+    display: block;
+    font-weight: 700;
+    height: 36px;
+    line-height: 36px;
+    overflow: hidden;
+    padding-top: 0;
+    width: 36px;
+}
+
+.button-unstyled {
+    background-color: initial;
+    border: none;
+    padding: 0;
+}
+
+.account-menu-container .account-menu {
+    background: #fefefe;
+    border-radius: 5px;
+    box-shadow: 2px 3px 8px 0 rgba(0,0,0,.5);
+    display: block;
+    padding: 10px;
+    position: absolute;
+    right: -13px;
+    text-align: right;
+    top: 50px;
+    width: 200px;
+    font-family: TT Commons,sans-serif;
+}
+
+.account-menu-container .account-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.account-menu-container .account-menu ul li {
+    font-size: 1rem;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.account-menu-container .account-menu ul li a {
+    color: #17897c;
+    text-decoration: underline;
+}

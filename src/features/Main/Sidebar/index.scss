@@ -1,0 +1,45 @@
+header.vertical-nav nav {
+  display: block;
+}
+
+@media (min-width: 1025px){
+  header.vertical-nav {
+    left: 0;
+    position: fixed;
+    width: 240px;
+  }
+}
+
+header.vertical-nav .logo {
+  margin-left: 14px;
+}
+
+header.vertical-nav .hamburger {
+  display: none;
+}
+
+.nav-links li a.active {
+  color: #fefefe;
+  font-weight: 700;
+}
+
+nav {
+  display: block;
+}
+
+.nav-links li a {
+  align-items: center;
+  border-radius: 16px;
+  color: #989ba3;
+  display: flex;
+  font-size: 18px;
+  gap: 16px;
+  justify-content: flex-start;
+  line-height: 24px;
+  padding: 8px 12px;
+  text-decoration: none;
+}
+
+.backbutton:hover {
+  background-color: rgba(247, 249, 253, 0.1);
+}
