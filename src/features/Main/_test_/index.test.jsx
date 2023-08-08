@@ -1,28 +1,41 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import Main from 'features/Main';
+import '@testing-library/jest-dom/extend-expect';
 
-describe('Main', () => {
-  it('should switch active tab on button click', () => {
-    // Render the component
+// Test will change when all the components are done
+
+jest.mock('features/Main/Header', () => ({
+  // eslint-disable-next-line react/prop-types
+  Header: ({ isAccountMenuOpen, setIsAccountMenuOpen }) => (
+    <div data-testid="mocked-header">
+      Mocked Header - isAccountMenuOpen: {isAccountMenuOpen.toString()}
+      <button type="button" onClick={() => setIsAccountMenuOpen(true)}>Open Account Menu</button>
+    </div>
+  ),
+}));
+
+describe('Main component', () => {
+  it('renders the Main component with mocked Header', () => {
+    const { getByText, getByTestId } = render(<Main />);
+
+    expect(getByText('Students Content')).toBeInTheDocument();
+
+    const mockedHeader = getByTestId('mocked-header');
+    expect(mockedHeader).toBeInTheDocument();
+
+    expect(mockedHeader).toHaveTextContent('Mocked Header - isAccountMenuOpen: false');
+
+    fireEvent.click(getByText('Open Account Menu'));
+
+    expect(mockedHeader).toHaveTextContent('Mocked Header - isAccountMenuOpen: true');
+  });
+
+  it('renders the Main component with InstructorsContent when activeTab is "instructors"', () => {
     const { getByText } = render(<Main />);
 
-    // Find the buttons for students and instructors
-    const studentsButton = getByText('Students');
-    const instructorsButton = getByText('Instructors');
+    fireEvent.click(getByText('Instructors'));
 
-    // Simulate a click on the instructors button
-    fireEvent.click(instructorsButton);
-
-    // Assert that the active tab has switched to instructors
-    expect(studentsButton).not.toHaveClass('active');
-    expect(instructorsButton).toHaveClass('active');
-
-    // Simulate a click on the students button
-    fireEvent.click(studentsButton);
-
-    // Assert that the active tab has switched back to students
-    expect(studentsButton).toHaveClass('active');
-    expect(instructorsButton).not.toHaveClass('active');
+    expect(getByText('Instructors Content')).toBeInTheDocument();
   });
 });
