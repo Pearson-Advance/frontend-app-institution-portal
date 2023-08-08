@@ -17,8 +17,8 @@ const Main = () => {
       <Sidebar onClickTab={handleTabClick} activeTab={activeTab} />
       <main>
         <Header isAccountMenuOpen={isAccountMenuOpen} setIsAccountMenuOpen={setIsAccountMenuOpen} />
-        {activeTab === 'students' && <StudentsContent />}
-        {activeTab === 'instructors' && <InstructorsContent />}
+        { activeTab === 'students' && <StudentsContent /> }
+        { activeTab === 'instructors' && <InstructorsContent /> }
         <Footer />
       </main>
     </div>

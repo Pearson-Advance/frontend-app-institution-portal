@@ -29,10 +29,20 @@ export const Header = ({ isAccountMenuOpen, setIsAccountMenuOpen }) => {
             <div className="account-menu hidden">
               <ul>
                 <li>
-                  <a className="nav-link" href={`${config.ACCOUNT_PROFILE_URL}/u/${authenticatedUser.username}`}>Profile</a>
+                  <a
+                    className="nav-link"
+                    href={`${config.ACCOUNT_PROFILE_URL}/u/${authenticatedUser.username}`}
+                  >
+                    Profile
+                  </a>
                 </li>
                 <li>
-                  <a className="nav-link" href={`${getConfig().LMS_BASE_URL}/logout`}>Log Out</a>
+                  <a
+                    className="nav-link"
+                    href={`${getConfig().LMS_BASE_URL}/logout`}
+                  >
+                    Log Out
+                  </a>
                 </li>
               </ul>
             </div>
