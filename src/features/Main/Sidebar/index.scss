@@ -1,0 +1,29 @@
+@import "assets/colors.scss";
+@import "assets/variables.scss";
+
+.nav-links {
+  li {
+    button {
+      align-items: center;
+      border-radius: 16px;
+      color: $color-gray;
+      display: flex;
+      font-size: 18px;
+      gap: 16px;
+      justify-content: flex-start;
+      line-height: 24px;
+      padding: 8px 12px;
+      text-decoration: none;
+      background: transparent;
+      border: none;
+      width: 100%;
+    }
+  }
+}
+
+.backbutton {
+  &:hover {
+    background-color: $gradient-gray;
+    box-sizing: border-box;
+  }
+}
