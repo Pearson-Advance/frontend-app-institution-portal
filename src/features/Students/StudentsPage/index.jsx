@@ -140,7 +140,7 @@ const StudentsPage = () => {
       <Pagination
         paginationLabel="paginationNavigation"
         pageCount={state.numPages}
-        currentPage={state.currentPage}
+        currentPage={currentPage}
         onPageSelect={handlePagination}
         variant="reduced"
         className="mx-auto"
