@@ -13,6 +13,17 @@ function getStudentbyInstitutionAdmin(page, filters) {
   );
 }
 
+function handleEnrollments(data, courseId) {
+  const INSTRUCTOR_API_URL = `${getConfig().LMS_BASE_URL}/courses/course_id/instructor/api`;
+  const courseIdSearchPattern = /course_id/;
+
+  return getAuthenticatedHttpClient().post(
+    `${INSTRUCTOR_API_URL.replace(courseIdSearchPattern, courseId)}/students_update_enrollment`,
+    data,
+  );
+}
+
 export {
     getStudentbyInstitutionAdmin,
+    handleEnrollments,
 };

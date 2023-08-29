@@ -3,7 +3,7 @@ import React from 'react';
 import { Sidebar } from 'features/Main/Sidebar';
 import { Header } from 'features/Main/Header';
 import { Footer } from 'features/Main/Footer';
-import StudentsPage from '../Students/StudentsPage';
+import StudentsPage from 'features/Students/StudentsPage';
 
 import './index.scss';
 import { StudentEnrollmentsProvider } from '../Students/data/slices';

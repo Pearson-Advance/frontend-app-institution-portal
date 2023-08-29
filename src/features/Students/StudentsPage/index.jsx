@@ -1,9 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useStudentEnrollments } from 'features/Students/data/slices';
-import { fetchStudentEnrollments } from 'features/Students/data/thunks';
+import { 
+  fetchStudentEnrollments,
+  updateEnrollmentAction,
+} from 'features/Students/data/thunks';
 
 import Container from '@edx/paragon/dist/Container';
-import { getColumns } from 'features/Students/StudentsTable/columns';
+import { getColumns, hideColumns } from 'features/Students/StudentsTable/columns';
 import { StudentsTable } from 'features/Students/StudentsTable/index';
 import {
   ActionRow, Button, Icon, IconButton, OverlayTrigger, Tooltip,
@@ -11,7 +14,7 @@ import {
 import { MenuIcon } from '@edx/paragon/icons';
 
 import {
-  Pagination, Modal,
+  Pagination, Modal, useToggle, AlertModal,
 } from '@edx/paragon';
 import { Filters } from 'features/Students/StudentsFilters';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -28,6 +31,8 @@ const StudentsPage = () => {
   const { state, dispatch } = useStudentEnrollments();
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState(initialFilterFormValues);
+  const [isOpen, open, close] = useToggle(false);
+  const [selectedRow, setRow] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +46,12 @@ const StudentsPage = () => {
     fetchData();
   }, [dispatch]);
 
-  const COLUMNS = useMemo(() => getColumns(), [open]);
+  const enrollmentData = new FormData();
+
+  enrollmentData.append('identifiers', selectedRow.learner_email);
+  enrollmentData.append('action', 'unenroll')
+
+  const COLUMNS = useMemo(() => getColumns({ open, setRow }), [open]);
 
   const handleCloseModal = (e) => {
     dispatch({ type: 'CLOSE_MODAL' });
@@ -74,6 +84,17 @@ const StudentsPage = () => {
     }; 
 
     fetchData();
+  };
+
+  const handleAction = () => {
+    updateEnrollmentAction(
+      dispatch,
+      currentPage,
+      enrollmentData,
+      filters,
+      selectedRow.ccx_id,
+    ),
+    close();
   };
 
   return (
@@ -114,6 +135,7 @@ const StudentsPage = () => {
         data={state.data || []}
         count={state.count}
         columns={COLUMNS}
+        hideColumns={hideColumns}
       />
       <Pagination
         paginationLabel="paginationNavigation"
@@ -124,6 +146,23 @@ const StudentsPage = () => {
         className="mx-auto"
         size='small'
       />
+      <AlertModal
+        title={`Are you sure you want the learner's enrollment to be Revoked?`}
+        isOpen={isOpen}
+        onClose={close}
+        footerNode={(
+          <ActionRow>
+            <Button variant="link" onClick={close}>cancel</Button>
+            <Button variant="light" onClick={handleAction}>
+              Submit
+            </Button>
+          </ActionRow>
+        )}
+      >
+        <p>
+          Learner with email <b>{selectedRow.learner_email}</b> will be revoked from <b>{selectedRow.ccx_name}</b> course.
+        </p>
+      </AlertModal>
     </Container>
   );
 };
