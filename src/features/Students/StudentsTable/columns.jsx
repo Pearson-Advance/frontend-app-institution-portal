@@ -17,6 +17,11 @@ const getColumns = () => [
   {
     Header: 'Instructors',
     accessor: 'instructors',
+    Cell: ({ row }) => (
+      <ul style={{ listStyleType: 'none' }}>
+        {row.original.instructors.map(instructor => <li key={instructor}>{instructor}</li>)}
+      </ul>
+    ),
   },
   {
     Header: 'Created',

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState  } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useStudentEnrollments } from 'features/Students/data/slices';
 import { fetchStudentEnrollments } from 'features/Students/data/thunks';
 
@@ -6,17 +6,16 @@ import Container from '@edx/paragon/dist/Container';
 import { getColumns } from 'features/Students/StudentsTable/columns';
 import { StudentsTable } from 'features/Students/StudentsTable/index';
 import {
-  ActionRow, Button, Icon, IconButton, OverlayTrigger, Tooltip
+  ActionRow, Button, Icon, IconButton, OverlayTrigger, Tooltip,
 } from '@edx/paragon';
 import { MenuIcon } from '@edx/paragon/icons';
 
 import {
   Pagination, Modal,
 } from '@edx/paragon';
-import { Filters } from '../StudentsFilters';
-import { faDownload, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons';
-
-
+import { Filters } from 'features/Students/StudentsFilters';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { logError } from '@edx/frontend-platform/logging';
 
 const initialFilterFormValues = {
   learnerName: '',
@@ -26,7 +25,7 @@ const initialFilterFormValues = {
 }
 
 const StudentsPage = () => {
-  const { state, dispatch, openModal, closeModal } = useStudentEnrollments();
+  const { state, dispatch } = useStudentEnrollments();
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState(initialFilterFormValues);
 
@@ -35,7 +34,7 @@ const StudentsPage = () => {
       try {
         await fetchStudentEnrollments(dispatch);
       } catch (error) {
-        // Handle error if needed
+        logError(error);
       }
     };
 
@@ -45,39 +44,34 @@ const StudentsPage = () => {
   const COLUMNS = useMemo(() => getColumns(), [open]);
 
   const handleCloseModal = (e) => {
-    setFilters(initialFilterFormValues);
-    closeModal();
+    dispatch({ type: 'CLOSE_MODAL' });
   };
 
   const handleOpenModal = () => {
-    setFilters(initialFilterFormValues);
-    openModal()
+    dispatch({ type: 'OPEN_MODAL' });
   };
 
   const handleApplyFilters = () => {
-    setFilters(initialFilterFormValues)
-
-    fetchStudentEnrollments(dispatch, state.currentPage, filters);
+    fetchStudentEnrollments(dispatch, currentPage, filters);
     handleCloseModal();
   }
 
   const handleCleanFilters = () => {
-    fetchStudentEnrollments(dispatch, state.currentPage, initialFilterFormValues);
+    fetchStudentEnrollments(dispatch, currentPage, initialFilterFormValues);
     setFilters(initialFilterFormValues);
   }
 
   const handlePagination = async (targetPage) => {
     setCurrentPage(targetPage);
-
     dispatch({ type: 'UPDATE_CURRENT_PAGE', payload: targetPage });
 
     const fetchData = () => {
       try {
         fetchStudentEnrollments(dispatch, targetPage, filters);
       } catch (error) {
-        // Handle error if needed
+        logError(error);
       }
-    };
+    }; 
 
     fetchData();
   };
@@ -95,7 +89,9 @@ const StudentsPage = () => {
           />
         }
         onClose={handleCloseModal}
-        buttons={[<Button onClick={handleApplyFilters} variant="light">Apply Filters</Button>]}
+        buttons={
+          [<Button onClick={handleApplyFilters} variant="light">Apply Filters</Button>]
+        }
       />
       <ActionRow>
         <IconButton

@@ -21,7 +21,6 @@ const reducer = (state, action) => {
       return { ...state, status: 'loading' };
     case 'FETCH_SUCCESS':
       const { results, count } = action.payload;
-      console.log(results)
       const numPages = Math.ceil(count / state.itemsPerPage);
       return {
         ...state,
@@ -31,9 +30,15 @@ const reducer = (state, action) => {
         count: count,
       };
     case 'FETCH_FAILURE':
-      return { ...state, status: 'error', error: action.payload };
+      return {
+        ...state, status: 'error',
+        error: action.payload,
+      };
     case 'UPDATE_CURRENT_PAGE':
-      return { ...state, currentPage: action.payload };
+      return {
+        ...state,
+        currentPage: action.payload,
+      };
     case 'OPEN_MODAL':
       return {
         ...state,
@@ -59,11 +64,8 @@ const reducer = (state, action) => {
 const StudentEnrollmentsProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const openModal = () => dispatch({ type: 'OPEN_MODAL' });
-  const closeModal = () => { dispatch({ type: 'CLOSE_MODAL' }) };
-
   return (
-    <StudentEnrollmentsContext.Provider value={{ state, dispatch, openModal, closeModal }}>
+    <StudentEnrollmentsContext.Provider value={{ state, dispatch }}>
       {children}
     </StudentEnrollmentsContext.Provider>
   );
@@ -73,7 +75,7 @@ const useStudentEnrollments = () => {
   const context = useContext(StudentEnrollmentsContext);
   if (!context) {
     throw new Error('useStudentEnrollments must be used within a StudentEnrollmentsProvider');
-  }
+  };
   return context;
 };
 

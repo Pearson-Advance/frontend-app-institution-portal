@@ -1,8 +1,5 @@
-import {
-  Card, Col, Form, Button, OverlayTrigger, Tooltip,
-} from '@edx/paragon';
+import { Col, Form } from '@edx/paragon';
 import React from 'react';
-
 
 export const Filters = props => {
   const {
@@ -11,11 +8,10 @@ export const Filters = props => {
   } = props;
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value,
-    }));
+    setFilters({
+      ...filters,
+      [e.target.name]: e.target.value.trim(),
+    });
   };
 
   return (
