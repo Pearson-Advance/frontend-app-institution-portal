@@ -6,14 +6,17 @@ import { Footer } from 'features/Main/Footer';
 import StudentsPage from 'features/Students/StudentsPage';
 
 import './index.scss';
-import { StudentEnrollmentsProvider } from '../Students/data/slices';
+import { StudentEnrollmentsProvider } from 'features/Students/data/slices';
+import { InstitutionNameProvider } from 'features/Main/data/slices';
 
 const Main = () => (
   <BrowserRouter>
     <div className="pageWrapper">
       <Sidebar />
       <main>
-        <Header />
+        <InstitutionNameProvider>
+          <Header />
+        </InstitutionNameProvider>
         <StudentEnrollmentsProvider>
           <Switch>
             <Route path="/students" component={StudentsPage} />
