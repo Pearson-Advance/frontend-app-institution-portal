@@ -44,7 +44,7 @@ export const Header = () => {
         const response = await getAuthenticatedHttpClient().get(
           `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/institutions/`
         );
-        dispatch({ type: 'FETCH_SUCCESS', payload: response.data.results });
+        dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
       } catch (error) {
         dispatch({ type: 'FETCH_FAILURE', payload: error });
       }
@@ -55,7 +55,7 @@ export const Header = () => {
 
   const institutionName = () => {
     try {
-      return state.data[0]?.name
+      return state.data?.results[0].name
     } catch (error) {
       logError(error);
     }

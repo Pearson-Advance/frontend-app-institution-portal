@@ -1,59 +1,124 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useStudentEnrollments } from 'features/Students/data/slices';
-import { 
-  fetchStudentEnrollments,
-  updateEnrollmentAction,
-} from 'features/Students/data/thunks';
-
+import React, { useEffect, useMemo, useState, useReducer } from 'react';
+import { getStudentbyInstitutionAdmin, handleEnrollments } from 'features/Students/data/api';
+import { logError } from '@edx/frontend-platform/logging';
 import Container from '@edx/paragon/dist/Container';
 import { getColumns, hideColumns } from 'features/Students/StudentsTable/columns';
 import { StudentsTable } from 'features/Students/StudentsTable/index';
-import {
-  ActionRow, Button, Icon, IconButton, OverlayTrigger, Tooltip,
-} from '@edx/paragon';
-import { MenuIcon } from '@edx/paragon/icons';
-
-import {
-  Pagination, Modal, useToggle, AlertModal,
-} from '@edx/paragon';
-import { Filters } from 'features/Students/StudentsFilters';
+import { ActionRow, Button, Icon, IconButton, OverlayTrigger, Tooltip, Pagination, Modal, useToggle, AlertModal } from '@edx/paragon';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { logError } from '@edx/frontend-platform/logging';
+import { Filters } from 'features/Students/StudentsFilters';
+import { MenuIcon } from '@edx/frontend-component-header/dist/Icons';
 
 const initialFilterFormValues = {
   learnerName: '',
   learnerEmail: '',
   instructor: '',
   ccxId: '',
-}
+};
+
+const initialState = {
+  data: [],
+  status: 'success',
+  error: null,
+  itemsPerPage: 10,
+  currentPage: 1,
+  numPages: 0,
+  filters: {
+    isOpen: false,
+    erros: {},
+  }
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'FETCH_REQUEST':
+      return { ...state, status: 'loading' };
+    case 'FETCH_SUCCESS':
+      const { results, count } = action.payload;
+      const numPages = Math.ceil(count / state.itemsPerPage);
+      return {
+        ...state,
+        status: 'success',
+        data: results,
+        numPages: numPages,
+        count: count,
+      };
+    case 'FETCH_FAILURE':
+      return {
+        ...state, status: 'error',
+        error: action.payload,
+      };
+    case 'UPDATE_CURRENT_PAGE':
+      return {
+        ...state,
+        currentPage: action.payload,
+      };
+    case 'OPEN_MODAL':
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          isOpen: true,
+        },
+      };
+    case 'CLOSE_MODAL':
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          isOpen: false,
+          errors: {},
+        },
+      };
+    default:
+      return state;
+  }
+};
 
 const StudentsPage = () => {
-  const { state, dispatch } = useStudentEnrollments();
+  const [state, dispatch] = useReducer(reducer, initialState);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState(initialFilterFormValues);
   const [isOpen, open, close] = useToggle(false);
   const [selectedRow, setRow] = useState({});
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await fetchStudentEnrollments(dispatch);
-      } catch (error) {
-        logError(error);
-      }
-    };
-
-    fetchData();
-  }, [dispatch]);
-
+  const COLUMNS = useMemo(() => getColumns({ open, setRow }), [open]);
   const enrollmentData = new FormData();
 
   enrollmentData.append('identifiers', selectedRow.learner_email);
   enrollmentData.append('action', 'unenroll')
 
-  const COLUMNS = useMemo(() => getColumns({ open, setRow }), [open]);
+  const fetchData = async () => {
+    dispatch({ type: 'FETCH_REQUEST' });
 
-  const handleCloseModal = (e) => {
+    try {
+      const response = await getStudentbyInstitutionAdmin(currentPage, filters);
+      dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
+    } catch (error) {
+      dispatch({ type: 'FETCH_FAILURE', payload: error });
+      logError(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, filters]);
+
+  const handleAction = async () => {
+    dispatch({ type: 'FETCH_REQUEST' });
+
+    try {
+      await handleEnrollments(enrollmentData, selectedRow.ccx_id);
+      const response = await getStudentbyInstitutionAdmin(currentPage, filters);
+      dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
+      close();
+    } catch (error) {
+      dispatch({ type: 'FETCH_FAILURE', payload: error });
+      logError(error);
+    }
+  };
+
+  const handleCloseModal = () => {
     dispatch({ type: 'CLOSE_MODAL' });
   };
 
@@ -61,40 +126,29 @@ const StudentsPage = () => {
     dispatch({ type: 'OPEN_MODAL' });
   };
 
-  const handleApplyFilters = () => {
-    fetchStudentEnrollments(dispatch, currentPage, filters);
-    handleCloseModal();
-  }
+  const handleApplyFilters = async () => {
+    dispatch({ type: 'FETCH_REQUEST' });
+
+    try {
+      const response = await getStudentbyInstitutionAdmin(currentPage, filters);
+      dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
+      handleCloseModal();
+    } catch (error) {
+      dispatch({ type: 'FETCH_FAILURE', payload: error });
+      logError(error);
+    }
+  };
 
   const handleCleanFilters = () => {
-    fetchStudentEnrollments(dispatch, currentPage, initialFilterFormValues);
     setFilters(initialFilterFormValues);
-  }
-
-  const handlePagination = async (targetPage) => {
-    setCurrentPage(targetPage);
-    dispatch({ type: 'UPDATE_CURRENT_PAGE', payload: targetPage });
-
-    const fetchData = () => {
-      try {
-        fetchStudentEnrollments(dispatch, targetPage, filters);
-      } catch (error) {
-        logError(error);
-      }
-    }; 
-
+    setCurrentPage(1);
     fetchData();
   };
 
-  const handleAction = () => {
-    updateEnrollmentAction(
-      dispatch,
-      currentPage,
-      enrollmentData,
-      filters,
-      selectedRow.ccx_id,
-    ),
-    close();
+  const handlePagination = (targetPage) => {
+    setCurrentPage(targetPage);
+    dispatch({ type: 'UPDATE_CURRENT_PAGE', payload: targetPage });
+    fetchData();
   };
 
   return (

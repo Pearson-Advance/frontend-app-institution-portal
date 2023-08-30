@@ -6,7 +6,6 @@ import { Footer } from 'features/Main/Footer';
 import StudentsPage from 'features/Students/StudentsPage';
 
 import './index.scss';
-import { StudentEnrollmentsProvider } from 'features/Students/data/slices';
 
 const Main = () => (
   <BrowserRouter>
@@ -14,11 +13,9 @@ const Main = () => (
       <Sidebar />
       <main>
         <Header />
-        <StudentEnrollmentsProvider>
-          <Switch>
-            <Route path="/students" component={StudentsPage} />
-          </Switch>
-        </StudentEnrollmentsProvider>
+        <Switch>
+          <Route path="/students" component={StudentsPage} />
+        </Switch>
         <Footer />
       </main>
     </div>
