@@ -1,12 +1,30 @@
 import { AppContext } from '@edx/frontend-platform/react';
 import { getConfig } from '@edx/frontend-platform';
-import React, { useContext, useState, useEffect } from 'react';
+import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
+import React, { useContext, useState, useEffect, useReducer } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { fetchInstitutionName } from 'features/Main/data/thunks';
-import { useInstitutionName } from 'features/Main/data/slices';
 import './index.scss';
 import { logError } from '@edx/frontend-platform/logging';
+
+const initialState = {
+  data: [],
+  status: 'success',
+  error: null,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'FETCH_REQUEST':
+      return { ...state, status: 'loading' };
+    case 'FETCH_SUCCESS':
+      return { ...state, status: 'success', data: action.payload };
+    case 'FETCH_FAILURE':
+      return { ...state, status: 'error', error: action.payload };
+    default:
+      return state;
+  }
+};
 
 export const Header = () => {
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
@@ -15,15 +33,29 @@ export const Header = () => {
   };
   const { authenticatedUser, config } = useContext(AppContext);
   const usernameFirstLetter = authenticatedUser.username.charAt(0).toUpperCase();
-  const { state = { data: { results: [] } }, dispatch } = useInstitutionName();
+
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    fetchInstitutionName(dispatch);
-  }, [dispatch]);
+    const fetchData = async () => {
+      dispatch({ type: 'FETCH_REQUEST' });
+
+      try {
+        const response = await getAuthenticatedHttpClient().get(
+          `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/institutions/`
+        );
+        dispatch({ type: 'FETCH_SUCCESS', payload: response.data.results });
+      } catch (error) {
+        dispatch({ type: 'FETCH_FAILURE', payload: error });
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const institutionName = () => {
     try {
-      return state.data.results[0]?.name
+      return state.data[0]?.name
     } catch (error) {
       logError(error);
     }
