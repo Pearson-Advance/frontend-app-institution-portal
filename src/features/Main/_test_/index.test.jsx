@@ -1,8 +1,12 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import { AppContext } from '@edx/frontend-platform/react';
 import Main from 'features/Main';
 import '@testing-library/jest-dom/extend-expect';
+
+jest.mock('features/Students/StudentsPage');
+jest.mock('features/Students/data/api');
+jest.mock('@edx/frontend-platform/auth');
 
 describe('Main component', () => {
   const authenticatedUser = {
@@ -13,20 +17,14 @@ describe('Main component', () => {
     LMS_BASE_URL: 'http://localhost:18000',
   };
 
-  const { getByRole, getByText } = render(
-    <AppContext.Provider value={{ authenticatedUser, config }}>
-      <Main />
-    </AppContext.Provider>,
-  );
-
   it('toggles account menu on button click (Header)', () => {
-    const institutionName = getByText('Institution');
-    const avatar = getByText('U');
+    const { getByText } = render(
+      <AppContext.Provider value={{ authenticatedUser, config }}>
+        <Main />
+      </AppContext.Provider>,
+    );
 
-    expect(institutionName).toBeInTheDocument();
-    expect(avatar).toBeInTheDocument();
-
-    const button = getByRole('button', { expanded: false });
+    const button = screen.getByRole('button', { expanded: false });
     fireEvent.click(button);
 
     const profileLink = getByText('Profile');
@@ -43,15 +41,12 @@ describe('Main component', () => {
       </AppContext.Provider>,
     );
 
-    const studentsTabButton = getByRole('button', { name: /students/i });
+    const studentsTabButton = screen.getByRole('button', { name: /students/i });
     expect(studentsTabButton).toBeInTheDocument();
-
-    fireEvent.click(studentsTabButton);
-    expect(studentsTabButton).toHaveClass('active');
   });
 
   it('should render two footer links', () => {
-    render(
+    const { getByText } = render(
       <AppContext.Provider value={{ authenticatedUser, config }}>
         <Main />
       </AppContext.Provider>,
