@@ -24,6 +24,8 @@ describe('Main component', () => {
       </AppContext.Provider>,
     );
 
+    expect(getByText('No Institution Found')).toBeInTheDocument();
+
     const button = screen.getByRole('button', { expanded: false });
     fireEvent.click(button);
 

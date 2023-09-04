@@ -1,8 +1,14 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 import { AppContext } from '@edx/frontend-platform/react';
 import { Header } from 'features/Main/Header';
 import '@testing-library/jest-dom/extend-expect';
+
+jest.mock('@edx/frontend-platform/auth', () => ({
+  getAuthenticatedHttpClient: jest.fn(() => ({
+    get: jest.fn(() => Promise.resolve({ data: { results: [{ name: 'Institution Name' }] } })),
+  })),
+}));
 
 describe('Header', () => {
   const authenticatedUser = {
@@ -13,6 +19,23 @@ describe('Header', () => {
     LMS_BASE_URL: 'http://localhost:18000',
   };
 
+  it('renders header correctly with "Institution Name"', async () => {
+    let getByText;
+
+    await act(async () => {
+      const renderResult = render(
+        <AppContext.Provider value={{ authenticatedUser, config }}>
+          <Header />
+        </AppContext.Provider>,
+      );
+
+      getByText = renderResult.getByText;
+    });
+
+    expect(getByText('Institution Name')).toBeInTheDocument();
+    expect(getByText('U')).toBeInTheDocument();
+  });
+
   it('renders header correctly', () => {
     const { getByText } = render(
       <AppContext.Provider value={{ authenticatedUser, config }}>
@@ -20,7 +43,7 @@ describe('Header', () => {
       </AppContext.Provider>,
     );
 
-    const institutionName = getByText('Institution');
+    const institutionName = getByText('No Institution Found');
     const avatar = getByText('U');
 
     expect(institutionName).toBeInTheDocument();
