@@ -5,9 +5,17 @@ describe('getColumns', () => {
     const columns = getColumns();
 
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(5);
+    expect(columns).toHaveLength(7);
 
-    const [nameColumn, emailColumn, courseTitleColumn, instructorsColumn, createdColumn] = columns;
+    const [
+      nameColumn,
+      emailColumn,
+      courseNameColumn,
+      ClassIdColumn,
+      instructorsColumn,
+      createdColumn,
+      ActionColumn,
+    ] = columns;
 
     expect(nameColumn).toHaveProperty('Header', 'Name');
     expect(nameColumn).toHaveProperty('accessor', 'learner_name');
@@ -15,13 +23,19 @@ describe('getColumns', () => {
     expect(emailColumn).toHaveProperty('Header', 'Email');
     expect(emailColumn).toHaveProperty('accessor', 'learner_email');
 
-    expect(courseTitleColumn).toHaveProperty('Header', 'Course title');
-    expect(courseTitleColumn).toHaveProperty('accessor', 'ccx_name');
+    expect(courseNameColumn).toHaveProperty('Header', 'Class Name');
+    expect(courseNameColumn).toHaveProperty('accessor', 'ccx_name');
+
+    expect(ClassIdColumn).toHaveProperty('Header', 'Class Id');
+    expect(ClassIdColumn).toHaveProperty('accessor', 'ccx_id');
 
     expect(instructorsColumn).toHaveProperty('Header', 'Instructors');
     expect(instructorsColumn).toHaveProperty('accessor', 'instructors');
 
     expect(createdColumn).toHaveProperty('Header', 'Created');
     expect(createdColumn).toHaveProperty('accessor', 'created');
+
+    expect(ActionColumn).toHaveProperty('Header', 'Action');
+    expect(ActionColumn).toHaveProperty('accessor', 'status');
   });
 });
