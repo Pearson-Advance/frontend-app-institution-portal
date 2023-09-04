@@ -5,12 +5,13 @@ import { StudentsTable } from 'features/Students/StudentsTable';
 import { getColumns } from 'features/Students/StudentsTable/columns';
 
 describe('Student Table', () => {
-  test('render StudentsTable without data', () => {
+  test('renders StudentsTable without data', () => {
     render(<StudentsTable data={[]} count={0} columns={[]} />);
-    expect(screen.getByText(/No students found/)).toBeInTheDocument();
+    const emptyTableText = screen.getByText('No students found.');
+    expect(emptyTableText).toBeInTheDocument();
   });
 
-  test('render StudentsTable with data', () => {
+  test('renders StudentsTable with data', () => {
     const data = [
       {
         learner_name: 'Student 1',
@@ -32,11 +33,9 @@ describe('Student Table', () => {
       <StudentsTable data={data} count={data.length} columns={getColumns()} />,
     );
 
-    // This should have 3 table rows, inside the table component, 1 for the header and 3 for studetns
-    const tableRows = component.container.querySelectorAll('tr');
-
-    expect(component.container).not.toHaveTextContent('No students found.');
-    expect(tableRows).toHaveLength(3);
+    // Check if the table rows are present
+    const tableRows = screen.getAllByRole('row');
+    expect(tableRows).toHaveLength(data.length + 1); // Data rows + 1 header row
 
     // Check student names
     expect(component.container).toHaveTextContent('Student 1');
@@ -57,5 +56,8 @@ describe('Student Table', () => {
     // Check datetime is formatted
     expect(component.container).toHaveTextContent('Fri, 25 Aug 2023 19:01:22 GMT');
     expect(component.container).toHaveTextContent('Sat, 26 Aug 2023 19:01:22 GMT');
+
+    // Ensure "No students found." is not present
+    expect(screen.queryByText('No students found.')).toBeNull();
   });
 });
