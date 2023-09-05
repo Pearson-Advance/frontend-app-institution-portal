@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Button } from '@edx/paragon';
+import { Badge, Button } from '@edx/paragon';
 
 const getColumns = props => [
   {
@@ -33,6 +33,21 @@ const getColumns = props => [
     Header: 'Created',
     accessor: 'created',
     Cell: ({ row }) => new Date(row.values.created).toUTCString(),
+  },
+  {
+    Header: 'First Access',
+    accessor: 'first_access',
+    Cell: ({ row }) => new Date(row.values.first_access).toUTCString(),
+  },
+  {
+    Header: 'Last Access',
+    accessor: 'last_access',
+    Cell: ({ row }) => new Date(row.values.last_access).toUTCString(),
+  },
+  {
+    Header: 'Grade',
+    accessor: 'grade',
+    Cell: ({ row }) => <Badge variant={row.values.grade ? 'success' : 'danger'}>{row.values.grade ? 'pass' : 'fail'}</Badge>,
   },
   {
     Header: 'Action',
