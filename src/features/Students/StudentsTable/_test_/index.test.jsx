@@ -19,6 +19,9 @@ describe('Student Table', () => {
         ccx_name: 'CCX 1',
         instructors: ['Instructor 1'],
         created: 'Fri, 25 Aug 2023 19:01:22 GMT',
+        first_access: 'Fri, 25 Aug 2023 19:01:23 GMT',
+        last_access: 'Fri, 25 Aug 2023 20:20:22 GMT',
+        grade: true,
       },
       {
         learner_name: 'Student 2',
@@ -26,6 +29,9 @@ describe('Student Table', () => {
         ccx_name: 'CCX 2',
         instructors: ['Instructor 2'],
         created: 'Sat, 26 Aug 2023 19:01:22 GMT',
+        first_access: 'Sat, 26 Aug 2023 19:01:24 GMT',
+        last_access: 'Sat, 26 Aug 2023 21:22:22 GMT',
+        grade: false,
       },
     ];
 
@@ -53,9 +59,21 @@ describe('Student Table', () => {
     expect(component.container).toHaveTextContent('Instructor 1');
     expect(component.container).toHaveTextContent('Instructor 2');
 
-    // Check datetime is formatted
+    // Check datetime for created column is formatted
     expect(component.container).toHaveTextContent('Fri, 25 Aug 2023 19:01:22 GMT');
     expect(component.container).toHaveTextContent('Sat, 26 Aug 2023 19:01:22 GMT');
+
+    // Check datetime for first access column is formatted
+    expect(component.container).toHaveTextContent('Fri, 25 Aug 2023 19:01:23 GMT');
+    expect(component.container).toHaveTextContent('Sat, 26 Aug 2023 19:01:24 GMT');
+
+    // Check datetime for last access column is formatted
+    expect(component.container).toHaveTextContent('Fri, 25 Aug 2023 20:20:22 GMT');
+    expect(component.container).toHaveTextContent('Sat, 26 Aug 2023 21:22:22 GMT');
+
+    // Check grade
+    expect(component.container).toHaveTextContent('pass');
+    expect(component.container).toHaveTextContent('fail');
 
     // Ensure "No students found." is not present
     expect(screen.queryByText('No students found.')).toBeNull();

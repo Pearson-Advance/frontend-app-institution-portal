@@ -5,7 +5,7 @@ describe('getColumns', () => {
     const columns = getColumns();
 
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(7);
+    expect(columns).toHaveLength(10);
 
     const [
       nameColumn,
@@ -14,6 +14,9 @@ describe('getColumns', () => {
       ClassIdColumn,
       instructorsColumn,
       createdColumn,
+      firstAccessColumn,
+      lastAccessColumn,
+      gradeColumn,
       ActionColumn,
     ] = columns;
 
@@ -34,6 +37,15 @@ describe('getColumns', () => {
 
     expect(createdColumn).toHaveProperty('Header', 'Created');
     expect(createdColumn).toHaveProperty('accessor', 'created');
+
+    expect(firstAccessColumn).toHaveProperty('Header', 'First Access');
+    expect(firstAccessColumn).toHaveProperty('accessor', 'first_access');
+
+    expect(lastAccessColumn).toHaveProperty('Header', 'Last Access');
+    expect(lastAccessColumn).toHaveProperty('accessor', 'last_access');
+
+    expect(gradeColumn).toHaveProperty('Header', 'Grade');
+    expect(gradeColumn).toHaveProperty('accessor', 'grade');
 
     expect(ActionColumn).toHaveProperty('Header', 'Action');
     expect(ActionColumn).toHaveProperty('accessor', 'status');
