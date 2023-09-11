@@ -4,15 +4,16 @@ import React, { useContext, useState } from 'react';
 import { getConfig } from '@edx/frontend-platform';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
+import PropTypes from 'prop-types';
 import './index.scss';
 
-export const Sidebar = () => {
+export const Sidebar = ({ currentPath }) => {
   const [activeTab, setActiveTab] = useState('students');
   const history = useHistory();
 
   const handleTabClick = (tabName) => {
     setActiveTab(tabName);
-    history.push(`/institution-portal/${tabName}`);
+    history.push(`/${currentPath}/${tabName}`);
   };
 
   const { config } = useContext(AppContext);
@@ -43,4 +44,8 @@ export const Sidebar = () => {
       </nav>
     </header>
   );
+};
+
+Sidebar.propTypes = {
+  currentPath: PropTypes.string.isRequired,
 };

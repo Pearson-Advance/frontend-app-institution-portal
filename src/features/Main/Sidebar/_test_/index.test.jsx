@@ -17,7 +17,7 @@ jest.mock('react-router', () => ({
 
 describe('Sidebar', () => {
   it('should render properly', () => {
-    const { getByRole } = render(<Sidebar />);
+    const { getByRole } = render(<Sidebar currentPath="institution-portal" />);
 
     const studentsTabButton = getByRole('button', { name: /students/i });
     expect(studentsTabButton).toBeInTheDocument();
