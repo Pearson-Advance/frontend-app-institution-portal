@@ -25,6 +25,6 @@ describe('Sidebar', () => {
     fireEvent.click(studentsTabButton);
     expect(studentsTabButton).toHaveClass('active');
 
-    expect(mockHistoryPush).toHaveBeenCalledWith('/students');
+    expect(mockHistoryPush).toHaveBeenCalledWith('/institution-portal/students');
   });
 });

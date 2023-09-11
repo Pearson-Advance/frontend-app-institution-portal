@@ -13,7 +13,7 @@ const Main = () => (
       <main>
         <Header />
         <Switch>
-          <Route path="/students" exact component={StudentsPage} />
+          <Route path="/institution-portal/students" exact component={StudentsPage} />
         </Switch>
         <Footer />
       </main>

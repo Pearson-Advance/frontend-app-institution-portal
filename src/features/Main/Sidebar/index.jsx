@@ -12,7 +12,7 @@ export const Sidebar = () => {
 
   const handleTabClick = (tabName) => {
     setActiveTab(tabName);
-    history.push(`/${tabName}`);
+    history.push(`/institution-portal/${tabName}`);
   };
 
   const { config } = useContext(AppContext);
@@ -20,7 +20,7 @@ export const Sidebar = () => {
   return (
     <header className="vertical-nav">
       <div className="logo">
-        <a href={`${config.BASE_URL}`}>
+        <a href={`${config.LMS_BASE_URL}`}>
           <img src={`${getConfig().LOGO_URL}`} alt="icon" />
         </a>
       </div>
