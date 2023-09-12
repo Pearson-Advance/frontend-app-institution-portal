@@ -35,21 +35,6 @@ const getColumns = props => [
     Cell: ({ row }) => new Date(row.values.created).toUTCString(),
   },
   {
-    Header: 'First Access',
-    accessor: 'first_access',
-    Cell: ({ row }) => new Date(row.values.first_access).toUTCString(),
-  },
-  {
-    Header: 'Last Access',
-    accessor: 'last_access',
-    Cell: ({ row }) => new Date(row.values.last_access).toUTCString(),
-  },
-  {
-    Header: 'Grade',
-    accessor: 'grade',
-    Cell: ({ row }) => <Badge variant={row.values.grade ? 'success' : 'danger'}>{row.values.grade ? 'pass' : 'fail'}</Badge>,
-  },
-  {
     Header: 'Action',
     accessor: 'status',
     disableSortBy: true,
