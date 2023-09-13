@@ -31,7 +31,6 @@ const initialState = {
   data: [],
   status: RequestStatus.SUCCESS,
   error: null,
-  itemsPerPage: 10,
   currentPage: 1,
   numPages: 0,
   filters: {
@@ -46,7 +45,7 @@ const reducer = (state, action) => {
       return { ...state, status: RequestStatus.LOADING };
     case 'FETCH_SUCCESS': {
       const { results, count } = action.payload;
-      const numPages = Math.ceil(count / state.itemsPerPage);
+      const numPages = count;
       return {
         ...state,
         status: RequestStatus.SUCCESS,

@@ -8,7 +8,7 @@ import './index.scss';
 
 const Main = () => {
   return (
-    <BrowserRouter basename="institution-portal">
+    <BrowserRouter basename="/institution-portal">
       <div className="pageWrapper">
         <Sidebar/>
         <main>
