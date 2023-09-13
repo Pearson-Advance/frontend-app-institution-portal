@@ -8,13 +8,13 @@ import './index.scss';
 
 const Main = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="institution-portal">
       <div className="pageWrapper">
         <Sidebar/>
         <main>
           <Header />
           <Switch>
-            <Route path="/students" exact component={StudentsPage} />
+            <Route path="/students" exact render={() => <StudentsPage />} />
           </Switch>
           <Footer />
         </main>
