@@ -4,10 +4,11 @@ import { Sidebar } from 'features/Main/Sidebar';
 import { Header } from 'features/Main/Header';
 import { Footer } from 'features/Main/Footer';
 import StudentsPage from 'features/Students/StudentsPage';
+import { getConfig } from '@edx/frontend-platform';
 import './index.scss';
 
 const Main = () => (
-  <BrowserRouter>
+  <BrowserRouter basename={getConfig().INSTITUTION_PORTAL_PATH}>
     <div className="pageWrapper">
       <Sidebar />
       <main>
