@@ -5,19 +5,19 @@ import { Badge, Button } from '@edx/paragon';
 const getColumns = props => [
   {
     Header: 'Name',
-    accessor: 'learner_name',
+    accessor: 'learnerName',
   },
   {
     Header: 'Email',
-    accessor: 'learner_email',
+    accessor: 'learnerEmail',
   },
   {
     Header: 'Class Name',
-    accessor: 'ccx_name',
+    accessor: 'ccxName',
   },
   {
     Header: 'Class Id',
-    accessor: 'ccx_id',
+    accessor: 'ccxId',
     disableSortBy: true,
   },
   {
@@ -40,19 +40,19 @@ const getColumns = props => [
   },
   {
     Header: 'First Access',
-    accessor: 'first_access',
+    accessor: 'firstAccess',
     Cell: ({ row }) => (
-      row.values.first_access
-        ? new Date(row.values.first_access).toUTCString()
+      row.values.firstAccess
+        ? new Date(row.values.firstAccess).toUTCString()
         : ''
     ),
   },
   {
     Header: 'Last Access',
-    accessor: 'last_access',
+    accessor: 'lastAccess',
     Cell: ({ row }) => (
-      row.values.last_access
-        ? new Date(row.values.last_access).toUTCString()
+      row.values.lastAccess
+        ? new Date(row.values.lastAccess).toUTCString()
         : ''
     ),
   },
