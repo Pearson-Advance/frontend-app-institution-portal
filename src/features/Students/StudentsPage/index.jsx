@@ -9,6 +9,7 @@ import { MenuIcon } from '@edx/frontend-component-header/dist/Icons';
 
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import React, { useEffect, useState, useReducer } from 'react';
+import { camelCaseObject } from '@edx/frontend-platform';
 import {
   ActionRow,
   Button,
@@ -44,8 +45,7 @@ const reducer = (state, action) => {
     case 'FETCH_REQUEST':
       return { ...state, status: RequestStatus.LOADING };
     case 'FETCH_SUCCESS': {
-      const { results, count } = action.payload;
-      const numPages = count;
+      const { results, count, numPages } = action.payload;
       return {
         ...state,
         status: RequestStatus.SUCCESS,
@@ -96,7 +96,7 @@ const StudentsPage = () => {
     dispatch({ type: 'FETCH_REQUEST' });
 
     try {
-      const response = await getStudentbyInstitutionAdmin(currentPage, filters);
+      const response = camelCaseObject(await getStudentbyInstitutionAdmin(currentPage, filters));
       dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
     } catch (error) {
       dispatch({ type: 'FETCH_FAILURE', payload: error });

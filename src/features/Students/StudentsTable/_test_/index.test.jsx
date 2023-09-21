@@ -14,23 +14,23 @@ describe('Student Table', () => {
   test('renders StudentsTable with data', () => {
     const data = [
       {
-        learner_name: 'Student 1',
-        learner_email: 'student1@example.com',
-        ccx_name: 'CCX 1',
+        learnerName: 'Student 1',
+        learnerEmail: 'student1@example.com',
+        ccxName: 'CCX 1',
         instructors: ['Instructor 1'],
         created: 'Fri, 25 Aug 2023 19:01:22 GMT',
-        first_access: 'Fri, 25 Aug 2023 19:01:23 GMT',
-        last_access: 'Fri, 25 Aug 2023 20:20:22 GMT',
+        firstAccess: 'Fri, 25 Aug 2023 19:01:23 GMT',
+        lastAccess: 'Fri, 25 Aug 2023 20:20:22 GMT',
         grade: true,
       },
       {
-        learner_name: 'Student 2',
-        learner_email: 'student2@example.com',
-        ccx_name: 'CCX 2',
+        learnerName: 'Student 2',
+        learnerEmail: 'student2@example.com',
+        ccxName: 'CCX 2',
         instructors: ['Instructor 2'],
         created: 'Sat, 26 Aug 2023 19:01:22 GMT',
-        first_access: 'Sat, 26 Aug 2023 19:01:24 GMT',
-        last_access: 'Sat, 26 Aug 2023 21:22:22 GMT',
+        firstAccess: 'Sat, 26 Aug 2023 19:01:24 GMT',
+        lastAccess: 'Sat, 26 Aug 2023 21:22:22 GMT',
         grade: false,
       },
     ];

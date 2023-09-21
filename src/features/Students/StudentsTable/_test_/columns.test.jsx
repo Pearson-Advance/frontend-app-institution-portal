@@ -21,16 +21,16 @@ describe('getColumns', () => {
     ] = columns;
 
     expect(nameColumn).toHaveProperty('Header', 'Name');
-    expect(nameColumn).toHaveProperty('accessor', 'learner_name');
+    expect(nameColumn).toHaveProperty('accessor', 'learnerName');
 
     expect(emailColumn).toHaveProperty('Header', 'Email');
-    expect(emailColumn).toHaveProperty('accessor', 'learner_email');
+    expect(emailColumn).toHaveProperty('accessor', 'learnerEmail');
 
     expect(courseNameColumn).toHaveProperty('Header', 'Class Name');
-    expect(courseNameColumn).toHaveProperty('accessor', 'ccx_name');
+    expect(courseNameColumn).toHaveProperty('accessor', 'ccxName');
 
     expect(ClassIdColumn).toHaveProperty('Header', 'Class Id');
-    expect(ClassIdColumn).toHaveProperty('accessor', 'ccx_id');
+    expect(ClassIdColumn).toHaveProperty('accessor', 'ccxId');
 
     expect(instructorsColumn).toHaveProperty('Header', 'Instructors');
     expect(instructorsColumn).toHaveProperty('accessor', 'instructors');
@@ -39,10 +39,10 @@ describe('getColumns', () => {
     expect(createdColumn).toHaveProperty('accessor', 'created');
 
     expect(firstAccessColumn).toHaveProperty('Header', 'First Access');
-    expect(firstAccessColumn).toHaveProperty('accessor', 'first_access');
+    expect(firstAccessColumn).toHaveProperty('accessor', 'firstAccess');
 
     expect(lastAccessColumn).toHaveProperty('Header', 'Last Access');
-    expect(lastAccessColumn).toHaveProperty('accessor', 'last_access');
+    expect(lastAccessColumn).toHaveProperty('accessor', 'lastAccess');
 
     expect(gradeColumn).toHaveProperty('Header', 'Grade');
     expect(gradeColumn).toHaveProperty('accessor', 'grade');
