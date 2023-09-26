@@ -77,7 +77,7 @@ const getColumns = props => [
   },
 ];
 
-// We don't need to show ccx_id column but we need it to use handleStudentsActions.
-const hideColumns = { hiddenColumns: ['ccx_id'] };
+// We don't need to show ccxId column but we need it to use handleStudentsActions.
+const hideColumns = { hiddenColumns: ['ccxId'] };
 
 export { hideColumns, getColumns };
