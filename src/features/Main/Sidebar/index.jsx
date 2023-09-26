@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import React, { useContext, useState } from 'react';
 import { getConfig } from '@edx/frontend-platform';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faUser } from '@fortawesome/free-solid-svg-icons';
 import './index.scss';
 
 export const Sidebar = () => {
@@ -37,6 +37,19 @@ export const Sidebar = () => {
                 <FontAwesomeIcon icon={faUsers} />
               </span>
               <span className="nav-text">Students</span>
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              className={`${activeTab === 'instructors' ? 'active' : ''} backbutton`}
+              aria-current="page"
+              onClick={() => handleTabClick('instructors')}
+            >
+              <span className="icon">
+                <FontAwesomeIcon icon={faUser} />
+              </span>
+              <span className="nav-text">Instructors</span>
             </button>
           </li>
         </ul>
