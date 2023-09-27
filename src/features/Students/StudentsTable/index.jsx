@@ -22,11 +22,11 @@ const StudentsTable = ({
   const [selectedRow, setRow] = useState({});
   const COLUMNS = useMemo(() => getColumns({ openAlertModal, setRow }), [openAlertModal]);
   const enrollmentData = new FormData();
-  enrollmentData.append('identifiers', selectedRow.learner_email);
+  enrollmentData.append('identifiers', selectedRow.learnerEmail);
   enrollmentData.append('action', 'unenroll');
 
   const handleStudentsActions = async () => {
-    await handleEnrollments(enrollmentData, selectedRow.ccx_id);
+    await handleEnrollments(enrollmentData, selectedRow.ccxId);
     fetchData();
     closeAlertModal();
   };
@@ -62,7 +62,7 @@ const StudentsTable = ({
         )}
       >
         <p>
-          Learner with email <b>{selectedRow.learner_email}</b> will be revoked from <b>{selectedRow.ccx_name}</b>
+          Learner with email <b>{selectedRow.learnerEmail}</b> will be revoked from <b>{selectedRow.ccxName}</b>
         </p>
       </AlertModal>
     </IntlProvider>

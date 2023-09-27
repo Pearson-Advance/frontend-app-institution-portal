@@ -19,16 +19,16 @@ const mockResponse = {
   data: {
     results: [
       {
-        learner_name: 'Student 1',
-        learner_email: 'student1@example.com',
-        ccx_name: 'CCX 1',
+        learnerName: 'Student 1',
+        learnerEmail: 'student1@example.com',
+        ccxName: 'CCX 1',
         instructors: ['Instructor 1'],
         created: 'Fri, 25 Aug 2023 19:01:22 GMT',
       },
       {
-        learner_name: 'Student 2',
-        learner_email: 'student2@example.com',
-        ccx_name: 'CCX 2',
+        learnerName: 'Student 2',
+        learnerEmail: 'student2@example.com',
+        ccxName: 'CCX 2',
         instructors: ['Instructor 2'],
         created: 'Sat, 26 Aug 2023 19:01:22 GMT',
       },
