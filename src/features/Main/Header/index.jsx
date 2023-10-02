@@ -54,7 +54,7 @@ export const Header = () => {
   }, []);
 
   return (
-    <header>
+    <header className="institution-header py-4 px-3">
       <div className="institution-name">
         {state.data.length >= 1 ? (
           <h3>Global Admin</h3>
