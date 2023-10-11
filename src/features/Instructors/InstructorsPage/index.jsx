@@ -8,6 +8,7 @@ import {
 } from '@edx/paragon';
 import InstructorsTable from 'features/Instructors/InstructorsTable';
 import InstructorsFilters from 'features/Instructors/InstructorsFilters';
+import AddInstructors from 'features/Instructors/AddInstructors';
 
 import { getInstructorData } from 'features/Instructors/data/api';
 import {
@@ -62,8 +63,8 @@ const InstructorsPage = () => {
       <h2>Instructors</h2>
       <div className="d-flex justify-content-end">
         <InstructorsFilters fetchData={fetchData} resetPagination={resetPagination} />
+        <AddInstructors />
       </div>
-
       <InstructorsTable
         data={state.data}
         count={state.count}
