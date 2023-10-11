@@ -7,6 +7,7 @@ import {
   Pagination,
 } from '@edx/paragon';
 import InstructorsTable from 'features/Instructors/InstructorsTable';
+import InstructorsFilters from 'features/Instructors/InstructorsFilters';
 
 import { getInstructorData } from 'features/Instructors/data/api';
 import {
@@ -30,11 +31,11 @@ const InstructorsPage = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchData = async () => {
+  const fetchData = async (filters) => {
     dispatch({ type: FETCH_INSTRUCTOR_DATA_REQUEST });
 
     try {
-      const response = camelCaseObject(await getInstructorData(currentPage));
+      const response = camelCaseObject(await getInstructorData(currentPage, filters));
       dispatch({ type: FETCH_INSTRUCTOR_DATA_SUCCESS, payload: response.data });
     } catch (error) {
       dispatch({ type: FETCH_INSTRUCTOR_DATA_FAILURE, payload: error });
@@ -52,9 +53,17 @@ const InstructorsPage = () => {
     fetchData();
   };
 
+  const resetPagination = () => {
+    setCurrentPage(1);
+  };
+
   return (
     <Container size="xl" className="px-3">
       <h2>Instructors</h2>
+      <div className="d-flex justify-content-end">
+        <InstructorsFilters fetchData={fetchData} resetPagination={resetPagination} />
+      </div>
+
       <InstructorsTable
         data={state.data}
         count={state.count}
