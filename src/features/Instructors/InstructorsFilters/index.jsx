@@ -31,7 +31,7 @@ const InstructorsFilters = ({ fetchData, resetPagination }) => {
   };
 
   return (
-    <DropdownButton title="Filters" variant="outline-primary">
+    <DropdownButton title="Filters" variant="outline-primary" size="sm" className="mr-3">
       <Form className="row justify-content-center px-3 py-2">
         <Form.Group as={Col} className="mb-0">
           <Form.Control

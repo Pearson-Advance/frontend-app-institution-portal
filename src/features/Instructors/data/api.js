@@ -14,6 +14,14 @@ function getInstructorData(page, filters) {
   );
 }
 
+function getCCXList() {
+  const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
+  return getAuthenticatedHttpClient().get(
+    `${apiV2BaseUrl}/classes?limit=false`,
+  );
+}
+
 export {
   getInstructorData,
+  getCCXList,
 };
