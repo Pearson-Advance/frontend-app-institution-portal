@@ -2,7 +2,7 @@ import React, { useState, useReducer, useEffect } from 'react';
 import {
   Button, FormGroup, ModalDialog, useToggle, Form,
 } from '@edx/paragon';
-import { getCCXList } from 'features/Instructors/data/api';
+import { getCCXList, handleInstructorsEnrollment } from 'features/Instructors/data/api';
 import reducer from 'features/Instructors/AddInstructors/reducer';
 import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
@@ -26,6 +26,8 @@ const AddInstructors = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpen, open, close] = useToggle(false);
   const [addInstructorInfo, setAddInstructorInfo] = useState(addInstructorState);
+  const [isNoUser, setIsNoUser] = useState(false);
+  const enrollmentData = new FormData();
 
   const fetchData = async () => {
     dispatch({ type: FETCH_CCX_LIST_REQUEST });
@@ -46,6 +48,17 @@ const AddInstructors = () => {
     });
   };
 
+  // Set default value
+  useEffect(() => {
+    if (state.data.length > 0) {
+      setAddInstructorInfo((prevState) => ({
+        ...prevState,
+        ccxId: state.data[0].classId,
+        ccxName: state.data[0].className,
+      }));
+    }
+  }, [state.data]);
+
   const handleCcxSelect = (e) => {
     const select = e.target;
     setAddInstructorInfo({
@@ -53,6 +66,24 @@ const AddInstructors = () => {
       ccxId: select.value,
       ccxName: select.options[select.selectedIndex].text,
     });
+  };
+
+  const handleAddInstructors = async () => {
+    try {
+      enrollmentData.append('unique_student_identifier', addInstructorInfo.instructorInfo);
+      enrollmentData.append('rolename', 'staff');
+      enrollmentData.append('action', 'allow');
+      const response = await handleInstructorsEnrollment(enrollmentData, addInstructorInfo.ccxId);
+      if (response.data?.userDoesNotExist) {
+        setIsNoUser(true);
+      } else {
+        fetchData();
+        close();
+        setIsNoUser(false);
+      }
+    } catch (error) {
+      logError(error);
+    }
   };
 
   useEffect(() => {
@@ -83,9 +114,12 @@ const AddInstructors = () => {
               className="my-4 mr-0"
               onChange={handleCcxSelect}
               id="selectCcx"
+              value={addInstructorInfo.ccxId}
             >
               {state.data.map((ccx) => <option value={ccx.classId}>{ccx.className}</option>)}
             </Form.Control>
+          </FormGroup>
+          <FormGroup>
             <Form.Control
               type="text"
               placeholder="Enter Username or Email of the instructor"
@@ -94,10 +128,16 @@ const AddInstructors = () => {
               onChange={handleInstructorInput}
               className="my-4 mr-0"
             />
-            <div className="d-flex justify-content-end">
-              <Button>Add</Button>
-            </div>
+            {isNoUser && (
+              <Form.Control.Feedback type="invalid">
+                User does not exist
+              </Form.Control.Feedback>
+            )}
           </FormGroup>
+          <div className="d-flex justify-content-end">
+            <Button onClick={handleAddInstructors}>Add</Button>
+          </div>
+
         </ModalDialog.Body>
       </ModalDialog>
     </>
