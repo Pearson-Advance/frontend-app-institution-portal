@@ -16,16 +16,9 @@ const initialState = {
   error: null,
 };
 
-const addInstructorState = {
-  instructorInfo: '',
-  ccxId: '',
-  ccxName: '',
-};
-
 const AddInstructors = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpen, open, close] = useToggle(false);
-  const [addInstructorInfo, setAddInstructorInfo] = useState(addInstructorState);
   const [isNoUser, setIsNoUser] = useState(false);
   const enrollmentData = new FormData();
 
@@ -41,39 +34,16 @@ const AddInstructors = () => {
     }
   };
 
-  const handleInstructorInput = (e) => {
-    setAddInstructorInfo({
-      ...addInstructorInfo,
-      instructorInfo: e.target.value.trim(),
-    });
-  };
-
-  // Set default value
-  useEffect(() => {
-    if (state.data.length > 0) {
-      setAddInstructorInfo((prevState) => ({
-        ...prevState,
-        ccxId: state.data[0].classId,
-        ccxName: state.data[0].className,
-      }));
-    }
-  }, [state.data]);
-
-  const handleCcxSelect = (e) => {
-    const select = e.target;
-    setAddInstructorInfo({
-      ...addInstructorInfo,
-      ccxId: select.value,
-      ccxName: select.options[select.selectedIndex].text,
-    });
-  };
-
-  const handleAddInstructors = async () => {
+  const handleAddInstructors = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const formJson = Object.fromEntries(formData.entries());
     try {
-      enrollmentData.append('unique_student_identifier', addInstructorInfo.instructorInfo);
+      enrollmentData.append('unique_student_identifier', formJson.instructorInfo);
       enrollmentData.append('rolename', 'staff');
       enrollmentData.append('action', 'allow');
-      const response = await handleInstructorsEnrollment(enrollmentData, addInstructorInfo.ccxId);
+      const response = await handleInstructorsEnrollment(enrollmentData, formJson.ccxId);
       if (response.data?.userDoesNotExist) {
         setIsNoUser(true);
       } else {
@@ -107,36 +77,36 @@ const AddInstructors = () => {
           </ModalDialog.Title>
         </ModalDialog.Header>
         <ModalDialog.Body>
-          <FormGroup>
-            <Form.Control
-              as="select"
-              floatingLabel="Select Class Name"
-              className="my-4 mr-0"
-              onChange={handleCcxSelect}
-              id="selectCcx"
-              value={addInstructorInfo.ccxId}
-            >
-              {state.data.map((ccx) => <option value={ccx.classId}>{ccx.className}</option>)}
-            </Form.Control>
-          </FormGroup>
-          <FormGroup>
-            <Form.Control
-              type="text"
-              placeholder="Enter Username or Email of the instructor"
-              floatingLabel="Username or Email"
-              value={addInstructorInfo.instructorInfo}
-              onChange={handleInstructorInput}
-              className="my-4 mr-0"
-            />
-            {isNoUser && (
-              <Form.Control.Feedback type="invalid">
-                User does not exist
-              </Form.Control.Feedback>
-            )}
-          </FormGroup>
-          <div className="d-flex justify-content-end">
-            <Button onClick={handleAddInstructors}>Add</Button>
-          </div>
+          <Form onSubmit={handleAddInstructors}>
+            <FormGroup controlId="ccxId">
+              <Form.Control
+                as="select"
+                floatingLabel="Select Class Name"
+                className="my-4 mr-0"
+                name="ccxId"
+              >
+                <option disabled value="null">Select an Option</option>
+                {state.data.map((ccx) => <option value={ccx.classId}>{ccx.className}</option>)}
+              </Form.Control>
+            </FormGroup>
+            <FormGroup controlId="instructorInfo">
+              <Form.Control
+                type="text"
+                placeholder="Enter Username or Email of the instructor"
+                floatingLabel="Username or Email"
+                className="my-4 mr-0"
+                name="instructorInfo"
+              />
+              {isNoUser && (
+                <Form.Control.Feedback type="invalid">
+                  User does not exist
+                </Form.Control.Feedback>
+              )}
+            </FormGroup>
+            <div className="d-flex justify-content-end">
+              <Button type="submit">Add</Button>
+            </div>
+          </Form>
 
         </ModalDialog.Body>
       </ModalDialog>
