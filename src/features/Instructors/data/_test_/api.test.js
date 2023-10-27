@@ -1,5 +1,5 @@
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
-import { getInstructorData } from 'features/Instructors/data/api';
+import { getInstructorData, handleInstructorsEnrollment } from 'features/Instructors/data/api';
 
 jest.mock('@edx/frontend-platform/auth', () => ({
   getAuthenticatedHttpClient: jest.fn(),
@@ -31,6 +31,30 @@ describe('getInstructorData', () => {
     expect(httpClientMock.get).toHaveBeenCalledWith(
       'http://localhost:18000/pearson_course_operation/api/v2/instructors/',
       { params: { page } },
+    );
+  });
+});
+
+describe('handleInstructorsEnrollment', () => {
+  test('should call getAuthenticatedHttpClient with the correct parameters', () => {
+    const httpClientMock = {
+      post: jest.fn(),
+    };
+
+    const courseId = 'course123';
+    const data = new FormData();
+
+    getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
+
+    handleInstructorsEnrollment(data, courseId);
+
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(2);
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
+
+    expect(httpClientMock.post).toHaveBeenCalledTimes(1);
+    expect(httpClientMock.post).toHaveBeenCalledWith(
+      'http://localhost:18000/courses/course123/instructor/api/modify_access',
+      data,
     );
   });
 });
