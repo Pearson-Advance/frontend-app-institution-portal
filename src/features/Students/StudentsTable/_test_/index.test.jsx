@@ -16,22 +16,30 @@ describe('Student Table', () => {
       {
         learnerName: 'Student 1',
         learnerEmail: 'student1@example.com',
-        ccxName: 'CCX 1',
+        courseId: '1',
+        courseName: 'course 1',
+        classId: '1',
+        className: 'class 1',
         instructors: ['Instructor 1'],
         created: 'Fri, 25 Aug 2023 19:01:22 GMT',
         firstAccess: 'Fri, 25 Aug 2023 19:01:23 GMT',
         lastAccess: 'Fri, 25 Aug 2023 20:20:22 GMT',
-        grade: true,
+        status: 'Active',
+        examReady: true,
       },
       {
         learnerName: 'Student 2',
         learnerEmail: 'student2@example.com',
-        ccxName: 'CCX 2',
+        courseId: '2',
+        courseName: 'course 2',
+        classId: '2',
+        className: 'class 2',
         instructors: ['Instructor 2'],
         created: 'Sat, 26 Aug 2023 19:01:22 GMT',
         firstAccess: 'Sat, 26 Aug 2023 19:01:24 GMT',
         lastAccess: 'Sat, 26 Aug 2023 21:22:22 GMT',
-        grade: false,
+        status: 'Pending',
+        examReady: null,
       },
     ];
 
@@ -47,33 +55,21 @@ describe('Student Table', () => {
     expect(component.container).toHaveTextContent('Student 1');
     expect(component.container).toHaveTextContent('Student 2');
 
-    // Check student emails
-    expect(component.container).toHaveTextContent('student1@example.com');
-    expect(component.container).toHaveTextContent('student2@example.com');
+    // Check course names
+    expect(component.container).toHaveTextContent('course 1');
+    expect(component.container).toHaveTextContent('course 2');
 
-    // Check ccx names
-    expect(component.container).toHaveTextContent('CCX 1');
-    expect(component.container).toHaveTextContent('CCX 2');
+    // Check class names
+    expect(component.container).toHaveTextContent('class 1');
+    expect(component.container).toHaveTextContent('class 2');
 
     // Check instructors names
     expect(component.container).toHaveTextContent('Instructor 1');
     expect(component.container).toHaveTextContent('Instructor 2');
 
-    // Check datetime for created column is formatted
-    expect(component.container).toHaveTextContent('Fri, 25 Aug 2023 19:01:22 GMT');
-    expect(component.container).toHaveTextContent('Sat, 26 Aug 2023 19:01:22 GMT');
-
-    // Check datetime for first access column is formatted
-    expect(component.container).toHaveTextContent('Fri, 25 Aug 2023 19:01:23 GMT');
-    expect(component.container).toHaveTextContent('Sat, 26 Aug 2023 19:01:24 GMT');
-
-    // Check datetime for last access column is formatted
-    expect(component.container).toHaveTextContent('Fri, 25 Aug 2023 20:20:22 GMT');
-    expect(component.container).toHaveTextContent('Sat, 26 Aug 2023 21:22:22 GMT');
-
-    // Check grade
-    expect(component.container).toHaveTextContent('pass');
-    expect(component.container).toHaveTextContent('fail');
+    // Check exam ready
+    expect(component.container).toHaveTextContent('yes');
+    expect(component.container).toHaveTextContent('no');
 
     // Ensure "No students found." is not present
     expect(screen.queryByText('No students found.')).toBeNull();

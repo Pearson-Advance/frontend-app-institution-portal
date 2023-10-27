@@ -41,5 +41,11 @@ describe('Add instructor component', () => {
     const ccxSelect = getByText('Select Class Name');
     expect(instructorInfoInput).toBeInTheDocument();
     expect(ccxSelect).toBeInTheDocument();
+
+    fireEvent.change(instructorInfoInput, { target: { value: 'Name' } });
+    const submitButton = getByText('Add');
+    await act(async () => {
+      fireEvent.click(submitButton);
+    });
   });
 });

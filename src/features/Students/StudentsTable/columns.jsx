@@ -1,27 +1,30 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Badge, Button } from '@edx/paragon';
+import { Badge } from 'react-paragon-topaz';
 
-const getColumns = props => [
+const getColumns = () => [
   {
-    Header: 'Name',
+    Header: 'Student',
     accessor: 'learnerName',
   },
   {
-    Header: 'Email',
-    accessor: 'learnerEmail',
+    Header: 'Course',
+    accessor: 'courseName',
+  },
+  {
+    Header: 'Course Id',
+    accessor: 'courseId',
   },
   {
     Header: 'Class Name',
-    accessor: 'ccxName',
+    accessor: 'className',
   },
   {
     Header: 'Class Id',
-    accessor: 'ccxId',
-    disableSortBy: true,
+    accessor: 'classId',
   },
   {
-    Header: 'Instructors',
+    Header: 'Instructor',
     accessor: 'instructors',
     Cell: ({ row }) => (
       <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
@@ -30,54 +33,31 @@ const getColumns = props => [
     ),
   },
   {
-    Header: 'Created',
-    accessor: 'created',
-    Cell: ({ row }) => (
-      row.values.created
-        ? new Date(row.values.created).toUTCString()
-        : ''
-    ),
-  },
-  {
-    Header: 'First Access',
-    accessor: 'firstAccess',
-    Cell: ({ row }) => (
-      row.values.firstAccess
-        ? new Date(row.values.firstAccess).toUTCString()
-        : ''
-    ),
-  },
-  {
-    Header: 'Last Access',
-    accessor: 'lastAccess',
-    Cell: ({ row }) => (
-      row.values.lastAccess
-        ? new Date(row.values.lastAccess).toUTCString()
-        : ''
-    ),
-  },
-  {
-    Header: 'Grade',
-    accessor: 'grade',
-    Cell: ({ row }) => <Badge variant={row.values.grade ? 'success' : 'danger'}>{row.values.grade ? 'pass' : 'fail'}</Badge>,
-  },
-  {
-    Header: 'Action',
+    Header: 'Status',
     accessor: 'status',
-    disableSortBy: true,
     Cell: ({ row }) => {
-      const value = row.values;
-
-      if (value.status !== 'Pending') {
-        return null;
+      switch (row.values.status) {
+        case 'Active':
+          return <Badge variant="success" light>Active</Badge>;
+        case 'Inactive':
+          return <Badge variant="secondary" light>Inactive</Badge>;
+        case 'Expired':
+          return <Badge variant="danger" light>Expired</Badge>;
+        case 'Pending':
+          return <Badge variant="warning" light>Pending</Badge>;
+        default:
+          return null;
       }
-
-      return <Button variant="outline-danger" onClick={() => { props.openAlertModal(); props.setRow(value); }}>Revoke</Button>;
     },
+  },
+  {
+    Header: 'Exam Ready',
+    accessor: 'examReady',
+    Cell: ({ row }) => (row.values.examReady ? 'yes' : 'no'),
   },
 ];
 
 // We don't need to show ccxId column but we need it to use handleStudentsActions.
-const hideColumns = { hiddenColumns: ['ccxId'] };
+const hideColumns = { hiddenColumns: ['classId', 'courseId'] };
 
 export { hideColumns, getColumns };
