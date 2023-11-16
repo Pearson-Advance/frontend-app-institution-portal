@@ -2,6 +2,7 @@ import { getStudentbyInstitutionAdmin } from 'features/Students/data/api';
 import { StudentsTable } from 'features/Students/StudentsTable/index';
 import { StudentsFilters } from 'features/Students/StudentsFilters';
 import { RequestStatus } from 'features/constants';
+import reducer from 'features/Students/StudentsPage/reducer';
 
 import { logError } from '@edx/frontend-platform/logging';
 import Container from '@edx/paragon/dist/Container';
@@ -20,6 +21,14 @@ import {
   Pagination,
   Modal,
 } from '@edx/paragon';
+import {
+  FETCH_STUDENTS_DATA_REQUEST,
+  FETCH_STUDENTS_DATA_SUCCESS,
+  FETCH_STUDENTS_DATA_FAILURE,
+  UPDATE_CURRENT_PAGE,
+  OPEN_MODAL,
+  CLOSE_MODAL,
+} from 'features/Students/actionTypes';
 
 const initialFilterFormValues = {
   learnerName: '',
@@ -40,66 +49,19 @@ const initialState = {
   },
 };
 
-const reducer = (state, action) => {
-  switch (action.type) {
-    case 'FETCH_REQUEST':
-      return { ...state, status: RequestStatus.LOADING };
-    case 'FETCH_SUCCESS': {
-      const { results, count, numPages } = action.payload;
-      return {
-        ...state,
-        status: RequestStatus.SUCCESS,
-        data: results,
-        numPages,
-        count,
-      };
-    }
-    case 'FETCH_FAILURE':
-      return {
-        ...state,
-        status: RequestStatus.ERROR,
-        error: action.payload,
-      };
-    case 'UPDATE_CURRENT_PAGE':
-      return {
-        ...state,
-        currentPage: action.payload,
-      };
-    case 'OPEN_MODAL':
-      return {
-        ...state,
-        filters: {
-          ...state.filters,
-          isOpenFilters: true,
-        },
-      };
-    case 'CLOSE_MODAL':
-      return {
-        ...state,
-        filters: {
-          ...state.filters,
-          isOpenFilters: false,
-          errors: {},
-        },
-      };
-    default:
-      return state;
-  }
-};
-
 const StudentsPage = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState(initialFilterFormValues);
 
   const fetchData = async () => {
-    dispatch({ type: 'FETCH_REQUEST' });
+    dispatch({ type: FETCH_STUDENTS_DATA_REQUEST });
 
     try {
       const response = camelCaseObject(await getStudentbyInstitutionAdmin(currentPage, filters));
-      dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
+      dispatch({ type: FETCH_STUDENTS_DATA_SUCCESS, payload: response.data });
     } catch (error) {
-      dispatch({ type: 'FETCH_FAILURE', payload: error });
+      dispatch({ type: FETCH_STUDENTS_DATA_FAILURE, payload: error });
       logError(error);
     }
   };
@@ -109,11 +71,11 @@ const StudentsPage = () => {
   }, [currentPage, filters]);
 
   const handleOpenFiltersModal = () => {
-    dispatch({ type: 'OPEN_MODAL' });
+    dispatch({ type: OPEN_MODAL });
   };
 
   const handleCloseFiltersModal = () => {
-    dispatch({ type: 'CLOSE_MODAL' });
+    dispatch({ type: CLOSE_MODAL });
   };
 
   const handleApplyFilters = async () => {
@@ -129,7 +91,7 @@ const StudentsPage = () => {
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
-    dispatch({ type: 'UPDATE_CURRENT_PAGE', payload: targetPage });
+    dispatch({ type: UPDATE_CURRENT_PAGE, payload: targetPage });
     fetchData();
   };
 

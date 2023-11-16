@@ -5,49 +5,41 @@ describe('getColumns', () => {
     const columns = getColumns();
 
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(10);
+    expect(columns).toHaveLength(8);
 
     const [
       nameColumn,
-      emailColumn,
       courseNameColumn,
+      courseIdColumn,
+      classNameColumn,
       ClassIdColumn,
       instructorsColumn,
-      createdColumn,
-      firstAccessColumn,
-      lastAccessColumn,
-      gradeColumn,
-      ActionColumn,
+      statusColumn,
+      examReadyColumn,
     ] = columns;
 
-    expect(nameColumn).toHaveProperty('Header', 'Name');
+    expect(nameColumn).toHaveProperty('Header', 'Student');
     expect(nameColumn).toHaveProperty('accessor', 'learnerName');
 
-    expect(emailColumn).toHaveProperty('Header', 'Email');
-    expect(emailColumn).toHaveProperty('accessor', 'learnerEmail');
+    expect(courseNameColumn).toHaveProperty('Header', 'Course');
+    expect(courseNameColumn).toHaveProperty('accessor', 'courseName');
 
-    expect(courseNameColumn).toHaveProperty('Header', 'Class Name');
-    expect(courseNameColumn).toHaveProperty('accessor', 'ccxName');
+    expect(courseIdColumn).toHaveProperty('Header', 'Course Id');
+    expect(courseIdColumn).toHaveProperty('accessor', 'courseId');
+
+    expect(classNameColumn).toHaveProperty('Header', 'Class Name');
+    expect(classNameColumn).toHaveProperty('accessor', 'className');
 
     expect(ClassIdColumn).toHaveProperty('Header', 'Class Id');
-    expect(ClassIdColumn).toHaveProperty('accessor', 'ccxId');
+    expect(ClassIdColumn).toHaveProperty('accessor', 'classId');
 
-    expect(instructorsColumn).toHaveProperty('Header', 'Instructors');
+    expect(instructorsColumn).toHaveProperty('Header', 'Instructor');
     expect(instructorsColumn).toHaveProperty('accessor', 'instructors');
 
-    expect(createdColumn).toHaveProperty('Header', 'Created');
-    expect(createdColumn).toHaveProperty('accessor', 'created');
+    expect(statusColumn).toHaveProperty('Header', 'Status');
+    expect(statusColumn).toHaveProperty('accessor', 'status');
 
-    expect(firstAccessColumn).toHaveProperty('Header', 'First Access');
-    expect(firstAccessColumn).toHaveProperty('accessor', 'firstAccess');
-
-    expect(lastAccessColumn).toHaveProperty('Header', 'Last Access');
-    expect(lastAccessColumn).toHaveProperty('accessor', 'lastAccess');
-
-    expect(gradeColumn).toHaveProperty('Header', 'Grade');
-    expect(gradeColumn).toHaveProperty('accessor', 'grade');
-
-    expect(ActionColumn).toHaveProperty('Header', 'Action');
-    expect(ActionColumn).toHaveProperty('accessor', 'status');
+    expect(examReadyColumn).toHaveProperty('Header', 'Exam Ready');
+    expect(examReadyColumn).toHaveProperty('accessor', 'examReady');
   });
 });
