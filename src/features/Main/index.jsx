@@ -1,5 +1,5 @@
+import React, { useEffect, useReducer } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import React from 'react';
 import { Sidebar } from 'features/Main/Sidebar';
 import { Header } from 'features/Main/Header';
 import { Footer } from 'features/Main/Footer';
@@ -7,27 +7,62 @@ import StudentsPage from 'features/Students/StudentsPage';
 import Container from '@edx/paragon/dist/Container';
 import { getConfig } from '@edx/frontend-platform';
 import InstructorsPage from 'features/Instructors/InstructorsPage';
+import reducer from 'features/Main/reducer';
+import { getInstitutionName } from 'features/Main/data/api';
+import { InstitutionContext } from 'features/Main/institutionContext';
+import {
+  FETCH_INSTITUTION_DATA_REQUEST,
+  FETCH_INSTITUTION_DATA_SUCCESS,
+  FETCH_INSTITUTION_DATA_FAILURE,
+} from 'features/Main/actionTypes';
+import { RequestStatus } from 'features/constants';
 import './index.scss';
 
-const Main = () => (
-  <BrowserRouter basename={getConfig().INSTITUTION_PORTAL_PATH}>
-    <div className="pageWrapper">
-      <Sidebar />
-      <main>
-        <Container size="xl">
-          <Header />
-          <Switch>
-            <Route path="/students" exact component={StudentsPage} />
-          </Switch>
-          <Switch>
-            <Route path="/instructors" exact component={InstructorsPage} />
-          </Switch>
-          <Footer />
-        </Container>
+const initialState = {
+  data: [],
+  status: RequestStatus.SUCCESS,
+  error: null,
+};
 
-      </main>
-    </div>
-  </BrowserRouter>
-);
+const Main = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch({ type: FETCH_INSTITUTION_DATA_REQUEST });
+
+      try {
+        const response = await getInstitutionName();
+        dispatch({ type: FETCH_INSTITUTION_DATA_SUCCESS, payload: response.data });
+      } catch (error) {
+        dispatch({ type: FETCH_INSTITUTION_DATA_FAILURE, payload: error });
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <BrowserRouter basename={getConfig().INSTITUTION_PORTAL_PATH}>
+      <InstitutionContext.Provider value={state.data}>
+        <div className="pageWrapper">
+          <Sidebar />
+          <main>
+            <Container size="xl">
+              <Header />
+              <Switch>
+                <Route path="/students" exact component={StudentsPage} />
+              </Switch>
+              <Switch>
+                <Route path="/instructors" exact component={InstructorsPage} />
+              </Switch>
+              <Footer />
+            </Container>
+          </main>
+        </div>
+      </InstitutionContext.Provider>
+    </BrowserRouter>
+  );
+};
 
 export default Main;

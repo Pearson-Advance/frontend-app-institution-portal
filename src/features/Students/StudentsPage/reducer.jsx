@@ -3,8 +3,6 @@ import {
   FETCH_STUDENTS_DATA_SUCCESS,
   FETCH_STUDENTS_DATA_FAILURE,
   UPDATE_CURRENT_PAGE,
-  OPEN_MODAL,
-  CLOSE_MODAL,
 } from 'features/Students/actionTypes';
 import { RequestStatus } from 'features/constants';
 
@@ -32,23 +30,6 @@ const reducer = (state, action) => {
       return {
         ...state,
         currentPage: action.payload,
-      };
-    case OPEN_MODAL:
-      return {
-        ...state,
-        filters: {
-          ...state.filters,
-          isOpenFilters: true,
-        },
-      };
-    case CLOSE_MODAL:
-      return {
-        ...state,
-        filters: {
-          ...state.filters,
-          isOpenFilters: false,
-          errors: {},
-        },
       };
     default:
       return state;
