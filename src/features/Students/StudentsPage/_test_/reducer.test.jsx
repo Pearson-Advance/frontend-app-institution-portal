@@ -3,8 +3,6 @@ import {
   FETCH_STUDENTS_DATA_SUCCESS,
   FETCH_STUDENTS_DATA_FAILURE,
   UPDATE_CURRENT_PAGE,
-  OPEN_MODAL,
-  CLOSE_MODAL,
 } from 'features/Students/actionTypes';
 import { RequestStatus } from 'features/constants';
 import reducer from 'features/Instructors/InstructorsPage/reducer';
@@ -66,33 +64,6 @@ describe('Instructor page reducers', () => {
     const action = {
       type: UPDATE_CURRENT_PAGE,
       payload: 1,
-    };
-    expect(reducer(state, action)).toEqual(state);
-  });
-
-  test('should handle OPEN_MODAL', () => {
-    const state = {
-      ...initialState,
-      filters: {
-        isOpenFilters: true,
-      },
-    };
-    const action = {
-      type: OPEN_MODAL,
-    };
-    expect(reducer(state, action)).toEqual(state);
-  });
-
-  test('should handle CLOSE_MODAL', () => {
-    const state = {
-      ...initialState,
-      filters: {
-        isOpenFilters: false,
-        errors: {},
-      },
-    };
-    const action = {
-      type: CLOSE_MODAL,
     };
     expect(reducer(state, action)).toEqual(state);
   });

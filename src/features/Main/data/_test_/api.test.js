@@ -1,4 +1,4 @@
-import { getInstitutionName } from 'features/Main/Header/data/api';
+import { getInstitutionName } from 'features/Main/data/api';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 
 jest.mock('@edx/frontend-platform/auth', () => ({

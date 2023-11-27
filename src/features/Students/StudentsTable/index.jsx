@@ -33,8 +33,8 @@ const StudentsTable = ({
 
   return (
     <IntlProvider locale="en">
-      <Row className="justify-content-center my-4 border-gray-300 bg-light-100 my-3">
-        <Col xs={11}>
+      <Row className="justify-content-center my-4 my-3">
+        <Col xs={11} className="p-0">
           <DataTable
             isSortable
             itemCount={count}

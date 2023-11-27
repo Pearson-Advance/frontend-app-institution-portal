@@ -1,4 +1,6 @@
-import { getStudentbyInstitutionAdmin, handleEnrollments } from 'features/Students/data/api';
+import {
+  getStudentbyInstitutionAdmin, handleEnrollments, getCoursesByInstitution, getClassesByInstitution,
+} from 'features/Students/data/api';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 
 jest.mock('@edx/frontend-platform/auth', () => ({
@@ -54,6 +56,51 @@ describe('handleEnrollments', () => {
     expect(httpClientMock.post).toHaveBeenCalledWith(
       'http://localhost:18000/courses/course123/instructor/api/students_update_enrollment',
       data,
+    );
+  });
+});
+
+describe('getCoursesByInstitution', () => {
+  test('should call getAuthenticatedHttpClient with the correct parameters', () => {
+    const httpClientMock = {
+      get: jest.fn(),
+    };
+
+    const institutionId = 1;
+
+    getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
+
+    getCoursesByInstitution(institutionId);
+
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(3);
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
+
+    expect(httpClientMock.get).toHaveBeenCalledTimes(1);
+    expect(httpClientMock.get).toHaveBeenCalledWith(
+      'http://localhost:18000/pearson_course_operation/api/v2/courses/?institution_id=1',
+    );
+  });
+});
+
+describe('getClassesByInstitution', () => {
+  test('should call getClassesByInstitution with the correct parameters', () => {
+    const httpClientMock = {
+      get: jest.fn(),
+    };
+
+    const institutionId = 1;
+    const courseName = 'ccx1';
+
+    getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
+
+    getClassesByInstitution(institutionId, courseName);
+
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(4);
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
+
+    expect(httpClientMock.get).toHaveBeenCalledTimes(1);
+    expect(httpClientMock.get).toHaveBeenCalledWith(
+      'http://localhost:18000/pearson_course_operation/api/v2/classes/?institution_id=1?course_name=ccx1',
     );
   });
 });

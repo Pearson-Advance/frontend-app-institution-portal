@@ -1,60 +1,28 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
-import { StudentsFilters } from 'features/Students/StudentsFilters';
+import { render } from '@testing-library/react';
+import StudentsFilters from 'features/Students/StudentsFilters';
 import '@testing-library/jest-dom/extend-expect';
 
-const mockSetFilters = jest.fn();
+jest.mock('axios');
 
-const initialFilters = {
-  learner_name: '',
-  learner_email: '',
-  instructor: '',
-  ccx_name: '',
-};
+jest.mock('@edx/frontend-platform/logging', () => ({
+  logError: jest.fn(),
+}));
 
 describe('StudentsFilters Component', () => {
-  beforeEach(() => {
-    mockSetFilters.mockClear();
-  });
+  const fetchData = jest.fn();
+  const resetPagination = jest.fn();
 
   test('renders input fields with placeholders', () => {
-    const { getByPlaceholderText } = render(<StudentsFilters filters={initialFilters} setFilters={mockSetFilters} />);
+    const { getByText, getByPlaceholderText } = render(
+      <StudentsFilters fetchData={fetchData} resetPagination={resetPagination} />,
+    );
 
     expect(getByPlaceholderText('Enter Student Name')).toBeInTheDocument();
     expect(getByPlaceholderText('Enter Student Email')).toBeInTheDocument();
-    expect(getByPlaceholderText('Enter Instructor')).toBeInTheDocument();
-    expect(getByPlaceholderText('Enter Class Name')).toBeInTheDocument();
-  });
-
-  test('updates filters when input fields change', () => {
-    const { getByPlaceholderText } = render(<StudentsFilters filters={initialFilters} setFilters={mockSetFilters} />);
-
-    const nameInput = getByPlaceholderText('Enter Student Name');
-    const emailInput = getByPlaceholderText('Enter Student Email');
-    const instructorInput = getByPlaceholderText('Enter Instructor');
-    const classNameInput = getByPlaceholderText('Enter Class Name');
-
-    fireEvent.change(nameInput, { target: { value: 'Name' } });
-    fireEvent.change(emailInput, { target: { value: 'name@example.com' } });
-    fireEvent.change(instructorInput, { target: { value: 'Instructor 1' } });
-    fireEvent.change(classNameInput, { target: { value: 'CCX01' } });
-
-    expect(mockSetFilters).toHaveBeenCalledTimes(4);
-    expect(mockSetFilters).toHaveBeenCalledWith({
-      ...initialFilters,
-      learner_name: 'Name',
-    });
-    expect(mockSetFilters).toHaveBeenCalledWith({
-      ...initialFilters,
-      learner_email: 'name@example.com',
-    });
-    expect(mockSetFilters).toHaveBeenCalledWith({
-      ...initialFilters,
-      instructor: 'Instructor 1',
-    });
-    expect(mockSetFilters).toHaveBeenCalledWith({
-      ...initialFilters,
-      ccx_name: 'CCX01',
-    });
+    expect(getByText('Course')).toBeInTheDocument();
+    expect(getByText('Class')).toBeInTheDocument();
+    expect(getByText('Status')).toBeInTheDocument();
+    expect(getByText('Exam ready')).toBeInTheDocument();
   });
 });

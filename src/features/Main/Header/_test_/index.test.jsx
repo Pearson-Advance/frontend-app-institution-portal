@@ -1,14 +1,9 @@
 import React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
 import { AppContext } from '@edx/frontend-platform/react';
+import { InstitutionContext } from 'features/Main/institutionContext';
 import { Header } from 'features/Main/Header';
 import '@testing-library/jest-dom/extend-expect';
-
-jest.mock('@edx/frontend-platform/auth', () => ({
-  getAuthenticatedHttpClient: jest.fn(() => ({
-    get: jest.fn(() => Promise.resolve({ data: { results: [{ name: 'Institution Name' }] } })),
-  })),
-}));
 
 describe('Header', () => {
   const authenticatedUser = {
@@ -25,7 +20,9 @@ describe('Header', () => {
     await act(async () => {
       const renderResult = render(
         <AppContext.Provider value={{ authenticatedUser, config }}>
-          <Header />
+          <InstitutionContext.Provider value={{ results: [{ id: 1, name: 'Institution Name' }] }}>
+            <Header />
+          </InstitutionContext.Provider>
         </AppContext.Provider>,
       );
 
