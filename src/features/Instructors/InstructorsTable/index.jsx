@@ -8,7 +8,7 @@ import {
 } from '@edx/paragon';
 import DataTable from '@edx/paragon/dist/DataTable';
 
-import { hideColumns, columns } from 'features/Instructors/InstructorsTable/columns';
+import { columns } from 'features/Instructors/InstructorsTable/columns';
 
 const InstructorsTable = ({
   data,
@@ -18,14 +18,13 @@ const InstructorsTable = ({
 
   return (
     <IntlProvider locale="en">
-      <Row className="justify-content-center my-4 border-gray-300 bg-light-100 my-3">
+      <Row className="justify-content-center my-4 my-3">
         <Col xs={11}>
           <DataTable
             isSortable
             columns={COLUMNS}
             itemCount={count}
             data={data}
-            initialState={hideColumns}
           >
             <DataTable.Table />
             <DataTable.EmptyTable content="No instructors found." />

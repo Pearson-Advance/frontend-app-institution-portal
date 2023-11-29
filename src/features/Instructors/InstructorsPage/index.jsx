@@ -59,25 +59,28 @@ const InstructorsPage = () => {
   };
 
   return (
-    <Container size="xl" className="px-3">
-      <h2>Instructors</h2>
-      <div className="d-flex justify-content-end">
+    <Container size="xl">
+      <h1>Instructors</h1>
+      <div className="page-content-container">
         <InstructorsFilters fetchData={fetchData} resetPagination={resetPagination} />
         <AddInstructors />
+        <InstructorsTable
+          data={state.data}
+          count={state.count}
+        />
+        {state.numPages > 1 && (
+          <Pagination
+            paginationLabel="paginationNavigation"
+            pageCount={state.numPages}
+            currentPage={currentPage}
+            onPageSelect={handlePagination}
+            variant="reduced"
+            className="mx-auto pagination-table"
+            size="small"
+          />
+        )}
+
       </div>
-      <InstructorsTable
-        data={state.data}
-        count={state.count}
-      />
-      <Pagination
-        paginationLabel="paginationNavigation"
-        pageCount={state.numPages}
-        currentPage={currentPage}
-        onPageSelect={handlePagination}
-        variant="reduced"
-        className="mx-auto"
-        size="small"
-      />
     </Container>
   );
 };

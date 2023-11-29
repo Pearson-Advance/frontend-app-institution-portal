@@ -19,8 +19,6 @@ import {
   UPDATE_CURRENT_PAGE,
 } from 'features/Students/actionTypes';
 
-import './index.scss';
-
 const initialState = {
   data: [],
   status: RequestStatus.SUCCESS,
@@ -69,15 +67,17 @@ const StudentsPage = () => {
           count={state.count}
           fetchData={fetchData}
         />
-        <Pagination
-          paginationLabel="paginationNavigation"
-          pageCount={state.numPages}
-          currentPage={currentPage}
-          onPageSelect={handlePagination}
-          variant="reduced"
-          className="mx-auto"
-          size="small"
-        />
+        {state.numPages > 1 && (
+          <Pagination
+            paginationLabel="paginationNavigation"
+            pageCount={state.numPages}
+            currentPage={currentPage}
+            onPageSelect={handlePagination}
+            variant="reduced"
+            className="mx-auto pagination-table"
+            size="small"
+          />
+        )}
       </div>
 
     </Container>

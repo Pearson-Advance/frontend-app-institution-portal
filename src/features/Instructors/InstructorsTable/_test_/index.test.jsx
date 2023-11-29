@@ -15,18 +15,20 @@ describe('Instructor Table', () => {
   test('renders InstructorsTable  with data', () => {
     const data = [
       {
-        instructorUsername: 'Instructor1',
+        instructorEmail: 'instructor01@example.com',
         instructorName: 'Instructor 1',
-        instructorEmail: 'instructor1@example.com',
-        ccxId: 'CCX1',
-        ccxName: 'CCX 1',
+        instructorUsername: 'Instructor01',
+        classes: 1,
+        courses: ['Demo Course 1'],
+        lastAcess: '2023-11-29T02:17:41.213175Z',
       },
       {
-        instructorUsername: 'Instructor2',
+        instructorUsername: 'Instructor02',
         instructorName: 'Instructor 2',
-        instructorEmail: 'instructor2@example.com',
-        ccxId: 'CCX2',
-        ccxName: 'CCX 2',
+        instructorEmail: 'instructor02@example.com',
+        classes: 1,
+        courses: ['Demo Course 1'],
+        lastAcess: '2023-10-04T15:02:17.016088Z',
       },
     ];
 
@@ -37,13 +39,10 @@ describe('Instructor Table', () => {
     // Check if the table rows are present
     const tableRows = screen.getAllByRole('row');
     expect(tableRows).toHaveLength(data.length + 1); // Data rows + 1 header row
-    expect(component.container).toHaveTextContent('Instructor1');
-    expect(component.container).toHaveTextContent('Instructor2');
-    expect(component.container).toHaveTextContent('Instructor 1');
-    expect(component.container).toHaveTextContent('Instructor 2');
-    expect(component.container).toHaveTextContent('instructor1@example.com');
-    expect(component.container).toHaveTextContent('instructor2@example.com');
-    expect(component.container).toHaveTextContent('CCX 1');
-    expect(component.container).toHaveTextContent('CCX 2');
+    expect(component.container).toHaveTextContent('Instructor01');
+    expect(component.container).toHaveTextContent('Instructor02');
+    expect(component.container).toHaveTextContent('instructor01@example.com');
+    expect(component.container).toHaveTextContent('instructor02@example.com');
+    expect(component.container).toHaveTextContent('1');
   });
 });
