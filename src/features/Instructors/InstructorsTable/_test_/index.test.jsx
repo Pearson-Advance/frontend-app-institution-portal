@@ -39,8 +39,8 @@ describe('Instructor Table', () => {
     // Check if the table rows are present
     const tableRows = screen.getAllByRole('row');
     expect(tableRows).toHaveLength(data.length + 1); // Data rows + 1 header row
-    expect(component.container).toHaveTextContent('Instructor01');
-    expect(component.container).toHaveTextContent('Instructor02');
+    expect(component.container).toHaveTextContent('Instructor 1');
+    expect(component.container).toHaveTextContent('Instructor 2');
     expect(component.container).toHaveTextContent('instructor01@example.com');
     expect(component.container).toHaveTextContent('instructor02@example.com');
     expect(component.container).toHaveTextContent('1');

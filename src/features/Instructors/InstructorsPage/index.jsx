@@ -60,10 +60,12 @@ const InstructorsPage = () => {
 
   return (
     <Container size="xl">
-      <h1>Instructors</h1>
+      <div className="d-flex justify-content-between align-items-center">
+        <h1>Instructors</h1>
+        <AddInstructors />
+      </div>
       <div className="page-content-container">
         <InstructorsFilters fetchData={fetchData} resetPagination={resetPagination} />
-        <AddInstructors />
         <InstructorsTable
           data={state.data}
           count={state.count}

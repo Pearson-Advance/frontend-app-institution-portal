@@ -11,27 +11,18 @@ describe('InstructorsFilters Component', () => {
       <InstructorsFilters fetchData={fetchData} resetPagination={resetPagination} />,
     );
 
-    const button = getByText('Filters');
-    await act(async () => {
-      fireEvent.click(button);
-    });
-
     const nameInput = getByPlaceholderText('Enter Instructor Name');
     const emailInput = getByPlaceholderText('Enter Instructor Email');
-    const classNameInput = getByPlaceholderText('Enter Class Name');
-    const buttonApplyFilters = getByText('Apply Filters');
+    const buttonApplyFilters = getByText('Apply');
 
     expect(nameInput).toBeInTheDocument();
     expect(emailInput).toBeInTheDocument();
-    expect(classNameInput).toBeInTheDocument();
 
     fireEvent.change(nameInput, { target: { value: 'Name' } });
     fireEvent.change(emailInput, { target: { value: 'name@example.com' } });
-    fireEvent.change(classNameInput, { target: { value: 'CCX01' } });
 
     expect(nameInput).toHaveValue('Name');
     expect(emailInput).toHaveValue('name@example.com');
-    expect(classNameInput).toHaveValue('CCX01');
 
     await act(async () => {
       fireEvent.click(buttonApplyFilters);
@@ -47,27 +38,18 @@ describe('InstructorsFilters Component', () => {
       <InstructorsFilters fetchData={fetchData} resetPagination={resetPagination} />,
     );
 
-    const button = getByText('Filters');
-    await act(async () => {
-      fireEvent.click(button);
-    });
-
     const nameInput = getByPlaceholderText('Enter Instructor Name');
     const emailInput = getByPlaceholderText('Enter Instructor Email');
-    const classNameInput = getByPlaceholderText('Enter Class Name');
-    const buttonClearFilters = getByText('Clear');
+    const buttonClearFilters = getByText('Reset');
 
     expect(nameInput).toBeInTheDocument();
     expect(emailInput).toBeInTheDocument();
-    expect(classNameInput).toBeInTheDocument();
 
     fireEvent.change(nameInput, { target: { value: 'Name' } });
     fireEvent.change(emailInput, { target: { value: 'name@example.com' } });
-    fireEvent.change(classNameInput, { target: { value: 'CCX01' } });
 
     expect(nameInput).toHaveValue('Name');
     expect(emailInput).toHaveValue('name@example.com');
-    expect(classNameInput).toHaveValue('CCX01');
 
     await act(async () => {
       fireEvent.click(buttonClearFilters);
@@ -75,7 +57,6 @@ describe('InstructorsFilters Component', () => {
 
     expect(nameInput).toHaveValue('');
     expect(emailInput).toHaveValue('');
-    expect(classNameInput).toHaveValue('');
     expect(resetPagination).toHaveBeenCalledTimes(1);
   });
 });

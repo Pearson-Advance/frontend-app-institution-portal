@@ -19,7 +19,7 @@ const InstructorsTable = ({
   return (
     <IntlProvider locale="en">
       <Row className="justify-content-center my-4 my-3">
-        <Col xs={11}>
+        <Col xs={11} className="p-0">
           <DataTable
             isSortable
             columns={COLUMNS}
