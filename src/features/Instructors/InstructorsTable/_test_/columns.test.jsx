@@ -3,29 +3,25 @@ import { columns } from 'features/Instructors/InstructorsTable/columns';
 describe('columns', () => {
   test('returns an array of columns with correct properties', () => {
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(5);
+    expect(columns).toHaveLength(4);
 
     const [
       usernameColumn,
-      nameColumn,
+      lastSeenColumn,
       emailColumn,
-      courseNameColumn,
-      courseKeyColumn,
+      classesColumn,
     ] = columns;
 
-    expect(usernameColumn).toHaveProperty('Header', 'User Name');
+    expect(usernameColumn).toHaveProperty('Header', 'Instructor');
     expect(usernameColumn).toHaveProperty('accessor', 'instructorUsername');
 
-    expect(nameColumn).toHaveProperty('Header', 'Name');
-    expect(nameColumn).toHaveProperty('accessor', 'instructorName');
+    expect(lastSeenColumn).toHaveProperty('Header', 'Last seen');
+    expect(lastSeenColumn).toHaveProperty('accessor', 'lastAccess');
 
     expect(emailColumn).toHaveProperty('Header', 'Email');
     expect(emailColumn).toHaveProperty('accessor', 'instructorEmail');
 
-    expect(courseNameColumn).toHaveProperty('Header', 'Course key');
-    expect(courseNameColumn).toHaveProperty('accessor', 'ccxId');
-
-    expect(courseKeyColumn).toHaveProperty('Header', 'Course name');
-    expect(courseKeyColumn).toHaveProperty('accessor', 'ccxName');
+    expect(classesColumn).toHaveProperty('Header', 'Courses Taught');
+    expect(classesColumn).toHaveProperty('accessor', 'classes');
   });
 });
