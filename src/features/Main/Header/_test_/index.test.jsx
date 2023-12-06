@@ -20,7 +20,7 @@ describe('Header', () => {
     await act(async () => {
       const renderResult = render(
         <AppContext.Provider value={{ authenticatedUser, config }}>
-          <InstitutionContext.Provider value={{ results: [{ id: 1, name: 'Institution Name' }] }}>
+          <InstitutionContext.Provider value={[{ id: 1, name: 'Institution Name' }]}>
             <Header />
           </InstitutionContext.Provider>
         </AppContext.Provider>,

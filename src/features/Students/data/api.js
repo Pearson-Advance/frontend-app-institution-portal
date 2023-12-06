@@ -23,22 +23,15 @@ function handleEnrollments(data, courseId) {
   );
 }
 
-function getCoursesByInstitution(institutionId) {
-  return getAuthenticatedHttpClient().get(
-    `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/courses/?institution_id=${institutionId}`,
-  );
-}
-
 function getClassesByInstitution(institutionId, courseName) {
   return getAuthenticatedHttpClient().get(
     `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/classes`
-    + `/?institution_id=${institutionId}?course_name=${courseName}`,
+    + `/?limit=false&institution_id=${institutionId}&course_name=${courseName}`,
   );
 }
 
 export {
   getStudentbyInstitutionAdmin,
   handleEnrollments,
-  getCoursesByInstitution,
   getClassesByInstitution,
 };

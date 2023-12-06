@@ -6,14 +6,14 @@ describe('columns', () => {
     expect(columns).toHaveLength(4);
 
     const [
-      usernameColumn,
+      nameColumn,
       lastSeenColumn,
       emailColumn,
       classesColumn,
     ] = columns;
 
-    expect(usernameColumn).toHaveProperty('Header', 'Instructor');
-    expect(usernameColumn).toHaveProperty('accessor', 'instructorUsername');
+    expect(nameColumn).toHaveProperty('Header', 'Instructor');
+    expect(nameColumn).toHaveProperty('accessor', 'instructorName');
 
     expect(lastSeenColumn).toHaveProperty('Header', 'Last seen');
     expect(lastSeenColumn).toHaveProperty('accessor', 'lastAccess');

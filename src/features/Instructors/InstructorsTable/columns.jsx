@@ -4,7 +4,7 @@ import moment from 'moment';
 const columns = [
   {
     Header: 'Instructor',
-    accessor: 'instructorUsername',
+    accessor: 'instructorName',
   },
   {
     Header: 'Last seen',

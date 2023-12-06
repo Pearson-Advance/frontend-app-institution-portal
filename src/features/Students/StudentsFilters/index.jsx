@@ -5,7 +5,8 @@ import { Col, Form } from '@edx/paragon';
 import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
 import { Select, Button } from 'react-paragon-topaz';
-import { getCoursesByInstitution, getClassesByInstitution } from 'features/Students/data/api';
+import { getClassesByInstitution } from 'features/Students/data/api';
+import { getCoursesByInstitution } from 'features/Common/data/api';
 import { InstitutionContext } from 'features/Main/institutionContext';
 import reducer from 'features/Students/StudentsFilters/reducer';
 import {
@@ -32,7 +33,7 @@ const initialState = {
   },
 };
 
-const StudentsFilters = ({ resetPagination, fetchData }) => {
+const StudentsFilters = ({ resetPagination, fetchData, setFilters }) => {
   const stateInstitution = useContext(InstitutionContext);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [courseOptions, setCourseOptions] = useState([]);
@@ -54,19 +55,19 @@ const StudentsFilters = ({ resetPagination, fetchData }) => {
 
     try {
       const response = camelCaseObject(await getCoursesByInstitution(id));
-      dispatch({ type: FETCH_COURSES_DATA_SUCCESS, payload: response });
+      dispatch({ type: FETCH_COURSES_DATA_SUCCESS, payload: response.data });
     } catch (error) {
       dispatch({ type: FETCH_COURSES_DATA_FAILURE, payload: error });
       logError(error);
     }
   };
 
-  const fetchClassesData = async () => {
+  const fetchClassesData = async (courseName) => {
     dispatch({ type: FETCH_CLASSES_DATA_REQUEST });
 
     try {
-      const response = camelCaseObject(await getClassesByInstitution(id));
-      dispatch({ type: FETCH_CLASSES_DATA_SUCCESS, payload: response });
+      const response = camelCaseObject(await getClassesByInstitution(id, courseName));
+      dispatch({ type: FETCH_CLASSES_DATA_SUCCESS, payload: response.data });
     } catch (error) {
       dispatch({ type: FETCH_CLASSES_DATA_FAILURE, payload: error });
       logError(error);
@@ -82,6 +83,7 @@ const StudentsFilters = ({ resetPagination, fetchData }) => {
     setClassSelected(null);
     setStatusSelected(null);
     setExamSelected(null);
+    setFilters({});
   };
 
   useEffect(() => {
@@ -92,7 +94,7 @@ const StudentsFilters = ({ resetPagination, fetchData }) => {
 
   useEffect(() => {
     if (courseSelected) {
-      fetchClassesData();
+      fetchClassesData(courseSelected.value);
     } // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [courseSelected]);
 
@@ -112,6 +114,7 @@ const StudentsFilters = ({ resetPagination, fetchData }) => {
     const form = e.target;
     const formData = new FormData(form);
     const formJson = Object.fromEntries(formData.entries());
+    setFilters(formJson);
     try {
       fetchData(formJson);
     } catch (error) {
@@ -124,7 +127,7 @@ const StudentsFilters = ({ resetPagination, fetchData }) => {
       const options = state.classes.data.map(ccx => ({
         ...ccx,
         label: ccx.className,
-        value: ccx.classId,
+        value: ccx.className,
       }));
       setClassesOptions(options);
     }
@@ -208,7 +211,7 @@ const StudentsFilters = ({ resetPagination, fetchData }) => {
               />
             </Form.Group>
           </Form.Row>
-          <div className="d-flex col-12">
+          <div className="d-flex col-12 justify-content-end mr-3">
             <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
             <Button type="submit">Apply</Button>
           </div>
@@ -221,6 +224,7 @@ const StudentsFilters = ({ resetPagination, fetchData }) => {
 StudentsFilters.propTypes = {
   fetchData: PropTypes.func.isRequired,
   resetPagination: PropTypes.func.isRequired,
+  setFilters: PropTypes.func.isRequired,
 };
 
 export default StudentsFilters;

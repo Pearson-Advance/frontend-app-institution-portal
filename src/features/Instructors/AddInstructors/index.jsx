@@ -1,7 +1,8 @@
 import React, { useState, useReducer, useEffect } from 'react';
 import {
-  Button, FormGroup, ModalDialog, useToggle, Form,
+  FormGroup, ModalDialog, useToggle, Form,
 } from '@edx/paragon';
+import { Button } from 'react-paragon-topaz';
 import { getCCXList, handleInstructorsEnrollment } from 'features/Instructors/data/api';
 import reducer from 'features/Instructors/AddInstructors/reducer';
 import { logError } from '@edx/frontend-platform/logging';
@@ -62,7 +63,7 @@ const AddInstructors = () => {
 
   return (
     <>
-      <Button variant="primary" onClick={open} size="sm">
+      <Button variant="outline-primary" onClick={open} size="sm">
         Add Instructor
       </Button>
       <ModalDialog

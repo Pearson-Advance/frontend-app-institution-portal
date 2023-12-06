@@ -18,10 +18,10 @@ export const Header = () => {
   return (
     <header className="institution-header py-4 px-3">
       <div className="institution-name">
-        {dataInstitution.length >= 1 ? (
+        {dataInstitution.length > 1 ? (
           <h3>Global Admin</h3>
         ) : (
-          <h3>{dataInstitution.results ? dataInstitution.results[0].name : 'No Institution Found'}</h3>
+          <h3>{dataInstitution.length === 1 ? dataInstitution[0].name : 'No Institution Found'}</h3>
         )}
       </div>
       <div className="actions">
