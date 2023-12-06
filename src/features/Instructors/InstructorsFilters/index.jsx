@@ -26,7 +26,7 @@ const initialState = {
   },
 };
 
-const InstructorsFilters = ({ fetchData, resetPagination }) => {
+const InstructorsFilters = ({ fetchData, resetPagination, setFilters }) => {
   const stateInstitution = useContext(InstitutionContext);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [courseOptions, setCourseOptions] = useState([]);
@@ -57,6 +57,7 @@ const InstructorsFilters = ({ fetchData, resetPagination }) => {
     setInstructorName('');
     setInstructorEmail('');
     setCourseSelected(null);
+    setFilters({});
   };
 
   const handleInstructorsFilter = async (e) => {
@@ -64,6 +65,7 @@ const InstructorsFilters = ({ fetchData, resetPagination }) => {
     const form = e.target;
     const formData = new FormData(form);
     const formJson = Object.fromEntries(formData.entries());
+    setFilters(formJson);
     try {
       fetchData(formJson);
     } catch (error) {
@@ -143,6 +145,7 @@ const InstructorsFilters = ({ fetchData, resetPagination }) => {
 InstructorsFilters.propTypes = {
   fetchData: PropTypes.func.isRequired,
   resetPagination: PropTypes.func.isRequired,
+  setFilters: PropTypes.func.isRequired,
 };
 
 export default InstructorsFilters;

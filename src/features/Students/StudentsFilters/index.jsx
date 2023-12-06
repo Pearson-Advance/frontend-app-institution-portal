@@ -33,7 +33,7 @@ const initialState = {
   },
 };
 
-const StudentsFilters = ({ resetPagination, fetchData }) => {
+const StudentsFilters = ({ resetPagination, fetchData, setFilters }) => {
   const stateInstitution = useContext(InstitutionContext);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [courseOptions, setCourseOptions] = useState([]);
@@ -83,6 +83,7 @@ const StudentsFilters = ({ resetPagination, fetchData }) => {
     setClassSelected(null);
     setStatusSelected(null);
     setExamSelected(null);
+    setFilters({});
   };
 
   useEffect(() => {
@@ -113,6 +114,7 @@ const StudentsFilters = ({ resetPagination, fetchData }) => {
     const form = e.target;
     const formData = new FormData(form);
     const formJson = Object.fromEntries(formData.entries());
+    setFilters(formJson);
     try {
       fetchData(formJson);
     } catch (error) {
@@ -222,6 +224,7 @@ const StudentsFilters = ({ resetPagination, fetchData }) => {
 StudentsFilters.propTypes = {
   fetchData: PropTypes.func.isRequired,
   resetPagination: PropTypes.func.isRequired,
+  setFilters: PropTypes.func.isRequired,
 };
 
 export default StudentsFilters;

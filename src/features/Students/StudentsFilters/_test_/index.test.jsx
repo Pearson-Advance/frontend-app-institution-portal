@@ -12,10 +12,15 @@ jest.mock('@edx/frontend-platform/logging', () => ({
 describe('StudentsFilters Component', () => {
   const fetchData = jest.fn();
   const resetPagination = jest.fn();
+  const mockSetFilters = jest.fn();
+
+  beforeEach(() => {
+    mockSetFilters.mockClear();
+  });
 
   test('renders input fields with placeholders', () => {
     const { getByText, getByPlaceholderText } = render(
-      <StudentsFilters fetchData={fetchData} resetPagination={resetPagination} />,
+      <StudentsFilters fetchData={fetchData} resetPagination={resetPagination} setFilters={mockSetFilters} />,
     );
 
     expect(getByPlaceholderText('Enter Student Name')).toBeInTheDocument();

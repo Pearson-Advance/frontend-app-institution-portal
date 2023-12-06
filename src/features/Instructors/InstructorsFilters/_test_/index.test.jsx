@@ -4,11 +4,17 @@ import InstructorsFilters from 'features/Instructors/InstructorsFilters';
 import '@testing-library/jest-dom/extend-expect';
 
 describe('InstructorsFilters Component', () => {
+  const mockSetFilters = jest.fn();
+
+  beforeEach(() => {
+    mockSetFilters.mockClear();
+  });
+
   test('call service when apply filters', async () => {
     const fetchData = jest.fn();
     const resetPagination = jest.fn();
     const { getByPlaceholderText, getByText } = render(
-      <InstructorsFilters fetchData={fetchData} resetPagination={resetPagination} />,
+      <InstructorsFilters fetchData={fetchData} resetPagination={resetPagination} setFilters={mockSetFilters} />,
     );
 
     const nameInput = getByPlaceholderText('Enter Instructor Name');
@@ -35,7 +41,7 @@ describe('InstructorsFilters Component', () => {
     const fetchData = jest.fn();
     const resetPagination = jest.fn();
     const { getByPlaceholderText, getByText } = render(
-      <InstructorsFilters fetchData={fetchData} resetPagination={resetPagination} />,
+      <InstructorsFilters fetchData={fetchData} resetPagination={resetPagination} setFilters={mockSetFilters} />,
     );
 
     const nameInput = getByPlaceholderText('Enter Instructor Name');

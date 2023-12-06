@@ -15,17 +15,15 @@ const reducer = (state, action) => {
           status: RequestStatus.LOADING,
         },
       };
-    case FETCH_COURSES_DATA_SUCCESS: {
-      const { results } = action.payload;
+    case FETCH_COURSES_DATA_SUCCESS:
       return {
         ...state,
         courses: {
           ...state.courses,
           status: RequestStatus.SUCCESS,
-          data: results,
+          data: action.payload,
         },
       };
-    }
     case FETCH_COURSES_DATA_FAILURE:
       return {
         ...state,

@@ -29,7 +29,7 @@ describe('getCoursesByInstitution', () => {
 
     expect(httpClientMock.get).toHaveBeenCalledTimes(1);
     expect(httpClientMock.get).toHaveBeenCalledWith(
-      'http://localhost:18000/pearson_course_operation/api/v2/courses/?institution_id=1',
+      'http://localhost:18000/pearson_course_operation/api/v2/courses/?limit=false&institution_id=1',
     );
   });
 });

@@ -3,7 +3,7 @@ import { getConfig } from '@edx/frontend-platform';
 
 function getInstitutionName() {
   return getAuthenticatedHttpClient().get(
-    `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/institutions/`,
+    `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/institutions/?limit=false`,
   );
 }
 

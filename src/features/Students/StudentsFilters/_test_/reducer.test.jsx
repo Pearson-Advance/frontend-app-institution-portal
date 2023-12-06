@@ -48,9 +48,7 @@ describe('Student filter reducers', () => {
     };
     const action = {
       type: FETCH_COURSES_DATA_SUCCESS,
-      payload: {
-        results: [],
-      },
+      payload: [],
     };
     expect(reducer(state, action)).toEqual(state);
   });

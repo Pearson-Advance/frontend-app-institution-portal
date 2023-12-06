@@ -30,12 +30,13 @@ const initialState = {
 const StudentsPage = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState({});
 
-  const fetchData = async (filters) => {
+  const fetchData = async (filtersData) => {
     dispatch({ type: FETCH_STUDENTS_DATA_REQUEST });
 
     try {
-      const response = camelCaseObject(await getStudentbyInstitutionAdmin(currentPage, filters));
+      const response = camelCaseObject(await getStudentbyInstitutionAdmin(currentPage, filtersData));
       dispatch({ type: FETCH_STUDENTS_DATA_SUCCESS, payload: response.data });
     } catch (error) {
       dispatch({ type: FETCH_STUDENTS_DATA_FAILURE, payload: error });
@@ -44,8 +45,8 @@ const StudentsPage = () => {
   };
 
   useEffect(() => {
-    fetchData(); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage]);
+    fetchData(filters); // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, filters]);
 
   const resetPagination = () => {
     setCurrentPage(1);
@@ -54,14 +55,13 @@ const StudentsPage = () => {
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
     dispatch({ type: UPDATE_CURRENT_PAGE, payload: targetPage });
-    fetchData();
   };
 
   return (
     <Container size="xl">
       <h1>Students</h1>
       <div className="page-content-container">
-        <StudentsFilters fetchData={fetchData} resetPagination={resetPagination} />
+        <StudentsFilters fetchData={fetchData} resetPagination={resetPagination} setFilters={setFilters} />
         <StudentsTable
           data={state.data}
           count={state.count}
