@@ -19,17 +19,19 @@ describe('getCoursesByInstitution', () => {
     };
 
     const institutionId = 1;
+    const page = 1;
 
     getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
 
-    getCoursesByInstitution(institutionId);
+    getCoursesByInstitution(institutionId, true, page);
 
     expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
     expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
 
     expect(httpClientMock.get).toHaveBeenCalledTimes(1);
     expect(httpClientMock.get).toHaveBeenCalledWith(
-      'http://localhost:18000/pearson_course_operation/api/v2/courses/?limit=false&institution_id=1',
+      'http://localhost:18000/pearson_course_operation/api/v2/courses/?limit=true&institution_id=1',
+      { params: { page } },
     );
   });
 });

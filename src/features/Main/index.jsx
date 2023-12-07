@@ -7,6 +7,7 @@ import StudentsPage from 'features/Students/StudentsPage';
 import Container from '@edx/paragon/dist/Container';
 import { getConfig } from '@edx/frontend-platform';
 import InstructorsPage from 'features/Instructors/InstructorsPage';
+import CoursesPage from 'features/Courses/CoursesPage';
 import reducer from 'features/Main/reducer';
 import { getInstitutionName } from 'features/Main/data/api';
 import { InstitutionContext } from 'features/Main/institutionContext';
@@ -55,6 +56,9 @@ const Main = () => {
               </Switch>
               <Switch>
                 <Route path="/instructors" exact component={InstructorsPage} />
+              </Switch>
+              <Switch>
+                <Route path="/courses" exact component={CoursesPage} />
               </Switch>
               <Footer />
             </Container>

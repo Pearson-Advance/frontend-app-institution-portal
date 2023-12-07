@@ -43,7 +43,7 @@ const InstructorsFilters = ({ fetchData, resetPagination, setFilters }) => {
     dispatch({ type: FETCH_COURSES_DATA_REQUEST });
 
     try {
-      const response = camelCaseObject(await getCoursesByInstitution(id));
+      const response = camelCaseObject(await getCoursesByInstitution(id, false));
       dispatch({ type: FETCH_COURSES_DATA_SUCCESS, payload: response.data });
     } catch (error) {
       dispatch({ type: FETCH_COURSES_DATA_FAILURE, payload: error });
