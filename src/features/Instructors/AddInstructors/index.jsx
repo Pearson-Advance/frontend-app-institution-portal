@@ -19,7 +19,7 @@ const initialState = {
 
 const AddInstructors = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [isOpen, open, close] = useToggle(false);
+  const [isOpen, open, close] = useToggle(false); // eslint-disable-line no-unused-vars
   const [isNoUser, setIsNoUser] = useState(false);
   const enrollmentData = new FormData();
 
@@ -63,7 +63,7 @@ const AddInstructors = () => {
 
   return (
     <>
-      <Button variant="outline-primary" onClick={open} size="sm">
+      <Button variant="outline-primary" size="sm">
         Add Instructor
       </Button>
       <ModalDialog
