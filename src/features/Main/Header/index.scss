@@ -14,92 +14,59 @@ header.institution-header {
   justify-content: space-between;
   align-items: center;
   display: flex;
+  background-color: $primary-dark;
 
   .actions {
     align-items: center;
     display: flex;
   }
-}
 
-.account-menu-container {
-  position: relative;
-  z-index: 11;
-
-  .button-unstyled {
-    padding-right: 18px;
-    position: relative;
+  .platform-name {
+    color: $color-white;
+    margin: 0;
   }
 
-  .avatar {
-    border: 2px solid $color-black;
-    border-radius: 100px;
-    display: block;
-    font-weight: 700;
-    height: 36px;
-    line-height: 36px;
-    overflow: hidden;
-    padding-top: 0;
-    width: 36px;
+  .header-left img {
+    max-width: 30px;
+    margin-right: 20px;
+  }
 
-    img {
-      height: 110%;
-      width: auto;
+  .header-rigth {
+    color: $color-white;
+
+    .icon {
+      margin-right: 30px;
+      color: $color-white;
     }
   }
 
-  .account-menu {
-    background: $color-white;
-    border-radius: 5px;
-    box-shadow: $account-menu-box-shadow;
-    display: block;
-    padding: 10px;
-    position: absolute;
-    right: -13px;
-    text-align: right;
-    top: 50px;
-    width: 200px;
+  .dropdown-user .dropdown-toggle,
+  .dropdown-user .dropdown-toggle:focus,
+  .dropdown-user .dropdown-toggle:focus-visible,
+  .dropdown-user .dropdown-toggle:active,
+  .dropdown-user .dropdown-toggle.btn-success:focus::before {
+    background: transparent;
+    border: none;
+    outline: none;
+    padding-left: 0;
+  }
 
-    ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
+  .dropdown-user .dropdown-toggle .icon {
+    margin-right: 10px;
+  }
 
-      li {
-        font-size: 1rem;
-        padding: 8px 12px;
-        text-align: left;
+  .dropdown-menu {
+    min-width: 160px;
 
-        a {
-          color: $hyperlink-color;
-          text-decoration: underline;
-        }
+    .dropdown-item {
+      color: $color-black;
+      text-decoration: none;
+
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: $blue-20;
       }
-    }
-
-    a {
-      display: block;
-
-      &:hover {
-        text-decoration: none;
-      }
-    }
-  }
-
-  .icon-18 {
-    svg {
-      fill: currentColor;
-    }
-
-    color: $color-black;
-    position: absolute;
-    right: 0;
-    top: 4px;
-  }
-
-  .button-unstyled[aria-expanded="true"] {
-    .icon-18 {
-      -webkit-transform: rotate(180deg);
-      transform: rotate(180deg);
     }
   }
 }
@@ -109,18 +76,6 @@ header.institution-header {
   display: flex;
   flex-direction: row;
   gap: 10px;
-}
-
-.button-unstyled {
-  background-color: initial;
-  border: none;
-  color: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  margin: 0;
-  padding: 0;
-  padding-right: 0px;
 }
 
 a {

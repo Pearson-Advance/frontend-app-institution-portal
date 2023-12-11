@@ -1,34 +1,47 @@
 @import "assets/colors.scss";
 
 footer {
-  padding: 46px 24px 136px;
+  padding: 30px 24px;
   display: block;
 
   ul.footer-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 24px;
     justify-content: center;
     list-style-type: none;
     margin: 0;
     padding: 0;
 
-    li {
+    .footer-item {
       margin: 0;
-      padding: 0;
+      padding: 0 20px;
+      color: $primary;
+
+      &:not(:last-child) {
+        border-right: 1px solid $gray-60;
+      }
 
       a {
-        color: $color-gray;
+        color: $primary;
         font-size: 14px;
         line-height: 1.143;
-        text-decoration: none;
         white-space: nowrap;
 
         &:hover {
-          color: $color-black;
-          text-decoration: underline;
+          color: $primary-dark;
         }
       }
+
+      .icon {
+        margin-right: 5px;
+      }
     }
+  }
+
+  .footer-copyright {
+    text-align: center;
+    font-size: 14px;
+    color: $color-black;
+    margin-top: 5px;
   }
 }

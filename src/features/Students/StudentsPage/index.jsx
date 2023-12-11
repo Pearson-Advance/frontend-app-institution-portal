@@ -60,7 +60,7 @@ const StudentsPage = () => {
 
   return (
     <Container size="xl">
-      <h1>Students</h1>
+      <h2 className="title-page">Students</h2>
       <StudentsMetrics />
       <div className="page-content-container">
         <StudentsFilters fetchData={fetchData} resetPagination={resetPagination} setFilters={setFilters} />

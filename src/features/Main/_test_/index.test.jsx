@@ -28,7 +28,8 @@ describe('Main component', () => {
       </AppContext.Provider>,
     );
 
-    expect(getByText('No Institution Found')).toBeInTheDocument();
+    const titleApp = getByText('CertPREP Training Center Dashboard');
+    expect(titleApp).toBeInTheDocument();
 
     const button = screen.getByRole('button', { expanded: false });
     fireEvent.click(button);
@@ -57,10 +58,13 @@ describe('Main component', () => {
       </AppContext.Provider>,
     );
 
-    const linkPrivacyPolicy = getByText('Privacy Policy');
+    const linkPrivacyPolicy = getByText('Privacy');
     expect(linkPrivacyPolicy).toBeInTheDocument();
 
-    const linkTermsOfService = getByText('Terms of Service');
+    const linkTermsOfService = getByText('Terms');
     expect(linkTermsOfService).toBeInTheDocument();
+
+    const linkCookies = getByText('Cookie preferences');
+    expect(linkCookies).toBeInTheDocument();
   });
 });

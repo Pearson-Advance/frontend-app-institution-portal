@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
 import { AppContext } from '@edx/frontend-platform/react';
-import { InstitutionContext } from 'features/Main/institutionContext';
 import { Header } from 'features/Main/Header';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -20,17 +19,13 @@ describe('Header', () => {
     await act(async () => {
       const renderResult = render(
         <AppContext.Provider value={{ authenticatedUser, config }}>
-          <InstitutionContext.Provider value={[{ id: 1, name: 'Institution Name' }]}>
-            <Header />
-          </InstitutionContext.Provider>
+          <Header />
         </AppContext.Provider>,
       );
 
       getByText = renderResult.getByText;
     });
-
-    expect(getByText('Institution Name')).toBeInTheDocument();
-    expect(getByText('U')).toBeInTheDocument();
+    expect(getByText('User')).toBeInTheDocument();
   });
 
   it('renders header correctly', () => {
@@ -40,11 +35,11 @@ describe('Header', () => {
       </AppContext.Provider>,
     );
 
-    const institutionName = getByText('No Institution Found');
-    const avatar = getByText('U');
+    const titleApp = getByText('CertPREP Training Center Dashboard');
+    const userName = getByText('User');
 
-    expect(institutionName).toBeInTheDocument();
-    expect(avatar).toBeInTheDocument();
+    expect(userName).toBeInTheDocument();
+    expect(titleApp).toBeInTheDocument();
   });
 
   it('toggles account menu on button click', () => {

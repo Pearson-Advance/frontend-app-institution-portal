@@ -67,7 +67,7 @@ const CoursesPage = () => {
 
   return (
     <Container size="xl">
-      <h1>Courses</h1>
+      <h2 className="title-page">Courses</h2>
       <div className="page-content-container">
         <CoursesFilters
           dataCourses={state.data}

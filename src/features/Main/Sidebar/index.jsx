@@ -1,9 +1,5 @@
-import { AppContext } from '@edx/frontend-platform/react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import React, { useContext, useState } from 'react';
-import { getConfig } from '@edx/frontend-platform';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUsers, faUser, faBook } from '@fortawesome/free-solid-svg-icons';
 import './index.scss';
 
 export const Sidebar = () => {
@@ -15,15 +11,8 @@ export const Sidebar = () => {
     history.push(`/${tabName}`);
   };
 
-  const { config } = useContext(AppContext);
-
   return (
     <header className="vertical-nav">
-      <div className="logo">
-        <a href={`${config.LMS_BASE_URL}`}>
-          <img src={`${getConfig().LOGO_URL}`} alt="icon" />
-        </a>
-      </div>
       <nav className="nav-menu">
         <ul className="nav-links">
           <li>
@@ -40,7 +29,7 @@ export const Sidebar = () => {
           <li>
             <button
               type="button"
-              className={`${activeTab === 'students' ? 'active' : ''} backbutton`}
+              className={`${activeTab === 'students' ? 'active' : ''} sidebar-item`}
               aria-current="page"
               onClick={() => handleTabClick('students')}
             >
@@ -53,7 +42,7 @@ export const Sidebar = () => {
           <li>
             <button
               type="button"
-              className={`${activeTab === 'instructors' ? 'active' : ''} backbutton`}
+              className={`${activeTab === 'instructors' ? 'active' : ''} sidebar-item`}
               aria-current="page"
               onClick={() => handleTabClick('instructors')}
             >
@@ -63,6 +52,19 @@ export const Sidebar = () => {
               <span className="nav-text">Instructors</span>
             </button>
           </li>
+
+          <li>
+            <button
+              type="button"
+              className={`${activeTab === 'students' ? 'active' : ''} sidebar-item`}
+              aria-current="page"
+              onClick={() => handleTabClick('students')}
+            >
+              <i className="fa-regular fa-screen-users" />
+              <span className="nav-text">Students</span>
+            </button>
+          </li>
+
           <li>
             <button
               type="button"
@@ -70,9 +72,7 @@ export const Sidebar = () => {
               aria-current="page"
               onClick={() => handleTabClick('courses')}
             >
-              <span className="icon">
-                <FontAwesomeIcon icon={faBook} />
-              </span>
+              <i className="fa-regular fa-bars-sort" />
               <span className="nav-text">Courses</span>
             </button>
           </li>
