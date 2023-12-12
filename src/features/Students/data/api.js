@@ -24,9 +24,11 @@ function handleEnrollments(data, courseId) {
 }
 
 function getClassesByInstitution(institutionId, courseName) {
+  const encodedCourseName = encodeURIComponent(courseName);
+
   return getAuthenticatedHttpClient().get(
     `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/classes`
-    + `/?limit=false&institution_id=${institutionId}&course_name=${courseName}`,
+    + `/?limit=false&institution_id=${institutionId}&course_name=${encodedCourseName}`,
   );
 }
 

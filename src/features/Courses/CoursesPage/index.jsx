@@ -33,9 +33,9 @@ const CoursesPage = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({});
-
-  let id = 0;
-  if (stateInstitution.length > 0) {
+  // check this after implementation of selector institution
+  let id = '';
+  if (stateInstitution.length === 1) {
     id = stateInstitution[0].id;
   }
 
@@ -52,9 +52,7 @@ const CoursesPage = () => {
   };
 
   useEffect(() => {
-    if (id > 0) {
-      fetchData(filters);
-    }
+    fetchData(filters);
   }, [currentPage, id, filters]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePagination = (targetPage) => {
