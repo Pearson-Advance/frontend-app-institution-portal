@@ -3,6 +3,10 @@ import { render, fireEvent, act } from '@testing-library/react';
 import InstructorsFilters from 'features/Instructors/InstructorsFilters';
 import '@testing-library/jest-dom/extend-expect';
 
+jest.mock('@edx/frontend-platform/logging', () => ({
+  logError: jest.fn(),
+}));
+
 describe('InstructorsFilters Component', () => {
   const mockSetFilters = jest.fn();
 

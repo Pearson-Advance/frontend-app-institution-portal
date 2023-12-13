@@ -45,8 +45,8 @@ const StudentsFilters = ({ resetPagination, fetchData, setFilters }) => {
   const [statusSelected, setStatusSelected] = useState(null);
   const [examSelected, setExamSelected] = useState(null);
   // check this after implementation of selector institution
-  let id = 0;
-  if (stateInstitution.length > 0) {
+  let id = '';
+  if (stateInstitution.length === 1) {
     id = stateInstitution[0].id;
   }
 
@@ -87,9 +87,7 @@ const StudentsFilters = ({ resetPagination, fetchData, setFilters }) => {
   };
 
   useEffect(() => {
-    if (id > 0) {
-      fetchCoursesData();
-    } // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchCoursesData(); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
