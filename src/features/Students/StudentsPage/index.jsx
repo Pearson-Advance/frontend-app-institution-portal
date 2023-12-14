@@ -1,6 +1,7 @@
 import { getStudentbyInstitutionAdmin } from 'features/Students/data/api';
 import { StudentsTable } from 'features/Students/StudentsTable/index';
 import StudentsFilters from 'features/Students/StudentsFilters';
+import StudentsMetrics from 'features/Students/StudentsMetrics';
 import { RequestStatus } from 'features/constants';
 import reducer from 'features/Students/StudentsPage/reducer';
 
@@ -60,6 +61,7 @@ const StudentsPage = () => {
   return (
     <Container size="xl">
       <h1>Students</h1>
+      <StudentsMetrics />
       <div className="page-content-container">
         <StudentsFilters fetchData={fetchData} resetPagination={resetPagination} setFilters={setFilters} />
         <StudentsTable

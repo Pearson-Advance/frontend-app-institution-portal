@@ -1,0 +1,55 @@
+@import "assets/colors.scss";
+
+.container-cards {
+  border: 1px solid $gray-light;
+  padding: 2rem;
+  border-radius: 0.375rem;
+  margin-bottom: 2rem;
+  box-shadow: 0px 3px 12px 0px rgba(0, 0, 0, 0.16);
+
+  .pgn__card {
+    box-shadow: none;
+    min-height: 160px;
+
+    .pgn__card-header .pgn__card-header-content {
+      margin-top: 1rem;
+    }
+
+    .pgn__card-header .pgn__card-header-title-md {
+      font-size: 1rem;
+      text-align: center;
+      font-weight: 600;
+      color: $black-80;
+    }
+
+    .pgn__card-section {
+      text-align: center;
+    }
+  }
+
+  .card-pink {
+    background: $color-pink;
+  }
+
+  .card-green {
+    background: $color-green;
+  }
+
+  .card-yellow {
+    background: $color-yellow;
+  }
+
+  .card-purple {
+    background: $color-purple;
+  }
+
+  .card-number {
+    font-size: 44px;
+    color: $black-80;
+  }
+
+  .btn-group-tpz {
+    width: 45%;
+    margin-bottom: 2rem;
+  }
+}
