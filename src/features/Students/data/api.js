@@ -32,8 +32,17 @@ function getClassesByInstitution(institutionId, courseName) {
   );
 }
 
+function getMetricsStudents() {
+  const metricsData = {
+    new_students_registered: '367',
+    classes_scheduled: '71%',
+  };
+  return metricsData;
+}
+
 export {
   getStudentbyInstitutionAdmin,
   handleEnrollments,
   getClassesByInstitution,
+  getMetricsStudents,
 };
