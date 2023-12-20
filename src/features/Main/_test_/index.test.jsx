@@ -6,7 +6,11 @@ import '@testing-library/jest-dom/extend-expect';
 
 jest.mock('features/Students/StudentsPage');
 jest.mock('features/Students/data/api');
+jest.mock('features/Main/data/api');
 jest.mock('@edx/frontend-platform/auth');
+jest.mock('@edx/frontend-platform/logging', () => ({
+  logError: jest.fn(),
+}));
 
 describe('Main component', () => {
   const authenticatedUser = {
@@ -35,7 +39,6 @@ describe('Main component', () => {
     expect(profileLink).toBeInTheDocument();
     expect(logOutLink).toBeInTheDocument();
   });
-
   it('Should render Sidebar', () => {
     render(
       <AppContext.Provider value={{ authenticatedUser, config }}>

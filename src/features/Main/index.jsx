@@ -1,5 +1,8 @@
 import React, { useEffect, useReducer } from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import {
+  BrowserRouter, Switch, Route, Redirect,
+} from 'react-router-dom';
+import { logError } from '@edx/frontend-platform/logging';
 import { Sidebar } from 'features/Main/Sidebar';
 import { Header } from 'features/Main/Header';
 import { Footer } from 'features/Main/Footer';
@@ -8,6 +11,7 @@ import Container from '@edx/paragon/dist/Container';
 import { getConfig } from '@edx/frontend-platform';
 import InstructorsPage from 'features/Instructors/InstructorsPage';
 import CoursesPage from 'features/Courses/CoursesPage';
+import DashboardPage from 'features/Dashboard/DashboardPage';
 import reducer from 'features/Main/reducer';
 import { getInstitutionName } from 'features/Main/data/api';
 import { InstitutionContext } from 'features/Main/institutionContext';
@@ -37,6 +41,7 @@ const Main = () => {
         dispatch({ type: FETCH_INSTITUTION_DATA_SUCCESS, payload: response.data });
       } catch (error) {
         dispatch({ type: FETCH_INSTITUTION_DATA_FAILURE, payload: error });
+        logError(error);
       }
     };
 
@@ -51,6 +56,14 @@ const Main = () => {
           <main>
             <Container size="xl">
               <Header />
+              <Switch>
+                <Route exact path="/">
+                  <Redirect to="/dashboard" />
+                </Route>
+              </Switch>
+              <Switch>
+                <Route path="/dashboard" exact component={DashboardPage} />
+              </Switch>
               <Switch>
                 <Route path="/students" exact component={StudentsPage} />
               </Switch>
