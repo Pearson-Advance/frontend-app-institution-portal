@@ -29,30 +29,14 @@ export const Sidebar = () => {
           <li>
             <button
               type="button"
-              className={`${activeTab === 'students' ? 'active' : ''} sidebar-item`}
-              aria-current="page"
-              onClick={() => handleTabClick('students')}
-            >
-              <span className="icon">
-                <FontAwesomeIcon icon={faUsers} />
-              </span>
-              <span className="nav-text">Students</span>
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
               className={`${activeTab === 'instructors' ? 'active' : ''} sidebar-item`}
               aria-current="page"
               onClick={() => handleTabClick('instructors')}
             >
-              <span className="icon">
-                <FontAwesomeIcon icon={faUser} />
-              </span>
+              <i className="fa-regular fa-chalkboard-user" />
               <span className="nav-text">Instructors</span>
             </button>
           </li>
-
           <li>
             <button
               type="button"
@@ -64,11 +48,10 @@ export const Sidebar = () => {
               <span className="nav-text">Students</span>
             </button>
           </li>
-
           <li>
             <button
               type="button"
-              className={`${activeTab === 'courses' ? 'active' : ''} backbutton`}
+              className={`${activeTab === 'courses' ? 'active' : ''} sidebar-item`}
               aria-current="page"
               onClick={() => handleTabClick('courses')}
             >

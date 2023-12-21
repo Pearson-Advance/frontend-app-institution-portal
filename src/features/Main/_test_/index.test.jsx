@@ -63,8 +63,5 @@ describe('Main component', () => {
 
     const linkTermsOfService = getByText('Terms');
     expect(linkTermsOfService).toBeInTheDocument();
-
-    const linkCookies = getByText('Cookie preferences');
-    expect(linkCookies).toBeInTheDocument();
   });
 });

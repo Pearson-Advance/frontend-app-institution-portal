@@ -133,87 +133,89 @@ const StudentsFilters = ({ resetPagination, fetchData, setFilters }) => {
 
   return (
     <div className="filter-container justify-content-center row">
-      <div className="col-11">
+      <div className="col-11 px-0">
         <h3>Search</h3>
-        <Form className="row justify-content-center" onSubmit={handleStudentsFilter}>
-          <Form.Row className="col-12">
-            <Form.Group as={Col}>
-              <Form.Control
-                type="text"
-                floatingLabel="Student Name"
-                name="learner_name"
-                placeholder="Enter Student Name"
-                onChange={(e) => setStudentName(e.target.value)}
-                value={studentName}
-              />
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Control
-                type="email"
-                floatingLabel="Student Email"
-                name="learner_email"
-                placeholder="Enter Student Email"
-                onChange={(e) => setStudentEmail(e.target.value)}
-                value={studentEmail}
-              />
-            </Form.Group>
-          </Form.Row>
-          <Form.Row className="col-12">
-            <Form.Group as={Col}>
-              <Select
-                placeholder="Course"
-                name="course_name"
-                className="mr-2"
-                options={courseOptions}
-                onChange={option => setCourseSelected(option)}
-                value={courseSelected}
-              />
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Select
-                placeholder="Class"
-                className="mr-2"
-                name="class_name"
-                isDisabled={!courseSelected}
-                options={classesOptions}
-                onChange={option => setClassSelected(option)}
-                value={classSelected}
-              />
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Select
-                placeholder="Status"
-                name="status"
-                className="mr-2"
-                options={[
-                  { value: 'Active', label: 'Active' },
-                  { value: 'Inactive', label: 'Inactive' },
-                  { value: 'Expired', label: 'Expired' },
-                  { value: 'Pending', label: 'Pending' },
-                ]}
-                onChange={option => setStatusSelected(option)}
-                value={statusSelected}
-              />
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Select
-                placeholder="Exam ready"
-                name="exam_ready"
-                className="mr-2"
-                options={[
-                  { value: true, label: 'Yes' },
-                  { value: false, label: 'No' },
-                ]}
-                onChange={option => setExamSelected(option)}
-                value={examSelected}
-              />
-            </Form.Group>
-          </Form.Row>
-          <div className="d-flex col-12 justify-content-end mr-3">
-            <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
-            <Button type="submit">Apply</Button>
-          </div>
-        </Form>
+        <div className="filters">
+          <Form className="row justify-content-center" onSubmit={handleStudentsFilter}>
+            <Form.Row className="col-12">
+              <Form.Group as={Col}>
+                <Form.Control
+                  type="text"
+                  floatingLabel="Student Name"
+                  name="learner_name"
+                  placeholder="Enter Student Name"
+                  onChange={(e) => setStudentName(e.target.value)}
+                  value={studentName}
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Control
+                  type="email"
+                  floatingLabel="Student Email"
+                  name="learner_email"
+                  placeholder="Enter Student Email"
+                  onChange={(e) => setStudentEmail(e.target.value)}
+                  value={studentEmail}
+                />
+              </Form.Group>
+            </Form.Row>
+            <Form.Row className="col-12">
+              <Form.Group as={Col}>
+                <Select
+                  placeholder="Course"
+                  name="course_name"
+                  className="mr-2"
+                  options={courseOptions}
+                  onChange={option => setCourseSelected(option)}
+                  value={courseSelected}
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Select
+                  placeholder="Class"
+                  className="mr-2"
+                  name="class_name"
+                  isDisabled={!courseSelected}
+                  options={classesOptions}
+                  onChange={option => setClassSelected(option)}
+                  value={classSelected}
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Select
+                  placeholder="Status"
+                  name="status"
+                  className="mr-2"
+                  options={[
+                    { value: 'Active', label: 'Active' },
+                    { value: 'Inactive', label: 'Inactive' },
+                    { value: 'Expired', label: 'Expired' },
+                    { value: 'Pending', label: 'Pending' },
+                  ]}
+                  onChange={option => setStatusSelected(option)}
+                  value={statusSelected}
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Select
+                  placeholder="Exam ready"
+                  name="exam_ready"
+                  className="mr-2"
+                  options={[
+                    { value: true, label: 'Yes' },
+                    { value: false, label: 'No' },
+                  ]}
+                  onChange={option => setExamSelected(option)}
+                  value={examSelected}
+                />
+              </Form.Group>
+            </Form.Row>
+            <div className="d-flex col-12 justify-content-end mr-3">
+              <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
+              <Button type="submit">Apply</Button>
+            </div>
+          </Form>
+        </div>
       </div>
     </div>
   );

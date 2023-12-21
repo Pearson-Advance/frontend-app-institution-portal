@@ -9,6 +9,7 @@
   li {
     padding: 4px 0;
   }
+
   .sidebar-item {
     align-items: center;
     color: $color-black;
@@ -28,12 +29,5 @@
       background-color: $blue-20;
       font-weight: 700;
     }
-  }
-}
-
-.backbutton {
-  &:hover {
-    background-color: $gradient-gray;
-    box-sizing: border-box;
   }
 }

@@ -4,6 +4,14 @@ import { AppContext } from '@edx/frontend-platform/react';
 import { Header } from 'features/Main/Header';
 import '@testing-library/jest-dom/extend-expect';
 
+jest.mock('@edx/frontend-platform', () => ({
+  getConfig: jest.fn(() => ({
+    LMS_BASE_URL: 'http://localhost:18000',
+    COURSE_OPERATIONS_API_V2_BASE_URL: 'http://localhost:18000/pearson_course_operation/api/v2',
+    ACCOUNT_PROFILE_URL: 'https://example.com/profile',
+  })),
+}));
+
 describe('Header', () => {
   const authenticatedUser = {
     username: 'User',

@@ -7,8 +7,10 @@ const DashboardPage = () => {
   const dataInstitution = useContext(InstitutionContext);
 
   return (
-    <Container size="xl">
-      <h2 className="title-page">{dataInstitution.length === 1 ? `Welcome to ${dataInstitution[0].name}` : 'Select an institution'}</h2>
+    <Container size="xl" className="px-4">
+      <h2 className="title-page">
+        {dataInstitution.length === 1 ? `Welcome to ${dataInstitution[0].name}` : 'Select an institution'}
+      </h2>
       <StudentsMetrics />
     </Container>
   );

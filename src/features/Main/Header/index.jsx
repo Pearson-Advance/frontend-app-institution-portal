@@ -1,31 +1,25 @@
 import React, { useContext } from 'react';
 import { AppContext } from '@edx/frontend-platform/react';
 import { getConfig } from '@edx/frontend-platform';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEarthAmericas } from '@fortawesome/free-solid-svg-icons';
 import { Dropdown } from '@edx/paragon';
 import 'features/Main/Header/index.scss';
 
 export const Header = () => {
-  const { authenticatedUser, config } = useContext(AppContext);
+  const { authenticatedUser } = useContext(AppContext);
   const userName = authenticatedUser.username;
+  const questionsLink = () => `${getConfig().HEADER_QUESTIONS_LINK}`;
 
   return (
     <header className="institution-header py-4 px-3">
       <div className="header-left d-flex">
-        <a href={`${config.LMS_BASE_URL}`}>
+        <a href={`${getConfig().LMS_BASE_URL}`}>
           <img src="/images/logoPearson.png" alt="icon" />
         </a>
-        <h3 className="platform-name">CertPREP Training Center Dashboard </h3>
+        <h3 className="platform-name">CertPREP Training Center Dashboard</h3>
       </div>
       <div className="header-rigth d-flex align-items-center">
-        <a href="/">
+        <a href={questionsLink()}>
           <i className="fa-regular fa-circle-question icon" />
-        </a>
-        <a href="/">
-          <span className="icon">
-            <FontAwesomeIcon icon={faEarthAmericas} />
-          </span>
         </a>
         <Dropdown className="dropdown-user">
           <Dropdown.Toggle variant="success" id="dropdown-basic-1">
@@ -34,7 +28,7 @@ export const Header = () => {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item
-              href={`${config.ACCOUNT_PROFILE_URL}/${authenticatedUser.username}`}
+              href={`${getConfig().ACCOUNT_PROFILE_URL}/${authenticatedUser.username}`}
             >
               Profile
             </Dropdown.Item>

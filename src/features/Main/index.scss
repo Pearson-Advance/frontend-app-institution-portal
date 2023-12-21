@@ -35,10 +35,13 @@ input {
   }
 
   main {
-    background: $bg-main-color;
     border-top-left-radius: 24px;
     scrollbar-gutter: auto;
     z-index: 1;
+  }
+
+  .container-pages {
+    background-color: $bg-main-color;
   }
 }
 

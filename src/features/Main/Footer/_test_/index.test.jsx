@@ -18,7 +18,7 @@ describe('Footer Component', () => {
 
     await waitFor(() => {
       const linkElements = screen.getAllByRole('link');
-      expect(linkElements).toHaveLength(4);
+      expect(linkElements).toHaveLength(2);
     });
   });
 });

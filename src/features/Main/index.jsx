@@ -55,8 +55,7 @@ const Main = () => {
         <div className="pageWrapper">
           <Sidebar />
           <main>
-            <Container size="xl">
-
+            <Container size="xl" className="px-0 container-pages">
               <Switch>
                 <Route exact path="/">
                   <Redirect to="/dashboard" />

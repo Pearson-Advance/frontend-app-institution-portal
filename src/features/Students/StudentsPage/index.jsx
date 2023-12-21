@@ -59,7 +59,7 @@ const StudentsPage = () => {
   };
 
   return (
-    <Container size="xl">
+    <Container size="xl" className="px-4">
       <h2 className="title-page">Students</h2>
       <StudentsMetrics />
       <div className="page-content-container">
