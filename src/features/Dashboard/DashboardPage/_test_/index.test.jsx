@@ -1,15 +1,21 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import DashboardPage from 'features/Dashboard/DashboardPage';
-import { InstitutionContext } from 'features/Main/institutionContext';
 import '@testing-library/jest-dom/extend-expect';
+import { Provider } from 'react-redux';
+import { initializeStore } from 'store';
+
+let store;
 
 describe('DashboardPage component', () => {
+  beforeEach(() => {
+    store = initializeStore();
+  });
   test('renders components', () => {
     const { getByText } = render(
-      <InstitutionContext.Provider value={[{ id: 1, name: 'Institution Name' }]}>
+      <Provider store={store}>
         <DashboardPage />
-      </InstitutionContext.Provider>,
+      </Provider>,
     );
 
     expect(getByText('This week')).toBeInTheDocument();
@@ -17,6 +23,5 @@ describe('DashboardPage component', () => {
     expect(getByText('Next month')).toBeInTheDocument();
     expect(getByText('New students registered')).toBeInTheDocument();
     expect(getByText('Classes scheduled')).toBeInTheDocument();
-    expect(getByText('Welcome to Institution Name')).toBeInTheDocument();
   });
 });

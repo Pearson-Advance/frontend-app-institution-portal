@@ -1,6 +1,7 @@
 import React, {
-  useEffect, useState, useReducer, useContext,
+  useEffect, useState, useReducer,
 } from 'react';
+import { useSelector } from 'react-redux';
 import { camelCaseObject } from '@edx/frontend-platform';
 
 import { logError } from '@edx/frontend-platform/logging';
@@ -9,7 +10,6 @@ import { Pagination } from '@edx/paragon';
 import CoursesTable from 'features/Courses/CoursesTable';
 import CoursesFilters from 'features/Courses/CoursesFilters';
 import reducer from 'features/Courses/CoursesPage/reducer';
-import { InstitutionContext } from 'features/Main/institutionContext';
 
 import { getCoursesByInstitution } from 'features/Common/data/api';
 import {
@@ -29,7 +29,7 @@ const initialState = {
 };
 
 const CoursesPage = () => {
-  const stateInstitution = useContext(InstitutionContext);
+  const stateInstitution = useSelector((state) => state.main.institution.data);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({});

@@ -3,6 +3,10 @@ import axios from 'axios';
 import { render, fireEvent, act } from '@testing-library/react';
 import AddInstructors from 'features/Instructors/AddInstructors';
 import '@testing-library/jest-dom/extend-expect';
+import { Provider } from 'react-redux';
+import { initializeStore } from 'store';
+
+let store;
 
 jest.mock('axios');
 
@@ -26,11 +30,17 @@ const mockResponse = {
 };
 
 describe('Add instructor component', () => {
+  beforeEach(() => {
+    store = initializeStore();
+  });
+
   test('Render and load modal', async () => {
     axios.get.mockResolvedValue(mockResponse);
 
     const { getByText } = render(
-      <AddInstructors />,
+      <Provider store={store}>
+        <AddInstructors />
+      </Provider>,
     );
     const button = getByText('Add Instructor');
     await act(async () => {

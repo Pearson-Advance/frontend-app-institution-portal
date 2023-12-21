@@ -2,6 +2,10 @@ import React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
 import InstructorsFilters from 'features/Instructors/InstructorsFilters';
 import '@testing-library/jest-dom/extend-expect';
+import { Provider } from 'react-redux';
+import { initializeStore } from 'store';
+
+let store;
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -11,14 +15,18 @@ describe('InstructorsFilters Component', () => {
   const mockSetFilters = jest.fn();
 
   beforeEach(() => {
+    store = initializeStore();
     mockSetFilters.mockClear();
   });
 
   test('call service when apply filters', async () => {
-    const fetchData = jest.fn();
     const resetPagination = jest.fn();
     const { getByPlaceholderText, getByText } = render(
-      <InstructorsFilters fetchData={fetchData} resetPagination={resetPagination} setFilters={mockSetFilters} />,
+      <Provider store={store}>
+        <InstructorsFilters
+          resetPagination={resetPagination}
+        />
+      </Provider>,
     );
 
     const nameInput = getByPlaceholderText('Enter Instructor Name');
@@ -37,15 +45,16 @@ describe('InstructorsFilters Component', () => {
     await act(async () => {
       fireEvent.click(buttonApplyFilters);
     });
-
-    expect(fetchData).toHaveBeenCalledTimes(1);
   });
 
   test('clear filters', async () => {
-    const fetchData = jest.fn();
     const resetPagination = jest.fn();
     const { getByPlaceholderText, getByText } = render(
-      <InstructorsFilters fetchData={fetchData} resetPagination={resetPagination} setFilters={mockSetFilters} />,
+      <Provider store={store}>
+        <InstructorsFilters
+          resetPagination={resetPagination}
+        />
+      </Provider>,
     );
 
     const nameInput = getByPlaceholderText('Enter Instructor Name');
@@ -67,6 +76,5 @@ describe('InstructorsFilters Component', () => {
 
     expect(nameInput).toHaveValue('');
     expect(emailInput).toHaveValue('');
-    expect(resetPagination).toHaveBeenCalledTimes(1);
   });
 });

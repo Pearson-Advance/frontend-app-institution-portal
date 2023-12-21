@@ -5,7 +5,7 @@ import {
   UPDATE_CURRENT_PAGE,
 } from 'features/Students/actionTypes';
 import { RequestStatus } from 'features/constants';
-import reducer from 'features/Instructors/InstructorsPage/reducer';
+import reducer from 'features/Students/StudentsPage/reducer';
 
 describe('Instructor page reducers', () => {
   const initialState = {

@@ -1,13 +1,13 @@
 import React, {
-  useContext, useEffect, useReducer, useState,
+  useEffect, useReducer, useState,
 } from 'react';
+import { useSelector } from 'react-redux';
 import { Col, Form } from '@edx/paragon';
 import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
 import { Select, Button } from 'react-paragon-topaz';
 import { getClassesByInstitution } from 'features/Students/data/api';
 import { getCoursesByInstitution } from 'features/Common/data/api';
-import { InstitutionContext } from 'features/Main/institutionContext';
 import reducer from 'features/Students/StudentsFilters/reducer';
 import {
   FETCH_COURSES_DATA_REQUEST,
@@ -34,7 +34,7 @@ const initialState = {
 };
 
 const StudentsFilters = ({ resetPagination, fetchData, setFilters }) => {
-  const stateInstitution = useContext(InstitutionContext);
+  const stateInstitution = useSelector((state) => state.main.institution.data);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [courseOptions, setCourseOptions] = useState([]);
   const [classesOptions, setClassesOptions] = useState([]);
