@@ -59,9 +59,9 @@ const InstructorsPage = () => {
   };
 
   return (
-    <Container size="xl">
+    <Container size="xl" className="px-4">
       <div className="d-flex justify-content-between align-items-center">
-        <h1>Instructors</h1>
+        <h2 className="title-page">Instructors</h2>
         <AddInstructors />
       </div>
       <div className="page-content-container">

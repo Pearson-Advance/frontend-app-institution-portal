@@ -90,52 +90,53 @@ const InstructorsFilters = ({ fetchData, resetPagination, setFilters }) => {
 
   return (
     <div className="filter-container justify-content-center row">
-      <div className="col-11">
+      <div className="col-11 px-0">
         <h3>Search</h3>
-        <Form className="row justify-content-center" onSubmit={handleInstructorsFilter}>
-          <Form.Row className="col-12">
-            <Form.Group as={Col}>
-              <Form.Control
-                type="text"
-                floatingLabel="Instructor Name"
-                name="instructor_name"
-                placeholder="Enter Instructor Name"
-                onChange={(e) => setInstructorName(e.target.value)}
-                value={instructorName}
-              />
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Control
-                type="email"
-                floatingLabel="Instructor Email"
-                name="instructor_email"
-                placeholder="Enter Instructor Email"
-                onChange={(e) => setInstructorEmail(e.target.value)}
-                value={instructorEmail}
-              />
-            </Form.Group>
-          </Form.Row>
-          <div className="col-12 px-1">
-            <Form.Row className="col-4">
+        <div className="filters">
+          <Form className="row justify-content-center" onSubmit={handleInstructorsFilter}>
+            <Form.Row className="col-12">
               <Form.Group as={Col}>
-                <Select
-                  placeholder="Course"
-                  name="course_name"
-                  className="mr-2"
-                  options={courseOptions}
-                  onChange={option => setCourseSelected(option)}
-                  value={courseSelected}
+                <Form.Control
+                  type="text"
+                  floatingLabel="Instructor Name"
+                  name="instructor_name"
+                  placeholder="Enter Instructor Name"
+                  onChange={(e) => setInstructorName(e.target.value)}
+                  value={instructorName}
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Control
+                  type="email"
+                  floatingLabel="Instructor Email"
+                  name="instructor_email"
+                  placeholder="Enter Instructor Email"
+                  onChange={(e) => setInstructorEmail(e.target.value)}
+                  value={instructorEmail}
                 />
               </Form.Group>
             </Form.Row>
-          </div>
-          <div className="d-flex col-12 justify-content-end mr-3">
-            <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
-            <Button type="submit">Apply</Button>
-          </div>
-        </Form>
+            <div className="col-12 px-1">
+              <Form.Row className="col-4">
+                <Form.Group as={Col}>
+                  <Select
+                    placeholder="Course"
+                    name="course_name"
+                    className="mr-2"
+                    options={courseOptions}
+                    onChange={option => setCourseSelected(option)}
+                    value={courseSelected}
+                  />
+                </Form.Group>
+              </Form.Row>
+            </div>
+            <div className="d-flex col-12 justify-content-end mr-3">
+              <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
+              <Button type="submit">Apply</Button>
+            </div>
+          </Form>
+        </div>
       </div>
-
     </div>
   );
 };

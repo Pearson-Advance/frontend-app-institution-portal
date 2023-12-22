@@ -44,7 +44,7 @@ const CoursesFilters = ({
 
   return (
     <div className="filter-container justify-content-center row">
-      <div className="col-11">
+      <div className="col-11 px-0">
         <h3>Find  a course</h3>
         <Form className="row justify-content-center" onSubmit={handleCoursesFilter}>
           <Form.Row className="col-12">
@@ -58,7 +58,7 @@ const CoursesFilters = ({
                 value={courseSelected}
               />
             </Form.Group>
-            <div className="d-flex col-3 justify-content-end mr-3 align-items-start">
+            <div className="d-flex col-3 justify-content-end align-items-start">
               <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
               <Button type="submit">Apply</Button>
             </div>

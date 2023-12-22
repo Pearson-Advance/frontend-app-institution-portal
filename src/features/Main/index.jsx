@@ -51,11 +51,11 @@ const Main = () => {
   return (
     <BrowserRouter basename={getConfig().INSTITUTION_PORTAL_PATH}>
       <InstitutionContext.Provider value={state.data}>
+        <Header />
         <div className="pageWrapper">
           <Sidebar />
           <main>
-            <Container size="xl">
-              <Header />
+            <Container size="xl" className="px-0 container-pages">
               <Switch>
                 <Route exact path="/">
                   <Redirect to="/dashboard" />

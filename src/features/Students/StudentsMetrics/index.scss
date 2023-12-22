@@ -1,11 +1,12 @@
 @import "assets/colors.scss";
 
 .container-cards {
-  border: 1px solid $gray-light;
+  border: 1px solid $gray-20;
   padding: 2rem;
   border-radius: 0.375rem;
   margin-bottom: 2rem;
   box-shadow: 0px 3px 12px 0px rgba(0, 0, 0, 0.16);
+  background-color: $color-white;
 
   .pgn__card {
     box-shadow: none;
