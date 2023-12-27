@@ -13,7 +13,7 @@ export const Header = () => {
     <header className="institution-header py-4 px-3">
       <div className="header-left d-flex">
         <a href={`${getConfig().LMS_BASE_URL}`}>
-          <img src="/images/logoPearson.png" alt="icon" />
+          <img src={`${getConfig().LOGO_INSTITUTION_PORTAL}`} alt="icon" />
         </a>
         <h3 className="platform-name">CertPREP Training Center Dashboard</h3>
       </div>
