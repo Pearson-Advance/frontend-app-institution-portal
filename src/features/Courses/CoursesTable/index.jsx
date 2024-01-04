@@ -2,10 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { IntlProvider } from 'react-intl';
-import {
-  Row,
-  Col,
-} from '@edx/paragon';
+import { Row, Col } from '@edx/paragon';
 import DataTable from '@edx/paragon/dist/DataTable';
 
 import { columns } from 'features/Courses/CoursesTable/columns';

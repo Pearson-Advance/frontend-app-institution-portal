@@ -1,12 +1,10 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import { RequestStatus } from 'features/constants';
+import { RequestStatus, initialStateService } from 'features/constants';
 
 const initialState = {
   institution: {
-    data: [],
-    status: RequestStatus.LOADING,
-    error: null,
+    ...initialStateService,
   },
 };
 

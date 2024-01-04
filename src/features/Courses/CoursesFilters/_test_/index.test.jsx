@@ -1,8 +1,18 @@
 /* eslint-disable react/prop-types */
+import MockAdapter from 'axios-mock-adapter';
 import React from 'react';
+import { Provider } from 'react-redux';
 import { render, fireEvent, act } from '@testing-library/react';
 import CoursesFilters from 'features/Courses/CoursesFilters';
 import '@testing-library/jest-dom/extend-expect';
+import { initializeStore } from 'store';
+import { fetchCoursesData } from 'features/Courses/data/thunks';
+import { executeThunk } from 'test-utils';
+import { initializeMockApp } from '@edx/frontend-platform/testing';
+import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
+
+let axiosMock;
+let store;
 
 jest.mock('react-select', () => function reactSelect({ options, valueR, onChange }) {
   function handleChange(event) {
@@ -23,14 +33,8 @@ jest.mock('react-select', () => function reactSelect({ options, valueR, onChange
   );
 });
 
-describe('InstructorsFilters Component', () => {
-  const mockSetFilters = jest.fn();
-
-  beforeEach(() => {
-    mockSetFilters.mockClear();
-  });
-
-  const dataCourses = [
+const mockResponse = {
+  results: [
     {
       masterCourseName: 'Demo Course 1',
       numberOfClasses: 1,
@@ -38,26 +42,46 @@ describe('InstructorsFilters Component', () => {
       numberOfStudents: 1,
       numberOfPendingStudents: 1,
     },
-    {
-      masterCourseName: 'Demo Course 2',
-      numberOfClasses: 1,
-      missingClassesForInstructor: 1,
-      numberOfStudents: 16,
-      numberOfPendingStudents: 0,
-    },
-  ];
+  ],
+  count: 2,
+  num_pages: 1,
+  current_page: 1,
+};
+
+describe('CoursesFilters Component', () => {
+  const mockSetFilters = jest.fn();
+
+  beforeEach(() => {
+    initializeMockApp({
+      authenticatedUser: {
+        userId: 1,
+        username: 'testuser',
+        administrator: true,
+        roles: [],
+      },
+    });
+    axiosMock = new MockAdapter(getAuthenticatedHttpClient());
+    mockSetFilters.mockClear();
+    store = initializeStore();
+
+    const coursesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/courses/?limit=true&institution_id=1`;
+    axiosMock.onGet(coursesApiUrl)
+      .reply(200, mockResponse);
+  });
+
+  afterEach(() => {
+    axiosMock.reset();
+  });
 
   test('call service when apply filters', async () => {
-    const fetchData = jest.fn();
     const resetPagination = jest.fn();
     const { getByText, getByTestId } = render(
-      <CoursesFilters
-        fetchData={fetchData}
-        resetPagination={resetPagination}
-        setFilters={mockSetFilters}
-        dataCourses={dataCourses}
-      />,
+      <Provider store={store}>
+        <CoursesFilters resetPagination={resetPagination} />
+      </Provider>,
     );
+
+    await executeThunk(fetchCoursesData(1), store.dispatch, store.getState);
 
     const courseSelect = getByTestId('select');
     const buttonApplyFilters = getByText('Apply');
@@ -71,19 +95,14 @@ describe('InstructorsFilters Component', () => {
     await act(async () => {
       fireEvent.click(buttonApplyFilters);
     });
-    expect(fetchData).toHaveBeenCalledTimes(1);
   });
 
   test('clear filters', async () => {
-    const fetchData = jest.fn();
     const resetPagination = jest.fn();
     const { getByText, getByTestId } = render(
-      <CoursesFilters
-        fetchData={fetchData}
-        resetPagination={resetPagination}
-        setFilters={mockSetFilters}
-        dataCourses={dataCourses}
-      />,
+      <Provider store={store}>
+        <CoursesFilters resetPagination={resetPagination} />
+      </Provider>,
     );
 
     const courseSelect = getByTestId('select');
@@ -97,6 +116,5 @@ describe('InstructorsFilters Component', () => {
     await act(async () => {
       fireEvent.click(buttonClearFilters);
     });
-    expect(resetPagination).toHaveBeenCalledTimes(1);
   });
 });

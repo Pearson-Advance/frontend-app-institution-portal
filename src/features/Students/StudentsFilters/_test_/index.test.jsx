@@ -14,7 +14,6 @@ jest.mock('@edx/frontend-platform/logging', () => ({
 }));
 
 describe('StudentsFilters Component', () => {
-  const fetchData = jest.fn();
   const resetPagination = jest.fn();
   const mockSetFilters = jest.fn();
 
@@ -26,11 +25,7 @@ describe('StudentsFilters Component', () => {
   test('renders input fields with placeholders', () => {
     const { getByText, getByPlaceholderText } = render(
       <Provider store={store}>
-        <StudentsFilters
-          fetchData={fetchData}
-          resetPagination={resetPagination}
-          setFilters={mockSetFilters}
-        />
+        <StudentsFilters resetPagination={resetPagination} />
       </Provider>,
     );
 

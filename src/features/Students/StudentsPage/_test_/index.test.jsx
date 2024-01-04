@@ -1,10 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import StudentsPage from 'features/Students/StudentsPage';
-import {
-  render,
-  waitFor,
-} from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import { initializeStore } from 'store';

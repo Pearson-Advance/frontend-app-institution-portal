@@ -1,46 +1,57 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Col, Form } from '@edx/paragon';
 import { Select, Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 import PropTypes from 'prop-types';
 
-const CoursesFilters = ({
-  fetchData, resetPagination, dataCourses, setFilters,
-}) => {
+import { updateFilters, updateCurrentPage } from 'features/Courses/data/slice';
+import { fetchCoursesData } from 'features/Courses/data/thunks';
+import { initialPage } from 'features/constants';
+
+const CoursesFilters = ({ resetPagination }) => {
+  const dispatch = useDispatch();
+  const stateInstitution = useSelector((state) => state.main.institution.data);
+  const stateCourses = useSelector((state) => state.courses.table.data);
   const [courseOptions, setCourseOptions] = useState([]);
   const [courseSelected, setCourseSelected] = useState(null);
+  let id = '';
+  if (stateInstitution.length === 1) {
+    id = stateInstitution[0].id;
+  }
 
   const handleCoursesFilter = async (e) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
     const formJson = Object.fromEntries(formData.entries());
-    setFilters(formJson);
+    dispatch(updateFilters(formJson));
     try {
-      fetchData(formJson);
+      dispatch(updateCurrentPage(initialPage));
+      dispatch(fetchCoursesData(id, initialPage, formJson));
     } catch (error) {
       logError(error);
     }
   };
 
   const handleCleanFilters = () => {
-    fetchData();
+    dispatch(fetchCoursesData(id));
     resetPagination();
     setCourseSelected(null);
-    setFilters({});
+    dispatch(updateFilters({}));
   };
 
   useEffect(() => {
-    if (dataCourses.length > 0) {
-      const options = dataCourses.map(course => ({
+    if (stateCourses.length > 0) {
+      const options = stateCourses.map(course => ({
         ...course,
         label: course.masterCourseName,
         value: course.masterCourseName,
       }));
       setCourseOptions(options);
     }
-  }, [dataCourses]);
+  }, [stateCourses]);
 
   return (
     <div className="filter-container justify-content-center row">
@@ -70,10 +81,7 @@ const CoursesFilters = ({
 };
 
 CoursesFilters.propTypes = {
-  fetchData: PropTypes.func.isRequired,
   resetPagination: PropTypes.func.isRequired,
-  dataCourses: PropTypes.instanceOf(Array).isRequired,
-  setFilters: PropTypes.func.isRequired,
 };
 
 export default CoursesFilters;
