@@ -6,6 +6,10 @@ import {
   waitFor,
 } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
+import { Provider } from 'react-redux';
+import { initializeStore } from 'store';
+
+let store;
 
 jest.mock('axios');
 
@@ -38,10 +42,18 @@ const mockResponse = {
 };
 
 describe('CoursesPage', () => {
+  beforeEach(() => {
+    store = initializeStore();
+  });
+
   it('renders courses data and pagination', async () => {
     axios.get.mockResolvedValue(mockResponse);
 
-    const component = render(<CoursesPage />);
+    const component = render(
+      <Provider store={store}>
+        <CoursesPage />
+      </Provider>,
+    );
 
     waitFor(() => {
       expect(component.container).toHaveTextContent('Demo Course 1');

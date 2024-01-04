@@ -40,6 +40,7 @@
     "@edx/paragon": "^20.45.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@reduxjs/toolkit": "^1.9.5",
     "core-js": "3.31.0",
     "moment": "^2.29.4",
     "prop-types": "15.8.1",
@@ -47,8 +48,10 @@
     "react-dom": "16.14.0",
     "react-intl": "^5.25.1",
     "react-paragon-topaz": "^1.2.1",
+    "react-redux": "^7.2.9",
     "react-router": "5.2.1",
     "react-router-dom": "5.3.0",
+    "redux": "^4.2.1",
     "regenerator-runtime": "0.13.11"
   },
   "devDependencies": {
@@ -58,6 +61,7 @@
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "12.1.5",
     "axios": "0.27.2",
+    "axios-mock-adapter": "^1.20.0",
     "glob": "7.2.3",
     "husky": "7.0.4",
     "jest": "29.5.0"

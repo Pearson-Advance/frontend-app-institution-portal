@@ -1,34 +1,22 @@
 import React, {
-  useState, useReducer, useContext, useEffect,
+  useState, useEffect,
 } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Form, Col,
 } from '@edx/paragon';
-import { camelCaseObject } from '@edx/frontend-platform';
 import { Select, Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
-import { InstitutionContext } from 'features/Main/institutionContext';
-import reducer from 'features/Instructors/InstructorsFilters/reducer';
-import { getCoursesByInstitution } from 'features/Common/data/api';
-import {
-  FETCH_COURSES_DATA_REQUEST,
-  FETCH_COURSES_DATA_SUCCESS,
-  FETCH_COURSES_DATA_FAILURE,
-} from 'features/Instructors/actionTypes';
-import { RequestStatus } from 'features/constants';
+
+import { fetchInstructorsData, fetchCoursesData } from 'features/Instructors/data/thunks';
+import { updateFilters } from 'features/Instructors/data/slice';
 import PropTypes from 'prop-types';
 
-const initialState = {
-  courses: {
-    data: [],
-    status: RequestStatus.SUCCESS,
-    error: null,
-  },
-};
-
-const InstructorsFilters = ({ fetchData, resetPagination, setFilters }) => {
-  const stateInstitution = useContext(InstitutionContext);
-  const [state, dispatch] = useReducer(reducer, initialState);
+const InstructorsFilters = ({ resetPagination }) => {
+  const stateInstitution = useSelector((state) => state.main.institution.data);
+  const stateInstructors = useSelector((state) => state.instructors.courses);
+  const currentPage = useSelector((state) => state.instructors.table.currentPage);
+  const dispatch = useDispatch();
   const [courseOptions, setCourseOptions] = useState([]);
   const [instructorName, setInstructorName] = useState('');
   const [instructorEmail, setInstructorEmail] = useState('');
@@ -39,25 +27,13 @@ const InstructorsFilters = ({ fetchData, resetPagination, setFilters }) => {
     id = stateInstitution[0].id;
   }
 
-  const fetchCoursesData = async () => {
-    dispatch({ type: FETCH_COURSES_DATA_REQUEST });
-
-    try {
-      const response = camelCaseObject(await getCoursesByInstitution(id, false));
-      dispatch({ type: FETCH_COURSES_DATA_SUCCESS, payload: response.data });
-    } catch (error) {
-      dispatch({ type: FETCH_COURSES_DATA_FAILURE, payload: error });
-      logError(error);
-    }
-  };
-
   const handleCleanFilters = () => {
-    fetchData();
+    dispatch(fetchInstructorsData(currentPage));
     resetPagination();
     setInstructorName('');
     setInstructorEmail('');
     setCourseSelected(null);
-    setFilters({});
+    dispatch(updateFilters({}));
   };
 
   const handleInstructorsFilter = async (e) => {
@@ -65,28 +41,28 @@ const InstructorsFilters = ({ fetchData, resetPagination, setFilters }) => {
     const form = e.target;
     const formData = new FormData(form);
     const formJson = Object.fromEntries(formData.entries());
-    setFilters(formJson);
+    dispatch(updateFilters(formJson));
     try {
-      fetchData(formJson);
+      dispatch(fetchInstructorsData(currentPage, formJson));
     } catch (error) {
       logError(error);
     }
   };
 
   useEffect(() => {
-    fetchCoursesData(); // eslint-disable-next-line react-hooks/exhaustive-deps
+    dispatch(fetchCoursesData(id)); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
-    if (state.courses.data.length > 0) {
-      const options = state.courses.data.map(course => ({
+    if (stateInstructors.data.length > 0) {
+      const options = stateInstructors.data.map(course => ({
         ...course,
         label: course.masterCourseName,
         value: course.masterCourseName,
       }));
       setCourseOptions(options);
     }
-  }, [state.courses]);
+  }, [stateInstructors]);
 
   return (
     <div className="filter-container justify-content-center row">
@@ -142,9 +118,7 @@ const InstructorsFilters = ({ fetchData, resetPagination, setFilters }) => {
 };
 
 InstructorsFilters.propTypes = {
-  fetchData: PropTypes.func.isRequired,
   resetPagination: PropTypes.func.isRequired,
-  setFilters: PropTypes.func.isRequired,
 };
 
 export default InstructorsFilters;

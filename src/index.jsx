@@ -12,10 +12,11 @@ import Main from 'features/Main';
 import appMessages from './i18n';
 
 import './index.scss';
+import { store } from './store';
 
 subscribe(APP_READY, () => {
   ReactDOM.render(
-    <AppProvider>
+    <AppProvider store={store}>
       <Main />
     </AppProvider>,
     document.getElementById('root'),

@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useReducer } from 'react';
-import { camelCaseObject } from '@edx/frontend-platform';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { logError } from '@edx/frontend-platform/logging';
 import Container from '@edx/paragon/dist/Container';
 import {
   Pagination,
@@ -10,48 +9,23 @@ import InstructorsTable from 'features/Instructors/InstructorsTable';
 import InstructorsFilters from 'features/Instructors/InstructorsFilters';
 import AddInstructors from 'features/Instructors/AddInstructors';
 
-import { getInstructorData } from 'features/Instructors/data/api';
 import {
-  FETCH_INSTRUCTOR_DATA_REQUEST,
-  FETCH_INSTRUCTOR_DATA_SUCCESS,
-  FETCH_INSTRUCTOR_DATA_FAILURE,
-  UPDATE_CURRENT_PAGE,
-} from 'features/Instructors/actionTypes';
-import { RequestStatus } from 'features/constants';
-import reducer from 'features/Instructors/InstructorsPage/reducer';
-
-const initialState = {
-  data: [],
-  status: RequestStatus.SUCCESS,
-  error: null,
-  currentPage: 1,
-  numPages: 0,
-};
+  updateCurrentPage,
+} from 'features/Instructors/data/slice';
+import { fetchInstructorsData } from 'features/Instructors/data/thunks';
 
 const InstructorsPage = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const stateInstructors = useSelector((state) => state.instructors.table);
+  const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const [filters, setFilters] = useState({});
-
-  const fetchData = async (filtersData) => {
-    dispatch({ type: FETCH_INSTRUCTOR_DATA_REQUEST });
-
-    try {
-      const response = camelCaseObject(await getInstructorData(currentPage, filtersData));
-      dispatch({ type: FETCH_INSTRUCTOR_DATA_SUCCESS, payload: response.data });
-    } catch (error) {
-      dispatch({ type: FETCH_INSTRUCTOR_DATA_FAILURE, payload: error });
-      logError(error);
-    }
-  };
 
   useEffect(() => {
-    fetchData(filters); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, filters]);
+    dispatch(fetchInstructorsData(currentPage, stateInstructors.filters));
+  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
-    dispatch({ type: UPDATE_CURRENT_PAGE, payload: targetPage });
+    dispatch(updateCurrentPage(targetPage));
   };
 
   const resetPagination = () => {
@@ -65,15 +39,15 @@ const InstructorsPage = () => {
         <AddInstructors />
       </div>
       <div className="page-content-container">
-        <InstructorsFilters fetchData={fetchData} resetPagination={resetPagination} setFilters={setFilters} />
+        <InstructorsFilters resetPagination={resetPagination} />
         <InstructorsTable
-          data={state.data}
-          count={state.count}
+          data={stateInstructors.data}
+          count={stateInstructors.count}
         />
-        {state.numPages > 1 && (
+        {stateInstructors.numPages > 1 && (
           <Pagination
             paginationLabel="paginationNavigation"
-            pageCount={state.numPages}
+            pageCount={stateInstructors.numPages}
             currentPage={currentPage}
             onPageSelect={handlePagination}
             variant="reduced"

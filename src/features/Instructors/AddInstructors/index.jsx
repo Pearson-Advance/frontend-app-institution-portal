@@ -1,39 +1,21 @@
-import React, { useState, useReducer, useEffect } from 'react';
+// This component will be modified according to the new wirefrime
+
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   FormGroup, ModalDialog, useToggle, Form,
 } from '@edx/paragon';
 import { Button } from 'react-paragon-topaz';
-import { getCCXList, handleInstructorsEnrollment } from 'features/Instructors/data/api';
-import reducer from 'features/Instructors/AddInstructors/reducer';
+import { handleInstructorsEnrollment } from 'features/Instructors/data/api';
 import { logError } from '@edx/frontend-platform/logging';
-import { camelCaseObject } from '@edx/frontend-platform';
-
-import { FETCH_CCX_LIST_FAILURE, FETCH_CCX_LIST_REQUEST, FETCH_CCX_LIST_SUCCESS } from 'features/Instructors/actionTypes';
-import { RequestStatus } from 'features/constants';
-
-const initialState = {
-  data: [],
-  status: RequestStatus.SUCCESS,
-  error: null,
-};
+import { fetchClassesData } from 'features/Instructors/data/thunks';
 
 const AddInstructors = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const stateInstructors = useSelector((state) => state.instructors.classes);
+  const dispatch = useDispatch();
   const [isOpen, open, close] = useToggle(false); // eslint-disable-line no-unused-vars
   const [isNoUser, setIsNoUser] = useState(false);
   const enrollmentData = new FormData();
-
-  const fetchData = async () => {
-    dispatch({ type: FETCH_CCX_LIST_REQUEST });
-
-    try {
-      const response = camelCaseObject(await getCCXList());
-      dispatch({ type: FETCH_CCX_LIST_SUCCESS, payload: response.data });
-    } catch (error) {
-      dispatch({ type: FETCH_CCX_LIST_FAILURE, payload: error });
-      logError(error);
-    }
-  };
 
   const handleAddInstructors = async (e) => {
     e.preventDefault();
@@ -48,7 +30,6 @@ const AddInstructors = () => {
       if (response.data?.userDoesNotExist) {
         setIsNoUser(true);
       } else {
-        fetchData();
         close();
         setIsNoUser(false);
       }
@@ -58,8 +39,8 @@ const AddInstructors = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    dispatch(fetchClassesData());
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -87,7 +68,7 @@ const AddInstructors = () => {
                 name="ccxId"
               >
                 <option disabled value="null">Select an Option</option>
-                {state.data.map((ccx) => <option value={ccx.classId}>{ccx.className}</option>)}
+                {stateInstructors.data.map((ccx) => <option value={ccx.classId}>{ccx.className}</option>)}
               </Form.Control>
             </FormGroup>
             <FormGroup controlId="instructorInfo">
