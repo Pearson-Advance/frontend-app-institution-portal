@@ -17,29 +17,34 @@ const initialState = {
   classes: {
     ...initialStateService,
   },
-  filters: {
+  metrics: {
+    ...initialStateService,
   },
+  filters: {},
 };
 
-export const instructorsSlice = createSlice({
-  name: 'instructors',
+export const studentsSlice = createSlice({
+  name: 'students',
   initialState,
   reducers: {
     updateCurrentPage: (state, { payload }) => {
       state.table.currentPage = payload;
     },
-    fetchInstructorsDataRequest: (state) => {
+    fetchStudentsDataRequest: (state) => {
       state.table.status = RequestStatus.LOADING;
     },
-    fetchInstructorsDataSuccess: (state, { payload }) => {
+    fetchStudentsDataSuccess: (state, { payload }) => {
       const { results, count, numPages } = payload;
       state.table.status = RequestStatus.SUCCESS;
       state.table.data = results;
       state.table.numPages = numPages;
       state.table.count = count;
     },
-    fetchInstructorsDataFailed: (state) => {
+    fetchStudentsDataFailed: (state) => {
       state.table.status = RequestStatus.ERROR;
+    },
+    updateFilters: (state, { payload }) => {
+      state.filters = payload;
     },
     fetchCoursesDataRequest: (state) => {
       state.courses.status = RequestStatus.LOADING;
@@ -61,24 +66,34 @@ export const instructorsSlice = createSlice({
     fetchClassesDataFailed: (state) => {
       state.classes.status = RequestStatus.ERROR;
     },
-    updateFilters: (state, { payload }) => {
-      state.filters = payload;
+    fetchMetricsDataRequest: (state) => {
+      state.metrics.status = RequestStatus.LOADING;
+    },
+    fetchMetricsDataSuccess: (state, { payload }) => {
+      state.metrics.status = RequestStatus.SUCCESS;
+      state.metrics.data = payload;
+    },
+    fetchMetricsDataFailed: (state) => {
+      state.metrics.status = RequestStatus.ERROR;
     },
   },
 });
 
 export const {
   updateCurrentPage,
-  fetchInstructorsDataRequest,
-  fetchInstructorsDataSuccess,
-  fetchInstructorsDataFailed,
+  fetchStudentsDataRequest,
+  fetchStudentsDataSuccess,
+  fetchStudentsDataFailed,
+  updateFilters,
   fetchCoursesDataRequest,
   fetchCoursesDataSuccess,
   fetchCoursesDataFailed,
   fetchClassesDataRequest,
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
-  updateFilters,
-} = instructorsSlice.actions;
+  fetchMetricsDataRequest,
+  fetchMetricsDataSuccess,
+  fetchMetricsDataFailed,
+} = studentsSlice.actions;
 
-export const { reducer } = instructorsSlice;
+export const { reducer } = studentsSlice;

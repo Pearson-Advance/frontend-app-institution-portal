@@ -1,41 +1,18 @@
-import React, {
-  useEffect, useReducer, useState,
-} from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Col, Form } from '@edx/paragon';
 import { logError } from '@edx/frontend-platform/logging';
-import { camelCaseObject } from '@edx/frontend-platform';
 import { Select, Button } from 'react-paragon-topaz';
-import { getClassesByInstitution } from 'features/Students/data/api';
-import { getCoursesByInstitution } from 'features/Common/data/api';
-import reducer from 'features/Students/StudentsFilters/reducer';
-import {
-  FETCH_COURSES_DATA_REQUEST,
-  FETCH_COURSES_DATA_SUCCESS,
-  FETCH_COURSES_DATA_FAILURE,
-  FETCH_CLASSES_DATA_REQUEST,
-  FETCH_CLASSES_DATA_SUCCESS,
-  FETCH_CLASSES_DATA_FAILURE,
-} from 'features/Students/actionTypes';
-import { RequestStatus } from 'features/constants';
 import PropTypes from 'prop-types';
+import { updateCurrentPage, updateFilters } from 'features/Students/data/slice';
+import { fetchCoursesData, fetchClassesData, fetchStudentsData } from 'features/Students/data/thunks';
+import { initialPage } from 'features/constants';
 
-const initialState = {
-  courses: {
-    data: [],
-    status: RequestStatus.SUCCESS,
-    error: null,
-  },
-  classes: {
-    data: [],
-    status: RequestStatus.SUCCESS,
-    error: null,
-  },
-};
-
-const StudentsFilters = ({ resetPagination, fetchData, setFilters }) => {
+const StudentsFilters = ({ resetPagination }) => {
+  const dispatch = useDispatch();
   const stateInstitution = useSelector((state) => state.main.institution.data);
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const stateCourses = useSelector((state) => state.students.courses);
+  const stateClasses = useSelector((state) => state.students.classes);
   const [courseOptions, setCourseOptions] = useState([]);
   const [classesOptions, setClassesOptions] = useState([]);
   const [studentName, setStudentName] = useState('');
@@ -50,32 +27,8 @@ const StudentsFilters = ({ resetPagination, fetchData, setFilters }) => {
     id = stateInstitution[0].id;
   }
 
-  const fetchCoursesData = async () => {
-    dispatch({ type: FETCH_COURSES_DATA_REQUEST });
-
-    try {
-      const response = camelCaseObject(await getCoursesByInstitution(id, false));
-      dispatch({ type: FETCH_COURSES_DATA_SUCCESS, payload: response.data });
-    } catch (error) {
-      dispatch({ type: FETCH_COURSES_DATA_FAILURE, payload: error });
-      logError(error);
-    }
-  };
-
-  const fetchClassesData = async (courseName) => {
-    dispatch({ type: FETCH_CLASSES_DATA_REQUEST });
-
-    try {
-      const response = camelCaseObject(await getClassesByInstitution(id, courseName));
-      dispatch({ type: FETCH_CLASSES_DATA_SUCCESS, payload: response.data });
-    } catch (error) {
-      dispatch({ type: FETCH_CLASSES_DATA_FAILURE, payload: error });
-      logError(error);
-    }
-  };
-
   const handleCleanFilters = () => {
-    fetchData();
+    dispatch(fetchStudentsData());
     resetPagination();
     setStudentName('');
     setStudentEmail('');
@@ -83,53 +36,54 @@ const StudentsFilters = ({ resetPagination, fetchData, setFilters }) => {
     setClassSelected(null);
     setStatusSelected(null);
     setExamSelected(null);
-    setFilters({});
+    dispatch(updateFilters({}));
   };
 
   useEffect(() => {
-    fetchCoursesData(); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+    dispatch(fetchCoursesData(id));
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (courseSelected) {
-      fetchClassesData(courseSelected.value);
+      dispatch(fetchClassesData(id, courseSelected.value));
     } // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseSelected]);
+  }, [id, courseSelected]);
 
   useEffect(() => {
-    if (state.courses.data.length > 0) {
-      const options = state.courses.data.map(course => ({
+    if (stateCourses.data.length > 0) {
+      const options = stateCourses.data.map(course => ({
         ...course,
         label: course.masterCourseName,
         value: course.masterCourseName,
       }));
       setCourseOptions(options);
     }
-  }, [state.courses]);
+  }, [stateCourses]);
 
   const handleStudentsFilter = async (e) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
     const formJson = Object.fromEntries(formData.entries());
-    setFilters(formJson);
+    dispatch(updateFilters(formJson));
     try {
-      fetchData(formJson);
+      dispatch(updateCurrentPage(initialPage));
+      dispatch(fetchStudentsData(initialPage, formJson));
     } catch (error) {
       logError(error);
     }
   };
 
   useEffect(() => {
-    if (state.classes.data.length > 0) {
-      const options = state.classes.data.map(ccx => ({
+    if (stateClasses.data.length > 0) {
+      const options = stateClasses.data.map(ccx => ({
         ...ccx,
         label: ccx.className,
         value: ccx.className,
       }));
       setClassesOptions(options);
     }
-  }, [state.classes]);
+  }, [stateClasses]);
 
   return (
     <div className="filter-container justify-content-center row">
@@ -222,9 +176,7 @@ const StudentsFilters = ({ resetPagination, fetchData, setFilters }) => {
 };
 
 StudentsFilters.propTypes = {
-  fetchData: PropTypes.func.isRequired,
   resetPagination: PropTypes.func.isRequired,
-  setFilters: PropTypes.func.isRequired,
 };
 
 export default StudentsFilters;

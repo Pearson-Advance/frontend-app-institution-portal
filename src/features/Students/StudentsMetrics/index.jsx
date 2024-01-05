@@ -1,42 +1,18 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Card, CardGrid, ToggleButton } from '@edx/paragon';
 import { ToggleButtonGroup } from 'react-paragon-topaz';
-import { logError } from '@edx/frontend-platform/logging';
-import { camelCaseObject } from '@edx/frontend-platform';
-import { getMetricsStudents } from 'features/Students/data/api';
-import { RequestStatus } from 'features/constants';
-import reducer from 'features/Students/StudentsMetrics/reducer';
-import {
-  FETCH_METRICS_DATA_REQUEST,
-  FETCH_METRICS_DATA_SUCCESS,
-  FETCH_METRICS_DATA_FAILURE,
-} from 'features/Students/actionTypes';
+import { fetchMetricsData } from 'features/Students/data/thunks';
+
 import 'features/Students/StudentsMetrics/index.scss';
 
-const initialState = {
-  data: [],
-  status: RequestStatus.SUCCESS,
-  error: null,
-};
-
 const StudentsMetrics = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  const fetchMetricsData = async () => {
-    dispatch({ type: FETCH_METRICS_DATA_REQUEST });
-
-    try {
-      const response = camelCaseObject(await getMetricsStudents());
-      dispatch({ type: FETCH_METRICS_DATA_SUCCESS, payload: response });
-    } catch (error) {
-      dispatch({ type: FETCH_METRICS_DATA_FAILURE, payload: error });
-      logError(error);
-    }
-  };
+  const dispatch = useDispatch();
+  const stateMetrics = useSelector((state) => state.students.metrics.data);
 
   useEffect(() => {
-    fetchMetricsData();
-  }, []);
+    dispatch(fetchMetricsData());
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="container-cards d-flex flex-column">
@@ -63,7 +39,7 @@ const StudentsMetrics = () => {
             title="New students registered"
           />
           <Card.Section>
-            <div className="card-number">{state.data.newStudentsRegistered}</div>
+            <div className="card-number">{stateMetrics.newStudentsRegistered}</div>
           </Card.Section>
         </Card>
         <Card className="card-green">
@@ -71,7 +47,7 @@ const StudentsMetrics = () => {
             title="Classes scheduled"
           />
           <Card.Section>
-            <div className="card-number">{state.data.classesScheduled}</div>
+            <div className="card-number">{stateMetrics.classesScheduled}</div>
           </Card.Section>
         </Card>
       </CardGrid>

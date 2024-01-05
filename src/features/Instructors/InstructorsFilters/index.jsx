@@ -9,8 +9,9 @@ import { Select, Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 
 import { fetchInstructorsData, fetchCoursesData } from 'features/Instructors/data/thunks';
-import { updateFilters } from 'features/Instructors/data/slice';
+import { updateFilters, updateCurrentPage } from 'features/Instructors/data/slice';
 import PropTypes from 'prop-types';
+import { initialPage } from 'features/constants';
 
 const InstructorsFilters = ({ resetPagination }) => {
   const stateInstitution = useSelector((state) => state.main.institution.data);
@@ -43,7 +44,8 @@ const InstructorsFilters = ({ resetPagination }) => {
     const formJson = Object.fromEntries(formData.entries());
     dispatch(updateFilters(formJson));
     try {
-      dispatch(fetchInstructorsData(currentPage, formJson));
+      dispatch(updateCurrentPage(initialPage));
+      dispatch(fetchInstructorsData(initialPage, formJson));
     } catch (error) {
       logError(error);
     }

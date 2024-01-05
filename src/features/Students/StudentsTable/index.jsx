@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import DataTable from '@edx/paragon/dist/DataTable';
 import {
@@ -12,12 +13,13 @@ import {
 import { IntlProvider } from 'react-intl';
 import { handleEnrollments } from 'features/Students/data/api';
 import { getColumns, hideColumns } from 'features/Students/StudentsTable/columns';
+import { fetchStudentsData } from 'features/Students/data/thunks';
 
 const StudentsTable = ({
   data,
   count,
-  fetchData,
 }) => {
+  const dispatch = useDispatch();
   const [isOpenAlertModal, openAlertModal, closeAlertModal] = useToggle(false);
   const [selectedRow, setRow] = useState({});
   const COLUMNS = useMemo(() => getColumns({ openAlertModal, setRow }), [openAlertModal]);
@@ -27,7 +29,7 @@ const StudentsTable = ({
 
   const handleStudentsActions = async () => {
     await handleEnrollments(enrollmentData, selectedRow.ccxId);
-    fetchData();
+    dispatch(fetchStudentsData());
     closeAlertModal();
   };
 
@@ -72,13 +74,11 @@ const StudentsTable = ({
 StudentsTable.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape([])),
   count: PropTypes.number,
-  fetchData: PropTypes.func,
 };
 
 StudentsTable.defaultProps = {
   data: [],
   count: 0,
-  fetchData: null,
 };
 
 export { StudentsTable };

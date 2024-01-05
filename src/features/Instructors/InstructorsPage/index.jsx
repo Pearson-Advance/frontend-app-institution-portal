@@ -2,22 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Container from '@edx/paragon/dist/Container';
-import {
-  Pagination,
-} from '@edx/paragon';
+import { Pagination } from '@edx/paragon';
 import InstructorsTable from 'features/Instructors/InstructorsTable';
 import InstructorsFilters from 'features/Instructors/InstructorsFilters';
 import AddInstructors from 'features/Instructors/AddInstructors';
 
-import {
-  updateCurrentPage,
-} from 'features/Instructors/data/slice';
+import { updateCurrentPage } from 'features/Instructors/data/slice';
 import { fetchInstructorsData } from 'features/Instructors/data/thunks';
+import { initialPage } from 'features/constants';
 
 const InstructorsPage = () => {
-  const stateInstructors = useSelector((state) => state.instructors.table);
+  const stateInstructors = useSelector((state) => state.instructors);
   const dispatch = useDispatch();
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(initialPage);
 
   useEffect(() => {
     dispatch(fetchInstructorsData(currentPage, stateInstructors.filters));
@@ -29,7 +26,7 @@ const InstructorsPage = () => {
   };
 
   const resetPagination = () => {
-    setCurrentPage(1);
+    setCurrentPage(initialPage);
   };
 
   return (
@@ -41,13 +38,13 @@ const InstructorsPage = () => {
       <div className="page-content-container">
         <InstructorsFilters resetPagination={resetPagination} />
         <InstructorsTable
-          data={stateInstructors.data}
-          count={stateInstructors.count}
+          data={stateInstructors.table.data}
+          count={stateInstructors.table.count}
         />
-        {stateInstructors.numPages > 1 && (
+        {stateInstructors.table.numPages > 1 && (
           <Pagination
             paginationLabel="paginationNavigation"
-            pageCount={stateInstructors.numPages}
+            pageCount={stateInstructors.table.numPages}
             currentPage={currentPage}
             onPageSelect={handlePagination}
             variant="reduced"

@@ -1,61 +1,30 @@
-import { getStudentbyInstitutionAdmin } from 'features/Students/data/api';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { StudentsTable } from 'features/Students/StudentsTable/index';
 import StudentsFilters from 'features/Students/StudentsFilters';
 import StudentsMetrics from 'features/Students/StudentsMetrics';
-import { RequestStatus } from 'features/constants';
-import reducer from 'features/Students/StudentsPage/reducer';
-
-import { logError } from '@edx/frontend-platform/logging';
 import Container from '@edx/paragon/dist/Container';
-
-import React, { useEffect, useState, useReducer } from 'react';
-import { camelCaseObject } from '@edx/frontend-platform';
-import {
-  Pagination,
-} from '@edx/paragon';
-import {
-  FETCH_STUDENTS_DATA_REQUEST,
-  FETCH_STUDENTS_DATA_SUCCESS,
-  FETCH_STUDENTS_DATA_FAILURE,
-  UPDATE_CURRENT_PAGE,
-} from 'features/Students/actionTypes';
-
-const initialState = {
-  data: [],
-  status: RequestStatus.SUCCESS,
-  error: null,
-  currentPage: 1,
-  numPages: 0,
-};
+import { Pagination } from '@edx/paragon';
+import { updateCurrentPage } from 'features/Students/data/slice';
+import { fetchStudentsData } from 'features/Students/data/thunks';
+import { initialPage } from 'features/constants';
 
 const StudentsPage = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filters, setFilters] = useState({});
-
-  const fetchData = async (filtersData) => {
-    dispatch({ type: FETCH_STUDENTS_DATA_REQUEST });
-
-    try {
-      const response = camelCaseObject(await getStudentbyInstitutionAdmin(currentPage, filtersData));
-      dispatch({ type: FETCH_STUDENTS_DATA_SUCCESS, payload: response.data });
-    } catch (error) {
-      dispatch({ type: FETCH_STUDENTS_DATA_FAILURE, payload: error });
-      logError(error);
-    }
-  };
+  const dispatch = useDispatch();
+  const stateStudents = useSelector((state) => state.students);
+  const [currentPage, setCurrentPage] = useState(initialPage);
 
   useEffect(() => {
-    fetchData(filters); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, filters]);
+    dispatch(fetchStudentsData(currentPage, stateStudents.filters));
+  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const resetPagination = () => {
-    setCurrentPage(1);
+    setCurrentPage(initialPage);
   };
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
-    dispatch({ type: UPDATE_CURRENT_PAGE, payload: targetPage });
+    dispatch(updateCurrentPage(targetPage));
   };
 
   return (
@@ -63,16 +32,15 @@ const StudentsPage = () => {
       <h2 className="title-page">Students</h2>
       <StudentsMetrics />
       <div className="page-content-container">
-        <StudentsFilters fetchData={fetchData} resetPagination={resetPagination} setFilters={setFilters} />
+        <StudentsFilters resetPagination={resetPagination} />
         <StudentsTable
-          data={state.data}
-          count={state.count}
-          fetchData={fetchData}
+          data={stateStudents.table.data}
+          count={stateStudents.table.count}
         />
-        {state.numPages > 1 && (
+        {stateStudents.table.numPages > 1 && (
           <Pagination
             paginationLabel="paginationNavigation"
-            pageCount={state.numPages}
+            pageCount={stateStudents.table.numPages}
             currentPage={currentPage}
             onPageSelect={handlePagination}
             variant="reduced"

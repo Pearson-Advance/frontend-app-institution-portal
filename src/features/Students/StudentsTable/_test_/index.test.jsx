@@ -1,12 +1,24 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { StudentsTable } from 'features/Students/StudentsTable';
 import { getColumns } from 'features/Students/StudentsTable/columns';
+import { initializeStore } from 'store';
+
+let store;
 
 describe('Student Table', () => {
+  beforeEach(() => {
+    store = initializeStore();
+  });
+
   test('renders StudentsTable without data', () => {
-    render(<StudentsTable data={[]} count={0} columns={[]} />);
+    render(
+      <Provider store={store}>
+        <StudentsTable data={[]} count={0} columns={[]} />
+      </Provider>,
+    );
     const emptyTableText = screen.getByText('No students found.');
     expect(emptyTableText).toBeInTheDocument();
   });
@@ -44,34 +56,29 @@ describe('Student Table', () => {
     ];
 
     const component = render(
-      <StudentsTable data={data} count={data.length} columns={getColumns()} />,
+      <Provider store={store}>
+        <StudentsTable data={data} count={data.length} columns={getColumns()} />
+      </Provider>,
     );
 
-    // Check if the table rows are present
     const tableRows = screen.getAllByRole('row');
-    expect(tableRows).toHaveLength(data.length + 1); // Data rows + 1 header row
+    expect(tableRows).toHaveLength(data.length + 1);
 
-    // Check student names
     expect(component.container).toHaveTextContent('Student 1');
     expect(component.container).toHaveTextContent('Student 2');
 
-    // Check course names
     expect(component.container).toHaveTextContent('course 1');
     expect(component.container).toHaveTextContent('course 2');
 
-    // Check class names
     expect(component.container).toHaveTextContent('class 1');
     expect(component.container).toHaveTextContent('class 2');
 
-    // Check instructors names
     expect(component.container).toHaveTextContent('Instructor 1');
     expect(component.container).toHaveTextContent('Instructor 2');
 
-    // Check exam ready
     expect(component.container).toHaveTextContent('yes');
     expect(component.container).toHaveTextContent('no');
 
-    // Ensure "No students found." is not present
     expect(screen.queryByText('No students found.')).toBeNull();
   });
 });
