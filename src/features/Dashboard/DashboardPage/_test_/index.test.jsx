@@ -7,6 +7,12 @@ import { initializeStore } from 'store';
 
 let store;
 
+jest.mock('axios');
+
+jest.mock('@edx/frontend-platform/logging', () => ({
+  logError: jest.fn(),
+}));
+
 describe('DashboardPage component', () => {
   beforeEach(() => {
     store = initializeStore();
@@ -23,5 +29,6 @@ describe('DashboardPage component', () => {
     expect(getByText('Next month')).toBeInTheDocument();
     expect(getByText('New students registered')).toBeInTheDocument();
     expect(getByText('Classes scheduled')).toBeInTheDocument();
+    expect(getByText('License inventory')).toBeInTheDocument();
   });
 });
