@@ -1,5 +1,5 @@
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
-import { getCoursesByInstitution } from 'features/Common/data/api';
+import { getCoursesByInstitution, getLicensesByInstitution } from 'features/Common/data/api';
 
 jest.mock('@edx/frontend-platform/auth', () => ({
   getAuthenticatedHttpClient: jest.fn(),
@@ -12,8 +12,8 @@ jest.mock('@edx/frontend-platform', () => ({
   })),
 }));
 
-describe('getCoursesByInstitution', () => {
-  test('should call getAuthenticatedHttpClient with the correct parameters', () => {
+describe('Common api services', () => {
+  test('should call getCoursesByInstitution with the correct parameters', () => {
     const httpClientMock = {
       get: jest.fn(),
     };
@@ -32,6 +32,26 @@ describe('getCoursesByInstitution', () => {
     expect(httpClientMock.get).toHaveBeenCalledWith(
       'http://localhost:18000/pearson_course_operation/api/v2/courses/?limit=true&institution_id=1',
       { params: { page } },
+    );
+  });
+
+  test('should call getLicensesByInstitution with the correct parameters', () => {
+    const httpClientMock = {
+      get: jest.fn(),
+    };
+
+    const institutionId = 1;
+
+    getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
+
+    getLicensesByInstitution(institutionId, true);
+
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(2);
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
+
+    expect(httpClientMock.get).toHaveBeenCalledTimes(1);
+    expect(httpClientMock.get).toHaveBeenCalledWith(
+      'http://localhost:18000/pearson_course_operation/api/v2/license-pool/?limit=true&institution_id=1',
     );
   });
 });
