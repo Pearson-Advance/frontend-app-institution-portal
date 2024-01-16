@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { Container } from '@edx/paragon';
 import StudentsMetrics from 'features/Students/StudentsMetrics';
@@ -7,10 +8,12 @@ import LicensesTable from 'features/Licenses/LicensesTable';
 import { Button } from 'react-paragon-topaz';
 
 import { fetchLicensesData } from 'features/Dashboard/data';
+import { updateActiveTab } from 'features/Main/data/slice';
 
 import 'features/Dashboard/DashboardPage/index.scss';
 
 const DashboardPage = () => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const stateInstitution = useSelector((state) => state.main.institution.data);
   const licenseData = useSelector((state) => state.dashboard.tableLicense.data);
@@ -19,6 +22,11 @@ const DashboardPage = () => {
   let idInstitution = '';
   // eslint-disable-next-line no-unused-expressions
   stateInstitution.length > 0 ? idInstitution = stateInstitution[0].id : idInstitution = '';
+
+  const handleViewAllLicenses = () => {
+    history.push('/licenses');
+    dispatch(updateActiveTab('licenses'));
+  };
 
   useEffect(() => {
     if (licenseData.length > 5) {
@@ -43,9 +51,9 @@ const DashboardPage = () => {
       </h2>
       <StudentsMetrics />
       <div className="license-section">
-        <div className="d-flex justify-content-between">
+        <div className="d-flex justify-content-between px-4">
           <h3>License inventory</h3>
-          <Button variant="outline-primary">View All</Button>
+          <Button onClick={handleViewAllLicenses} variant="outline-primary">View All</Button>
         </div>
         <LicensesTable data={dataTableLicense} />
       </div>

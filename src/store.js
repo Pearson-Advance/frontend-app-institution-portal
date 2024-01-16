@@ -4,6 +4,7 @@ import { reducer as mainReducer } from 'features/Main/data';
 import { reducer as coursesReducer } from 'features/Courses/data';
 import { reducer as studentsReducer } from 'features/Students/data';
 import { reducer as dashboardReducer } from 'features/Dashboard/data';
+import { reducer as licensesReducer } from 'features/Licenses/data';
 
 export function initializeStore(preloadedState = undefined) {
   return configureStore({
@@ -13,6 +14,7 @@ export function initializeStore(preloadedState = undefined) {
       courses: coursesReducer,
       students: studentsReducer,
       dashboard: dashboardReducer,
+      licenses: licensesReducer,
     },
     preloadedState,
   });
