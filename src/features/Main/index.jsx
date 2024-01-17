@@ -12,6 +12,7 @@ import { getConfig } from '@edx/frontend-platform';
 import InstructorsPage from 'features/Instructors/InstructorsPage';
 import CoursesPage from 'features/Courses/CoursesPage';
 import DashboardPage from 'features/Dashboard/DashboardPage';
+import LicensesPage from 'features/Licenses/LicensesPage';
 import { fetchInstitutionData } from 'features/Main/data/thunks';
 import './index.scss';
 
@@ -28,7 +29,7 @@ const Main = () => {
       <div className="pageWrapper">
         <Sidebar />
         <main>
-          <Container size="xl" className="px-0 container-pages">
+          <Container className="px-0 container-pages">
             <Switch>
               <Route exact path="/">
                 <Redirect to="/dashboard" />
@@ -45,6 +46,9 @@ const Main = () => {
             </Switch>
             <Switch>
               <Route path="/courses" exact component={CoursesPage} />
+            </Switch>
+            <Switch>
+              <Route path="/licenses" exact component={LicensesPage} />
             </Switch>
             <Footer />
           </Container>

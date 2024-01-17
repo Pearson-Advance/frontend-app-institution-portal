@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { updateActiveTab } from 'features/Main/data/slice';
 import './index.scss';
 
 export const Sidebar = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const dispatch = useDispatch();
+  const activeTab = useSelector((state) => state.main.activeTab);
   const history = useHistory();
 
   const handleTabClick = (tabName) => {
-    setActiveTab(tabName);
+    dispatch(updateActiveTab(tabName));
     history.push(`/${tabName}`);
   };
 
@@ -24,6 +27,17 @@ export const Sidebar = () => {
             >
               <i className="fa-regular fa-house" />
               <span className="nav-text">Home</span>
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              className={`${activeTab === 'licenses' ? 'active' : ''} sidebar-item`}
+              aria-current="page"
+              onClick={() => handleTabClick('licenses')}
+            >
+              <i className="fa-regular fa-list-check" />
+              <span className="nav-text">License inventory</span>
             </button>
           </li>
           <li>

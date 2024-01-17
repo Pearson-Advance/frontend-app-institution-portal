@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
 import { fetchInstitutionData } from 'features/Main/data/thunks';
+import { updateActiveTab } from 'features/Main/data/slice';
 import { executeThunk } from 'test-utils';
 import { initializeStore } from 'store';
 
@@ -50,5 +51,12 @@ describe('Instructors redux tests', () => {
 
     expect(store.getState().main.institution.status)
       .toEqual('success');
+  });
+
+  test('update active tab', () => {
+    const newActiveTab = 'courses';
+
+    store.dispatch(updateActiveTab(newActiveTab));
+    expect(store.getState().main.activeTab).toEqual(newActiveTab);
   });
 });

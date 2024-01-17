@@ -1,0 +1,46 @@
+/* eslint-disable no-param-reassign */
+import { createSlice } from '@reduxjs/toolkit';
+import { RequestStatus } from 'features/constants';
+
+const initialState = {
+  table: {
+    currentPage: 1,
+    data: [],
+    status: RequestStatus.LOADING,
+    error: null,
+    numPages: 0,
+    count: 0,
+  },
+};
+
+export const licensesSlice = createSlice({
+  name: 'licenses',
+  initialState,
+  reducers: {
+    updateCurrentPage: (state, { payload }) => {
+      state.table.currentPage = payload;
+    },
+    fetchLicensesDataRequest: (state) => {
+      state.table.status = RequestStatus.LOADING;
+    },
+    fetchLicensesDataSuccess: (state, { payload }) => {
+      const { results, count, numPages } = payload;
+      state.table.status = RequestStatus.SUCCESS;
+      state.table.data = results;
+      state.table.numPages = numPages;
+      state.table.count = count;
+    },
+    fetchLicensesDataFailed: (state) => {
+      state.table.status = RequestStatus.ERROR;
+    },
+  },
+});
+
+export const {
+  updateCurrentPage,
+  fetchLicensesDataRequest,
+  fetchLicensesDataSuccess,
+  fetchLicensesDataFailed,
+} = licensesSlice.actions;
+
+export const { reducer } = licensesSlice;
