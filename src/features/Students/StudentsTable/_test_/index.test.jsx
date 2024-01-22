@@ -32,10 +32,7 @@ describe('Student Table', () => {
         courseName: 'course 1',
         classId: '1',
         className: 'class 1',
-        instructors: ['Instructor 1'],
         created: 'Fri, 25 Aug 2023 19:01:22 GMT',
-        firstAccess: 'Fri, 25 Aug 2023 19:01:23 GMT',
-        lastAccess: 'Fri, 25 Aug 2023 20:20:22 GMT',
         status: 'Active',
         examReady: true,
       },
@@ -46,10 +43,7 @@ describe('Student Table', () => {
         courseName: 'course 2',
         classId: '2',
         className: 'class 2',
-        instructors: ['Instructor 2'],
         created: 'Sat, 26 Aug 2023 19:01:22 GMT',
-        firstAccess: 'Sat, 26 Aug 2023 19:01:24 GMT',
-        lastAccess: 'Sat, 26 Aug 2023 21:22:22 GMT',
         status: 'Pending',
         examReady: null,
       },
@@ -67,14 +61,11 @@ describe('Student Table', () => {
     expect(component.container).toHaveTextContent('Student 1');
     expect(component.container).toHaveTextContent('Student 2');
 
-    expect(component.container).toHaveTextContent('course 1');
-    expect(component.container).toHaveTextContent('course 2');
+    expect(component.container).toHaveTextContent('student1@example.com');
+    expect(component.container).toHaveTextContent('student2@example.com');
 
     expect(component.container).toHaveTextContent('class 1');
     expect(component.container).toHaveTextContent('class 2');
-
-    expect(component.container).toHaveTextContent('Instructor 1');
-    expect(component.container).toHaveTextContent('Instructor 2');
 
     expect(component.container).toHaveTextContent('yes');
     expect(component.container).toHaveTextContent('no');
