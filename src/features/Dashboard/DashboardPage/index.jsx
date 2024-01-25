@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { Container } from '@edx/paragon';
+import { Container, Col, Row } from '@edx/paragon';
 import StudentsMetrics from 'features/Students/StudentsMetrics';
 import LicensesTable from 'features/Licenses/LicensesTable';
 import { Button } from 'react-paragon-topaz';
+import InstructorAssignSection from 'features/Dashboard/InstructorAssignSection';
 
 import { fetchLicensesData } from 'features/Dashboard/data';
 import { updateActiveTab } from 'features/Main/data/slice';
@@ -50,13 +51,22 @@ const DashboardPage = () => {
         {stateInstitution.length === 1 ? `Welcome to ${stateInstitution[0].name}` : 'Select an institution'}
       </h2>
       <StudentsMetrics />
-      <div className="license-section">
-        <div className="d-flex justify-content-between px-4">
-          <h3>License inventory</h3>
-          <Button onClick={handleViewAllLicenses} variant="outline-primary">View All</Button>
-        </div>
-        <LicensesTable data={dataTableLicense} />
-      </div>
+      <Row>
+        <Col lg="9" xs="12">
+          <div className="license-section">
+            <div className="d-flex justify-content-between px-4">
+              <h3>License inventory</h3>
+              <Button onClick={handleViewAllLicenses} variant="outline-primary">View All</Button>
+            </div>
+            <LicensesTable data={dataTableLicense} />
+          </div>
+        </Col>
+        <Col lg="3" xs="12">
+          <div className="instructor-assign-section">
+            <InstructorAssignSection />
+          </div>
+        </Col>
+      </Row>
     </Container>
   );
 };

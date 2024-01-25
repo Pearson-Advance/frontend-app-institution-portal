@@ -1,0 +1,49 @@
+@import "assets/colors.scss";
+
+.title-instr-assign {
+  padding: 1rem;
+  border-bottom: 1px solid $gray-20;
+  margin: 0;
+}
+
+.instructor-assign-section .view-all-btn.btn-primary:not(:disabled):not(.disabled)  {
+  text-decoration: underline;
+
+  &:hover,
+  &:active,
+  &:focus,
+  &:focus-visible {
+    color: $primary;
+    background: transparent;
+    border: none;
+    outline: none;
+    text-decoration: underline;
+  }
+}
+
+.class-card-container {
+  padding: 1rem;
+  border-bottom: 1px solid $gray-20;
+
+  .course-name {
+    margin-bottom: 0.3rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: $gray-70;
+  }
+
+  .date {
+    font-size: 1rem;
+    line-height: 21px;
+    color: $gray-70;
+  }
+
+  .fa-calendar-day {
+    margin-right: 8px;
+  }
+
+  .fa-chalkboard-user {
+    margin-right: 5px;
+  }
+}

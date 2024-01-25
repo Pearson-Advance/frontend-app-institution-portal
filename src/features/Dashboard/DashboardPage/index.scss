@@ -4,3 +4,13 @@
   background-color: $color-white;
   padding: 2rem 0;
 }
+
+.instructor-assign-section {
+  background-color: $color-white;
+}
+
+.license-section,
+.instructor-assign-section {
+  box-shadow: 0px 3px 12px 0px rgba(0, 0, 0, 0.16);
+  border-radius: 0.375rem;
+}
