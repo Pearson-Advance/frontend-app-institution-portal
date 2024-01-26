@@ -14,8 +14,8 @@ import {
   fetchMetricsDataSuccess,
   fetchMetricsDataFailed,
 } from 'features/Students/data/slice';
-import { getStudentbyInstitutionAdmin, getClassesByInstitution, getMetricsStudents } from 'features/Students/data/api';
-import { getCoursesByInstitution } from 'features/Common/data/api';
+import { getStudentbyInstitutionAdmin, getMetricsStudents } from 'features/Students/data/api';
+import { getCoursesByInstitution, getClassesByInstitution } from 'features/Common/data/api';
 
 function fetchStudentsData(currentPage, filtersData) {
   return async (dispatch) => {
@@ -50,7 +50,7 @@ function fetchClassesData(id, courseName) {
     dispatch(fetchClassesDataRequest());
 
     try {
-      const response = camelCaseObject(await getClassesByInstitution(id, courseName));
+      const response = camelCaseObject(await getClassesByInstitution(id, courseName, false));
       dispatch(fetchClassesDataSuccess(response.data));
     } catch (error) {
       dispatch(fetchClassesDataFailed());

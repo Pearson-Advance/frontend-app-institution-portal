@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types, no-nested-ternary */
-import moment from 'moment';
+import { differenceInHours, differenceInDays, differenceInWeeks } from 'date-fns';
 
 const columns = [
   {
@@ -10,11 +10,11 @@ const columns = [
     Header: 'Last seen',
     accessor: 'lastAccess',
     Cell: ({ row }) => {
-      const currentDate = moment(Date.now());
-      const lastDate = moment(new Date(row.values.lastAccess));
-      const diffHours = currentDate.diff(lastDate, 'hours');
-      const diffDays = currentDate.diff(lastDate, 'days');
-      const diffWeeks = currentDate.diff(lastDate, 'weeks');
+      const currentDate = Date.now();
+      const lastDate = new Date(row.values.lastAccess);
+      const diffHours = differenceInHours(currentDate, lastDate);
+      const diffDays = differenceInDays(currentDate, lastDate);
+      const diffWeeks = differenceInWeeks(currentDate, lastDate);
       return (
         <span>{diffHours < 24
           ? 'Today'

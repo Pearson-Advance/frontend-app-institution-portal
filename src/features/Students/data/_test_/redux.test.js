@@ -130,7 +130,7 @@ describe('Students redux tests', () => {
   });
 
   test('successful fetch classes data', async () => {
-    const studentsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=false&institution_id=1&course_name=Demo`;
+    const studentsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=false&institution_id=1&course_name=Demo&instructors=`;
     const mockResponse = [
       {
         classId: 'ccx-v1:demo+demo1+2020+ccx@2',
@@ -154,14 +154,14 @@ describe('Students redux tests', () => {
   });
 
   test('failed fetch classes data', async () => {
-    const studentsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=false&institution_id=1`;
+    const studentsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=false&institution_id=1&course_name=Demo&instructors=`;
     axiosMock.onGet(studentsApiUrl)
       .reply(500);
 
     expect(store.getState().students.classes.status)
       .toEqual('loading');
 
-    await executeThunk(fetchClassesData(1), store.dispatch, store.getState);
+    await executeThunk(fetchClassesData(1, 'Demo'), store.dispatch, store.getState);
 
     expect(store.getState().students.classes.data)
       .toEqual([]);

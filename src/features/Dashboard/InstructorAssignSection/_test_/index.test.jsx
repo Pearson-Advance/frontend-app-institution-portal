@@ -1,5 +1,5 @@
 import React from 'react';
-import DashboardPage from 'features/Dashboard/DashboardPage';
+import InstructorAssignSection from 'features/Dashboard/InstructorAssignSection';
 import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
 
@@ -7,19 +7,9 @@ jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
 }));
 
-describe('DashboardPage component', () => {
+describe('Instructor Assign component', () => {
   const mockStore = {
     dashboard: {
-      tableLicense: {
-        data: [
-          {
-            licenseName: 'License Name 1',
-            purchasedSeats: 20,
-            numberOfStudents: 6,
-            numberOfPendingStudents: 11,
-          },
-        ],
-      },
       classes: {
         data: [
           {
@@ -37,24 +27,18 @@ describe('DashboardPage component', () => {
       },
     },
   };
-
   const component = renderWithProviders(
-    <DashboardPage />,
+    <InstructorAssignSection />,
     { preloadedState: mockStore },
   );
 
   test('renders components', () => {
     const { getByText } = component;
 
-    expect(getByText('This week')).toBeInTheDocument();
-    expect(getByText('Next week')).toBeInTheDocument();
-    expect(getByText('Next month')).toBeInTheDocument();
-    expect(getByText('New students registered')).toBeInTheDocument();
-    expect(getByText('Classes scheduled')).toBeInTheDocument();
-    expect(getByText('License inventory')).toBeInTheDocument();
     expect(getByText('Instructor assignment')).toBeInTheDocument();
     expect(getByText('ccx 1')).toBeInTheDocument();
     expect(getByText('Demo Course 1')).toBeInTheDocument();
-    expect(getByText('License Name 1')).toBeInTheDocument();
+    expect(getByText('Jan 23, 2024')).toBeInTheDocument();
+    expect(getByText('Assign instructor')).toBeInTheDocument();
   });
 });

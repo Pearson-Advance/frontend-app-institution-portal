@@ -1,5 +1,9 @@
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
-import { getCoursesByInstitution, getLicensesByInstitution } from 'features/Common/data/api';
+import {
+  getCoursesByInstitution,
+  getLicensesByInstitution,
+  getClassesByInstitution,
+} from 'features/Common/data/api';
 
 jest.mock('@edx/frontend-platform/auth', () => ({
   getAuthenticatedHttpClient: jest.fn(),
@@ -13,6 +17,7 @@ jest.mock('@edx/frontend-platform', () => ({
 }));
 
 describe('Common api services', () => {
+  const COURSE_OPERATIONS_API_V2 = 'http://localhost:18000/pearson_course_operation/api/v2';
   test('should call getCoursesByInstitution with the correct parameters', () => {
     const httpClientMock = {
       get: jest.fn(),
@@ -30,7 +35,7 @@ describe('Common api services', () => {
 
     expect(httpClientMock.get).toHaveBeenCalledTimes(1);
     expect(httpClientMock.get).toHaveBeenCalledWith(
-      'http://localhost:18000/pearson_course_operation/api/v2/courses/?limit=true&institution_id=1',
+      `${COURSE_OPERATIONS_API_V2}/courses/?limit=true&institution_id=1`,
       { params: { page } },
     );
   });
@@ -51,7 +56,28 @@ describe('Common api services', () => {
 
     expect(httpClientMock.get).toHaveBeenCalledTimes(1);
     expect(httpClientMock.get).toHaveBeenCalledWith(
-      'http://localhost:18000/pearson_course_operation/api/v2/license-pool/?limit=true&institution_id=1',
+      `${COURSE_OPERATIONS_API_V2}/license-pool/?limit=true&institution_id=1`,
+    );
+  });
+
+  test('should call getClassesByInstitution with the correct parameters', () => {
+    const httpClientMock = {
+      get: jest.fn(),
+    };
+
+    const institutionId = 1;
+    const courseName = 'ccx1';
+
+    getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
+
+    getClassesByInstitution(institutionId, courseName);
+
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(3);
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
+
+    expect(httpClientMock.get).toHaveBeenCalledTimes(1);
+    expect(httpClientMock.get).toHaveBeenCalledWith(
+      `${COURSE_OPERATIONS_API_V2}/classes/?limit=false&institution_id=1&course_name=ccx1&instructors=`,
     );
   });
 });
