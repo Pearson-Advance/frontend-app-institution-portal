@@ -17,12 +17,9 @@ const DashboardPage = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const stateInstitution = useSelector((state) => state.main.institution.data);
+  const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const licenseData = useSelector((state) => state.dashboard.tableLicense.data);
   const [dataTableLicense, setDataTableLicense] = useState([]);
-
-  let idInstitution = '';
-  // eslint-disable-next-line no-unused-expressions
-  stateInstitution.length > 0 ? idInstitution = stateInstitution[0].id : idInstitution = '';
 
   const handleViewAllLicenses = () => {
     history.push('/licenses');
@@ -42,13 +39,15 @@ const DashboardPage = () => {
   }, [licenseData]);
 
   useEffect(() => {
-    dispatch(fetchLicensesData(idInstitution));
-  }, [idInstitution]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (Object.keys(selectedInstitution).length > 0) {
+      dispatch(fetchLicensesData(selectedInstitution?.id));
+    }
+  }, [selectedInstitution, dispatch]);
 
   return (
     <Container size="xl" className="px-4">
       <h2 className="title-page">
-        {stateInstitution.length === 1 ? `Welcome to ${stateInstitution[0].name}` : 'Select an institution'}
+        {Object.keys(selectedInstitution).length > 0 ? `Welcome to ${selectedInstitution?.name}` : `Welcome to ${stateInstitution[0]?.name}`}
       </h2>
       <StudentsMetrics />
       <Row>

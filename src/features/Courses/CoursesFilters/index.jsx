@@ -12,14 +12,10 @@ import { initialPage } from 'features/constants';
 
 const CoursesFilters = ({ resetPagination }) => {
   const dispatch = useDispatch();
-  const stateInstitution = useSelector((state) => state.main.institution.data);
+  const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const stateCourses = useSelector((state) => state.courses.table.data);
   const [courseOptions, setCourseOptions] = useState([]);
   const [courseSelected, setCourseSelected] = useState(null);
-  let id = '';
-  if (stateInstitution.length === 1) {
-    id = stateInstitution[0].id;
-  }
 
   const handleCoursesFilter = async (e) => {
     e.preventDefault();
@@ -29,14 +25,14 @@ const CoursesFilters = ({ resetPagination }) => {
     dispatch(updateFilters(formJson));
     try {
       dispatch(updateCurrentPage(initialPage));
-      dispatch(fetchCoursesData(id, initialPage, formJson));
+      dispatch(fetchCoursesData(selectedInstitution.id, initialPage, formJson));
     } catch (error) {
       logError(error);
     }
   };
 
   const handleCleanFilters = () => {
-    dispatch(fetchCoursesData(id));
+    dispatch(fetchCoursesData(selectedInstitution.id));
     resetPagination();
     setCourseSelected(null);
     dispatch(updateFilters({}));

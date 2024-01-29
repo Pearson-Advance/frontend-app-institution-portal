@@ -17,12 +17,12 @@ import {
 import { getStudentbyInstitutionAdmin, getMetricsStudents } from 'features/Students/data/api';
 import { getCoursesByInstitution, getClassesByInstitution } from 'features/Common/data/api';
 
-function fetchStudentsData(currentPage, filtersData) {
+function fetchStudentsData(id, currentPage, filtersData) {
   return async (dispatch) => {
     dispatch(fetchStudentsDataRequest());
 
     try {
-      const response = camelCaseObject(await getStudentbyInstitutionAdmin(currentPage, filtersData));
+      const response = camelCaseObject(await getStudentbyInstitutionAdmin(id, currentPage, filtersData));
       dispatch(fetchStudentsDataSuccess(response.data));
     } catch (error) {
       dispatch(fetchStudentsDataFailed());

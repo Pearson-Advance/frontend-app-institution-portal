@@ -28,8 +28,8 @@ describe('Dashboard redux tests', () => {
   });
 
   test('successful fetch licenses data', async () => {
-    const licensesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/license-pool/`
-    + '?limit=false&institution_id=1';
+    const licensesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/license-pool`
+    + '/?limit=false&institution_id=1&page=';
     const mockResponse = [
       {
         licenseName: 'License Name 1',

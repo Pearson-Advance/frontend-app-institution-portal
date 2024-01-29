@@ -19,10 +19,11 @@ describe('getInstructorData', () => {
     };
 
     const page = 1;
+    const institutionId = 1;
 
     getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
 
-    getInstructorData(page);
+    getInstructorData(institutionId, page);
 
     expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
     expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
@@ -30,7 +31,7 @@ describe('getInstructorData', () => {
     expect(httpClientMock.get).toHaveBeenCalledTimes(1);
     expect(httpClientMock.get).toHaveBeenCalledWith(
       'http://localhost:18000/pearson_course_operation/api/v2/instructors/',
-      { params: { page } },
+      { params: { page, institution_id: institutionId } },
     );
   });
 });

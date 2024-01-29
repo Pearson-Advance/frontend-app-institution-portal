@@ -1,58 +1,44 @@
 import React from 'react';
-import axios from 'axios';
 import CoursesPage from 'features/Courses/CoursesPage';
-import {
-  render,
-  waitFor,
-} from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import { Provider } from 'react-redux';
-import { initializeStore } from 'store';
-
-let store;
-
-jest.mock('axios');
+import { renderWithProviders } from 'test-utils';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
 }));
 
-const mockResponse = {
-  data: {
-    results: [
-      {
-        masterCourseName: 'Demo Course 1',
-        numberOfClasses: 1,
-        missingClassesForInstructor: null,
-        numberOfStudents: 1,
-        numberOfPendingStudents: 1,
-      },
-      {
-        masterCourseName: 'Demo Course 2',
-        numberOfClasses: 1,
-        missingClassesForInstructor: 1,
-        numberOfStudents: 16,
-        numberOfPendingStudents: 0,
-      },
-    ],
-    count: 2,
-    num_pages: 1,
-    current_page: 1,
+const mockStore = {
+  courses: {
+    table: {
+      data: [
+        {
+          masterCourseName: 'Demo Course 1',
+          numberOfClasses: 1,
+          missingClassesForInstructor: null,
+          numberOfStudents: 1,
+          numberOfPendingStudents: 1,
+        },
+        {
+          masterCourseName: 'Demo Course 2',
+          numberOfClasses: 1,
+          missingClassesForInstructor: 1,
+          numberOfStudents: 16,
+          numberOfPendingStudents: 0,
+        },
+      ],
+      count: 2,
+      num_pages: 1,
+      current_page: 1,
+    },
   },
 };
 
 describe('CoursesPage', () => {
-  beforeEach(() => {
-    store = initializeStore();
-  });
-
   it('renders courses data and pagination', async () => {
-    axios.get.mockResolvedValue(mockResponse);
-
-    const component = render(
-      <Provider store={store}>
-        <CoursesPage />
-      </Provider>,
+    const component = renderWithProviders(
+      <CoursesPage />,
+      { preloadedState: mockStore },
     );
 
     waitFor(() => {

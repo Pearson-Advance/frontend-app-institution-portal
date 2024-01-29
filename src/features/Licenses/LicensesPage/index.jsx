@@ -11,13 +11,9 @@ import { initialPage } from 'features/constants';
 
 const LicensesPage = () => {
   const dispatch = useDispatch();
-  const stateInstitution = useSelector((state) => state.main.institution.data);
+  const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const stateLicenses = useSelector((state) => state.licenses.table);
   const [currentPage, setCurrentPage] = useState(initialPage);
-
-  let idInstitution = '';
-  // eslint-disable-next-line no-unused-expressions
-  stateInstitution.length > 0 ? idInstitution = stateInstitution[0].id : idInstitution = '';
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -25,8 +21,10 @@ const LicensesPage = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchLicensesData(idInstitution));
-  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (Object.keys(selectedInstitution).length > 0) {
+      dispatch(fetchLicensesData(selectedInstitution?.id, currentPage));
+    }
+  }, [currentPage, selectedInstitution, dispatch]);
 
   return (
     <Container size="xl" className="px-4">

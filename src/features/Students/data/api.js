@@ -1,9 +1,10 @@
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { getConfig } from '@edx/frontend-platform';
 
-function getStudentbyInstitutionAdmin(page, filters) {
+function getStudentbyInstitutionAdmin(institutionId, page, filters) {
   const params = {
     page,
+    institution_id: institutionId,
     ...filters,
   };
 

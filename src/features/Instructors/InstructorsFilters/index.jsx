@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import { initialPage } from 'features/constants';
 
 const InstructorsFilters = ({ resetPagination }) => {
-  const stateInstitution = useSelector((state) => state.main.institution.data);
+  const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const stateInstructors = useSelector((state) => state.instructors.courses);
   const currentPage = useSelector((state) => state.instructors.table.currentPage);
   const dispatch = useDispatch();
@@ -22,14 +22,9 @@ const InstructorsFilters = ({ resetPagination }) => {
   const [instructorName, setInstructorName] = useState('');
   const [instructorEmail, setInstructorEmail] = useState('');
   const [courseSelected, setCourseSelected] = useState(null);
-  // check this after implementation of selector institution
-  let id = '';
-  if (stateInstitution.length === 1) {
-    id = stateInstitution[0].id;
-  }
 
   const handleCleanFilters = () => {
-    dispatch(fetchInstructorsData(currentPage));
+    dispatch(fetchInstructorsData(selectedInstitution?.id, currentPage));
     resetPagination();
     setInstructorName('');
     setInstructorEmail('');
@@ -45,15 +40,17 @@ const InstructorsFilters = ({ resetPagination }) => {
     dispatch(updateFilters(formJson));
     try {
       dispatch(updateCurrentPage(initialPage));
-      dispatch(fetchInstructorsData(initialPage, formJson));
+      dispatch(fetchInstructorsData(selectedInstitution?.id, initialPage, formJson));
     } catch (error) {
       logError(error);
     }
   };
 
   useEffect(() => {
-    dispatch(fetchCoursesData(id)); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+    if (Object.keys(selectedInstitution).length > 0) {
+      dispatch(fetchCoursesData(selectedInstitution.id));
+    }
+  }, [selectedInstitution, dispatch]);
 
   useEffect(() => {
     if (stateInstructors.data.length > 0) {
