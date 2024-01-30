@@ -11,19 +11,16 @@ import { fetchCoursesData } from 'features/Courses/data/thunks';
 import { initialPage } from 'features/constants';
 
 const CoursesPage = () => {
-  const stateInstitution = useSelector((state) => state.main.institution.data);
+  const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const stateCourses = useSelector((state) => state.courses);
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(initialPage);
-  // check this after implementation of selector institution
-  let id = '';
-  if (stateInstitution.length === 1) {
-    id = stateInstitution[0].id;
-  }
 
   useEffect(() => {
-    dispatch(fetchCoursesData(id, currentPage, stateCourses.filters));
-  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (Object.keys(selectedInstitution).length > 0) {
+      dispatch(fetchCoursesData(selectedInstitution.id, currentPage, stateCourses.filters));
+    }
+  }, [currentPage, selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);

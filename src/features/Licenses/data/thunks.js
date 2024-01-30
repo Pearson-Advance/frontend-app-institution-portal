@@ -8,11 +8,11 @@ import {
   fetchLicensesDataFailed,
 } from 'features/Licenses/data/slice';
 
-function fetchLicensesData(id) {
+function fetchLicensesData(id, currentPage) {
   return async (dispatch) => {
     dispatch(fetchLicensesDataRequest());
     try {
-      const response = camelCaseObject(await getLicensesByInstitution(id, true));
+      const response = camelCaseObject(await getLicensesByInstitution(id, true, currentPage));
       dispatch(fetchLicensesDataSuccess(response.data));
     } catch (error) {
       dispatch(fetchLicensesDataFailed());

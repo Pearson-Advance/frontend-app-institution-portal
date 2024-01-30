@@ -12,7 +12,7 @@ const StudentsMetrics = () => {
 
   useEffect(() => {
     dispatch(fetchMetricsData());
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   return (
     <div className="container-cards d-flex flex-column">

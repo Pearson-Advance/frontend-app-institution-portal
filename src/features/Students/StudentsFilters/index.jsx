@@ -10,7 +10,7 @@ import { initialPage } from 'features/constants';
 
 const StudentsFilters = ({ resetPagination }) => {
   const dispatch = useDispatch();
-  const stateInstitution = useSelector((state) => state.main.institution.data);
+  const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const stateCourses = useSelector((state) => state.students.courses);
   const stateClasses = useSelector((state) => state.students.classes);
   const [courseOptions, setCourseOptions] = useState([]);
@@ -21,14 +21,9 @@ const StudentsFilters = ({ resetPagination }) => {
   const [classSelected, setClassSelected] = useState(null);
   const [statusSelected, setStatusSelected] = useState(null);
   const [examSelected, setExamSelected] = useState(null);
-  // check this after implementation of selector institution
-  let id = '';
-  if (stateInstitution.length === 1) {
-    id = stateInstitution[0].id;
-  }
 
   const handleCleanFilters = () => {
-    dispatch(fetchStudentsData());
+    dispatch(fetchStudentsData(selectedInstitution.id));
     resetPagination();
     setStudentName('');
     setStudentEmail('');
@@ -40,14 +35,16 @@ const StudentsFilters = ({ resetPagination }) => {
   };
 
   useEffect(() => {
-    dispatch(fetchCoursesData(id));
-  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (Object.keys(selectedInstitution).length > 0) {
+      dispatch(fetchCoursesData(selectedInstitution.id));
+    }
+  }, [selectedInstitution, dispatch]);
 
   useEffect(() => {
     if (courseSelected) {
-      dispatch(fetchClassesData(id, courseSelected.value));
-    } // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, courseSelected]);
+      dispatch(fetchClassesData(selectedInstitution.id, courseSelected.value));
+    }
+  }, [selectedInstitution, courseSelected, dispatch]);
 
   useEffect(() => {
     if (stateCourses.data.length > 0) {
@@ -68,7 +65,7 @@ const StudentsFilters = ({ resetPagination }) => {
     dispatch(updateFilters(formJson));
     try {
       dispatch(updateCurrentPage(initialPage));
-      dispatch(fetchStudentsData(initialPage, formJson));
+      dispatch(fetchStudentsData(selectedInstitution.id, initialPage, formJson));
     } catch (error) {
       logError(error);
     }

@@ -1,53 +1,42 @@
 import React from 'react';
-import axios from 'axios';
-import { render, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import LicensesPage from 'features/Licenses/LicensesPage';
 import '@testing-library/jest-dom/extend-expect';
-import { Provider } from 'react-redux';
-import { initializeStore } from 'store';
-
-let store;
-
-jest.mock('axios');
+import { renderWithProviders } from 'test-utils';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
 }));
 
-const mockResponse = {
-  data: {
-    results: [
-      {
-        licenseName: 'License Name 1',
-        purchasedSeats: 20,
-        numberOfStudents: 6,
-        numberOfPendingStudents: 11,
-      },
-      {
-        licenseName: 'License Name 2',
-        purchasedSeats: 10,
-        numberOfStudents: 1,
-        numberOfPendingStudents: 5,
-      },
-    ],
-    count: 2,
-    num_pages: 1,
-    current_page: 1,
+const mockStore = {
+  licenses: {
+    table: {
+      data: [
+        {
+          licenseName: 'License Name 1',
+          purchasedSeats: 20,
+          numberOfStudents: 6,
+          numberOfPendingStudents: 11,
+        },
+        {
+          licenseName: 'License Name 2',
+          purchasedSeats: 10,
+          numberOfStudents: 1,
+          numberOfPendingStudents: 5,
+        },
+      ],
+      count: 2,
+      num_pages: 1,
+      current_page: 1,
+    },
   },
 };
 
 describe('LicensesPage component', () => {
-  beforeEach(() => {
-    store = initializeStore();
-  });
-
   test('renders licenses data components', () => {
-    axios.get.mockResolvedValue(mockResponse);
-
-    const component = render(
-      <Provider store={store}>
-        <LicensesPage />
-      </Provider>,
+    const component = renderWithProviders(
+      <LicensesPage />,
+      { preloadedState: mockStore },
     );
 
     waitFor(() => {

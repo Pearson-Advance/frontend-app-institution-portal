@@ -1,58 +1,50 @@
 import React from 'react';
-import axios from 'axios';
-import {
-  render,
-  waitFor,
-} from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import InstructorsPage from 'features/Instructors/InstructorsPage';
 import '@testing-library/jest-dom/extend-expect';
-import { Provider } from 'react-redux';
-import { initializeStore } from 'store';
-
-let store;
-
-jest.mock('axios');
+import { renderWithProviders } from 'test-utils';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
 }));
 
-const mockResponse = {
-  data: {
-    results: [
-      {
-        instructorUsername: 'Instructor1',
-        instructorName: 'Instructor 1',
-        instructorEmail: 'instructor1@example.com',
-        ccxId: 'CCX1',
-        ccxName: 'CCX 1',
-      },
-      {
-        instructorUsername: 'Instructor2',
-        instructorName: 'Instructor 2',
-        instructorEmail: 'instructor2@example.com',
-        ccxId: 'CCX2',
-        ccxName: 'CCX 2',
-      },
-    ],
-    count: 2,
-    num_pages: 1,
-    current_page: 1,
+const mockStore = {
+  instructors: {
+    table: {
+      data: [
+        {
+          instructorUsername: 'Instructor1',
+          instructorName: 'Instructor 1',
+          instructorEmail: 'instructor1@example.com',
+          ccxId: 'CCX1',
+          ccxName: 'CCX 1',
+        },
+        {
+          instructorUsername: 'Instructor2',
+          instructorName: 'Instructor 2',
+          instructorEmail: 'instructor2@example.com',
+          ccxId: 'CCX2',
+          ccxName: 'CCX 2',
+        },
+      ],
+      count: 2,
+      num_pages: 1,
+      current_page: 1,
+    },
+    classes: {
+      data: [],
+    },
+    courses: {
+      data: [],
+    },
   },
 };
 
 describe('InstructorPage', () => {
-  beforeEach(() => {
-    store = initializeStore();
-  });
-
   test('render instructor page', () => {
-    axios.get.mockResolvedValue(mockResponse);
-
-    const component = render(
-      <Provider store={store}>
-        <InstructorsPage />
-      </Provider>,
+    const component = renderWithProviders(
+      <InstructorsPage />,
+      { preloadedState: mockStore },
     );
 
     waitFor(() => {

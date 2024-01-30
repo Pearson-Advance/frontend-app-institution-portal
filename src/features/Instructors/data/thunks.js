@@ -14,11 +14,11 @@ import {
   fetchClassesDataFailed,
 } from 'features/Instructors/data/slice';
 
-function fetchInstructorsData(currentPage, filtersData) {
+function fetchInstructorsData(id, currentPage, filtersData) {
   return async (dispatch) => {
     dispatch(fetchInstructorsDataRequest());
     try {
-      const response = camelCaseObject(await getInstructorData(currentPage, filtersData));
+      const response = camelCaseObject(await getInstructorData(id, currentPage, filtersData));
       dispatch(fetchInstructorsDataSuccess(response.data));
     } catch (error) {
       dispatch(fetchInstructorsDataFailed());

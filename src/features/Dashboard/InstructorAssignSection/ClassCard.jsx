@@ -23,11 +23,15 @@ const ClassCard = ({ data }) => {
 };
 
 ClassCard.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.shape([])),
+  data: PropTypes.shape({
+    className: PropTypes.string,
+    masterCourseName: PropTypes.string,
+    startDate: PropTypes.string,
+  }),
 };
 
 ClassCard.defaultProps = {
-  data: [],
+  data: {},
 };
 
 export default ClassCard;

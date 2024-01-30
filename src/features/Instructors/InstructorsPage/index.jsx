@@ -13,12 +13,15 @@ import { initialPage } from 'features/constants';
 
 const InstructorsPage = () => {
   const stateInstructors = useSelector((state) => state.instructors);
+  const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(initialPage);
 
   useEffect(() => {
-    dispatch(fetchInstructorsData(currentPage, stateInstructors.filters));
-  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (Object.keys(selectedInstitution).length > 0) {
+      dispatch(fetchInstructorsData(selectedInstitution.id, currentPage, stateInstructors.filters));
+    }
+  }, [currentPage, selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);

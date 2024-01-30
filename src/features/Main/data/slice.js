@@ -7,6 +7,7 @@ const initialState = {
     ...initialStateService,
   },
   activeTab: 'dashboard',
+  selectedInstitution: {},
 };
 
 export const mainSlice = createSlice({
@@ -26,6 +27,9 @@ export const mainSlice = createSlice({
     updateActiveTab: (state, { payload }) => {
       state.activeTab = payload;
     },
+    updateSelectedInstitution: (state, { payload }) => {
+      state.selectedInstitution = payload;
+    },
   },
 });
 
@@ -34,6 +38,7 @@ export const {
   fetchInstitutionDataSuccess,
   fetchInstitutionDataFailed,
   updateActiveTab,
+  updateSelectedInstitution,
 } = mainSlice.actions;
 
 export const { reducer } = mainSlice;
