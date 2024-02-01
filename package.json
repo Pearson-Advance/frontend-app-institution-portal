@@ -45,6 +45,7 @@
     "date-fns": "^3.3.1",
     "prop-types": "15.8.1",
     "react": "16.14.0",
+    "react-date-range": "^2.0.0-alpha.4",
     "react-dom": "16.14.0",
     "react-intl": "^5.25.1",
     "react-paragon-topaz": "^1.2.1",
