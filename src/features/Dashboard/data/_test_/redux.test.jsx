@@ -77,9 +77,58 @@ describe('Dashboard redux tests', () => {
       .toEqual('error');
   });
 
-  test('successful fetch classes data', async () => {
+  test('successful fetch classesNoInstructors data', async () => {
     const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/`
     + '?limit=false&institution_id=1&course_name=&instructors=null';
+    const mockResponse = [
+      {
+        classId: 'ccx-v1:demo+demo1+2020+ccx1',
+        className: 'ccx 1',
+        masterCourseName: 'Demo Course 1',
+        instructors: [],
+        numberOfStudents: 0,
+        numberOfPendingStudents: 0,
+        maxStudents: 20,
+        startDate: '2024-01-23T21:50:51Z',
+        endDate: null,
+      },
+    ];
+    axiosMock.onGet(classesApiUrl)
+      .reply(200, mockResponse);
+
+    expect(store.getState().dashboard.classesNoInstructors.status)
+      .toEqual('loading');
+
+    await executeThunk(fetchClassesData(1, false), store.dispatch, store.getState);
+
+    expect(store.getState().dashboard.classesNoInstructors.data)
+      .toEqual(mockResponse);
+
+    expect(store.getState().dashboard.classesNoInstructors.status)
+      .toEqual('success');
+  });
+
+  test('failed fetch classesNoInstructors data', async () => {
+    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/`
+    + '?limit=false&institution_id=1&course_name=&instructors=null';
+    axiosMock.onGet(classesApiUrl)
+      .reply(500);
+
+    expect(store.getState().dashboard.classesNoInstructors.status)
+      .toEqual('loading');
+
+    await executeThunk(fetchClassesData(1, false), store.dispatch, store.getState);
+
+    expect(store.getState().dashboard.classesNoInstructors.data)
+      .toEqual([]);
+
+    expect(store.getState().dashboard.classesNoInstructors.status)
+      .toEqual('error');
+  });
+
+  test('successful fetch classes data', async () => {
+    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/`
+    + '?limit=false&institution_id=1&course_name=&instructors=';
     const mockResponse = [
       {
         classId: 'ccx-v1:demo+demo1+2020+ccx1',
@@ -99,7 +148,7 @@ describe('Dashboard redux tests', () => {
     expect(store.getState().dashboard.classes.status)
       .toEqual('loading');
 
-    await executeThunk(fetchClassesData(1), store.dispatch, store.getState);
+    await executeThunk(fetchClassesData(1, true), store.dispatch, store.getState);
 
     expect(store.getState().dashboard.classes.data)
       .toEqual(mockResponse);
@@ -108,16 +157,16 @@ describe('Dashboard redux tests', () => {
       .toEqual('success');
   });
 
-  test('failed fetch licenses data', async () => {
+  test('failed fetch classes data', async () => {
     const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/`
-    + '?limit=false&institution_id=1&course_name=&instructors=null';
+    + '?limit=false&institution_id=1&course_name=&instructors=';
     axiosMock.onGet(classesApiUrl)
       .reply(500);
 
     expect(store.getState().dashboard.classes.status)
       .toEqual('loading');
 
-    await executeThunk(fetchClassesData(1), store.dispatch, store.getState);
+    await executeThunk(fetchClassesData(1, true), store.dispatch, store.getState);
 
     expect(store.getState().dashboard.classes.data)
       .toEqual([]);

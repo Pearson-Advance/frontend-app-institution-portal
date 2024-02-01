@@ -6,6 +6,9 @@ const initialState = {
   tableLicense: {
     ...initialStateService,
   },
+  classesNoInstructors: {
+    ...initialStateService,
+  },
   classes: {
     ...initialStateService,
   },
@@ -25,6 +28,16 @@ export const dashboardSlice = createSlice({
     fetchLicensesDataFailed: (state) => {
       state.tableLicense.status = RequestStatus.ERROR;
     },
+    fetchClassesNoInstructorsDataRequest: (state) => {
+      state.classesNoInstructors.status = RequestStatus.LOADING;
+    },
+    fetchClassesNoInstructorsDataSuccess: (state, { payload }) => {
+      state.classesNoInstructors.status = RequestStatus.SUCCESS;
+      state.classesNoInstructors.data = payload;
+    },
+    fetchClassesNoInstructorsDataFailed: (state) => {
+      state.classesNoInstructors.status = RequestStatus.ERROR;
+    },
     fetchClassesDataRequest: (state) => {
       state.classes.status = RequestStatus.LOADING;
     },
@@ -42,6 +55,9 @@ export const {
   fetchLicensesDataRequest,
   fetchLicensesDataSuccess,
   fetchLicensesDataFailed,
+  fetchClassesNoInstructorsDataRequest,
+  fetchClassesNoInstructorsDataSuccess,
+  fetchClassesNoInstructorsDataFailed,
   fetchClassesDataRequest,
   fetchClassesDataSuccess,
   fetchClassesDataFailed,

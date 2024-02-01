@@ -7,6 +7,7 @@ import StudentsMetrics from 'features/Students/StudentsMetrics';
 import LicensesTable from 'features/Licenses/LicensesTable';
 import { Button } from 'react-paragon-topaz';
 import InstructorAssignSection from 'features/Dashboard/InstructorAssignSection';
+import WeeklySchedule from 'features/Dashboard/WeeklySchedule';
 
 import { fetchLicensesData } from 'features/Dashboard/data';
 import { updateActiveTab } from 'features/Main/data/slice';
@@ -50,6 +51,11 @@ const DashboardPage = () => {
         {Object.keys(selectedInstitution).length > 0 ? `Welcome to ${selectedInstitution?.name}` : `Welcome to ${stateInstitution[0]?.name}`}
       </h2>
       <StudentsMetrics />
+      <Row className="schedule-section">
+        <Col lg="9" xs="12">
+          <WeeklySchedule />
+        </Col>
+      </Row>
       <Row>
         <Col lg="9" xs="12">
           <div className="license-section">

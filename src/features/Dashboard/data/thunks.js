@@ -6,6 +6,9 @@ import {
   fetchLicensesDataRequest,
   fetchLicensesDataSuccess,
   fetchLicensesDataFailed,
+  fetchClassesNoInstructorsDataRequest,
+  fetchClassesNoInstructorsDataSuccess,
+  fetchClassesNoInstructorsDataFailed,
   fetchClassesDataRequest,
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
@@ -24,14 +27,21 @@ function fetchLicensesData(id) {
   };
 }
 
-function fetchClassesData(id) {
+function fetchClassesData(id, hasInstructors = false) {
   return async (dispatch) => {
-    dispatch(fetchClassesDataRequest());
+    // eslint-disable-next-line no-unused-expressions
+    hasInstructors ? dispatch(fetchClassesDataRequest()) : dispatch(fetchClassesNoInstructorsDataRequest());
     try {
-      const response = camelCaseObject(await getClassesByInstitution(id, '', false, 'null'));
-      dispatch(fetchClassesDataSuccess(response.data));
+      if (hasInstructors) {
+        const response = camelCaseObject(await getClassesByInstitution(id, '', false));
+        dispatch(fetchClassesDataSuccess(response.data));
+      } else {
+        const response = camelCaseObject(await getClassesByInstitution(id, '', false, 'null'));
+        dispatch(fetchClassesNoInstructorsDataSuccess(response.data));
+      }
     } catch (error) {
-      dispatch(fetchClassesDataFailed());
+      // eslint-disable-next-line no-unused-expressions
+      hasInstructors ? dispatch(fetchClassesDataFailed()) : dispatch(fetchClassesNoInstructorsDataFailed());
       logError(error);
     }
   };

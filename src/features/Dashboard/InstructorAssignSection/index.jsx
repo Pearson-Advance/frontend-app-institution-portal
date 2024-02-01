@@ -12,13 +12,13 @@ import 'features/Dashboard/InstructorAssignSection/index.scss';
 const InstructorAssignSection = () => {
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
-  const classesData = useSelector((state) => state.dashboard.classes.data);
+  const classesData = useSelector((state) => state.dashboard.classesNoInstructors.data);
   const [classCards, setClassCards] = useState([]);
   const numberOfClasses = 2;
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      dispatch(fetchClassesData(selectedInstitution?.id));
+      dispatch(fetchClassesData(selectedInstitution?.id, false));
     }
   }, [selectedInstitution, dispatch]);
 

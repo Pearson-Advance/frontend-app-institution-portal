@@ -10,7 +10,7 @@ jest.mock('@edx/frontend-platform/logging', () => ({
 describe('Instructor Assign component', () => {
   const mockStore = {
     dashboard: {
-      classes: {
+      classesNoInstructors: {
         data: [
           {
             classId: 'ccx-v1:demo+demo1+2020+ccx1',
