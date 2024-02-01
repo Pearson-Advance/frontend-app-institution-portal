@@ -21,25 +21,12 @@ const columns = [
     ),
   },
   {
-    Header: 'Enrollment Status',
+    Header: 'Students Enrolled',
     accessor: 'numberOfStudents',
-    Cell: ({ row }) => (
-      row.values.numberOfPendingStudents > 0
-        ? <Badge variant="warning" light>Pending ({row.values.numberOfPendingStudents})</Badge>
-        : <Badge variant="success" light>Complete</Badge>
-    ),
   },
   {
-    Header: 'Students Enrolled',
+    Header: 'Students invited',
     accessor: 'numberOfPendingStudents',
-    Cell: ({ row }) => {
-      const pendingStudents = row.values.numberOfPendingStudents || 0;
-      const students = row.values.numberOfStudents || 0;
-      return (
-        `${(students + pendingStudents) - pendingStudents}/${
-          students + pendingStudents}`
-      );
-    },
   },
 ];
 
