@@ -22,6 +22,7 @@ const InstructorsFilters = ({ resetPagination }) => {
   const [instructorName, setInstructorName] = useState('');
   const [instructorEmail, setInstructorEmail] = useState('');
   const [courseSelected, setCourseSelected] = useState(null);
+  const [inputFieldDisplay, setInputFieldDisplay] = useState('name');
 
   const handleCleanFilters = () => {
     dispatch(fetchInstructorsData(selectedInstitution?.id, currentPage));
@@ -70,26 +71,44 @@ const InstructorsFilters = ({ resetPagination }) => {
         <div className="filters">
           <Form className="row justify-content-center" onSubmit={handleInstructorsFilter}>
             <Form.Row className="col-12">
-              <Form.Group as={Col}>
-                <Form.Control
-                  type="text"
-                  floatingLabel="Instructor Name"
-                  name="instructor_name"
-                  placeholder="Enter Instructor Name"
-                  onChange={(e) => setInstructorName(e.target.value)}
-                  value={instructorName}
-                />
+              <Form.Group>
+                <Form.RadioSet
+                  name="inputField"
+                  onChange={(e) => setInputFieldDisplay(e.target.value)}
+                  defaultValue="name"
+                  isInline
+                >
+                  <Form.Radio value="name">Instructor name</Form.Radio>
+                  <Form.Radio value="email" data-testid="emailCheckbox">Instructor email</Form.Radio>
+                </Form.RadioSet>
               </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Control
-                  type="email"
-                  floatingLabel="Instructor Email"
-                  name="instructor_email"
-                  placeholder="Enter Instructor Email"
-                  onChange={(e) => setInstructorEmail(e.target.value)}
-                  value={instructorEmail}
-                />
-              </Form.Group>
+            </Form.Row>
+            <Form.Row className="col-12">
+              {inputFieldDisplay === 'name' && (
+                <Form.Group as={Col}>
+                  <Form.Control
+                    type="text"
+                    floatingLabel="Instructor Name"
+                    name="instructor_name"
+                    placeholder="Enter Instructor Name"
+                    onChange={(e) => setInstructorName(e.target.value)}
+                    value={instructorName}
+                    data-testid="instructorName"
+                  />
+                </Form.Group>
+              )}
+              {inputFieldDisplay === 'email' && (
+                <Form.Group as={Col}>
+                  <Form.Control
+                    type="email"
+                    floatingLabel="Instructor Email"
+                    name="instructor_email"
+                    placeholder="Enter Instructor Email"
+                    onChange={(e) => setInstructorEmail(e.target.value)}
+                    value={instructorEmail}
+                  />
+                </Form.Group>
+              )}
             </Form.Row>
             <div className="col-12 px-1">
               <Form.Row className="col-4">
