@@ -10,7 +10,7 @@ describe('columns', () => {
       classesColumn,
       instructorColumn,
       enrollmentColumn,
-      studentsColumn,
+      studentsInvitedColumn,
     ] = columns;
 
     expect(courseColumn).toHaveProperty('Header', 'Courses');
@@ -22,10 +22,10 @@ describe('columns', () => {
     expect(instructorColumn).toHaveProperty('Header', 'Instructor');
     expect(instructorColumn).toHaveProperty('accessor', 'missingClassesForInstructor');
 
-    expect(enrollmentColumn).toHaveProperty('Header', 'Enrollment Status');
+    expect(enrollmentColumn).toHaveProperty('Header', 'Students Enrolled');
     expect(enrollmentColumn).toHaveProperty('accessor', 'numberOfStudents');
 
-    expect(studentsColumn).toHaveProperty('Header', 'Students Enrolled');
-    expect(studentsColumn).toHaveProperty('accessor', 'numberOfPendingStudents');
+    expect(studentsInvitedColumn).toHaveProperty('Header', 'Students invited');
+    expect(studentsInvitedColumn).toHaveProperty('accessor', 'numberOfPendingStudents');
   });
 });

@@ -19,7 +19,7 @@ describe('Courses Table', () => {
         numberOfClasses: 1,
         missingClassesForInstructor: null,
         numberOfStudents: 1,
-        numberOfPendingStudents: 1,
+        numberOfPendingStudents: 3,
       },
       {
         masterCourseName: 'Demo Course 2',
@@ -41,9 +41,9 @@ describe('Courses Table', () => {
     expect(component.container).toHaveTextContent('Demo Course 2');
     expect(component.container).toHaveTextContent('Ready');
     expect(component.container).toHaveTextContent('Missing (1)');
-    expect(component.container).toHaveTextContent('Pending (1)');
-    expect(component.container).toHaveTextContent('Complete');
-    expect(component.container).toHaveTextContent('1/2');
-    expect(component.container).toHaveTextContent('16/16');
+    expect(component.container).toHaveTextContent('1');
+    expect(component.container).toHaveTextContent('16');
+    expect(component.container).toHaveTextContent('3');
+    expect(component.container).toHaveTextContent('0');
   });
 });
