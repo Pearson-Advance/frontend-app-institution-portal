@@ -13,7 +13,7 @@ import { updateFilters, updateCurrentPage } from 'features/Instructors/data/slic
 import PropTypes from 'prop-types';
 import { initialPage } from 'features/constants';
 
-const InstructorsFilters = ({ resetPagination }) => {
+const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const stateInstructors = useSelector((state) => state.instructors.courses);
   const currentPage = useSelector((state) => state.instructors.table.currentPage);
@@ -48,10 +48,10 @@ const InstructorsFilters = ({ resetPagination }) => {
   };
 
   useEffect(() => {
-    if (Object.keys(selectedInstitution).length > 0) {
+    if (Object.keys(selectedInstitution).length > 0 && !isAssignModal) {
       dispatch(fetchCoursesData(selectedInstitution.id));
     }
-  }, [selectedInstitution, dispatch]);
+  }, [selectedInstitution, dispatch, isAssignModal]);
 
   useEffect(() => {
     if (stateInstructors.data.length > 0) {
@@ -110,23 +110,25 @@ const InstructorsFilters = ({ resetPagination }) => {
                 </Form.Group>
               )}
             </Form.Row>
-            <div className="col-12 px-1">
-              <Form.Row className="col-4">
-                <Form.Group as={Col}>
-                  <Select
-                    placeholder="Course"
-                    name="course_name"
-                    className="mr-2"
-                    options={courseOptions}
-                    onChange={option => setCourseSelected(option)}
-                    value={courseSelected}
-                  />
-                </Form.Group>
-              </Form.Row>
-            </div>
-            <div className="d-flex col-12 justify-content-end mr-3">
-              <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
-              <Button type="submit">Apply</Button>
+            <div className={`col-12 px-1 d-flex align-items-baseline ${isAssignModal ? 'justify-content-end' : 'justify-content-between'}`}>
+              {!isAssignModal && (
+                <Form.Row className="col-6">
+                  <Form.Group as={Col}>
+                    <Select
+                      placeholder="Course"
+                      name="course_name"
+                      className="mr-2"
+                      options={courseOptions}
+                      onChange={option => setCourseSelected(option)}
+                      value={courseSelected}
+                    />
+                  </Form.Group>
+                </Form.Row>
+              )}
+              <div className="d-flex col-4 justify-content-end mr-3">
+                <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
+                <Button type="submit">Apply</Button>
+              </div>
             </div>
           </Form>
         </div>
@@ -137,6 +139,11 @@ const InstructorsFilters = ({ resetPagination }) => {
 
 InstructorsFilters.propTypes = {
   resetPagination: PropTypes.func.isRequired,
+  isAssignModal: PropTypes.bool,
+};
+
+InstructorsFilters.defaultProps = {
+  isAssignModal: false,
 };
 
 export default InstructorsFilters;
