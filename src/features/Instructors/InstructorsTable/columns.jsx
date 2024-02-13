@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types, no-nested-ternary */
 import { differenceInHours, differenceInDays, differenceInWeeks } from 'date-fns';
+import { daysWeek, hoursDay } from 'features/constants';
 
 const columns = [
   {
@@ -16,9 +17,9 @@ const columns = [
       const diffDays = differenceInDays(currentDate, lastDate);
       const diffWeeks = differenceInWeeks(currentDate, lastDate);
       return (
-        <span>{diffHours < 24
+        <span>{diffHours < hoursDay
           ? 'Today'
-          : diffDays < 7
+          : diffDays < daysWeek
             ? `${diffDays} days ago`
             : `${diffWeeks} wks ago`}
         </span>

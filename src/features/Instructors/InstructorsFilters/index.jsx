@@ -127,7 +127,7 @@ const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
               )}
               <div className="d-flex col-4 justify-content-end mr-3">
                 <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
-                <Button type="submit">Apply</Button>
+                <Button variant={`${isAssignModal ? 'outline-primary' : 'primary'}`} type="submit">Apply</Button>
               </div>
             </div>
           </Form>

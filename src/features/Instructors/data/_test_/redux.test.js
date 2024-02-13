@@ -3,7 +3,7 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
 import { fetchInstructorsData, fetchCoursesData, fetchClassesData } from 'features/Instructors/data/thunks';
 import {
-  updateCurrentPage, updateFilters, updateRowsSelected, updateClassSelected,
+  updateCurrentPage, updateFilters, updateClassSelected, addRowSelect, deleteRowSelect,
 } from 'features/Instructors/data/slice';
 import { executeThunk } from 'test-utils';
 import { initializeStore } from 'store';
@@ -195,21 +195,27 @@ describe('Instructors redux tests', () => {
     expect(store.getState().instructors.filters).toEqual(expectState);
   });
 
-  test('update rowsSelected', () => {
-    const rowSelected = [
-      'Instructor01',
-    ];
-    const expectState = rowSelected;
-
-    store.dispatch(updateRowsSelected(rowSelected));
-    expect(store.getState().instructors.rowsSelected).toEqual(expectState);
-  });
-
   test('update classSelected', () => {
     const classSelected = 'ccx1';
     const expectState = classSelected;
 
     store.dispatch(updateClassSelected(classSelected));
     expect(store.getState().instructors.classSelected).toEqual(expectState);
+  });
+
+  test('Add rowsSelected', () => {
+    const rowSelected = 'Instructor01';
+    const expectState = rowSelected;
+
+    store.dispatch(addRowSelect(rowSelected));
+    expect(store.getState().instructors.rowsSelected).toEqual([expectState]);
+  });
+
+  test('Delete rowsSelected', () => {
+    const rowSelected = 'Instructor01';
+
+    store.dispatch(addRowSelect(rowSelected));
+    store.dispatch(deleteRowSelect(rowSelected));
+    expect(store.getState().instructors.rowsSelected).toEqual([]);
   });
 });

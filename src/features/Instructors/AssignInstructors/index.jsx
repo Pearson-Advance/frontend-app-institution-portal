@@ -9,7 +9,7 @@ import AssignTable from 'features/Instructors/AssignInstructors/AssignTable';
 
 import { fetchInstructorsData, assignInstructors } from 'features/Instructors/data';
 import {
-  updateCurrentPage, updateRowsSelected, updateFilters, updateClassSelected,
+  updateCurrentPage, updateFilters, updateClassSelected,
 } from 'features/Instructors/data/slice';
 
 import { initialPage } from 'features/constants';
@@ -52,7 +52,6 @@ const AssignInstructors = ({ isOpen, close }) => {
 
   useEffect(() => {
     if (!isOpen) {
-      dispatch(updateRowsSelected([]));
       dispatch(updateFilters({}));
       dispatch(updateClassSelected(''));
     }
@@ -86,7 +85,7 @@ const AssignInstructors = ({ isOpen, close }) => {
           />
         )}
         <div className="d-flex justify-content-end">
-          <ModalCloseButton className="btntpz btn-text btn-tertiary">Close</ModalCloseButton>
+          <ModalCloseButton className="btntpz btn-text btn-tertiary">Cancel</ModalCloseButton>
           <Button onClick={handleAssignInstructors} data-testid="assignButton">Assign instructor</Button>
         </div>
       </ModalDialog.Body>

@@ -1,5 +1,5 @@
-import React, { useMemo, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { IntlProvider } from 'react-intl';
 import {
@@ -7,20 +7,20 @@ import {
   Col,
   DataTable,
 } from '@edx/paragon';
-
-import { updateRowsSelected } from 'features/Instructors/data/slice';
+import ControlledSelect from 'features/Instructors/AssignInstructors/ControlledSelect';
 
 import { columns } from 'features/Instructors/AssignInstructors/columns';
 
 const AssignTable = () => {
-  const dispatch = useDispatch();
   const stateInstructors = useSelector((state) => state.instructors.table);
-  const [rowsSelected, setRowsSelected] = useState([]);
-  const COLUMNS = useMemo(() => columns({ setRowsSelected }), []);
+  const COLUMNS = useMemo(() => columns(), []);
 
-  useEffect(() => {
-    dispatch(updateRowsSelected(rowsSelected));
-  }, [rowsSelected, dispatch]);
+  const selectColumn = {
+    id: 'selection',
+    Header: <></>, // eslint-disable-line react/jsx-no-useless-fragment
+    Cell: ControlledSelect,
+    disableSortBy: true,
+  };
 
   return (
     <IntlProvider locale="en">
@@ -28,11 +28,16 @@ const AssignTable = () => {
         <Col xs={11} className="p-0">
           <DataTable
             isSortable
+            isSelectable
             columns={COLUMNS}
             itemCount={stateInstructors.count}
             data={stateInstructors.data}
+            manualSelectColumn={selectColumn}
+            initialTableOptions={{
+              autoResetSelectedRows: false,
+              getRowId: (row) => row.instructorUsername,
+            }}
           >
-            <DataTable.TableControlBar />
             <DataTable.Table />
             <DataTable.EmptyTable content="No instructors found." />
           </DataTable>

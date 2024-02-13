@@ -25,3 +25,11 @@ export const initialStateService = {
  * @number
  */
 export const initialPage = 1;
+
+/**
+ * Constans for time.
+ * @readonly
+ * @number
+ */
+export const hoursDay = 24;
+export const daysWeek = 7;

@@ -1,31 +1,9 @@
 /* eslint-disable react/prop-types, no-nested-ternary */
 import { differenceInHours, differenceInDays, differenceInWeeks } from 'date-fns';
-import { CheckboxControl } from '@edx/paragon';
 
-const handleCheckbox = (setRowsSelected, row) => {
-  setRowsSelected(prevState => {
-    const rowSelected = row.original.instructorUsername;
-    if (prevState.includes(rowSelected)) {
-      const filterData = prevState.filter(rowState => rowState !== rowSelected);
-      return filterData;
-    }
-    return [...prevState, rowSelected];
-  });
-};
+import { daysWeek, hoursDay } from 'features/constants';
 
-const columns = ({ setRowsSelected }) => [
-  {
-    Header: '',
-    id: 'checkbox',
-    width: 30,
-    Cell: ({ row }) => (
-      <div>
-        <CheckboxControl
-          onChange={() => handleCheckbox(setRowsSelected, row)}
-        />
-      </div>
-    ),
-  },
+const columns = () => [
   {
     Header: 'Instructor',
     accessor: 'instructorName',
@@ -40,9 +18,9 @@ const columns = ({ setRowsSelected }) => [
       const diffDays = differenceInDays(currentDate, lastDate);
       const diffWeeks = differenceInWeeks(currentDate, lastDate);
       return (
-        <span>{diffHours < 24
+        <span>{diffHours < hoursDay
           ? 'Today'
-          : diffDays < 7
+          : diffDays < daysWeek
             ? `${diffDays} days ago`
             : `${diffWeeks} wks ago`}
         </span>
@@ -52,6 +30,7 @@ const columns = ({ setRowsSelected }) => [
   {
     Header: 'Courses Taught',
     accessor: 'classes',
+    disableSortBy: true,
   },
 ];
 

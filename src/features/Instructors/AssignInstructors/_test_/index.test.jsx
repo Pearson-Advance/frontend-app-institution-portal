@@ -3,6 +3,7 @@ import { waitFor, fireEvent } from '@testing-library/react';
 import AssignInstructors from 'features/Instructors/AssignInstructors';
 import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
+import { RequestStatus } from 'features/constants';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -35,6 +36,15 @@ const mockStore = {
       data: [],
     },
     courses: {
+      data: [],
+    },
+    filters: {
+    },
+    rowsSelected: [],
+    classSelected: '',
+    assignInstructors: {
+      status: RequestStatus.LOADING,
+      error: null,
       data: [],
     },
   },
