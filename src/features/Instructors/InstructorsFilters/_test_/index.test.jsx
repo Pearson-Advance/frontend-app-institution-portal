@@ -1,80 +1,84 @@
 import React from 'react';
-import { render, fireEvent, act } from '@testing-library/react';
+import { fireEvent, act } from '@testing-library/react';
 import InstructorsFilters from 'features/Instructors/InstructorsFilters';
 import '@testing-library/jest-dom/extend-expect';
-import { Provider } from 'react-redux';
-import { initializeStore } from 'store';
-
-let store;
+import { renderWithProviders } from 'test-utils';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
 }));
 
 describe('InstructorsFilters Component', () => {
+  const resetPagination = jest.fn();
   const mockSetFilters = jest.fn();
 
   beforeEach(() => {
-    store = initializeStore();
     mockSetFilters.mockClear();
   });
 
-  test('call service when apply filters', async () => {
-    const resetPagination = jest.fn();
-    const { getByPlaceholderText, getByText } = render(
-      <Provider store={store}>
-        <InstructorsFilters
-          resetPagination={resetPagination}
-        />
-      </Provider>,
+  test('render name input and call service when apply filters', async () => {
+    const { getByPlaceholderText, getByText, getByTestId } = renderWithProviders(
+      <InstructorsFilters
+        resetPagination={resetPagination}
+      />,
     );
 
-    const nameInput = getByPlaceholderText('Enter Instructor Name');
-    const emailInput = getByPlaceholderText('Enter Instructor Email');
+    expect(getByPlaceholderText('Enter Instructor Name')).toBeInTheDocument();
+    expect(getByText('Course')).toBeInTheDocument();
+
+    const inputName = getByTestId('instructorName');
     const buttonApplyFilters = getByText('Apply');
 
-    expect(nameInput).toBeInTheDocument();
-    expect(emailInput).toBeInTheDocument();
+    fireEvent.change(inputName, {
+      target: { value: 'Jhon Doe' },
+    });
 
-    fireEvent.change(nameInput, { target: { value: 'Name' } });
-    fireEvent.change(emailInput, { target: { value: 'name@example.com' } });
-
-    expect(nameInput).toHaveValue('Name');
-    expect(emailInput).toHaveValue('name@example.com');
+    expect(inputName).toHaveValue('Jhon Doe');
 
     await act(async () => {
       fireEvent.click(buttonApplyFilters);
     });
   });
 
-  test('clear filters', async () => {
-    const resetPagination = jest.fn();
-    const { getByPlaceholderText, getByText } = render(
-      <Provider store={store}>
-        <InstructorsFilters
-          resetPagination={resetPagination}
-        />
-      </Provider>,
+  test('render email input', async () => {
+    const { getByPlaceholderText, getByText, getByTestId } = renderWithProviders(
+      <InstructorsFilters
+        resetPagination={resetPagination}
+      />,
+    );
+
+    const checkbox = getByTestId('emailCheckbox');
+    const buttonApplyFilters = getByText('Apply');
+
+    fireEvent.click(checkbox);
+
+    expect(getByPlaceholderText('Enter Instructor Email')).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(buttonApplyFilters);
+    });
+  });
+
+  test('Clear filters', async () => {
+    const { getByPlaceholderText, getByText } = renderWithProviders(
+      <InstructorsFilters
+        resetPagination={resetPagination}
+      />,
     );
 
     const nameInput = getByPlaceholderText('Enter Instructor Name');
-    const emailInput = getByPlaceholderText('Enter Instructor Email');
     const buttonClearFilters = getByText('Reset');
 
     expect(nameInput).toBeInTheDocument();
-    expect(emailInput).toBeInTheDocument();
 
     fireEvent.change(nameInput, { target: { value: 'Name' } });
-    fireEvent.change(emailInput, { target: { value: 'name@example.com' } });
 
     expect(nameInput).toHaveValue('Name');
-    expect(emailInput).toHaveValue('name@example.com');
 
     await act(async () => {
       fireEvent.click(buttonClearFilters);
     });
 
     expect(nameInput).toHaveValue('');
-    expect(emailInput).toHaveValue('');
   });
 });

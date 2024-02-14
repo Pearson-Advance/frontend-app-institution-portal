@@ -19,8 +19,8 @@ const StudentsFilters = ({ resetPagination }) => {
   const [studentEmail, setStudentEmail] = useState('');
   const [courseSelected, setCourseSelected] = useState(null);
   const [classSelected, setClassSelected] = useState(null);
-  const [statusSelected, setStatusSelected] = useState(null);
   const [examSelected, setExamSelected] = useState(null);
+  const [inputFieldDisplay, setInputFieldDisplay] = useState('name');
 
   const handleCleanFilters = () => {
     dispatch(fetchStudentsData(selectedInstitution.id));
@@ -29,7 +29,6 @@ const StudentsFilters = ({ resetPagination }) => {
     setStudentEmail('');
     setCourseSelected(null);
     setClassSelected(null);
-    setStatusSelected(null);
     setExamSelected(null);
     dispatch(updateFilters({}));
   };
@@ -89,26 +88,44 @@ const StudentsFilters = ({ resetPagination }) => {
         <div className="filters">
           <Form className="row justify-content-center" onSubmit={handleStudentsFilter}>
             <Form.Row className="col-12">
-              <Form.Group as={Col}>
-                <Form.Control
-                  type="text"
-                  floatingLabel="Student Name"
-                  name="learner_name"
-                  placeholder="Enter Student Name"
-                  onChange={(e) => setStudentName(e.target.value)}
-                  value={studentName}
-                />
+              <Form.Group>
+                <Form.RadioSet
+                  name="inputField"
+                  onChange={(e) => setInputFieldDisplay(e.target.value)}
+                  defaultValue="name"
+                  isInline
+                >
+                  <Form.Radio value="name">Student name</Form.Radio>
+                  <Form.Radio value="email" data-testid="emailCheckbox">Student email</Form.Radio>
+                </Form.RadioSet>
               </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Control
-                  type="email"
-                  floatingLabel="Student Email"
-                  name="learner_email"
-                  placeholder="Enter Student Email"
-                  onChange={(e) => setStudentEmail(e.target.value)}
-                  value={studentEmail}
-                />
-              </Form.Group>
+            </Form.Row>
+            <Form.Row className="col-12">
+              {inputFieldDisplay === 'name' && (
+                <Form.Group as={Col}>
+                  <Form.Control
+                    type="text"
+                    floatingLabel="Student Name"
+                    name="learner_name"
+                    placeholder="Enter Student Name"
+                    data-testid="learnerName"
+                    onChange={(e) => setStudentName(e.target.value)}
+                    value={studentName}
+                  />
+                </Form.Group>
+              )}
+              {inputFieldDisplay === 'email' && (
+                <Form.Group as={Col}>
+                  <Form.Control
+                    type="email"
+                    floatingLabel="Student Email"
+                    name="learner_email"
+                    placeholder="Enter Student Email"
+                    onChange={(e) => setStudentEmail(e.target.value)}
+                    value={studentEmail}
+                  />
+                </Form.Group>
+              )}
             </Form.Row>
             <Form.Row className="col-12">
               <Form.Group as={Col}>
@@ -130,21 +147,6 @@ const StudentsFilters = ({ resetPagination }) => {
                   options={classesOptions}
                   onChange={option => setClassSelected(option)}
                   value={classSelected}
-                />
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Select
-                  placeholder="Status"
-                  name="status"
-                  className="mr-2"
-                  options={[
-                    { value: 'Active', label: 'Active' },
-                    { value: 'Inactive', label: 'Inactive' },
-                    { value: 'Expired', label: 'Expired' },
-                    { value: 'Pending', label: 'Pending' },
-                  ]}
-                  onChange={option => setStatusSelected(option)}
-                  value={statusSelected}
                 />
               </Form.Group>
               <Form.Group as={Col}>
