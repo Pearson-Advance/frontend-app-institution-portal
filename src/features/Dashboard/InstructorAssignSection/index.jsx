@@ -41,6 +41,9 @@ const InstructorAssignSection = () => {
             <Button text className="view-all-btn">View all</Button>
           </div>
         )}
+        {classesData.length === 0 && (
+          <div className="empty-content">No classes found</div>
+        )}
       </Col>
     </Row>
   );

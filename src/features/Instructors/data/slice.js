@@ -19,6 +19,13 @@ const initialState = {
   },
   filters: {
   },
+  rowsSelected: [],
+  classSelected: '',
+  assignInstructors: {
+    status: RequestStatus.LOADING,
+    error: null,
+    data: null,
+  },
 };
 
 export const instructorsSlice = createSlice({
@@ -64,6 +71,25 @@ export const instructorsSlice = createSlice({
     updateFilters: (state, { payload }) => {
       state.filters = payload;
     },
+    updateClassSelected: (state, { payload }) => {
+      state.classSelected = payload;
+    },
+    assingInstructorsRequest: (state) => {
+      state.assignInstructors.status = RequestStatus.LOADING;
+    },
+    assingInstructorsSuccess: (state, { payload }) => {
+      state.assignInstructors.status = RequestStatus.SUCCESS;
+      state.assignInstructors.data = payload;
+    },
+    assingInstructorsFailed: (state) => {
+      state.assignInstructors.status = RequestStatus.ERROR;
+    },
+    addRowSelect: (state, { payload }) => {
+      state.rowsSelected = [...state.rowsSelected, payload];
+    },
+    deleteRowSelect: (state, { payload }) => {
+      state.rowsSelected = state.rowsSelected.filter(row => row !== payload);
+    },
   },
 });
 
@@ -79,6 +105,12 @@ export const {
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
   updateFilters,
+  updateClassSelected,
+  assingInstructorsRequest,
+  assingInstructorsSuccess,
+  assingInstructorsFailed,
+  addRowSelect,
+  deleteRowSelect,
 } = instructorsSlice.actions;
 
 export const { reducer } = instructorsSlice;

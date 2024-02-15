@@ -1,0 +1,13 @@
+@import "assets/colors.scss";
+
+.pgn__modal-close-button.btn-icon.btn-icon-primary {
+  color: $gray-70;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: $gray-70;
+    background-color: $gray-20;
+    box-shadow: none;
+  }
+}

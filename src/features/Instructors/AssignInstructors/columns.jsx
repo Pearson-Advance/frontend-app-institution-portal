@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types, no-nested-ternary */
 import { differenceInHours, differenceInDays, differenceInWeeks } from 'date-fns';
+
 import { daysWeek, hoursDay } from 'features/constants';
 
-const columns = [
+const columns = () => [
   {
     Header: 'Instructor',
     accessor: 'instructorName',
@@ -27,12 +28,9 @@ const columns = [
     },
   },
   {
-    Header: 'Email',
-    accessor: 'instructorEmail',
-  },
-  {
     Header: 'Courses Taught',
     accessor: 'classes',
+    disableSortBy: true,
   },
 ];
 

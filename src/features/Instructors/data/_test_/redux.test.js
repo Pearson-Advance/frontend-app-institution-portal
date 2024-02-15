@@ -2,6 +2,9 @@ import MockAdapter from 'axios-mock-adapter';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
 import { fetchInstructorsData, fetchCoursesData, fetchClassesData } from 'features/Instructors/data/thunks';
+import {
+  updateCurrentPage, updateFilters, updateClassSelected, addRowSelect, deleteRowSelect,
+} from 'features/Instructors/data/slice';
 import { executeThunk } from 'test-utils';
 import { initializeStore } from 'store';
 
@@ -65,6 +68,23 @@ describe('Instructors redux tests', () => {
       .toEqual('success');
   });
 
+  test('failed fetch instructors data', async () => {
+    const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/instructors/`;
+    axiosMock.onGet(instructorsApiUrl)
+      .reply(500);
+
+    expect(store.getState().instructors.table.status)
+      .toEqual('loading');
+
+    await executeThunk(fetchInstructorsData(), store.dispatch, store.getState);
+
+    expect(store.getState().instructors.table.data)
+      .toEqual([]);
+
+    expect(store.getState().instructors.table.status)
+      .toEqual('error');
+  });
+
   test('successful fetch courses data', async () => {
     const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/courses/?limit=false&institution_id=1`;
     const mockResponse = [
@@ -91,6 +111,23 @@ describe('Instructors redux tests', () => {
       .toEqual('success');
   });
 
+  test('failed fetch courses data', async () => {
+    const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/courses/?limit=false&institution_id=1`;
+    axiosMock.onGet(instructorsApiUrl)
+      .reply(500);
+
+    expect(store.getState().instructors.courses.status)
+      .toEqual('loading');
+
+    await executeThunk(fetchCoursesData(1), store.dispatch, store.getState);
+
+    expect(store.getState().instructors.courses.data)
+      .toEqual([]);
+
+    expect(store.getState().instructors.courses.status)
+      .toEqual('error');
+  });
+
   test('successful fetch classes data', async () => {
     const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=false`;
     const mockResponse = [
@@ -113,5 +150,72 @@ describe('Instructors redux tests', () => {
 
     expect(store.getState().instructors.classes.status)
       .toEqual('success');
+  });
+
+  test('failed fetch classes data', async () => {
+    const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=false`;
+    axiosMock.onGet(instructorsApiUrl)
+      .reply(500);
+
+    expect(store.getState().instructors.classes.status)
+      .toEqual('loading');
+
+    await executeThunk(fetchClassesData(), store.dispatch, store.getState);
+
+    expect(store.getState().instructors.classes.data)
+      .toEqual([]);
+
+    expect(store.getState().instructors.classes.status)
+      .toEqual('error');
+  });
+
+  test('update current page', () => {
+    const newPage = 2;
+    const intialState = store.getState().instructors.table;
+    const expectState = {
+      ...intialState,
+      currentPage: newPage,
+    };
+
+    store.dispatch(updateCurrentPage(newPage));
+    expect(store.getState().instructors.table).toEqual(expectState);
+  });
+
+  test('update filters', () => {
+    const filters = {
+      course_name: 'Demo Course 1',
+    };
+    const intialState = store.getState().instructors.filters;
+    const expectState = {
+      ...intialState,
+      ...filters,
+    };
+
+    store.dispatch(updateFilters(filters));
+    expect(store.getState().instructors.filters).toEqual(expectState);
+  });
+
+  test('update classSelected', () => {
+    const classSelected = 'ccx1';
+    const expectState = classSelected;
+
+    store.dispatch(updateClassSelected(classSelected));
+    expect(store.getState().instructors.classSelected).toEqual(expectState);
+  });
+
+  test('Add rowsSelected', () => {
+    const rowSelected = 'Instructor01';
+    const expectState = rowSelected;
+
+    store.dispatch(addRowSelect(rowSelected));
+    expect(store.getState().instructors.rowsSelected).toEqual([expectState]);
+  });
+
+  test('Delete rowsSelected', () => {
+    const rowSelected = 'Instructor01';
+
+    store.dispatch(addRowSelect(rowSelected));
+    store.dispatch(deleteRowSelect(rowSelected));
+    expect(store.getState().instructors.rowsSelected).toEqual([]);
   });
 });

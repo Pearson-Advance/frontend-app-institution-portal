@@ -1,6 +1,6 @@
 import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
-import { getInstructorData, getCCXList } from 'features/Instructors/data/api';
+import { getInstructorData, getCCXList, handleInstructorsEnrollment } from 'features/Instructors/data/api';
 import { getCoursesByInstitution } from 'features/Common/data/api';
 import {
   fetchInstructorsDataRequest,
@@ -12,7 +12,11 @@ import {
   fetchClassesDataRequest,
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
+  assingInstructorsRequest,
+  assingInstructorsSuccess,
+  assingInstructorsFailed,
 } from 'features/Instructors/data/slice';
+import { fetchClassesData as fetchClassesDataHome } from 'features/Dashboard/data';
 
 function fetchInstructorsData(id, currentPage, filtersData) {
   return async (dispatch) => {
@@ -53,8 +57,24 @@ function fetchClassesData() {
   };
 }
 
+function assignInstructors(data, classId, institutionId) {
+  return async (dispatch) => {
+    dispatch(assingInstructorsRequest());
+    try {
+      const response = await handleInstructorsEnrollment(data, classId);
+      dispatch(assingInstructorsSuccess(response.data));
+    } catch (error) {
+      dispatch(assingInstructorsFailed());
+      logError(error);
+    } finally {
+      dispatch(fetchClassesDataHome(institutionId, false));
+    }
+  };
+}
+
 export {
   fetchInstructorsData,
   fetchCoursesData,
   fetchClassesData,
+  assignInstructors,
 };
