@@ -1,5 +1,9 @@
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
-import { getInstructorData, handleInstructorsEnrollment } from 'features/Instructors/data/api';
+import {
+  getInstructorData,
+  handleInstructorsEnrollment,
+  handleNewInstructor,
+} from 'features/Instructors/data/api';
 
 jest.mock('@edx/frontend-platform/auth', () => ({
   getAuthenticatedHttpClient: jest.fn(),
@@ -12,8 +16,12 @@ jest.mock('@edx/frontend-platform', () => ({
   })),
 }));
 
-describe('getInstructorData', () => {
-  test('should call getAuthenticatedHttpClient with the correct parameters', () => {
+describe('should call getAuthenticatedHttpClient with the correct parameters', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('getInstructorData', () => {
     const httpClientMock = {
       get: jest.fn(),
     };
@@ -34,10 +42,8 @@ describe('getInstructorData', () => {
       { params: { page, institution_id: institutionId } },
     );
   });
-});
 
-describe('handleInstructorsEnrollment', () => {
-  test('should call getAuthenticatedHttpClient with the correct parameters', () => {
+  test('handleInstructorsEnrollment', () => {
     const httpClientMock = {
       post: jest.fn(),
     };
@@ -49,13 +55,35 @@ describe('handleInstructorsEnrollment', () => {
 
     handleInstructorsEnrollment(data, courseId);
 
-    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(2);
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
     expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
 
     expect(httpClientMock.post).toHaveBeenCalledTimes(1);
     expect(httpClientMock.post).toHaveBeenCalledWith(
       'http://localhost:18000/courses/course123/instructor/api/modify_access',
       data,
+    );
+  });
+
+  test('handleNewInstructor', () => {
+    const httpClientMock = {
+      post: jest.fn(),
+    };
+
+    const institutionId = '1';
+    const instructorEmail = 'testEmail@example.com';
+
+    getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
+
+    handleNewInstructor(institutionId, instructorEmail);
+
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
+
+    expect(httpClientMock.post).toHaveBeenCalledTimes(1);
+    expect(httpClientMock.post).toHaveBeenCalledWith(
+      'http://localhost:18000/pearson_course_operation/api/v2/instructors/'
+      + '?instructor_email=testEmail@example.com&institution_id=1',
     );
   });
 });
