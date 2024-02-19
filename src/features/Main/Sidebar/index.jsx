@@ -73,6 +73,17 @@ export const Sidebar = () => {
               <span className="nav-text">Courses</span>
             </button>
           </li>
+          <li>
+            <button
+              type="button"
+              className={`${activeTab === 'classes' ? 'active' : ''} sidebar-item`}
+              aria-current="page"
+              onClick={() => handleTabClick('classes')}
+            >
+              <i className="fa-regular fa-books" />
+              <span className="nav-text">Classes</span>
+            </button>
+          </li>
         </ul>
       </nav>
     </header>

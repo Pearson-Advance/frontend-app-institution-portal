@@ -14,6 +14,7 @@ import InstructorsPage from 'features/Instructors/InstructorsPage';
 import CoursesPage from 'features/Courses/CoursesPage';
 import DashboardPage from 'features/Dashboard/DashboardPage';
 import LicensesPage from 'features/Licenses/LicensesPage';
+import ClassesPage from 'features/Classes/ClassesPage';
 import { Select } from 'react-paragon-topaz';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
@@ -92,6 +93,9 @@ const Main = () => {
             </Switch>
             <Switch>
               <Route path="/licenses" exact component={LicensesPage} />
+            </Switch>
+            <Switch>
+              <Route path="/classes" exact component={ClassesPage} />
             </Switch>
             <Footer />
           </Container>
