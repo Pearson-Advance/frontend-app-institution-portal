@@ -1,4 +1,6 @@
 /* eslint-disable react/prop-types */
+import { format } from 'date-fns';
+import { ProgressBar } from '@edx/paragon';
 
 const getColumns = () => [
   {
@@ -16,6 +18,20 @@ const getColumns = () => [
   {
     Header: 'Class Id',
     accessor: 'classId',
+  },
+  {
+    Header: 'Start - End Date',
+    accessor: 'startDate',
+    Cell: ({ row }) => {
+      const startDate = row.values.startDate ? format(row.values.startDate, 'MM/dd/yy') : '';
+      const endDate = row.values.endDate ? format(row.values.endDate, 'MM/dd/yy') : '';
+      return <div>{startDate} - {endDate}</div>;
+    },
+  },
+  {
+    Header: 'Progress',
+    accessor: 'completePercentage',
+    Cell: ({ row }) => (<ProgressBar now={row.values.completePercentage} variant="primary" />),
   },
   {
     Header: 'Exam Ready',

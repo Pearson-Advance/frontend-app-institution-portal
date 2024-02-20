@@ -5,13 +5,15 @@ describe('getColumns', () => {
     const columns = getColumns();
 
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(5);
+    expect(columns).toHaveLength(7);
 
     const [
       nameColumn,
       emailColumn,
       classNameColumn,
       ClassIdColumn,
+      dateColumn,
+      progressColumn,
       examReadyColumn,
     ] = columns;
 
@@ -26,6 +28,12 @@ describe('getColumns', () => {
 
     expect(ClassIdColumn).toHaveProperty('Header', 'Class Id');
     expect(ClassIdColumn).toHaveProperty('accessor', 'classId');
+
+    expect(dateColumn).toHaveProperty('Header', 'Start - End Date');
+    expect(dateColumn).toHaveProperty('accessor', 'startDate');
+
+    expect(progressColumn).toHaveProperty('Header', 'Progress');
+    expect(progressColumn).toHaveProperty('accessor', 'completePercentage');
 
     expect(examReadyColumn).toHaveProperty('Header', 'Exam Ready');
     expect(examReadyColumn).toHaveProperty('accessor', 'examReady');
