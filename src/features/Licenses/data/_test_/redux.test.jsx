@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
 import { fetchLicensesData } from 'features/Licenses/data';
-import { updateCurrentPage } from 'features/Licenses/data/slice';
+import { updateCurrentPage, updateFilters } from 'features/Licenses/data/slice';
 import { executeThunk } from 'test-utils';
 import { initializeStore } from 'store';
 
@@ -30,7 +30,7 @@ describe('Licenses redux tests', () => {
 
   test('successful fetch licenses data', async () => {
     const licensesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/license-pool`
-    + '/?limit=true&institution_id=1&page=';
+    + '/?limit=true&institution_id=1&page=1&';
     const mockResponse = {
       results: [
         {
@@ -67,7 +67,7 @@ describe('Licenses redux tests', () => {
 
   test('failed fetch licenses data', async () => {
     const licensesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/license-pool`
-    + '/?limit=false&institution_id=1&page=';
+    + '/?limit=false&institution_id=1&page=1&';
     axiosMock.onGet(licensesApiUrl)
       .reply(500);
 
@@ -85,13 +85,27 @@ describe('Licenses redux tests', () => {
 
   test('update current page', () => {
     const newPage = 2;
-    const intialState = store.getState().courses.table;
+    const initialState = store.getState().courses.table;
     const expectState = {
-      ...intialState,
+      ...initialState,
       currentPage: newPage,
     };
 
     store.dispatch(updateCurrentPage(newPage));
     expect(store.getState().licenses.table).toEqual(expectState);
+  });
+
+  test('update filters', () => {
+    const filters = {
+      course_name: 'Demo Course 1',
+    };
+    const initialState = store.getState().licenses.filters;
+    const expectState = {
+      ...initialState,
+      ...filters,
+    };
+
+    store.dispatch(updateFilters(filters));
+    expect(store.getState().licenses.filters).toEqual(expectState);
   });
 });
