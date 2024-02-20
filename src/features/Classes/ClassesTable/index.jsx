@@ -1,10 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-
 import { IntlProvider } from 'react-intl';
-import { Row, Col } from '@edx/paragon';
-import DataTable from '@edx/paragon/dist/DataTable';
-
+import { Row, Col, DataTable } from '@edx/paragon';
 import { columns } from 'features/Classes/ClassesTable/columns';
 
 const ClassesTable = ({ data, count }) => {

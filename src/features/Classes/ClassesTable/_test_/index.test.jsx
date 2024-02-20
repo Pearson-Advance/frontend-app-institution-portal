@@ -1,5 +1,5 @@
 import React from 'react';
-import CoursesPage from 'features/Courses/CoursesPage';
+import ClassesPage from 'features/Classes/ClassesPage';
 import { waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
@@ -9,22 +9,26 @@ jest.mock('@edx/frontend-platform/logging', () => ({
 }));
 
 const mockStore = {
-  courses: {
+  classes: {
     table: {
       data: [
         {
-          masterCourseName: 'Demo Course 1',
-          numberOfClasses: 1,
-          missingClassesForInstructor: null,
+          masterCourseName: 'Demo MasterCourse 1',
+          className: 'Demo Class 1',
+          startDate: '09/21/24',
+          endDate: null,
           numberOfStudents: 1,
-          numberOfPendingStudents: 1,
+          maxStudents: 100,
+          instructors: ['instructor_1']
         },
         {
-          masterCourseName: 'Demo Course 2',
-          numberOfClasses: 1,
-          missingClassesForInstructor: 1,
-          numberOfStudents: 16,
-          numberOfPendingStudents: 0,
+          masterCourseName: 'Demo MasterCourse 2',
+          className: 'Demo Class 2',
+          startDate: '09/21/25',
+          endDate: null,
+          numberOfStudents: 1,
+          maxStudents: 10,
+          instructors: ['instructor_2', 'instructor_3']
         },
       ],
       count: 2,
@@ -34,22 +38,25 @@ const mockStore = {
   },
 };
 
-describe('CoursesPage', () => {
-  it('renders courses data and pagination', async () => {
+describe('ClassesPage', () => {
+  it('renders classes data and pagination', async () => {
     const component = renderWithProviders(
-      <CoursesPage />,
+      <ClassesPage />,
       { preloadedState: mockStore },
     );
 
     waitFor(() => {
-      expect(component.container).toHaveTextContent('Demo Course 1');
-      expect(component.container).toHaveTextContent('Demo Course 2');
-      expect(component.container).toHaveTextContent('Ready');
-      expect(component.container).toHaveTextContent('Missing (1)');
-      expect(component.container).toHaveTextContent('Pending (1)');
-      expect(component.container).toHaveTextContent('Complete');
-      expect(component.container).toHaveTextContent('1/2');
-      expect(component.container).toHaveTextContent('16/16');
+      expect(component.container).toHaveTextContent('Demo MasterCourse 1');
+      expect(component.container).toHaveTextContent('Demo MasterCourse 2');
+      expect(component.container).toHaveTextContent('Demo Class 1');
+      expect(component.container).toHaveTextContent('Demo Class 2');
+      expect(component.container).toHaveTextContent('09/21/24');
+      expect(component.container).toHaveTextContent('09/21/25');
+      expect(component.container).toHaveTextContent('100');
+      expect(component.container).toHaveTextContent('10');
+      expect(component.container).toHaveTextContent('instructor_1');
+      expect(component.container).toHaveTextContent('instructor_2');
+      expect(component.container).toHaveTextContent('instructor_3');
     });
   });
 });

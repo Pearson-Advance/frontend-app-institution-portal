@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import Container from '@edx/paragon/dist/Container';
-import { Pagination } from '@edx/paragon';
-import ClassesTable from 'features/Classes/ClassesTable';
+import { Container, Pagination } from '@edx/paragon';
+import ClassesTable  from 'features/Classes/ClassesTable';
 
 import { updateCurrentPage } from 'features/Classes/data/slice';
 import { fetchClassesData } from 'features/Classes/data/thunks';
