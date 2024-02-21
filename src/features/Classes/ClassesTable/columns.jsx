@@ -31,9 +31,10 @@ const columns = [
   },
   {
     Header: 'Instructors',
-    accessor: ({ instructors }) => (
-      <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
-        {instructors.map(instructor => <li key={instructor}>{`${instructor}`}</li>)}
+    accesor: 'instructors',
+    Cell: ({ row }) => (
+      <ul className="instructors-list">
+        {row.values.instructors && row.values.instructors.map(instructor => <li key={instructor}>{`${instructor}`}</li>)}
       </ul>
     ),
   },

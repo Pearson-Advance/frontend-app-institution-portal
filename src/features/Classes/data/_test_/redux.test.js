@@ -29,7 +29,7 @@ describe('Classes redux tests', () => {
   });
 
   test('successful fetch classes data', async () => {
-    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=true&institution_id=1&page=1`;
+    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=true&institution_id=1&course_name=&instructors=&page=1`;
     const mockResponse = {
       results: [
         {
@@ -39,7 +39,7 @@ describe('Classes redux tests', () => {
           endDate: null,
           numberOfStudents: 1,
           maxStudents: 100,
-          instructors: ['instructor_1']
+          instructors: ['instructor_1'],
         },
       ],
       count: 2,
@@ -52,7 +52,7 @@ describe('Classes redux tests', () => {
     expect(store.getState().classes.table.status)
       .toEqual('loading');
 
-    await executeThunk(fetchClassesData(1), store.dispatch, store.getState);
+    await executeThunk(fetchClassesData(1, 1), store.dispatch, store.getState);
 
     expect(store.getState().classes.table.data)
       .toEqual(mockResponse.results);
@@ -62,14 +62,14 @@ describe('Classes redux tests', () => {
   });
 
   test('failed fetch classes data', async () => {
-    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=true&institution_id=1&page=1`;
+    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=true&institution_id=1&course_name=&instructors=&page=1`;
     axiosMock.onGet(classesApiUrl)
       .reply(500);
 
     expect(store.getState().classes.table.status)
       .toEqual('loading');
 
-    await executeThunk(fetchClassesData(1), store.dispatch, store.getState);
+    await executeThunk(fetchClassesData(1, 1), store.dispatch, store.getState);
 
     expect(store.getState().classes.table.data)
       .toEqual([]);
