@@ -8,9 +8,9 @@ import { fetchClassesData } from 'features/Classes/data/thunks';
 import { initialPage } from 'features/constants';
 
 const ClassesPage = () => {
+  const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const stateClasses = useSelector((state) => state.classes);
-  const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(initialPage);
 
   useEffect(() => {

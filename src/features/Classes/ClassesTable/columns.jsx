@@ -31,7 +31,7 @@ const columns = [
   },
   {
     Header: 'Instructors',
-    accesor: 'instructors',
+    accessor: 'instructors',
     Cell: ({ row }) => (
       <ul className="instructors-list">
         {row.values.instructors && row.values.instructors.map(instructor => <li key={instructor}>{`${instructor}`}</li>)}

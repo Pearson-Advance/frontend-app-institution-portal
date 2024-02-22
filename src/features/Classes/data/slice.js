@@ -11,7 +11,6 @@ const initialState = {
     numPages: 0,
     count: 0,
   },
-  filters: {},
 };
 
 export const classesSlice = createSlice({
