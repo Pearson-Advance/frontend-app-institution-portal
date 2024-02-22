@@ -9,7 +9,10 @@ import AssignTable from 'features/Instructors/AssignInstructors/AssignTable';
 
 import { fetchInstructorsData, assignInstructors } from 'features/Instructors/data';
 import {
-  updateCurrentPage, updateFilters, updateClassSelected,
+  updateCurrentPage,
+  updateFilters,
+  updateClassSelected,
+  resetRowSelect,
 } from 'features/Instructors/data/slice';
 
 import { initialPage } from 'features/constants';
@@ -22,6 +25,7 @@ const AssignInstructors = ({ isOpen, close }) => {
   const rowsSelected = useSelector((state) => state.instructors.rowsSelected);
   const classId = useSelector((state) => state.instructors.classSelected);
   const [currentPage, setCurrentPage] = useState(initialPage);
+  const isButtonDisabled = rowsSelected.length === 0;
 
   const resetPagination = () => {
     setCurrentPage(initialPage);
@@ -54,6 +58,7 @@ const AssignInstructors = ({ isOpen, close }) => {
     if (!isOpen) {
       dispatch(updateFilters({}));
       dispatch(updateClassSelected(''));
+      dispatch(resetRowSelect());
     }
   }, [isOpen, dispatch]);
 
@@ -86,7 +91,13 @@ const AssignInstructors = ({ isOpen, close }) => {
         )}
         <div className="d-flex justify-content-end">
           <ModalCloseButton className="btntpz btn-text btn-tertiary">Cancel</ModalCloseButton>
-          <Button onClick={handleAssignInstructors} data-testid="assignButton">Assign instructor</Button>
+          <Button
+            onClick={handleAssignInstructors}
+            data-testid="assignButton"
+            disabled={isButtonDisabled}
+          >
+            Assign instructor
+          </Button>
         </div>
       </ModalDialog.Body>
     </ModalDialog>

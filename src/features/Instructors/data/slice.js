@@ -82,6 +82,9 @@ export const instructorsSlice = createSlice({
     deleteRowSelect: (state, { payload }) => {
       state.rowsSelected = state.rowsSelected.filter(row => row !== payload);
     },
+    resetRowSelect: (state) => {
+      state.rowsSelected = [];
+    },
     addInstructorRequest: (state) => {
       state.addInstructor.status = RequestStatus.LOADING;
     },
@@ -110,6 +113,7 @@ export const {
   assingInstructorsFailed,
   addRowSelect,
   deleteRowSelect,
+  resetRowSelect,
   addInstructorRequest,
   addInstructorSuccess,
   addInstructorFailed,

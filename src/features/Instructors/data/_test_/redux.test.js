@@ -5,7 +5,12 @@ import {
   fetchInstructorsData, fetchCoursesData, addInstructor,
 } from 'features/Instructors/data/thunks';
 import {
-  updateCurrentPage, updateFilters, updateClassSelected, addRowSelect, deleteRowSelect,
+  updateCurrentPage,
+  updateFilters,
+  updateClassSelected,
+  addRowSelect,
+  deleteRowSelect,
+  resetRowSelect,
 } from 'features/Instructors/data/slice';
 import { executeThunk } from 'test-utils';
 import { initializeStore } from 'store';
@@ -221,5 +226,12 @@ describe('Instructors redux tests', () => {
 
     expect(store.getState().instructors.addInstructor.status)
       .toEqual('error');
+  });
+
+  test('Reset rowsSelected', () => {
+    const expectState = [];
+
+    store.dispatch(resetRowSelect());
+    expect(store.getState().instructors.rowsSelected).toEqual(expectState);
   });
 });
