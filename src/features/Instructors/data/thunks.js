@@ -15,6 +15,7 @@ import {
   addInstructorRequest,
   addInstructorSuccess,
   addInstructorFailed,
+  resetRowSelect,
 } from 'features/Instructors/data/slice';
 import { fetchClassesData as fetchClassesDataHome } from 'features/Dashboard/data';
 import { initialPage } from 'features/constants';
@@ -63,6 +64,7 @@ function assignInstructors(data, classId, institutionId) {
       logError(error);
     } finally {
       dispatch(fetchClassesDataHome(institutionId, false));
+      dispatch(resetRowSelect());
     }
   };
 }
