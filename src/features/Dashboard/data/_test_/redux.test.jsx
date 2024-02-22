@@ -79,7 +79,7 @@ describe('Dashboard redux tests', () => {
 
   test('successful fetch classesNoInstructors data', async () => {
     const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/`
-    + '?limit=false&institution_id=1&course_name=&instructors=null';
+    + '?limit=false&institution_id=1&course_name=&instructors=null&page=';
     const mockResponse = [
       {
         classId: 'ccx-v1:demo+demo1+2020+ccx1',
@@ -128,7 +128,7 @@ describe('Dashboard redux tests', () => {
 
   test('successful fetch classes data', async () => {
     const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/`
-    + '?limit=false&institution_id=1&course_name=&instructors=';
+    + '?limit=false&institution_id=1&course_name=&instructors=&page=';
     const mockResponse = [
       {
         classId: 'ccx-v1:demo+demo1+2020+ccx1',
