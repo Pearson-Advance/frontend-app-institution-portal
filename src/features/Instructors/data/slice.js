@@ -14,14 +14,16 @@ const initialState = {
   courses: {
     ...initialStateService,
   },
-  classes: {
-    ...initialStateService,
-  },
   filters: {
   },
   rowsSelected: [],
   classSelected: '',
   assignInstructors: {
+    status: RequestStatus.LOADING,
+    error: null,
+    data: null,
+  },
+  addInstructor: {
     status: RequestStatus.LOADING,
     error: null,
     data: null,
@@ -58,16 +60,6 @@ export const instructorsSlice = createSlice({
     fetchCoursesDataFailed: (state) => {
       state.courses.status = RequestStatus.ERROR;
     },
-    fetchClassesDataRequest: (state) => {
-      state.classes.status = RequestStatus.LOADING;
-    },
-    fetchClassesDataSuccess: (state, { payload }) => {
-      state.classes.status = RequestStatus.SUCCESS;
-      state.classes.data = payload;
-    },
-    fetchClassesDataFailed: (state) => {
-      state.classes.status = RequestStatus.ERROR;
-    },
     updateFilters: (state, { payload }) => {
       state.filters = payload;
     },
@@ -90,6 +82,16 @@ export const instructorsSlice = createSlice({
     deleteRowSelect: (state, { payload }) => {
       state.rowsSelected = state.rowsSelected.filter(row => row !== payload);
     },
+    addInstructorRequest: (state) => {
+      state.addInstructor.status = RequestStatus.LOADING;
+    },
+    addInstructorSuccess: (state, { payload }) => {
+      state.addInstructor.status = RequestStatus.SUCCESS;
+      state.addInstructor.data = payload;
+    },
+    addInstructorFailed: (state) => {
+      state.addInstructor.status = RequestStatus.ERROR;
+    },
   },
 });
 
@@ -101,9 +103,6 @@ export const {
   fetchCoursesDataRequest,
   fetchCoursesDataSuccess,
   fetchCoursesDataFailed,
-  fetchClassesDataRequest,
-  fetchClassesDataSuccess,
-  fetchClassesDataFailed,
   updateFilters,
   updateClassSelected,
   assingInstructorsRequest,
@@ -111,6 +110,9 @@ export const {
   assingInstructorsFailed,
   addRowSelect,
   deleteRowSelect,
+  addInstructorRequest,
+  addInstructorSuccess,
+  addInstructorFailed,
 } = instructorsSlice.actions;
 
 export const { reducer } = instructorsSlice;

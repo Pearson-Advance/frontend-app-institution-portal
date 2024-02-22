@@ -1,7 +1,9 @@
 import MockAdapter from 'axios-mock-adapter';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
-import { fetchInstructorsData, fetchCoursesData, fetchClassesData } from 'features/Instructors/data/thunks';
+import {
+  fetchInstructorsData, fetchCoursesData, addInstructor,
+} from 'features/Instructors/data/thunks';
 import {
   updateCurrentPage, updateFilters, updateClassSelected, addRowSelect, deleteRowSelect,
 } from 'features/Instructors/data/slice';
@@ -128,47 +130,6 @@ describe('Instructors redux tests', () => {
       .toEqual('error');
   });
 
-  test('successful fetch classes data', async () => {
-    const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=false`;
-    const mockResponse = [
-      {
-        classUd: 'ccx-v1:demo+demo1+2020+ccx@2',
-        className: 'test ccx1',
-        masterCourseName: 'Demo Course 1',
-      },
-    ];
-    axiosMock.onGet(instructorsApiUrl)
-      .reply(200, mockResponse);
-
-    expect(store.getState().instructors.classes.status)
-      .toEqual('loading');
-
-    await executeThunk(fetchClassesData(), store.dispatch, store.getState);
-
-    expect(store.getState().instructors.classes.data)
-      .toEqual(mockResponse);
-
-    expect(store.getState().instructors.classes.status)
-      .toEqual('success');
-  });
-
-  test('failed fetch classes data', async () => {
-    const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=false`;
-    axiosMock.onGet(instructorsApiUrl)
-      .reply(500);
-
-    expect(store.getState().instructors.classes.status)
-      .toEqual('loading');
-
-    await executeThunk(fetchClassesData(), store.dispatch, store.getState);
-
-    expect(store.getState().instructors.classes.data)
-      .toEqual([]);
-
-    expect(store.getState().instructors.classes.status)
-      .toEqual('error');
-  });
-
   test('update current page', () => {
     const newPage = 2;
     const intialState = store.getState().instructors.table;
@@ -217,5 +178,48 @@ describe('Instructors redux tests', () => {
     store.dispatch(addRowSelect(rowSelected));
     store.dispatch(deleteRowSelect(rowSelected));
     expect(store.getState().instructors.rowsSelected).toEqual([]);
+  });
+
+  test('successful add instructor', async () => {
+    const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/instructors/?instructor_email=testEmail@example.com&institution_id=1`;
+    const institutionId = '1';
+    const instructorEmail = 'testEmail@example.com';
+    const mockResponse = {
+      instructor_email: instructorEmail,
+      institution_id: institutionId,
+    };
+    axiosMock.onPost(instructorsApiUrl)
+      .reply(200, mockResponse);
+
+    expect(store.getState().instructors.addInstructor.status)
+      .toEqual('loading');
+
+    await executeThunk(addInstructor(institutionId, instructorEmail), store.dispatch, store.getState);
+
+    expect(store.getState().instructors.addInstructor.data)
+      .toEqual(mockResponse);
+
+    expect(store.getState().instructors.addInstructor.status)
+      .toEqual('success');
+  });
+
+  test('failed add instructor', async () => {
+    const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/instructors/?instructor_email=testEmail@example.com&institution_id=1`;
+    const institutionId = '1';
+    const instructorEmail = 'testEmail@example.com';
+
+    axiosMock.onPost(instructorsApiUrl)
+      .reply(500);
+
+    expect(store.getState().instructors.addInstructor.status)
+      .toEqual('loading');
+
+    await executeThunk(addInstructor(institutionId, instructorEmail), store.dispatch, store.getState);
+
+    expect(store.getState().instructors.addInstructor.data)
+      .toEqual(null);
+
+    expect(store.getState().instructors.addInstructor.status)
+      .toEqual('error');
   });
 });

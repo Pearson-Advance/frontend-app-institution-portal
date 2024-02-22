@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Container from '@edx/paragon/dist/Container';
-import { Pagination } from '@edx/paragon';
+import { Pagination, useToggle } from '@edx/paragon';
 import InstructorsTable from 'features/Instructors/InstructorsTable';
 import InstructorsFilters from 'features/Instructors/InstructorsFilters';
 import AddInstructors from 'features/Instructors/AddInstructors';
+import { Button } from 'react-paragon-topaz';
 
 import { updateCurrentPage } from 'features/Instructors/data/slice';
 import { fetchInstructorsData } from 'features/Instructors/data/thunks';
@@ -16,6 +17,7 @@ const InstructorsPage = () => {
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(initialPage);
+  const [isOpen, openModal, closeModal] = useToggle(false);
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
@@ -36,7 +38,13 @@ const InstructorsPage = () => {
     <Container size="xl" className="px-4">
       <div className="d-flex justify-content-between align-items-center">
         <h2 className="title-page">Instructors</h2>
-        <AddInstructors />
+        <Button onClick={openModal}>
+          Add new instructor
+        </Button>
+        <AddInstructors
+          isOpen={isOpen}
+          onClose={closeModal}
+        />
       </div>
       <div className="page-content-container">
         <InstructorsFilters resetPagination={resetPagination} />

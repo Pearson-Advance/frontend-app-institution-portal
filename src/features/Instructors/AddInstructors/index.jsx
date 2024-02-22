@@ -1,99 +1,90 @@
 // This component will be modified according to the new wirefrime
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import {
-  FormGroup, ModalDialog, useToggle, Form,
+  FormGroup, ModalDialog, Form, ModalCloseButton, Toast,
 } from '@edx/paragon';
 import { Button } from 'react-paragon-topaz';
-import { handleInstructorsEnrollment } from 'features/Instructors/data/api';
 import { logError } from '@edx/frontend-platform/logging';
-import { fetchClassesData } from 'features/Instructors/data/thunks';
 
-const AddInstructors = () => {
-  const stateInstructors = useSelector((state) => state.instructors.classes);
+import { addInstructor } from 'features/Instructors/data/thunks';
+
+const AddInstructors = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
-  const [isOpen, open, close] = useToggle(false); // eslint-disable-line no-unused-vars
-  const [isNoUser, setIsNoUser] = useState(false);
-  const enrollmentData = new FormData();
+  const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
+  const [showToast, setShowToast] = useState(false);
+  const successMessage = 'Email invite has been sent successfully';
 
-  const handleAddInstructors = async (e) => {
+  const handleAddInstructor = async (e) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
     const formJson = Object.fromEntries(formData.entries());
+    const { instructorEmail } = formJson;
+
+    if (!instructorEmail) {
+      onClose();
+      return;
+    }
+
     try {
-      enrollmentData.append('unique_student_identifier', formJson.instructorInfo);
-      enrollmentData.append('rolename', 'staff');
-      enrollmentData.append('action', 'allow');
-      const response = await handleInstructorsEnrollment(enrollmentData, formJson.ccxId);
-      if (response.data?.userDoesNotExist) {
-        setIsNoUser(true);
-      } else {
-        close();
-        setIsNoUser(false);
-      }
+      dispatch(addInstructor(selectedInstitution.id, instructorEmail));
+      onClose();
+      setShowToast(true);
     } catch (error) {
       logError(error);
     }
   };
 
-  useEffect(() => {
-    dispatch(fetchClassesData());
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
     <>
-      <Button variant="outline-primary" size="sm">
-        Add Instructor
-      </Button>
+      <Toast
+        onClose={() => setShowToast(false)}
+        show={showToast}
+      >
+        {successMessage}
+      </Toast>
       <ModalDialog
         title="Add Instructor"
         isOpen={isOpen}
-        onClose={close}
+        onClose={onClose}
         hasCloseButton
       >
         <ModalDialog.Header>
           <ModalDialog.Title>
-            Add Instructor
+            Add new instructor
           </ModalDialog.Title>
         </ModalDialog.Header>
         <ModalDialog.Body>
-          <Form onSubmit={handleAddInstructors}>
-            <FormGroup controlId="ccxId">
-              <Form.Control
-                as="select"
-                floatingLabel="Select Class Name"
-                className="my-4 mr-0"
-                name="ccxId"
-              >
-                <option disabled value="null">Select an Option</option>
-                {stateInstructors.data.map((ccx) => <option value={ccx.classId}>{ccx.className}</option>)}
-              </Form.Control>
-            </FormGroup>
+          <Form onSubmit={handleAddInstructor}>
             <FormGroup controlId="instructorInfo">
               <Form.Control
-                type="text"
-                placeholder="Enter Username or Email of the instructor"
-                floatingLabel="Username or Email"
+                type="email"
+                placeholder="Enter Email of the instructor"
+                floatingLabel="Email"
                 className="my-4 mr-0"
-                name="instructorInfo"
+                name="instructorEmail"
+                required
               />
-              {isNoUser && (
-                <Form.Control.Feedback type="invalid">
-                  User does not exist
-                </Form.Control.Feedback>
-              )}
             </FormGroup>
             <div className="d-flex justify-content-end">
-              <Button type="submit">Add</Button>
+              <ModalCloseButton className="btntpz btn-text btn-tertiary">Cancel</ModalCloseButton>
+              <Button type="submit">Send invite</Button>
             </div>
           </Form>
-
         </ModalDialog.Body>
       </ModalDialog>
     </>
+
   );
+};
+
+AddInstructors.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default AddInstructors;
