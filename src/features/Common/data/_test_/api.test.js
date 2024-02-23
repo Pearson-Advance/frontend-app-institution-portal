@@ -56,7 +56,7 @@ describe('Common api services', () => {
 
     expect(httpClientMock.get).toHaveBeenCalledTimes(1);
     expect(httpClientMock.get).toHaveBeenCalledWith(
-      `${COURSE_OPERATIONS_API_V2}/license-pool/?limit=true&institution_id=1&page=`,
+      `${COURSE_OPERATIONS_API_V2}/license-pool/?limit=true&institution_id=1&page=1&`,
     );
   });
 

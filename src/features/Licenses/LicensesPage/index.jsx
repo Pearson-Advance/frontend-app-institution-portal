@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import Container from '@edx/paragon/dist/Container';
-import LicensesTable from 'features/Licenses/LicensesTable';
-import { Pagination } from '@edx/paragon';
+import { Pagination, Container } from '@edx/paragon';
 
-import { fetchLicensesData } from 'features/Licenses/data';
-import { updateCurrentPage } from 'features/Licenses/data/slice';
 import { initialPage } from 'features/constants';
+import { updateCurrentPage } from 'features/Licenses/data/slice';
+import { fetchLicensesData } from 'features/Licenses/data';
+import LicensesTable from 'features/Licenses/LicensesTable';
+import LicensesFilters from 'features/Licenses/LicensesFilters';
 
 const LicensesPage = () => {
   const dispatch = useDispatch();
@@ -20,6 +20,10 @@ const LicensesPage = () => {
     dispatch(updateCurrentPage(targetPage));
   };
 
+  const resetPagination = () => {
+    setCurrentPage(initialPage);
+  };
+
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
       dispatch(fetchLicensesData(selectedInstitution?.id, currentPage));
@@ -30,6 +34,7 @@ const LicensesPage = () => {
     <Container size="xl" className="px-4">
       <h2 className="title-page">License pool inventory</h2>
       <div className="page-content-container">
+        <LicensesFilters resetPagination={resetPagination} />
         <LicensesTable
           data={stateLicenses.data}
           count={stateLicenses.count}
