@@ -1,20 +1,28 @@
-// Color variables
+// Primary
 $primary: #007394;
 $primary-dark: #003057;
+
+// Basic Colors
 $color-black: #020917;
-$black-80: #333;
 $color-white: #fefefe;
 $color-gray: #60646d;
-$gray-70: #666666;
-$gray-60: #808080;
-$gray-30: #d3d3d3;
-$gray-20: #dfe1e1;
 $color-pink: #ffecf0;
 $color-green: #e7f7eb;
 $color-yellow: #fafbe5;
 $color-purple: #f4e3ee;
+$color-active-button: #989ba3;
+$hyperlink-color: #17897c;
+$bg-main-color: #f3f3f3;
+
+// Gray
+$gray-20: #dfe1e1;
+$gray-30: #d3d3d3;
+$gray-60: #808080;
+$gray-70: #666666;
+
+// Blue
 $blue-20: #e4faff;
 
-$hyperlink-color: #17897c;
-$color-active-button: #989ba3;
-$bg-main-color: #f3f3f3;
+// Black
+$black: #000;
+$black-80: #333;

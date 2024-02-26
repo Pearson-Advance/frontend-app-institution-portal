@@ -9,15 +9,13 @@ import {
   fetchCoursesDataRequest,
   fetchCoursesDataSuccess,
   fetchCoursesDataFailed,
-  assingInstructorsRequest,
-  assingInstructorsSuccess,
-  assingInstructorsFailed,
+  assignInstructorsRequest,
+  assignInstructorsSuccess,
+  assignInstructorsFailed,
   addInstructorRequest,
   addInstructorSuccess,
   addInstructorFailed,
-  resetRowSelect,
 } from 'features/Instructors/data/slice';
-import { fetchClassesData as fetchClassesDataHome } from 'features/Dashboard/data';
 import { initialPage } from 'features/constants';
 
 function fetchInstructorsData(id, currentPage, filtersData) {
@@ -50,21 +48,17 @@ function fetchCoursesData(id) {
  * Assign instructors to a class.
  * @param {Object} data - The data containing information about the instructors to be assigned.
  * @param {string} classId - The ID of the class to which the instructors will be assigned.
- * @param {number} institutionId - The ID of the institution associated with the class.
  * @returns {Promise<void>} - A promise that resolves after dispatching appropriate actions.
  */
-function assignInstructors(data, classId, institutionId) {
+function assignInstructors(data, classId) {
   return async (dispatch) => {
-    dispatch(assingInstructorsRequest());
+    dispatch(assignInstructorsRequest());
     try {
       const response = await handleInstructorsEnrollment(data, classId);
-      dispatch(assingInstructorsSuccess(response.data));
+      dispatch(assignInstructorsSuccess(response.data));
     } catch (error) {
-      dispatch(assingInstructorsFailed());
+      dispatch(assignInstructorsFailed());
       logError(error);
-    } finally {
-      dispatch(fetchClassesDataHome(institutionId, false));
-      dispatch(resetRowSelect());
     }
   };
 }

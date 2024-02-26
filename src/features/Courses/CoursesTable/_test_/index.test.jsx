@@ -1,5 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom';
+import { MemoryRouter, Route } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 
 import CoursesTable from 'features/Courses/CoursesTable';
@@ -12,7 +13,7 @@ describe('Courses Table', () => {
     expect(emptyTableText).toBeInTheDocument();
   });
 
-  test('renders CoursessTable  with data', () => {
+  test('renders CoursesTable  with data', () => {
     const data = [
       {
         masterCourseName: 'Demo Course 1',
@@ -31,7 +32,11 @@ describe('Courses Table', () => {
     ];
 
     const component = render(
-      <CoursesTable data={data} count={data.length} columns={columns} />,
+      <MemoryRouter initialEntries={['/courses']}>
+        <Route path="/courses">
+          <CoursesTable data={data} count={data.length} columns={columns} />
+        </Route>
+      </MemoryRouter>,
     );
 
     // Check if the table rows are present

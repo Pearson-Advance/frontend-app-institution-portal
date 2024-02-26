@@ -7,12 +7,12 @@ import {
 } from 'features/Classes/data/slice';
 import { getClassesByInstitution } from 'features/Common/data/api';
 
-function fetchClassesData(id, currentPage) {
+function fetchClassesData(id, currentPage, courseName = '') {
   return async (dispatch) => {
     dispatch(fetchClassesDataRequest);
 
     try {
-      const response = camelCaseObject(await getClassesByInstitution(id, '', true, '', currentPage));
+      const response = camelCaseObject(await getClassesByInstitution(id, courseName, true, '', currentPage));
       dispatch(fetchClassesDataSuccess(response.data));
     } catch (error) {
       dispatch(fetchClassesDataFailed());

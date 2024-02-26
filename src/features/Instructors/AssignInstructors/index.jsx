@@ -7,6 +7,7 @@ import { Button } from 'react-paragon-topaz';
 import InstructorsFilters from 'features/Instructors/InstructorsFilters';
 import AssignTable from 'features/Instructors/AssignInstructors/AssignTable';
 
+import { fetchClassesData as fetchClassesDataHome } from 'features/Dashboard/data';
 import { fetchInstructorsData, assignInstructors } from 'features/Instructors/data';
 import {
   updateCurrentPage,
@@ -18,7 +19,7 @@ import {
 import { initialPage } from 'features/constants';
 import 'features/Instructors/AssignInstructors/index.scss';
 
-const AssignInstructors = ({ isOpen, close }) => {
+const AssignInstructors = ({ isOpen, close, getClasses }) => {
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const stateInstructors = useSelector((state) => state.instructors);
@@ -37,22 +38,32 @@ const AssignInstructors = ({ isOpen, close }) => {
   };
 
   const handleAssignInstructors = async () => {
-    // eslint-disable-next-line array-callback-return
-    rowsSelected.map(row => {
-      const enrollmentData = new FormData();
-      enrollmentData.append('unique_student_identifier', row);
-      enrollmentData.append('rolename', 'staff');
-      enrollmentData.append('action', 'allow');
-      dispatch(assignInstructors(enrollmentData, classId, selectedInstitution.id));
-    });
-    close();
+    try {
+      const dispatchPromises = rowsSelected.map(row => {
+        const enrollmentData = new FormData();
+        enrollmentData.append('unique_student_identifier', row);
+        enrollmentData.append('rolename', 'staff');
+        enrollmentData.append('action', 'allow');
+        return dispatch(assignInstructors(enrollmentData, classId));
+      });
+
+      await Promise.all(dispatchPromises);
+
+      if (getClasses) {
+        dispatch(fetchClassesDataHome(selectedInstitution.id));
+      }
+    } finally {
+      close();
+    }
   };
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      dispatch(fetchInstructorsData(selectedInstitution.id, currentPage, stateInstructors.filters));
+      const instructorFilters = stateInstructors.filters;
+      dispatch(fetchInstructorsData(selectedInstitution.id, currentPage, instructorFilters));
     }
-  }, [currentPage, selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, selectedInstitution, dispatch]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -107,6 +118,11 @@ const AssignInstructors = ({ isOpen, close }) => {
 AssignInstructors.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
+  getClasses: PropTypes.bool,
+};
+
+AssignInstructors.defaultProps = {
+  getClasses: true,
 };
 
 export default AssignInstructors;

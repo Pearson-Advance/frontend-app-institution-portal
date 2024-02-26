@@ -27,7 +27,7 @@ export const initialStateService = {
 export const initialPage = 1;
 
 /**
- * Constans for time.
+ * Constants for time.
  * @readonly
  * @number
  */
