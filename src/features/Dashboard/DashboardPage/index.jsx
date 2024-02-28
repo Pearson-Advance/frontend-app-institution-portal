@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { getConfig } from '@edx/frontend-platform';
 
 import { Container, Col, Row } from '@edx/paragon';
 import StudentsMetrics from 'features/Students/StudentsMetrics';
@@ -21,6 +22,7 @@ const DashboardPage = () => {
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const licenseData = useSelector((state) => state.dashboard.tableLicense.data);
   const [dataTableLicense, setDataTableLicense] = useState([]);
+  const imageDashboard = getConfig().IMAGE_DASHBOARD_URL;
 
   const handleViewAllLicenses = () => {
     history.push('/licenses');
@@ -55,6 +57,13 @@ const DashboardPage = () => {
         <Col lg="9" xs="12">
           <WeeklySchedule />
         </Col>
+        {imageDashboard && (
+          <Col lg="3" xs="12">
+            <div className="image-dashboard">
+              <img src={imageDashboard} alt="icon" />
+            </div>
+          </Col>
+        )}
       </Row>
       <Row>
         <Col lg="9" xs="12">

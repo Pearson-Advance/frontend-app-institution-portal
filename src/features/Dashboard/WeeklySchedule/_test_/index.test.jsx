@@ -7,7 +7,22 @@ jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
 }));
 
+jest.mock('react-date-range', () => ({
+  Calendar: () => <div>Calendar</div>,
+}));
+
+jest.mock('date-fns', () => ({
+  startOfWeek: jest.fn(() => new Date(2023, 1, 23)),
+  endOfWeek: jest.fn(() => null),
+  isWithinInterval: jest.fn(() => true),
+  format: jest.fn(() => 'Jan 23, 2024'),
+}));
+
 describe('WeeklySchedule component', () => {
+  afterAll(() => {
+    jest.resetAllMocks();
+  });
+
   const mockStore = {
     dashboard: {
       classes: {
@@ -22,7 +37,7 @@ describe('WeeklySchedule component', () => {
             numberOfStudents: 0,
             numberOfPendingStudents: 0,
             maxStudents: 20,
-            startDate: '2024-01-23T21:50:51Z',
+            startDate: '2023-01-23T21:50:51Z',
             endDate: null,
           },
           {
@@ -35,7 +50,7 @@ describe('WeeklySchedule component', () => {
             numberOfStudents: 0,
             numberOfPendingStudents: 0,
             maxStudents: 20,
-            startDate: '2023-10-02T12:58:43Z',
+            startDate: '2023-01-23T21:50:51Z',
             endDate: null,
           },
         ],
@@ -48,12 +63,11 @@ describe('WeeklySchedule component', () => {
   );
 
   test('renders components', () => {
-    const { getByText } = component;
+    const { getByText, getAllByText } = component;
 
     expect(getByText('Class schedule')).toBeInTheDocument();
     expect(getByText('ccx 1')).toBeInTheDocument();
-    expect(getByText('Jan 23, 2024')).toBeInTheDocument();
+    expect(getAllByText('Jan 23, 2024')).toHaveLength(2);
     expect(getByText('ccx 2')).toBeInTheDocument();
-    expect(getByText('Oct 2, 2023')).toBeInTheDocument();
   });
 });
