@@ -60,7 +60,7 @@ const DashboardPage = () => {
         {imageDashboard && (
           <Col lg="3" xs="12">
             <div className="image-dashboard">
-              <img src={imageDashboard} alt="icon" />
+              <img src={imageDashboard} alt="" />
             </div>
           </Col>
         )}
