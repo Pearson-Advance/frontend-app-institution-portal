@@ -16,6 +16,7 @@ import DashboardPage from 'features/Dashboard/DashboardPage';
 import LicensesPage from 'features/Licenses/LicensesPage';
 import ClassesPage from 'features/Classes/ClassesPage';
 import { Select } from 'react-paragon-topaz';
+import CoursesDetailPage from 'features/Courses/CoursesDetailPage';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
 import { updateSelectedInstitution } from 'features/Main/data/slice';
@@ -90,6 +91,9 @@ const Main = () => {
             </Switch>
             <Switch>
               <Route path="/courses" exact component={CoursesPage} />
+            </Switch>
+            <Switch>
+              <Route path="/courses/:classId" exact component={CoursesDetailPage} />
             </Switch>
             <Switch>
               <Route path="/licenses" exact component={LicensesPage} />

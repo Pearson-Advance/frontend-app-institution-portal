@@ -1,8 +1,10 @@
 import React from 'react';
-import CoursesPage from 'features/Courses/CoursesPage';
 import { waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
+import { MemoryRouter, Route } from 'react-router-dom';
+
 import { renderWithProviders } from 'test-utils';
+import CoursesPage from 'features/Courses/CoursesPage';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -37,7 +39,11 @@ const mockStore = {
 describe('CoursesPage', () => {
   it('renders courses data and pagination', async () => {
     const component = renderWithProviders(
-      <CoursesPage />,
+      <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
+        <Route path="/courses/:classId">
+          <CoursesPage />
+        </Route>
+      </MemoryRouter>,
       { preloadedState: mockStore },
     );
 

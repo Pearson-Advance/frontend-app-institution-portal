@@ -66,14 +66,14 @@ export const instructorsSlice = createSlice({
     updateClassSelected: (state, { payload }) => {
       state.classSelected = payload;
     },
-    assingInstructorsRequest: (state) => {
+    assignInstructorsRequest: (state) => {
       state.assignInstructors.status = RequestStatus.LOADING;
     },
-    assingInstructorsSuccess: (state, { payload }) => {
+    assignInstructorsSuccess: (state, { payload }) => {
       state.assignInstructors.status = RequestStatus.SUCCESS;
       state.assignInstructors.data = payload;
     },
-    assingInstructorsFailed: (state) => {
+    assignInstructorsFailed: (state) => {
       state.assignInstructors.status = RequestStatus.ERROR;
     },
     addRowSelect: (state, { payload }) => {
@@ -108,9 +108,9 @@ export const {
   fetchCoursesDataFailed,
   updateFilters,
   updateClassSelected,
-  assingInstructorsRequest,
-  assingInstructorsSuccess,
-  assingInstructorsFailed,
+  assignInstructorsRequest,
+  assignInstructorsSuccess,
+  assignInstructorsFailed,
   addRowSelect,
   deleteRowSelect,
   resetRowSelect,
