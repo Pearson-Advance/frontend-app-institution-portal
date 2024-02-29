@@ -37,7 +37,7 @@ describe('Main component', () => {
       </Provider>,
     );
 
-    const titleApp = getByText('CertPREP Training Center Dashboard');
+    const titleApp = getByText('CertPREP Management Portal');
     expect(titleApp).toBeInTheDocument();
 
     const button = screen.getByRole('button', { expanded: false });
