@@ -72,6 +72,6 @@ describe('DashboardPage component', () => {
     expect(getByText('Demo Course 1')).toBeInTheDocument();
     expect(getByText('License Name 1')).toBeInTheDocument();
     expect(getByText('Class schedule')).toBeInTheDocument();
-    expect(getByText('ccx 2')).toBeInTheDocument();
+    expect(getByText('No classes scheduled at this time')).toBeInTheDocument();
   });
 });

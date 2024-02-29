@@ -43,7 +43,7 @@ describe('Header', () => {
       </AppContext.Provider>,
     );
 
-    const titleApp = getByText('CertPREP Training Center Dashboard');
+    const titleApp = getByText('CertPREP Management Portal');
     const userName = getByText('User');
 
     expect(userName).toBeInTheDocument();
