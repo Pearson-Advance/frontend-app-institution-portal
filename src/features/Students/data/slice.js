@@ -17,7 +17,10 @@ const initialState = {
   classes: {
     ...initialStateService,
   },
-  metrics: {
+  classesMetrics: {
+    ...initialStateService,
+  },
+  studentsMetrics: {
     ...initialStateService,
   },
   filters: {},
@@ -66,15 +69,25 @@ export const studentsSlice = createSlice({
     fetchClassesDataFailed: (state) => {
       state.classes.status = RequestStatus.ERROR;
     },
-    fetchMetricsDataRequest: (state) => {
-      state.metrics.status = RequestStatus.LOADING;
+    fetchClassesMetricsDataRequest: (state) => {
+      state.classesMetrics.status = RequestStatus.LOADING;
     },
-    fetchMetricsDataSuccess: (state, { payload }) => {
-      state.metrics.status = RequestStatus.SUCCESS;
-      state.metrics.data = payload;
+    fetchClassesMetricsDataSuccess: (state, { payload }) => {
+      state.classesMetrics.status = RequestStatus.SUCCESS;
+      state.classesMetrics.data = payload;
     },
-    fetchMetricsDataFailed: (state) => {
-      state.metrics.status = RequestStatus.ERROR;
+    fetchClassesMetricsDataFailed: (state) => {
+      state.classesMetrics.status = RequestStatus.ERROR;
+    },
+    fetchStudentsMetricsDataRequest: (state) => {
+      state.studentsMetrics.status = RequestStatus.LOADING;
+    },
+    fetchStudentsMetricsDataSuccess: (state, { payload }) => {
+      state.studentsMetrics.status = RequestStatus.SUCCESS;
+      state.studentsMetrics.data = payload;
+    },
+    fetchStudentsMetricsDataFailed: (state) => {
+      state.studentsMetrics.status = RequestStatus.ERROR;
     },
   },
 });
@@ -91,9 +104,12 @@ export const {
   fetchClassesDataRequest,
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
-  fetchMetricsDataRequest,
-  fetchMetricsDataSuccess,
-  fetchMetricsDataFailed,
+  fetchClassesMetricsDataRequest,
+  fetchClassesMetricsDataSuccess,
+  fetchClassesMetricsDataFailed,
+  fetchStudentsMetricsDataRequest,
+  fetchStudentsMetricsDataSuccess,
+  fetchStudentsMetricsDataFailed,
 } = studentsSlice.actions;
 
 export const { reducer } = studentsSlice;

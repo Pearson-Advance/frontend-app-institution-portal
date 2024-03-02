@@ -10,11 +10,18 @@ import {
   fetchClassesDataRequest,
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
-  fetchMetricsDataRequest,
-  fetchMetricsDataSuccess,
-  fetchMetricsDataFailed,
+  fetchClassesMetricsDataRequest,
+  fetchClassesMetricsDataSuccess,
+  fetchClassesMetricsDataFailed,
+  fetchStudentsMetricsDataRequest,
+  fetchStudentsMetricsDataSuccess,
+  fetchStudentsMetricsDataFailed,
 } from 'features/Students/data/slice';
-import { getStudentbyInstitutionAdmin, getMetricsStudents } from 'features/Students/data/api';
+import {
+  getClassesMetrics,
+  getStudentsMetrics,
+  getStudentbyInstitutionAdmin,
+} from 'features/Students/data/api';
 import { getCoursesByInstitution, getClassesByInstitution } from 'features/Common/data/api';
 
 function fetchStudentsData(id, currentPage, filtersData) {
@@ -59,15 +66,29 @@ function fetchClassesData(id, courseName) {
   };
 }
 
-function fetchMetricsData() {
+function fetchClassesMetricsData(institutionId, days) {
   return async (dispatch) => {
-    dispatch(fetchMetricsDataRequest());
+    dispatch(fetchClassesMetricsDataRequest());
 
     try {
-      const response = camelCaseObject(await getMetricsStudents());
-      dispatch(fetchMetricsDataSuccess(response.data));
+      const response = camelCaseObject(await getClassesMetrics(institutionId, days));
+      dispatch(fetchClassesMetricsDataSuccess(response.data));
     } catch (error) {
-      dispatch(fetchMetricsDataFailed());
+      dispatch(fetchClassesMetricsDataFailed());
+      logError(error);
+    }
+  };
+}
+
+function fetchStudentsMetricsData(institutionId, days) {
+  return async (dispatch) => {
+    dispatch(fetchStudentsMetricsDataRequest());
+
+    try {
+      const response = camelCaseObject(await getStudentsMetrics(institutionId, days));
+      dispatch(fetchStudentsMetricsDataSuccess(response.data));
+    } catch (error) {
+      dispatch(fetchStudentsMetricsDataFailed());
       logError(error);
     }
   };
@@ -77,5 +98,6 @@ export {
   fetchStudentsData,
   fetchCoursesData,
   fetchClassesData,
-  fetchMetricsData,
+  fetchClassesMetricsData,
+  fetchStudentsMetricsData,
 };

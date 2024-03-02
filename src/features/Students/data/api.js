@@ -24,18 +24,33 @@ function handleEnrollments(data, courseId) {
   );
 }
 
-function getMetricsStudents() {
-  const metricsData = {
-    data: {
-      new_students_registered: '367',
-      classes_scheduled: '71%',
-    },
+function getStudentsMetrics(institutionId, days) {
+  const params = {
+    institution_id: institutionId,
+    days,
   };
-  return metricsData;
+
+  return getAuthenticatedHttpClient().get(
+    `${getConfig().COURSE_OPERATIONS_API_METRICS_BASE_URL}/students-number/`,
+    { params },
+  );
+}
+
+function getClassesMetrics(institutionId, days) {
+  const params = {
+    institution_id: institutionId,
+    days,
+  };
+
+  return getAuthenticatedHttpClient().get(
+    `${getConfig().COURSE_OPERATIONS_API_METRICS_BASE_URL}/classes-number/`,
+    { params },
+  );
 }
 
 export {
   getStudentbyInstitutionAdmin,
   handleEnrollments,
-  getMetricsStudents,
+  getStudentsMetrics,
+  getClassesMetrics,
 };
