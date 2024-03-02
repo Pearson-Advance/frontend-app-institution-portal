@@ -23,7 +23,7 @@ const StudentsMetrics = () => {
   return (
     <div className="container-cards d-flex flex-column">
       <ToggleButtonGroup type="radio" defaultValue={1} name="period">
-        <ToggleButton id="tbg-radio-1" value={1} variant="outline-primary">
+        <ToggleButton id="tbg-radio-1" value={1} variant="outline-primary" disabled>
           This week
         </ToggleButton>
         <ToggleButton id="tbg-radio-2" value={2} variant="outline-primary" disabled> {/* Temporarily disabled */}
