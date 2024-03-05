@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Container, Pagination } from '@edx/paragon';
 
 import ClassesTable from 'features/Classes/ClassesTable';
+import ClassesFilters from 'features/Classes/ClassesFilters';
+
 import { updateCurrentPage } from 'features/Classes/data/slice';
 import { fetchClassesData } from 'features/Classes/data/thunks';
 import { initialPage } from 'features/constants';
@@ -17,17 +19,22 @@ const ClassesPage = () => {
     if (Object.keys(selectedInstitution).length > 0) {
       dispatch(fetchClassesData(selectedInstitution.id, currentPage));
     }
-  }, [currentPage, selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentPage, selectedInstitution, dispatch]);
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
     dispatch(updateCurrentPage(targetPage));
   };
 
+  const resetPagination = () => {
+    setCurrentPage(initialPage);
+  };
+
   return (
     <Container size="xl" className="px-4">
       <h2 className="title-page">Classes</h2>
       <div className="page-content-container">
+        <ClassesFilters resetPagination={resetPagination} />
         <ClassesTable
           data={stateClasses.table.data}
           count={stateClasses.table.count}

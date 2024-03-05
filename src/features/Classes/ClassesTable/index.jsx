@@ -9,8 +9,8 @@ const ClassesTable = ({ data, count }) => {
 
   return (
     <IntlProvider locale="en">
-      <Row className="justify-content-center my-4 my-3">
-        <Col xs={11} className="p-0">
+      <Row className="justify-content-center my-4 my-3 mx-0">
+        <Col xs={12} className="px-4">
           <DataTable
             isSortable
             columns={COLUMNS}

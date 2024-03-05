@@ -28,6 +28,7 @@ const initialState = {
     error: null,
     data: null,
   },
+  selectOptions: [],
 };
 
 export const instructorsSlice = createSlice({
@@ -95,6 +96,9 @@ export const instructorsSlice = createSlice({
     addInstructorFailed: (state) => {
       state.addInstructor.status = RequestStatus.ERROR;
     },
+    updateInstructorOptions: (state, { payload }) => {
+      state.selectOptions = payload;
+    },
   },
 });
 
@@ -117,6 +121,7 @@ export const {
   addInstructorRequest,
   addInstructorSuccess,
   addInstructorFailed,
+  updateInstructorOptions,
 } = instructorsSlice.actions;
 
 export const { reducer } = instructorsSlice;

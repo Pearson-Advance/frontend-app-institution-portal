@@ -77,7 +77,7 @@ describe('Common api services', () => {
 
     expect(httpClientMock.get).toHaveBeenCalledTimes(1);
     expect(httpClientMock.get).toHaveBeenCalledWith(
-      `${COURSE_OPERATIONS_API_V2}/classes/?limit=false&institution_id=1&course_name=ccx1&instructors=&page=`,
+      `${COURSE_OPERATIONS_API_V2}/classes/?limit=false&institution_id=1&course_name=ccx1&instructors=&page=&`,
     );
   });
 });

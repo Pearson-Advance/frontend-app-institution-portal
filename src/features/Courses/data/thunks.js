@@ -4,8 +4,10 @@ import {
   fetchCoursesDataRequest,
   fetchCoursesDataSuccess,
   fetchCoursesDataFailed,
+  updateCoursesOptions,
 } from 'features/Courses/data/slice';
 import { getCoursesByInstitution } from 'features/Common/data/api';
+import { initialPage } from 'features/constants';
 
 function fetchCoursesData(id, currentPage, filtersData) {
   return async (dispatch) => {
@@ -21,6 +23,21 @@ function fetchCoursesData(id, currentPage, filtersData) {
   };
 }
 
+function fetchCoursesOptionsData(institutionId, limit = false, page = initialPage, params = {}) {
+  return async (dispatch) => {
+    dispatch(fetchCoursesDataRequest);
+
+    try {
+      const response = camelCaseObject(await getCoursesByInstitution(institutionId, limit, page, params));
+      dispatch(updateCoursesOptions(response.data));
+    } catch (error) {
+      dispatch(fetchCoursesDataFailed());
+      logError(error);
+    }
+  };
+}
+
 export {
   fetchCoursesData,
+  fetchCoursesOptionsData,
 };
