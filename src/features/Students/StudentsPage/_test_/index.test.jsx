@@ -45,8 +45,19 @@ const mockStore = {
       num_pages: 1,
       current_page: 1,
     },
-    metrics: {
-      data: [],
+    classesMetrics: {
+      data: [
+        {
+          numberOfClassesCreated: 10,
+        },
+      ],
+    },
+    studentsMetrics: {
+      data: [
+        {
+          numberOfEnrollments: 2,
+        },
+      ],
     },
     classes: {
       data: [],
@@ -75,6 +86,8 @@ describe('StudentsPage', () => {
       expect(component.container).toHaveTextContent('Instructor 2');
       expect(component.container).toHaveTextContent('active');
       expect(component.container).toHaveTextContent('pending');
+      expect(component.container).toHaveTextContent('10');
+      expect(component.container).toHaveTextContent('2');
     });
   });
 });

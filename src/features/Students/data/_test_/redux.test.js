@@ -5,7 +5,8 @@ import {
   fetchStudentsData,
   fetchCoursesData,
   fetchClassesData,
-  fetchMetricsData,
+  fetchClassesMetricsData,
+  fetchStudentsMetricsData,
 } from 'features/Students/data/thunks';
 import { updateCurrentPage, updateFilters } from 'features/Students/data/slice';
 import { executeThunk } from 'test-utils';
@@ -170,22 +171,76 @@ describe('Students redux tests', () => {
       .toEqual('error');
   });
 
-  test('successful fetch metrics data', async () => {
-    const mockResponse = {
-      classesScheduled: '71%',
-      newStudentsRegistered: '367',
-    };
+  test('successful fetch classes metrics data', async () => {
+    const classesMetricsApiUrl = `${process.env.COURSE_OPERATIONS_API_METRICS_BASE_URL}/classes-number/`;
+    const mockResponse = { numberOfClassesCreated: 71 };
+    axiosMock.onGet(classesMetricsApiUrl)
+      .reply(200, mockResponse);
 
-    expect(store.getState().students.metrics.status)
+    expect(store.getState().students.classesMetrics.status)
       .toEqual('loading');
 
-    await executeThunk(fetchMetricsData(), store.dispatch, store.getState);
+    await executeThunk(fetchClassesMetricsData(1, 2), store.dispatch, store.getState);
 
-    expect(store.getState().students.metrics.data)
+    expect(store.getState().students.classesMetrics.data)
       .toEqual(mockResponse);
 
-    expect(store.getState().students.metrics.status)
+    expect(store.getState().students.classesMetrics.status)
       .toEqual('success');
+  });
+
+  test('failed fetch classes metrics data', async () => {
+    const classesMetricsApiUrl = `${process.env.COURSE_OPERATIONS_API_METRICS_BASE_URL}/classes-number/`;
+
+    axiosMock.onGet(classesMetricsApiUrl)
+      .reply(500);
+
+    expect(store.getState().students.classesMetrics.status)
+      .toEqual('loading');
+
+    await executeThunk(fetchClassesMetricsData(1, 2), store.dispatch, store.getState);
+
+    expect(store.getState().students.classesMetrics.data)
+      .toEqual([]);
+
+    expect(store.getState().students.classesMetrics.status)
+      .toEqual('error');
+  });
+
+  test('successful fetch students metrics data', async () => {
+    const studentsMetricsApiUrl = `${process.env.COURSE_OPERATIONS_API_METRICS_BASE_URL}/students-number/`;
+    const mockResponse = { numberOfEnrollments: 20 };
+    axiosMock.onGet(studentsMetricsApiUrl)
+      .reply(200, mockResponse);
+
+    expect(store.getState().students.studentsMetrics.status)
+      .toEqual('loading');
+
+    await executeThunk(fetchStudentsMetricsData(1, 2), store.dispatch, store.getState);
+
+    expect(store.getState().students.studentsMetrics.data)
+      .toEqual(mockResponse);
+
+    expect(store.getState().students.studentsMetrics.status)
+      .toEqual('success');
+  });
+
+  test('failed fetch students metrics data', async () => {
+    const studentsMetricsApiUrl = `${process.env.COURSE_OPERATIONS_API_METRICS_BASE_URL}/students-number/`;
+
+    axiosMock.onGet(studentsMetricsApiUrl)
+      .reply(500);
+
+    expect(store.getState().students.studentsMetrics.status)
+      .toEqual('loading');
+
+    await executeThunk(fetchStudentsMetricsData(1, 2), store.dispatch, store.getState);
+
+    expect(store.getState().students.studentsMetrics.data)
+      .toEqual([]);
+
+    expect(store.getState().students.studentsMetrics.status)
+      .toEqual('error');
   });
 
   test('update current page', () => {
