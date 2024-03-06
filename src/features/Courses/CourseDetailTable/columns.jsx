@@ -75,6 +75,10 @@ const columns = [
     },
   },
   {
+    Header: 'Min',
+    accessor: 'minStudentsAllowed',
+  },
+  {
     Header: 'Students Enrolled',
     accessor: 'numberOfStudents',
     Cell: ({ row }) => (

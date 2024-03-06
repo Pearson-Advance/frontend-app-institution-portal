@@ -24,6 +24,7 @@ describe('Course Details Table', () => {
               className: 'Demo Class 1',
               startDate: '09/21/24',
               endDate: null,
+              min: 10,
               numberOfStudents: 1,
               maxStudents: 100,
               instructors: ['instructor_1'],
@@ -33,6 +34,7 @@ describe('Course Details Table', () => {
               className: 'Demo Class 2',
               startDate: '09/21/25',
               endDate: null,
+              min: 2,
               numberOfStudents: 2,
               maxStudents: 200,
               instructors: ['instructor_2'],
@@ -61,6 +63,7 @@ describe('Course Details Table', () => {
     expect(component.container).toHaveTextContent('Class');
     expect(component.container).toHaveTextContent('Instructor');
     expect(component.container).toHaveTextContent('Enrollment status');
+    expect(component.container).toHaveTextContent('Min');
     expect(component.container).toHaveTextContent('Students Enrolled');
     expect(component.container).toHaveTextContent('Max');
     expect(component.container).toHaveTextContent('Start date');

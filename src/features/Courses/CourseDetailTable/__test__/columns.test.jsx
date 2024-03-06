@@ -11,12 +11,13 @@ import { columns } from 'features/Courses/CourseDetailTable/columns';
 describe('columns', () => {
   test('returns an array of columns with correct properties', () => {
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(7);
+    expect(columns).toHaveLength(8);
 
     const [
       className,
       instructor,
       enrollmentStatus,
+      minStudentsAllowed,
       studentsEnrolled,
       maxStudents,
       startDate,
@@ -28,6 +29,9 @@ describe('columns', () => {
 
     expect(instructor).toHaveProperty('Header', 'Instructor');
     expect(instructor).toHaveProperty('accessor', 'instructors');
+
+    expect(minStudentsAllowed).toHaveProperty('Header', 'Min');
+    expect(minStudentsAllowed).toHaveProperty('accessor', 'minStudentsAllowed');
 
     expect(enrollmentStatus).toHaveProperty('Header', 'Enrollment status');
     expect(enrollmentStatus).toHaveProperty('accessor', 'numberOfPendingStudents');
@@ -52,16 +56,16 @@ describe('columns', () => {
   });
 
   test('Should render the dates', () => {
-    const startDate = columns[5].Cell({ row: { values: { startDate: '2024-02-13T17:42:22Z' } } });
+    const startDate = columns[6].Cell({ row: { values: { startDate: '2024-02-13T17:42:22Z' } } });
     expect(startDate).toBe('02/13/24');
 
-    const endDate = columns[5].Cell({ row: { values: { startDate: '2024-04-13T17:42:22Z' } } });
+    const endDate = columns[6].Cell({ row: { values: { startDate: '2024-04-13T17:42:22Z' } } });
     expect(endDate).toBe('04/13/24');
 
-    const nullDate = columns[5].Cell({ row: { values: { startDate: null } } });
+    const nullDate = columns[6].Cell({ row: { values: { startDate: null } } });
     expect(nullDate).toBe('-');
 
-    const nullDate2 = columns[6].Cell({ row: { values: { startDate: null } } });
+    const nullDate2 = columns[7].Cell({ row: { values: { startDate: null } } });
     expect(nullDate2).toBe('-');
   });
 
@@ -80,7 +84,7 @@ describe('columns', () => {
   test('Should render the students enrolled', () => {
     const values = { row: { values: { numberOfStudents: 3, numberOfPendingStudents: 1 } } };
 
-    const studentsEnrolled = columns[3].Cell(values);
+    const studentsEnrolled = columns[4].Cell(values);
     expect(studentsEnrolled).toHaveProperty('type', 'span');
     expect(studentsEnrolled.props).toEqual({ children: 3 });
   });
