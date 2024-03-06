@@ -3,6 +3,7 @@ import {
   getCoursesByInstitution,
   getLicensesByInstitution,
   getClassesByInstitution,
+  getInstructorByInstitution,
 } from 'features/Common/data/api';
 
 jest.mock('@edx/frontend-platform/auth', () => ({
@@ -18,6 +19,11 @@ jest.mock('@edx/frontend-platform', () => ({
 
 describe('Common api services', () => {
   const COURSE_OPERATIONS_API_V2 = 'http://localhost:18000/pearson_course_operation/api/v2';
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('should call getCoursesByInstitution with the correct parameters', () => {
     const httpClientMock = {
       get: jest.fn(),
@@ -51,7 +57,7 @@ describe('Common api services', () => {
 
     getLicensesByInstitution(institutionId, true);
 
-    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(2);
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
     expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
 
     expect(httpClientMock.get).toHaveBeenCalledTimes(1);
@@ -72,12 +78,34 @@ describe('Common api services', () => {
 
     getClassesByInstitution(institutionId, courseName);
 
-    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(3);
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
     expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
 
     expect(httpClientMock.get).toHaveBeenCalledTimes(1);
     expect(httpClientMock.get).toHaveBeenCalledWith(
       `${COURSE_OPERATIONS_API_V2}/classes/?limit=false&institution_id=1&course_name=ccx1&instructors=&page=&`,
+    );
+  });
+
+  test('getInstructorData', () => {
+    const httpClientMock = {
+      get: jest.fn(),
+    };
+
+    const page = 1;
+    const institutionId = 1;
+
+    getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
+
+    getInstructorByInstitution(institutionId, page);
+
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
+
+    expect(httpClientMock.get).toHaveBeenCalledTimes(1);
+    expect(httpClientMock.get).toHaveBeenCalledWith(
+      'http://localhost:18000/pearson_course_operation/api/v2/instructors/',
+      { params: { page, institution_id: institutionId, limit: false } },
     );
   });
 });

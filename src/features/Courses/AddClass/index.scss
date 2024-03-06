@@ -1,0 +1,15 @@
+@import 'assets/colors.scss';
+
+.pgn__form-text-invalid.pgn__form-text {
+  font-size: 0.75rem;
+
+  .pgn__icon {
+    display: none;
+  }
+}
+
+.course-name {
+  font-size: 1rem;
+  color: $gray-70;
+  font-weight: 700;
+}

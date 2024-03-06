@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Container, Pagination } from '@edx/paragon';
+import { Container, Pagination, useToggle } from '@edx/paragon';
+import { Button } from 'react-paragon-topaz';
 import CourseDetailTable from 'features/Courses/CourseDetailTable';
+import AddClass from 'features/Courses/AddClass';
 
 import { fetchClassesData } from 'features/Classes/data/thunks';
 import { fetchCoursesData } from 'features/Courses/data/thunks';
@@ -20,6 +22,7 @@ const CoursesDetailPage = () => {
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
+  const [isOpenModal, openModal, closeModal] = useToggle(false);
 
   const defaultCourseInfo = {
     numberOfStudents: '-',
@@ -54,6 +57,10 @@ const CoursesDetailPage = () => {
       dispatch(fetchClassesDataSuccess(initialState));
     };
   }, [dispatch, institution.id, courseId]);
+
+  useEffect(() => {
+    dispatch(fetchClassesData(institution.id, currentPage, classId));
+  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (institution.id !== undefined && institutionRef.current === undefined) {
@@ -92,17 +99,28 @@ const CoursesDetailPage = () => {
         </div>
       </div>
 
+      <div className="d-flex justify-content-end align-items-center my-3">
+        <Button onClick={openModal}>
+          Add Class
+        </Button>
+        <AddClass
+          isOpen={isOpenModal}
+          onClose={closeModal}
+          courseInfo={courseInfo}
+        />
+      </div>
+
       <CourseDetailTable count={classes.count} data={classes.data} />
       {classes.numPages > 1 && (
-      <Pagination
-        paginationLabel="paginationNavigation"
-        pageCount={classes.numPages}
-        currentPage={currentPage}
-        onPageSelect={handlePagination}
-        variant="reduced"
-        className="mx-auto pagination-table"
-        size="small"
-      />
+        <Pagination
+          paginationLabel="paginationNavigation"
+          pageCount={classes.numPages}
+          currentPage={currentPage}
+          onPageSelect={handlePagination}
+          variant="reduced"
+          className="mx-auto pagination-table"
+          size="small"
+        />
       )}
     </Container>
   );

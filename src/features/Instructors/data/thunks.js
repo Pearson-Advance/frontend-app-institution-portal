@@ -1,7 +1,7 @@
 import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
-import { getInstructorData, handleInstructorsEnrollment, handleNewInstructor } from 'features/Instructors/data/api';
-import { getCoursesByInstitution } from 'features/Common/data/api';
+import { handleInstructorsEnrollment, handleNewInstructor } from 'features/Instructors/data/api';
+import { getCoursesByInstitution, getInstructorByInstitution } from 'features/Common/data/api';
 import {
   fetchInstructorsDataRequest,
   fetchInstructorsDataSuccess,
@@ -23,7 +23,7 @@ function fetchInstructorsData(id, currentPage, filtersData) {
   return async (dispatch) => {
     dispatch(fetchInstructorsDataRequest());
     try {
-      const response = camelCaseObject(await getInstructorData(id, currentPage, filtersData));
+      const response = camelCaseObject(await getInstructorByInstitution(id, currentPage, filtersData, true));
       dispatch(fetchInstructorsDataSuccess(response.data));
     } catch (error) {
       dispatch(fetchInstructorsDataFailed());
@@ -36,7 +36,7 @@ function fetchInstructorsOptionsData(id, currentPage, filtersData) {
   return async (dispatch) => {
     dispatch(fetchInstructorsDataRequest());
     try {
-      const response = camelCaseObject(await getInstructorData(id, currentPage, filtersData));
+      const response = camelCaseObject(await getInstructorByInstitution(id, currentPage, filtersData));
       dispatch(updateInstructorOptions(response.data));
     } catch (error) {
       dispatch(fetchInstructorsDataFailed());
@@ -61,14 +61,13 @@ function fetchCoursesData(id) {
 /**
  * Assign instructors to a class.
  * @param {Object} data - The data containing information about the instructors to be assigned.
- * @param {string} classId - The ID of the class to which the instructors will be assigned.
  * @returns {Promise<void>} - A promise that resolves after dispatching appropriate actions.
  */
-function assignInstructors(data, classId) {
+function assignInstructors(data) {
   return async (dispatch) => {
     dispatch(assignInstructorsRequest());
     try {
-      const response = await handleInstructorsEnrollment(data, classId);
+      const response = await handleInstructorsEnrollment(data);
       dispatch(assignInstructorsSuccess(response.data));
     } catch (error) {
       dispatch(assignInstructorsFailed());
