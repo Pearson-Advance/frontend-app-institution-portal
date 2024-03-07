@@ -22,6 +22,10 @@ const columns = [
     Cell: ({ row }) => (row.values.endDate ? format(row.values.endDate, 'MM/dd/yy') : ''),
   },
   {
+    Header: 'Min',
+    accessor: 'minStudentsAllowed',
+  },
+  {
     Header: 'Students Enrolled',
     accessor: 'numberOfStudents',
   },

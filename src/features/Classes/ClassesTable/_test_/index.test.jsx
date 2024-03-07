@@ -17,6 +17,7 @@ const mockStore = {
           className: 'Demo Class 1',
           startDate: '09/21/24',
           endDate: null,
+          min: 50,
           numberOfStudents: 1,
           maxStudents: 100,
           instructors: ['instructor_1'],
@@ -26,6 +27,7 @@ const mockStore = {
           className: 'Demo Class 2',
           startDate: '09/21/25',
           endDate: null,
+          min: 200,
           numberOfStudents: 1,
           maxStudents: 10,
           instructors: ['instructor_2', 'instructor_3'],
@@ -52,6 +54,8 @@ describe('ClassesPage', () => {
       expect(component.container).toHaveTextContent('Demo Class 2');
       expect(component.container).toHaveTextContent('09/21/24');
       expect(component.container).toHaveTextContent('09/21/25');
+      expect(component.container).toHaveTextContent('50');
+      expect(component.container).toHaveTextContent('200');
       expect(component.container).toHaveTextContent('100');
       expect(component.container).toHaveTextContent('10');
       expect(component.container).toHaveTextContent('instructor_1');

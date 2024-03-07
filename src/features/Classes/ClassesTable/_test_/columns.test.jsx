@@ -3,13 +3,14 @@ import { columns } from 'features/Classes/ClassesTable/columns';
 describe('columns', () => {
   test('returns an array of columns with correct properties', () => {
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(7);
+    expect(columns).toHaveLength(8);
 
     const [
       masterCourseNameColumn,
       classNameColumn,
       startDateColumn,
       endDateColumn,
+      minStudentsAllowedColumn,
       numberOfStudentsColumn,
       maxStudentsColumn,
       instructorsColumn,
@@ -26,6 +27,9 @@ describe('columns', () => {
 
     expect(endDateColumn).toHaveProperty('Header', 'End Date');
     expect(endDateColumn).toHaveProperty('accessor', 'endDate');
+
+    expect(minStudentsAllowedColumn).toHaveProperty('Header', 'Min');
+    expect(minStudentsAllowedColumn).toHaveProperty('accessor', 'minStudentsAllowed');
 
     expect(numberOfStudentsColumn).toHaveProperty('Header', 'Students Enrolled');
     expect(numberOfStudentsColumn).toHaveProperty('accessor', 'numberOfStudents');
