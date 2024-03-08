@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Select } from 'react-paragon-topaz';
 import {
   BrowserRouter, Switch, Route, Redirect,
 } from 'react-router-dom';
+
 import { getConfig } from '@edx/frontend-platform';
+import { Container, Row, Col } from '@edx/paragon';
 
 import { Sidebar } from 'features/Main/Sidebar';
 import { Header } from 'features/Main/Header';
 import { Footer } from 'features/Main/Footer';
-import StudentsPage from 'features/Students/StudentsPage';
-import { Container, Row, Col } from '@edx/paragon';
-import InstructorsPage from 'features/Instructors/InstructorsPage';
-import CoursesPage from 'features/Courses/CoursesPage';
-import DashboardPage from 'features/Dashboard/DashboardPage';
-import LicensesPage from 'features/Licenses/LicensesPage';
+import ClassPage from 'features/Classes/Class/ClassPage';
 import ClassesPage from 'features/Classes/ClassesPage';
-import { Select } from 'react-paragon-topaz';
+import CoursesPage from 'features/Courses/CoursesPage';
+import LicensesPage from 'features/Licenses/LicensesPage';
+import StudentsPage from 'features/Students/StudentsPage';
+import DashboardPage from 'features/Dashboard/DashboardPage';
 import CoursesDetailPage from 'features/Courses/CoursesDetailPage';
+import InstructorsPage from 'features/Instructors/InstructorsPage';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
 import { updateSelectedInstitution } from 'features/Main/data/slice';
@@ -93,7 +95,10 @@ const Main = () => {
               <Route path="/courses" exact component={CoursesPage} />
             </Switch>
             <Switch>
-              <Route path="/courses/:classId" exact component={CoursesDetailPage} />
+              <Route path="/courses/:courseId" exact component={CoursesDetailPage} />
+            </Switch>
+            <Switch>
+              <Route path="/courses/:courseId/:classId" exact component={ClassPage} />
             </Switch>
             <Switch>
               <Route path="/licenses" exact component={LicensesPage} />

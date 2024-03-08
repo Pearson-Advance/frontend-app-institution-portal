@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 
 import { Badge, Button } from 'react-paragon-topaz';
@@ -16,13 +16,16 @@ const columns = [
   {
     Header: 'Class',
     accessor: 'className',
-    Cell: ({ row }) => (<span className="text-truncate">{row.values.className}</span>),
+    Cell: ({ row }) => {
+      const { courseId } = useParams();
+      return (<Link to={`/courses/${courseId}/${row.values.className}`} className="text-truncate link">{row.values.className}</Link>);
+    },
   },
   {
     Header: 'Instructor',
     accessor: 'instructors',
     Cell: ({ row }) => {
-      const { classId } = useParams();
+      const { courseId } = useParams();
       const [isModalOpen, setIsModalOpen] = useState(false);
 
       const dispatch = useDispatch();
@@ -34,7 +37,7 @@ const columns = [
       };
 
       const handleCloseModal = () => {
-        dispatch(fetchClassesData(institution.id, initialPage, classId));
+        dispatch(fetchClassesData(institution.id, initialPage, courseId));
         setIsModalOpen(false);
       };
 

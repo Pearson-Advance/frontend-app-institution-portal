@@ -16,7 +16,7 @@ import 'features/Courses/CoursesDetailPage/index.scss';
 const CoursesDetailPage = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { classId } = useParams();
+  const { courseId } = useParams();
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -27,7 +27,7 @@ const CoursesDetailPage = () => {
   };
 
   const courseInfo = useSelector((state) => state.courses.table.data)
-    .find((course) => course?.masterCourseName === classId) || defaultCourseInfo;
+    .find((course) => course?.masterCourseName === courseId) || defaultCourseInfo;
   const institution = useSelector((state) => state.main.selectedInstitution);
   const classes = useSelector((state) => state.classes.table);
   const totalStudents = courseInfo.numberOfStudents + courseInfo.numberOfPendingStudents;
@@ -45,7 +45,7 @@ const CoursesDetailPage = () => {
     };
 
     if (institution.id) {
-      dispatch(fetchClassesData(institution.id, initialPage, classId));
+      dispatch(fetchClassesData(institution.id, initialPage, courseId));
       dispatch(fetchCoursesData(institution.id, initialPage, null));
     }
 
@@ -53,7 +53,7 @@ const CoursesDetailPage = () => {
       dispatch(fetchCoursesDataSuccess(initialState));
       dispatch(fetchClassesDataSuccess(initialState));
     };
-  }, [dispatch, institution.id, classId]);
+  }, [dispatch, institution.id, courseId]);
 
   useEffect(() => {
     if (institution.id !== undefined && institutionRef.current === undefined) {
@@ -72,7 +72,7 @@ const CoursesDetailPage = () => {
           <Link to="/courses" className="mr-3 link">
             <i className="fa-solid fa-arrow-left" />
           </Link>
-          <h3 className="h2 mb-0 course-title">{classId}</h3>
+          <h3 className="h2 mb-0 course-title">{courseId}</h3>
         </div>
 
         <div className="card-container d-flex justify-content-around align-items-center">
