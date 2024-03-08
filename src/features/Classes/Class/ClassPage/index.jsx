@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useParams, useHistory } from 'react-router-dom';
+import {
+  Link, useParams, useHistory, useLocation,
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { Button } from 'react-paragon-topaz';
 import { Container, Pagination } from '@edx/paragon';
+
 import Table from 'features/Main/Table';
+import EnrollStudent from 'features/Classes/EnrollStudent';
 
 import { columns } from 'features/Classes/Class/ClassPage/columns';
 import { resetStudentsTable, updateCurrentPage } from 'features/Students/data/slice';
@@ -13,18 +17,25 @@ import { initialPage } from 'features/constants';
 
 const ClassPage = () => {
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { courseId, classId } = useParams();
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const institution = useSelector((state) => state.main.selectedInstitution);
   const students = useSelector((state) => state.students.table);
+
+  const queryParams = new URLSearchParams(location.search);
+  const queryClassId = queryParams.get('classId')?.replaceAll(' ', '+');
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
     dispatch(updateCurrentPage(targetPage));
   };
+
+  const handleEnrollStudentModal = () => setIsModalOpen(!isModalOpen);
 
   useEffect(() => {
     const initialTitle = document.title;
@@ -64,7 +75,8 @@ const ClassPage = () => {
   }, [institution, history]);
 
   return (
-    <Container size="xl" className="px-4">
+    <Container size="xl" className="px-4 mt-3">
+      <EnrollStudent isOpen={isModalOpen} onClose={handleEnrollStudentModal} queryClassId={queryClassId} />
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="d-flex align-items-center mb-3">
           <Link to={`/courses/${courseId}`} className="mr-3 link">
@@ -74,18 +86,25 @@ const ClassPage = () => {
         </div>
       </div>
 
-      <Table columns={columns} count={students.count} data={students.data} text="No students were found for this class." />
-      {students.numPages > 1 && (
-      <Pagination
-        paginationLabel="paginationNavigation"
-        pageCount={students.numPages}
-        currentPage={currentPage}
-        onPageSelect={handlePagination}
-        variant="reduced"
-        className="mx-auto pagination-table"
-        size="small"
-      />
-      )}
+      <div className="d-flex flex-column">
+        <div className="d-flex justify-content-end mb-3">
+          <Button className="button-assign mb-2" onClick={handleEnrollStudentModal}>
+            Invite student to enroll
+          </Button>
+        </div>
+        <Table columns={columns} count={students.count} data={students.data} text="No students were found for this class." />
+        {students.numPages > 1 && (
+        <Pagination
+          paginationLabel="paginationNavigation"
+          pageCount={students.numPages}
+          currentPage={currentPage}
+          onPageSelect={handlePagination}
+          variant="reduced"
+          className="mx-auto pagination-table"
+          size="small"
+        />
+        )}
+      </div>
     </Container>
   );
 };
