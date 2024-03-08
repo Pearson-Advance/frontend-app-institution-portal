@@ -17,6 +17,7 @@ import CoursesPage from 'features/Courses/CoursesPage';
 import LicensesPage from 'features/Licenses/LicensesPage';
 import StudentsPage from 'features/Students/StudentsPage';
 import DashboardPage from 'features/Dashboard/DashboardPage';
+import LessonDetailPage from 'features/Lessons/LessonDetailPage';
 import CoursesDetailPage from 'features/Courses/CoursesDetailPage';
 import InstructorsPage from 'features/Instructors/InstructorsPage';
 
@@ -99,6 +100,9 @@ const Main = () => {
             </Switch>
             <Switch>
               <Route path="/courses/:courseId/:classId" exact component={ClassPage} />
+            </Switch>
+            <Switch>
+              <Route path="/courses/:classId/:lessonId" exact component={LessonDetailPage} />
             </Switch>
             <Switch>
               <Route path="/licenses" exact component={LicensesPage} />
