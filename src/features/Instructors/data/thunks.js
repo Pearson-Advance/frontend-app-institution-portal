@@ -15,6 +15,7 @@ import {
   addInstructorRequest,
   addInstructorSuccess,
   addInstructorFailed,
+  updateInstructorOptions,
 } from 'features/Instructors/data/slice';
 import { initialPage } from 'features/constants';
 
@@ -24,6 +25,19 @@ function fetchInstructorsData(id, currentPage, filtersData) {
     try {
       const response = camelCaseObject(await getInstructorData(id, currentPage, filtersData));
       dispatch(fetchInstructorsDataSuccess(response.data));
+    } catch (error) {
+      dispatch(fetchInstructorsDataFailed());
+      logError(error);
+    }
+  };
+}
+
+function fetchInstructorsOptionsData(id, currentPage, filtersData) {
+  return async (dispatch) => {
+    dispatch(fetchInstructorsDataRequest());
+    try {
+      const response = camelCaseObject(await getInstructorData(id, currentPage, filtersData));
+      dispatch(updateInstructorOptions(response.data));
     } catch (error) {
       dispatch(fetchInstructorsDataFailed());
       logError(error);
@@ -89,4 +103,5 @@ export {
   fetchCoursesData,
   assignInstructors,
   addInstructor,
+  fetchInstructorsOptionsData,
 };

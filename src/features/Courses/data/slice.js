@@ -12,6 +12,7 @@ const initialState = {
     count: 0,
   },
   filters: {},
+  selectOptions: [],
 };
 
 export const coursesSlice = createSlice({
@@ -31,6 +32,9 @@ export const coursesSlice = createSlice({
       state.table.numPages = numPages;
       state.table.count = count;
     },
+    updateCoursesOptions: (state, { payload }) => {
+      state.selectOptions = payload;
+    },
     fetchCoursesDataFailed: (state) => {
       state.table.status = RequestStatus.ERROR;
     },
@@ -46,6 +50,7 @@ export const {
   fetchCoursesDataSuccess,
   fetchCoursesDataFailed,
   updateFilters,
+  updateCoursesOptions,
 } = coursesSlice.actions;
 
 export const { reducer } = coursesSlice;

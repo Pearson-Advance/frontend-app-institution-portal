@@ -131,7 +131,7 @@ describe('Students redux tests', () => {
   });
 
   test('successful fetch classes data', async () => {
-    const studentsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=false&institution_id=1&course_name=Demo&instructors=&page=`;
+    const studentsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=false&institution_id=1&course_name=Demo&instructors=&page=&`;
     const mockResponse = [
       {
         classId: 'ccx-v1:demo+demo1+2020+ccx@2',
