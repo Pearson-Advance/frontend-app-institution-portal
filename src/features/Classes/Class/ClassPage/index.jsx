@@ -43,7 +43,6 @@ const ClassPage = () => {
         class_name: classId,
         limit: true,
       };
-
       dispatch(fetchStudentsData(institution.id, currentPage, params));
     }
 
