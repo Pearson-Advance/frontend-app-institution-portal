@@ -5,16 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Container, Pagination } from '@edx/paragon';
 import Table from 'features/Main/Table';
 
-import { columns } from 'features/Lessons/LessonDetailPage/columns';
+import { columns } from 'features/Class/ClassPage/columns';
 import { fetchStudentsDataSuccess, updateCurrentPage } from 'features/Students/data/slice';
 import { fetchStudentsData } from 'features/Students/data';
 
 import { initialPage } from 'features/constants';
 
-const LessonDetailPage = () => {
+const ClassPage = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { classId, lessonId } = useParams();
+  const { courseId, classId } = useParams();
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -29,12 +29,12 @@ const LessonDetailPage = () => {
   useEffect(() => {
     const initialTitle = document.title;
 
-    document.title = lessonId;
+    document.title = classId;
 
     return () => {
       document.title = initialTitle;
     };
-  }, [lessonId]);
+  }, [classId]);
 
   useEffect(() => {
     const initialState = {
@@ -45,18 +45,18 @@ const LessonDetailPage = () => {
 
     if (institution.id) {
       const params = {
-        course_name: classId,
-        class_name: lessonId,
+        course_name: courseId,
+        class_name: classId,
         limit: true,
       };
-      dispatch(fetchStudentsData(institution.id, initialPage, params));
+      dispatch(fetchStudentsData(institution.id, currentPage, params));
     }
 
     return () => {
       dispatch(fetchStudentsDataSuccess(initialState));
-      dispatch(updateCurrentPage(0));
+      dispatch(updateCurrentPage(1));
     };
-  }, [dispatch, institution.id, classId, lessonId]);
+  }, [dispatch, institution.id, courseId, classId, currentPage]);
 
   useEffect(() => {
     if (institution.id !== undefined && institutionRef.current === undefined) {
@@ -72,10 +72,10 @@ const LessonDetailPage = () => {
     <Container size="xl" className="px-4">
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="d-flex align-items-center mb-3">
-          <Link to={`/courses/${classId}`} className="mr-3 link">
+          <Link to={`/courses/${courseId}`} className="mr-3 link">
             <i className="fa-solid fa-arrow-left" />
           </Link>
-          <h3 className="h2 mb-0 course-title">Class details: {lessonId}</h3>
+          <h3 className="h2 mb-0 course-title">Class details: {classId}</h3>
         </div>
       </div>
 
@@ -95,4 +95,4 @@ const LessonDetailPage = () => {
   );
 };
 
-export default LessonDetailPage;
+export default ClassPage;
