@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Pagination } from '@edx/paragon';
 
+import { Container, Pagination } from '@edx/paragon';
 import Table from 'features/Main/Table';
+
 import { columns } from 'features/Lessons/LessonDetailPage/columns';
 import { fetchStudentsDataSuccess, updateCurrentPage } from 'features/Students/data/slice';
-
 import { fetchStudentsData } from 'features/Students/data';
 
 import { initialPage } from 'features/constants';
