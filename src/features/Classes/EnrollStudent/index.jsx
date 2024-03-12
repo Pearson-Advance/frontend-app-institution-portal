@@ -24,7 +24,7 @@ const initialRequestState = {
 const successToastMessage = 'Email invite has been sent successfully';
 
 const EnrollStudent = ({ isOpen, onClose }) => {
-  const { courseId, classId } = useParams();
+  const { classId } = useParams();
   const [showToast, setShowToast] = useState(false);
   const [requestStatus, setRequestStatus] = useState(initialRequestState);
 
@@ -46,7 +46,7 @@ const EnrollStudent = ({ isOpen, onClose }) => {
         isSuccessful: false,
       });
 
-      await handleEnrollments(formData, encodeURIComponent(courseId));
+      await handleEnrollments(formData, encodeURIComponent(classId));
 
       setRequestStatus({
         isLoading: false,
