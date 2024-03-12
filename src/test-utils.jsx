@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
+import { IntlProvider } from 'react-intl';
 
 import { initializeStore } from 'store';
 
@@ -17,6 +18,6 @@ export function renderWithProviders(
     ...renderOptions
   } = {},
 ) {
-  const Wrapper = ({ children }) => <Provider store={store}>{children}</Provider>;
+  const Wrapper = ({ children }) => <Provider store={store}><IntlProvider locale="en">{children}</IntlProvider></Provider>;
   return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 }

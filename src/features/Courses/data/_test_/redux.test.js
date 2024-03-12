@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
-import { fetchCoursesData } from 'features/Courses/data/thunks';
+import { fetchCoursesData, addClass } from 'features/Courses/data/thunks';
 import { updateCurrentPage, updateFilters } from 'features/Courses/data/slice';
 import { executeThunk } from 'test-utils';
 import { initializeStore } from 'store';
@@ -100,5 +100,48 @@ describe('Courses redux tests', () => {
 
     store.dispatch(updateFilters(filters));
     expect(store.getState().courses.filters).toEqual(expectState);
+  });
+
+  test('successful add class', async () => {
+    const classApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/create-class/`;
+    const dataCreateClass = new FormData();
+    const instructorData = new FormData();
+    const classId = 'ccx1';
+    const mockResponse = {
+      class_id: classId,
+    };
+    axiosMock.onPost(classApiUrl)
+      .reply(200, mockResponse);
+
+    expect(store.getState().courses.newClass.status)
+      .toEqual('loading');
+
+    await executeThunk(addClass(dataCreateClass, instructorData), store.dispatch, store.getState);
+
+    expect(store.getState().courses.newClass.data)
+      .toEqual(mockResponse);
+
+    expect(store.getState().courses.newClass.status)
+      .toEqual('success');
+  });
+
+  test('failed add class', async () => {
+    const classApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/create-class/`;
+    const dataCreateClass = new FormData();
+    const instructorData = new FormData();
+
+    axiosMock.onPost(classApiUrl)
+      .reply(500);
+
+    expect(store.getState().courses.newClass.status)
+      .toEqual('loading');
+
+    await executeThunk(addClass(dataCreateClass, instructorData), store.dispatch, store.getState);
+
+    expect(store.getState().courses.newClass.data)
+      .toEqual(null);
+
+    expect(store.getState().courses.newClass.status)
+      .toEqual('error');
   });
 });

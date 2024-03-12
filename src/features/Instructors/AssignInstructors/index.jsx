@@ -44,7 +44,8 @@ const AssignInstructors = ({ isOpen, close, getClasses }) => {
         enrollmentData.append('unique_student_identifier', row);
         enrollmentData.append('rolename', 'staff');
         enrollmentData.append('action', 'allow');
-        return dispatch(assignInstructors(enrollmentData, classId));
+        enrollmentData.append('class_id', classId);
+        return dispatch(assignInstructors(enrollmentData));
       });
 
       await Promise.all(dispatchPromises);
@@ -58,12 +59,12 @@ const AssignInstructors = ({ isOpen, close, getClasses }) => {
   };
 
   useEffect(() => {
-    if (Object.keys(selectedInstitution).length > 0) {
+    if (Object.keys(selectedInstitution).length > 0 && isOpen) {
       const instructorFilters = stateInstructors.filters;
       dispatch(fetchInstructorsData(selectedInstitution.id, currentPage, instructorFilters));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, selectedInstitution, dispatch]);
+  }, [currentPage, selectedInstitution, dispatch, isOpen]);
 
   useEffect(() => {
     if (!isOpen) {
