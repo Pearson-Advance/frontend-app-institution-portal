@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Form,
+  Toast,
+  Spinner,
   FormGroup,
   ModalDialog,
-  Spinner,
-  Toast,
   ModalCloseButton,
 } from '@edx/paragon';
 import PropTypes from 'prop-types';
 import { Button } from 'react-paragon-topaz';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logError } from '@edx/frontend-platform/logging';
 
+import { fetchClassesData } from 'features/Classes/data/thunks';
+import { fetchStudentsData } from 'features/Students/data';
 import { handleEnrollments } from 'features/Students/data/api';
+import { initialPage } from 'features/constants';
 
 import 'features/Classes/EnrollStudent/index.scss';
-import { logError } from '@edx/frontend-platform/logging';
 
 const initialRequestState = {
   isLoading: false,
@@ -24,9 +28,16 @@ const initialRequestState = {
 const successToastMessage = 'Email invite has been sent successfully';
 
 const EnrollStudent = ({ isOpen, onClose }) => {
-  const { classId } = useParams();
+  const location = useLocation();
+  const dispatch = useDispatch();
+
+  const { courseId, classId } = useParams();
   const [showToast, setShowToast] = useState(false);
   const [requestStatus, setRequestStatus] = useState(initialRequestState);
+  const institution = useSelector((state) => state.main.selectedInstitution);
+
+  const queryParams = new URLSearchParams(location.search);
+  const queryClassId = queryParams.get('classId')?.replaceAll(' ', '+');
 
   const handleEnrollStudent = async (e) => {
     e.preventDefault();
@@ -46,19 +57,34 @@ const EnrollStudent = ({ isOpen, onClose }) => {
         isSuccessful: false,
       });
 
-      await handleEnrollments(formData, encodeURIComponent(classId));
+      await handleEnrollments(formData, queryClassId);
 
       setRequestStatus({
         isLoading: false,
         isSuccessful: true,
       });
+
       setShowToast(true);
+
+      const params = {
+        course_name: courseId,
+        class_name: classId,
+        limit: true,
+      };
+
+      dispatch(fetchStudentsData(institution.id, initialPage, params));
       onClose();
     } catch (error) {
       logError(error);
       setRequestStatus(initialRequestState);
     }
   };
+
+  useEffect(() => {
+    if (institution.id) {
+      dispatch(fetchClassesData(institution.id, initialPage, courseId));
+    }
+  }, [dispatch, courseId, institution.id]);
 
   return (
     <>
