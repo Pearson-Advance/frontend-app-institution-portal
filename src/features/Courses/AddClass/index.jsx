@@ -19,7 +19,7 @@ import { initialPage } from 'features/constants';
 import 'features/Courses/AddClass/index.scss';
 
 const AddClass = ({ isOpen, onClose, courseInfo }) => {
-  const { classId } = useParams();
+  const { courseId } = useParams();
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const instructorsList = useSelector((state) => state.instructors.selectOptions);
@@ -43,8 +43,7 @@ const AddClass = ({ isOpen, onClose, courseInfo }) => {
     dataCreateClass.set('end_date', endDate ? new Date(endDate).toISOString() : '');
 
     if (!classNameField || !startDate) {
-      onClose();
-      return;
+      return onClose();
     }
 
     try {
@@ -60,9 +59,11 @@ const AddClass = ({ isOpen, onClose, courseInfo }) => {
     } catch (error) {
       logError(error);
     } finally {
-      dispatch(fetchClassesData(selectedInstitution.id, initialPage, classId));
+      dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseId));
       dispatch(updateCurrentPage(initialPage));
     }
+
+    return null;
   };
 
   const resetFields = () => {
@@ -74,10 +75,12 @@ const AddClass = ({ isOpen, onClose, courseInfo }) => {
 
   const handleNumericField = (e, field) => {
     const { value } = e.target;
-    const re = /^[0-9\b]+$/;
-    if (value === '' || re.test(value)) {
+    const regex = /^[0-9\b]+$/;
+    if (value === '' || regex.test(value)) {
       return field === 'min' ? setMinStudents(value) : setMaxStudents(value);
-    } return null;
+    }
+
+    return null;
   };
 
   useEffect(() => {
@@ -196,7 +199,7 @@ const AddClass = ({ isOpen, onClose, courseInfo }) => {
               </Form.Group>
             </Form.Row>
             <div className="d-flex justify-content-end">
-              <ModalCloseButton className="btntpz btn-text btn-tertiary">Cancel</ModalCloseButton>
+              <ModalCloseButton className="btntpz btn-text btn-tertiary mr-2">Cancel</ModalCloseButton>
               <Button type="submit">Submit</Button>
             </div>
           </Form>

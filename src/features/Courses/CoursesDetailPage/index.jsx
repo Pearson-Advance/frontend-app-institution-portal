@@ -59,7 +59,7 @@ const CoursesDetailPage = () => {
   }, [dispatch, institution.id, courseId]);
 
   useEffect(() => {
-    dispatch(fetchClassesData(institution.id, currentPage, classId));
+    dispatch(fetchClassesData(institution.id, currentPage, courseId));
   }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
