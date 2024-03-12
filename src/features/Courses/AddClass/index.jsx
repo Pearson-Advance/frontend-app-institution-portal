@@ -62,7 +62,6 @@ const AddClass = ({ isOpen, onClose, courseInfo }) => {
       dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseId));
       dispatch(updateCurrentPage(initialPage));
     }
-
     return null;
   };
 
