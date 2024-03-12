@@ -30,6 +30,9 @@ export const studentsSlice = createSlice({
   name: 'students',
   initialState,
   reducers: {
+    resetStudentsTable: (state) => {
+      state.table = initialState.table;
+    },
     updateCurrentPage: (state, { payload }) => {
       state.table.currentPage = payload;
     },
@@ -98,6 +101,7 @@ export const {
   fetchStudentsDataSuccess,
   fetchStudentsDataFailed,
   updateFilters,
+  resetStudentsTable,
   fetchCoursesDataRequest,
   fetchCoursesDataSuccess,
   fetchCoursesDataFailed,

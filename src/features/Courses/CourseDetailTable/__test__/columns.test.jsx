@@ -1,6 +1,7 @@
 import {
   fireEvent,
   waitFor,
+  screen,
 } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { MemoryRouter, Route } from 'react-router-dom';
@@ -50,9 +51,21 @@ describe('columns', () => {
   });
 
   test('Should render the title into a span tag', () => {
-    const title = columns[0].Cell({ row: { values: { className: 'Class example' } } });
-    expect(title).toHaveProperty('type', 'span');
-    expect(title.props).toEqual({ className: 'text-truncate', children: 'Class example' });
+    const Component = () => columns[0].Cell({ row: { values: { className: 'Class example' } } });
+
+    renderWithProviders(
+      <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
+        <Route path="/courses/:courseId">
+          <Component />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: {} },
+    );
+
+    const linkElement = screen.getByText('Class example');
+    expect(linkElement).toBeInTheDocument();
+    expect(linkElement).toHaveClass('text-truncate link');
+    expect(linkElement).toHaveAttribute('href', '/courses/Demo Course 1/Class example');
   });
 
   test('Should render the dates', () => {
@@ -132,7 +145,7 @@ describe('columns', () => {
 
     const component = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:classId">
+        <Route path="/courses/:courseId">
           <Component />
         </Route>
       </MemoryRouter>,
@@ -186,7 +199,7 @@ describe('columns', () => {
 
     const component = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:classId">
+        <Route path="/courses/:courseId">
           <ComponentNoInstructor />
         </Route>
       </MemoryRouter>,

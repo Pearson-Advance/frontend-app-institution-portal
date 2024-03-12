@@ -1,6 +1,13 @@
 @import "assets/colors.scss";
 @import "assets/variables.scss";
 
+%progress-styles {
+  border-radius: 2rem;
+  background: $gray-20;
+  border: none;
+  height: 0.6rem;
+}
+
 .page-content-container {
   border: 1px solid $gray-20;
   border-radius: $border-radius-1;
@@ -9,11 +16,12 @@
   background-color: $color-white;
 
   .progress {
-    border-radius: 2rem;
-    background: $gray-20;
-    border: none;
-    height: 0.6rem;
+    @extend %progress-styles;
   }
+}
+
+.custom-progress {
+  @extend %progress-styles;
 }
 
 .filter-container .filters {
