@@ -64,6 +64,7 @@ describe('ClassesPage', () => {
       expect(component.container).toHaveTextContent('Status');
       expect(component.container).toHaveTextContent('Courseware Progress');
       expect(component.container).toHaveTextContent('Exam ready');
+      expect(component.container).toHaveTextContent('Invite student to enroll');
     });
   });
 });
