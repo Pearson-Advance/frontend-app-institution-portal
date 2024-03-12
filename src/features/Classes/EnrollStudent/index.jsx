@@ -53,6 +53,7 @@ const EnrollStudent = ({ isOpen, onClose }) => {
         isSuccessful: true,
       });
       setShowToast(true);
+      onClose();
     } catch (error) {
       logError(error);
       setRequestStatus(initialRequestState);
