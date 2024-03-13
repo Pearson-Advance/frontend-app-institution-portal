@@ -191,7 +191,7 @@ const AddClass = ({ isOpen, onClose, courseInfo }) => {
                   placeholder="Maximum enrollment"
                   floatingLabel="Maximum enrollment"
                   className="my-1 mr-0"
-                  name="max_students_enrollments"
+                  name="max_student_enrollments"
                   value={maxStudents}
                   onChange={e => handleNumericField(e, 'max')}
                 />
