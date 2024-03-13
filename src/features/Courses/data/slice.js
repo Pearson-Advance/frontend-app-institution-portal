@@ -13,6 +13,12 @@ const initialState = {
   },
   filters: {},
   selectOptions: [],
+  newClass: {
+    status: RequestStatus.LOADING,
+    error: null,
+    data: null,
+  },
+  notificationMessage: '',
 };
 
 export const coursesSlice = createSlice({
@@ -41,6 +47,19 @@ export const coursesSlice = createSlice({
     updateFilters: (state, { payload }) => {
       state.filters = payload;
     },
+    newClassRequest: (state) => {
+      state.newClass.status = RequestStatus.LOADING;
+    },
+    newClassSuccess: (state, { payload }) => {
+      state.newClass.status = RequestStatus.SUCCESS;
+      state.newClass.data = payload;
+    },
+    newClassFailed: (state) => {
+      state.newClass.status = RequestStatus.ERROR;
+    },
+    updateNotificationMsg: (state, { payload }) => {
+      state.notificationMessage = payload;
+    },
   },
 });
 
@@ -51,6 +70,10 @@ export const {
   fetchCoursesDataFailed,
   updateFilters,
   updateCoursesOptions,
+  newClassRequest,
+  newClassSuccess,
+  newClassFailed,
+  updateNotificationMsg,
 } = coursesSlice.actions;
 
 export const { reducer } = coursesSlice;

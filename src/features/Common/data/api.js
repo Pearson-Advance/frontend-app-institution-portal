@@ -27,8 +27,24 @@ function getClassesByInstitution(institutionId, courseName, limit = false, instr
   );
 }
 
+function getInstructorByInstitution(institutionId, page, filters, limit = false) {
+  const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
+  const params = {
+    page,
+    institution_id: institutionId,
+    ...filters,
+    limit,
+  };
+
+  return getAuthenticatedHttpClient().get(
+    `${apiV2BaseUrl}/instructors/`,
+    { params },
+  );
+}
+
 export {
   getCoursesByInstitution,
   getLicensesByInstitution,
   getClassesByInstitution,
+  getInstructorByInstitution,
 };
