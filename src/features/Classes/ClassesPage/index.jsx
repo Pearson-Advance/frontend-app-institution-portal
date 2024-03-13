@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Pagination } from '@edx/paragon';
+import { useLocation } from 'react-router-dom';
 
 import ClassesTable from 'features/Classes/ClassesTable';
 import ClassesFilters from 'features/Classes/ClassesFilters';
@@ -11,15 +12,27 @@ import { initialPage } from 'features/constants';
 
 const ClassesPage = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const stateClasses = useSelector((state) => state.classes);
   const [currentPage, setCurrentPage] = useState(initialPage);
+  const resetFiltersRef = useRef(false);
+
+  const queryParams = new URLSearchParams(location.search);
+  const queryNotInstructors = queryParams.get('instructors');
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      dispatch(fetchClassesData(selectedInstitution.id, currentPage));
+      if (queryNotInstructors === 'null' && !resetFiltersRef.current) {
+        const instructorsNull = { instructors: queryNotInstructors };
+        dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', instructorsNull));
+      } else if (queryNotInstructors === 'null' && resetFiltersRef.current) {
+        dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', stateClasses.filters));
+      } else {
+        dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', stateClasses.filters));
+      }
     }
-  }, [currentPage, selectedInstitution, dispatch]);
+  }, [currentPage, selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -28,6 +41,7 @@ const ClassesPage = () => {
 
   const resetPagination = () => {
     setCurrentPage(initialPage);
+    resetFiltersRef.current = true;
   };
 
   return (

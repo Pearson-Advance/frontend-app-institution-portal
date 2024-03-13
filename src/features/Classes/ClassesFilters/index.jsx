@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { Col, Form } from '@edx/paragon';
@@ -10,7 +11,7 @@ import { initialPage } from 'features/constants';
 import { fetchClassesData } from 'features/Classes/data/thunks';
 import { fetchCoursesOptionsData } from 'features/Courses/data/thunks';
 import { fetchInstructorsOptionsData } from 'features/Instructors/data/thunks';
-import { updateFilters, updateCurrentPage } from 'features/Licenses/data/slice';
+import { updateFilters, updateCurrentPage } from 'features/Classes/data/slice';
 
 const notAssignedOption = {
   label: 'Not assigned',
@@ -19,10 +20,15 @@ const notAssignedOption = {
 
 const ClassesFilters = ({ resetPagination }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const firstRenderPage = useRef(false);
 
   const institution = useSelector((state) => state.main.selectedInstitution);
   const courses = useSelector((state) => state.courses.selectOptions);
   const instructors = useSelector((state) => state.instructors.selectOptions);
+
+  const queryParams = new URLSearchParams(location.search);
+  const queryNotInstructors = queryParams.get('instructors');
 
   const [courseOptions, setCourseOptions] = useState([]);
   const [instructorOptions, setInstructorOptions] = useState([notAssignedOption]);
@@ -31,6 +37,12 @@ const ClassesFilters = ({ resetPagination }) => {
 
   const isButtonDisabled = courseSelected === null && instructorSelected === null;
 
+  useEffect(() => {
+    if (queryNotInstructors === 'null') {
+      setInstructorSelected([notAssignedOption]);
+    }
+  }, [queryNotInstructors]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleSelectFilters = async (e) => {
     e.preventDefault();
 
@@ -38,16 +50,20 @@ const ClassesFilters = ({ resetPagination }) => {
       return;
     }
 
+    const nullInstructor = instructorSelected?.value === 'null';
+    const notSelectedInstructor = instructorSelected?.value ? instructorSelected?.value : '';
     const form = e.target;
     const formData = new FormData(form);
+    const courseName = formData.get('course_name');
+    formData.delete('course_name');
+    formData.append('instructors', nullInstructor ? 'null' : '');
+    formData.set('instructor', nullInstructor ? '' : notSelectedInstructor);
     const formJson = Object.fromEntries(formData.entries());
-    const instructor = `instructor=${instructorSelected?.value === 'null' ? '' : instructorSelected?.value}`;
-    const instructorsQuery = `${instructorSelected?.value === 'null' ? 'null' : ''}`;
 
     try {
       dispatch(updateFilters(formJson));
       dispatch(updateCurrentPage(initialPage));
-      dispatch(fetchClassesData(institution.id, initialPage, formJson?.course_name, instructor, instructorsQuery));
+      dispatch(fetchClassesData(institution.id, initialPage, courseName, formJson));
     } catch (error) {
       logError(error);
     }
@@ -82,14 +98,20 @@ const ClassesFilters = ({ resetPagination }) => {
   }, [instructors, courses]);
 
   useEffect(() => {
-    setInstructorSelected(null);
-    setCourseSelected(null);
+    if (firstRenderPage.current) {
+      setInstructorSelected(null);
+      setCourseSelected(null);
+    }
 
     if (Object.keys(institution).length > 0) {
       dispatch(fetchCoursesOptionsData(institution.id));
       dispatch(fetchInstructorsOptionsData(institution.id, initialPage, { limit: false }));
     }
-  }, [institution, dispatch]);
+
+    if (queryNotInstructors === 'null') {
+      firstRenderPage.current = true;
+    }
+  }, [institution, dispatch, queryNotInstructors, firstRenderPage]);
 
   return (
     <Form onSubmit={handleSelectFilters} className="w-100 px-4 d-flex flex-column align-items-center">
@@ -107,7 +129,7 @@ const ClassesFilters = ({ resetPagination }) => {
         <Form.Group as={Col} className="px-0 w-50">
           <Select
             placeholder="Instructor"
-            name="username"
+            name="instructor"
             options={instructorOptions}
             onChange={option => setInstructorSelected(option)}
             value={instructorSelected}

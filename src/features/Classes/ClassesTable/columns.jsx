@@ -1,6 +1,15 @@
 /* eslint-disable react/prop-types, no-nested-ternary */
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { format } from 'date-fns';
+
+import { Button } from 'react-paragon-topaz';
+import AssignInstructors from 'features/Instructors/AssignInstructors';
+
+import { updateClassSelected } from 'features/Instructors/data/slice';
+import { fetchClassesData } from 'features/Classes/data/thunks';
+
+import { initialPage } from 'features/constants';
 
 const columns = [
   {
@@ -36,11 +45,43 @@ const columns = [
   {
     Header: 'Instructors',
     accessor: 'instructors',
-    Cell: ({ row }) => (
-      <ul className="instructors-list">
-        {row.values.instructors && row.values.instructors.map(instructor => <li key={instructor}>{`${instructor}`}</li>)}
-      </ul>
-    ),
+    Cell: ({ row }) => {
+      const [isModalOpen, setIsModalOpen] = useState(false);
+
+      const dispatch = useDispatch();
+      const institution = useSelector((state) => state.main.selectedInstitution);
+
+      const handleOpenModal = () => {
+        dispatch(updateClassSelected(row.original.classId));
+        setIsModalOpen(true);
+      };
+
+      const handleCloseModal = () => {
+        dispatch(fetchClassesData(institution.id, initialPage));
+        setIsModalOpen(false);
+      };
+
+      if (row.values.instructors?.length > 0) {
+        return (
+          <ul className="instructors-list mb-0">
+            {row.values.instructors.map(instructor => <li key={instructor} className="text-truncate">{`${instructor}`}</li>)}
+          </ul>
+        );
+      }
+      return (
+        <>
+          <Button onClick={handleOpenModal} className="button-assign">
+            <i className="fa fa-plus mr-2" />
+            Assign
+          </Button>
+          <AssignInstructors
+            isOpen={isModalOpen}
+            close={handleCloseModal}
+            getClasses={false}
+          />
+        </>
+      );
+    },
   },
 ];
 

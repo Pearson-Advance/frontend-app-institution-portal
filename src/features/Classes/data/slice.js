@@ -11,6 +11,7 @@ const initialState = {
     numPages: 0,
     count: 0,
   },
+  filters: {},
 };
 
 export const classesSlice = createSlice({
@@ -33,6 +34,9 @@ export const classesSlice = createSlice({
     fetchClassesDataFailed: (state) => {
       state.table.status = RequestStatus.ERROR;
     },
+    updateFilters: (state, { payload }) => {
+      state.filters = payload;
+    },
   },
 });
 
@@ -41,6 +45,7 @@ export const {
   fetchClassesDataRequest,
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
+  updateFilters,
 } = classesSlice.actions;
 
 export const { reducer } = classesSlice;
