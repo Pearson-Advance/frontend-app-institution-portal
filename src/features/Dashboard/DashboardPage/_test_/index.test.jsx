@@ -2,6 +2,7 @@ import React from 'react';
 import DashboardPage from 'features/Dashboard/DashboardPage';
 import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
+import { MemoryRouter, Route } from 'react-router-dom';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -54,7 +55,11 @@ describe('DashboardPage component', () => {
   };
 
   const component = renderWithProviders(
-    <DashboardPage />,
+    <MemoryRouter initialEntries={['/dashboard']}>
+      <Route path="/dashboard">
+        <DashboardPage />
+      </Route>
+    </MemoryRouter>,
     { preloadedState: mockStore },
   );
 

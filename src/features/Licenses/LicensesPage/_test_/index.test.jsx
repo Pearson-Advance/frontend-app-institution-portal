@@ -3,6 +3,7 @@ import { waitFor } from '@testing-library/react';
 import LicensesPage from 'features/Licenses/LicensesPage';
 import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
+import { MemoryRouter, Route } from 'react-router-dom';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -35,7 +36,11 @@ const mockStore = {
 describe('LicensesPage component', () => {
   test('renders licenses data components', () => {
     const component = renderWithProviders(
-      <LicensesPage />,
+      <MemoryRouter initialEntries={['/licenses']}>
+        <Route path="/licenses">
+          <LicensesPage />
+        </Route>
+      </MemoryRouter>,
       { preloadedState: mockStore },
     );
 

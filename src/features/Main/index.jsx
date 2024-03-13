@@ -18,6 +18,7 @@ import LicensesPage from 'features/Licenses/LicensesPage';
 import StudentsPage from 'features/Students/StudentsPage';
 import DashboardPage from 'features/Dashboard/DashboardPage';
 import CoursesDetailPage from 'features/Courses/CoursesDetailPage';
+import LicensesDetailPage from 'features/Licenses/LicensesDetailPage';
 import InstructorsPage from 'features/Instructors/InstructorsPage';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
@@ -102,6 +103,9 @@ const Main = () => {
             </Switch>
             <Switch>
               <Route path="/licenses" exact component={LicensesPage} />
+            </Switch>
+            <Switch>
+              <Route path="/licenses/:licenseId" exact component={LicensesDetailPage} />
             </Switch>
             <Switch>
               <Route path="/classes" exact component={ClassesPage} />
