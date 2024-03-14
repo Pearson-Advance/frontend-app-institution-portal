@@ -20,8 +20,12 @@
   }
 }
 
-.custom-progress {
-  @extend %progress-styles;
+[role=table] {
+  [role=cell]{
+    .custom-progress {
+      @extend %progress-styles;
+    }
+  }
 }
 
 .filter-container .filters {
