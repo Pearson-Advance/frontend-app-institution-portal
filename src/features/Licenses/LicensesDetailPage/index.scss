@@ -1,0 +1,75 @@
+@import "assets/variables.scss";
+@import "assets/colors.scss";
+
+.course-title {
+  max-width: 700px;
+}
+
+.license-page-content-container {
+  border: 1px solid $gray-20;
+  border-radius: $border-radius-1;
+  padding: 24px 30px 30px 30px;
+  box-shadow: 0px 3px 12px 0px $gray-30;
+  background-color: $color-white;
+
+  .flex-end {
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 20px;
+  }
+}
+
+.card-container {
+  height: 100px;
+  padding: 0 1.5rem;
+  padding-left: 2rem;
+  padding-right: 4rem;
+  background-color: $color-white;
+  border-radius: $border-radius-1;
+  box-shadow: 0px 3px 12px 0px rgba(0, 0, 0, 0.16);
+
+  .title {
+    font-size: 15px;
+    font-weight: 700;
+    color: $gray-70;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+
+  .value {
+    display: block;
+    width: 100%;
+    color: $black;
+  }
+
+  .purchased-seats {
+    font-weight: bold;
+  }
+
+  .number-of-pending {
+    color: red;
+  }
+
+  .separator {
+    width: 2px;
+    height: 50px;
+    background-color: $gray-20;
+  }
+}
+
+.btn-primary .btn-license {
+  color: #fff;
+  text-decoration: none;
+}
+
+@media screen and (max-width: 576px) {
+  .card-container {
+    padding: 0 1.5rem;
+    height: 115px;
+    padding-right: 4rem;
+
+    .title {
+      margin-bottom: 5px;
+    }
+  }
+}

@@ -33,3 +33,10 @@ export const initialPage = 1;
  */
 export const hoursDay = 24;
 export const daysWeek = 7;
+
+/**
+ * URLs.
+ * @readonly
+ * @string
+ */
+export const licenseBuyLink = 'https://www.mindhubpro.com/';

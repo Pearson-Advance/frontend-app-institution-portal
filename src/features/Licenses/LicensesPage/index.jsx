@@ -14,7 +14,6 @@ const LicensesPage = () => {
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const stateLicenses = useSelector((state) => state.licenses.table);
   const [currentPage, setCurrentPage] = useState(initialPage);
-
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
     dispatch(updateCurrentPage(targetPage));
