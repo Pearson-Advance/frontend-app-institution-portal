@@ -51,7 +51,16 @@ describe('columns', () => {
   });
 
   test('Should render the title into a span tag', () => {
-    const Component = () => columns[0].Cell({ row: { values: { className: 'Class example' } } });
+    const Component = () => columns[0].Cell({
+      row: {
+        values: {
+          className: 'Class example',
+        },
+        original: {
+          classId: 'class id',
+        },
+      },
+    });
 
     renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
@@ -65,7 +74,7 @@ describe('columns', () => {
     const linkElement = screen.getByText('Class example');
     expect(linkElement).toBeInTheDocument();
     expect(linkElement).toHaveClass('text-truncate link');
-    expect(linkElement).toHaveAttribute('href', '/courses/Demo Course 1/Class example');
+    expect(linkElement).toHaveAttribute('href', '/courses/Demo Course 1/Class example?classId=class id');
   });
 
   test('Should render the dates', () => {

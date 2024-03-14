@@ -73,7 +73,7 @@ const CoursesDetailPage = () => {
   }, [institution, history]);
 
   return (
-    <Container size="xl" className="px-4">
+    <Container size="xl" className="px-4 mt-3">
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="d-flex align-items-center mb-3">
           <Link to="/courses" className="mr-3 link">
