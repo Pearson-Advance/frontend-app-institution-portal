@@ -19,11 +19,17 @@ function getLicensesByInstitution(institutionId, limit, page = 1, urlParamsFilte
   );
 }
 
-function getClassesByInstitution(institutionId, courseName, limit = false, instructorsList = '', page = '', urlParamsFilters = '') {
+function getClassesByInstitution(institutionId, courseName, limit = false, page = '', urlParamsFilters = '') {
   const encodedCourseName = encodeURIComponent(courseName);
+  const params = {
+    limit,
+    institution_id: institutionId,
+    page,
+    ...urlParamsFilters,
+  };
   return getAuthenticatedHttpClient().get(
-    `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/classes`
-    + `/?limit=${limit}&institution_id=${institutionId}&course_name=${encodedCourseName}&instructors=${instructorsList}&page=${page}&${urlParamsFilters}`,
+    `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_name=${encodedCourseName}`,
+    { params },
   );
 }
 

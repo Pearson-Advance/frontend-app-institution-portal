@@ -11,6 +11,11 @@ import { renderWithProviders } from 'test-utils';
 
 import ClassesFilters from 'features/Classes/ClassesFilters';
 
+jest.mock('react-router-dom', () => ({
+  useParams: jest.fn(() => ({})),
+  useLocation: jest.fn().mockReturnValue({ }),
+}));
+
 let axiosMock;
 
 const courseOption = {

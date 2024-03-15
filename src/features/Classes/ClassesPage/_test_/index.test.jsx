@@ -4,6 +4,11 @@ import { waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
 
+jest.mock('react-router-dom', () => ({
+  useParams: jest.fn(() => ({})),
+  useLocation: jest.fn().mockReturnValue({ }),
+}));
+
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
 }));

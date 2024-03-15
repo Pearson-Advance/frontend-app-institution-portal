@@ -36,7 +36,8 @@ function fetchClassesData(id, hasInstructors = false) {
         const response = camelCaseObject(await getClassesByInstitution(id, '', false));
         dispatch(fetchClassesDataSuccess(response.data));
       } else {
-        const response = camelCaseObject(await getClassesByInstitution(id, '', false, 'null'));
+        const instructorsNull = { instructors: 'null' };
+        const response = camelCaseObject(await getClassesByInstitution(id, '', false, '', instructorsNull));
         dispatch(fetchClassesNoInstructorsDataSuccess(response.data));
       }
     } catch (error) {

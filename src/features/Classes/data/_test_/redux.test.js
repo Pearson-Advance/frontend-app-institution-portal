@@ -29,7 +29,7 @@ describe('Classes redux tests', () => {
   });
 
   test('successful fetch classes data', async () => {
-    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=true&institution_id=1&course_name=&instructors=&page=1&`;
+    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_name=`;
     const mockResponse = {
       results: [
         {
@@ -62,7 +62,7 @@ describe('Classes redux tests', () => {
   });
 
   test('failed fetch classes data', async () => {
-    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?limit=true&institution_id=1&course_name=&instructors=&page=1`;
+    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/`;
     axiosMock.onGet(classesApiUrl)
       .reply(500);
 
