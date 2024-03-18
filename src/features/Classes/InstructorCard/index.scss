@@ -1,0 +1,60 @@
+@import 'assets/colors.scss';
+
+.separator {
+  width: 2px;
+  height: 150px;
+  background-color: $gray-20;
+  margin-right: 20px;
+}
+
+article.instructor-wrapper {
+  padding: 1.8rem;
+  height: 220px;
+  color: $gray-70;
+
+  .text-color {
+    color: inherit;
+  }
+
+  div:first-child > h4 {
+    margin-top: -20px;
+  }
+
+  $size: 90px;
+  .instructor-image {
+    height: $size;
+    width: $size;
+    max-width: $size;
+    max-height: $size;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .text-black {
+    color: $black;
+  }
+}
+
+.instructor-details {
+  width: 25%;
+}
+
+@media screen and (max-width: 575px) {
+  article.instructor-wrapper {
+    height: auto;
+
+    div:first-child > h4 {
+      margin-top: 0;
+    }
+  }
+
+  .separator {
+    margin: 2rem 0;
+    height: 2px;
+    width: 100%;
+  }
+
+  .instructor-details {
+    width: 100%;
+  }
+}

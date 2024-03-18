@@ -13,6 +13,10 @@ const initialState = {
   },
   filters: {},
   selectOptions: [],
+  allClasses: {
+    data: [],
+    count: 0,
+  },
 };
 
 export const classesSlice = createSlice({
@@ -44,17 +48,33 @@ export const classesSlice = createSlice({
     updateClassesOptions: (state, { payload }) => {
       state.selectOptions = payload;
     },
+    fillClassesTable: (state, { payload }) => {
+      state.table.data = payload;
+      state.table.status = RequestStatus.SUCCESS;
+      state.table.numPages = 1;
+      state.table.count = payload?.length;
+    },
+    updateAllClasses: (state, { payload }) => {
+      state.allClasses.data = payload;
+      state.allClasses.count = payload?.length;
+    },
+    resetClasses: (state) => {
+      state.allClasses = initialState.allClasses;
+    },
   },
 });
 
 export const {
-  resetClassesTable,
   updateCurrentPage,
   fetchClassesDataRequest,
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
   updateFilters,
   updateClassesOptions,
+  fillClassesTable,
+  updateAllClasses,
+  resetClasses,
+  resetClassesTable,
 } = classesSlice.actions;
 
 export const { reducer } = classesSlice;
