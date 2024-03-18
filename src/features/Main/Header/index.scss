@@ -11,10 +11,12 @@
 }
 
 header.institution-header {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  display: flex;
   background-color: $primary-dark;
+  height: 88px;
+  border-bottom: 4px solid $gray-40;
 
   .actions {
     align-items: center;
@@ -31,7 +33,7 @@ header.institution-header {
     margin-right: 20px;
   }
 
-  .header-rigth {
+  .header-right {
     color: $color-white;
 
     .icon {

@@ -1,5 +1,5 @@
-@import "assets/colors.scss";
-@import "assets/variables.scss";
+@import 'assets/colors.scss';
+@import 'assets/variables.scss';
 
 * {
   box-sizing: border-box;
@@ -42,6 +42,10 @@ input {
 
   .container-pages {
     background-color: $bg-main-color;
+    background-image: url('https://pearson-production-media.s3.amazonaws.com/IPbackground.svg');
+    background-repeat: no-repeat;
+    background-position: top right;
+    background-size: 55%;
   }
 }
 
@@ -99,5 +103,22 @@ li {
     left: 0;
     position: absolute;
     width: 240px;
+  }
+}
+
+@media (max-width: 700px) {
+  .pageWrapper {
+    .container-pages {
+      background-size: 90%;
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .pageWrapper {
+    .container-pages {
+      background-position-y: -95px;
+      background-size: 70%;
+    }
   }
 }

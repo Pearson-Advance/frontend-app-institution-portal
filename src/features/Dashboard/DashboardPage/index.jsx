@@ -48,8 +48,8 @@ const DashboardPage = () => {
   }, [selectedInstitution, dispatch]);
 
   return (
-    <Container size="xl" className="px-4">
-      <h2 className="title-page">
+    <Container size="xl" className="px-4 pt-3">
+      <h2 className="title-page mt-3 mb-3">
         {Object.keys(selectedInstitution).length > 0 ? `Welcome to ${selectedInstitution?.name}` : `Welcome to ${stateInstitution[0]?.name}`}
       </h2>
       <StudentsMetrics />
