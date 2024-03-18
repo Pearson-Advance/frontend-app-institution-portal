@@ -1,13 +1,14 @@
 import React from 'react';
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithProviders } from 'test-utils';
 
 import InstructorsTable from 'features/Instructors/InstructorsTable';
 import { columns } from 'features/Instructors/InstructorsTable/columns';
 
 describe('Instructor Table', () => {
   test('renders InstructorsTable without data', () => {
-    render(<InstructorsTable data={[]} count={0} columns={[]} />);
+    renderWithProviders(<InstructorsTable data={[]} count={0} columns={[]} />);
     const emptyTableText = screen.getByText('No instructors found.');
     expect(emptyTableText).toBeInTheDocument();
   });
@@ -32,7 +33,7 @@ describe('Instructor Table', () => {
       },
     ];
 
-    const component = render(
+    const component = renderWithProviders(
       <InstructorsTable data={data} count={data.length} columns={columns} />,
     );
 

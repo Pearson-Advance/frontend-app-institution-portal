@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { IntlProvider } from 'react-intl';
 import {
   Row,
   Col,
@@ -23,27 +22,25 @@ const AssignTable = () => {
   };
 
   return (
-    <IntlProvider locale="en">
-      <Row className="justify-content-center my-4 my-3">
-        <Col xs={11} className="p-0">
-          <DataTable
-            isSortable
-            isSelectable
-            columns={COLUMNS}
-            itemCount={stateInstructors.count}
-            data={stateInstructors.data}
-            manualSelectColumn={selectColumn}
-            initialTableOptions={{
-              autoResetSelectedRows: false,
-              getRowId: (row) => row.instructorUsername,
-            }}
-          >
-            <DataTable.Table />
-            <DataTable.EmptyTable content="No instructors found." />
-          </DataTable>
-        </Col>
-      </Row>
-    </IntlProvider>
+    <Row className="justify-content-center my-4 my-3">
+      <Col xs={11} className="p-0">
+        <DataTable
+          isSortable
+          isSelectable
+          columns={COLUMNS}
+          itemCount={stateInstructors.count}
+          data={stateInstructors.data}
+          manualSelectColumn={selectColumn}
+          initialTableOptions={{
+            autoResetSelectedRows: false,
+            getRowId: (row) => row.instructorUsername,
+          }}
+        >
+          <DataTable.Table />
+          <DataTable.EmptyTable content="No instructors found." />
+        </DataTable>
+      </Col>
+    </Row>
   );
 };
 

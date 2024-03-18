@@ -1,6 +1,5 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { IntlProvider } from 'react-intl';
 import AddInstructors from 'features/Instructors/AddInstructors';
 import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
@@ -40,9 +39,7 @@ const mockStore = {
 describe('Add instructor modal', () => {
   test('Render add insctructor modal', async () => {
     const { getByText, getByPlaceholderText } = renderWithProviders(
-      <IntlProvider locale="en">
-        <AddInstructors isOpen onClose={() => {}} />
-      </IntlProvider>,
+        <AddInstructors isOpen onClose={() => {}} />,
       { preloadedState: mockStore },
     );
 

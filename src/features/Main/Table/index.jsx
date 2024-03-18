@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { IntlProvider } from 'react-intl';
 import DataTable from '@edx/paragon/dist/DataTable';
 
 const Table = ({
@@ -12,18 +11,16 @@ const Table = ({
   const COLUMNS = useMemo(() => columns, [columns]);
 
   return (
-    <IntlProvider locale="en">
-      <DataTable
-        isSortable
-        columns={COLUMNS}
-        itemCount={count}
-        data={data}
-      >
-        <DataTable.Table />
-        <DataTable.EmptyTable content={text} />
-        <DataTable.TableFooter />
-      </DataTable>
-    </IntlProvider>
+    <DataTable
+      isSortable
+      columns={COLUMNS}
+      itemCount={count}
+      data={data}
+    >
+      <DataTable.Table />
+      <DataTable.EmptyTable content={text} />
+      <DataTable.TableFooter />
+    </DataTable>
   );
 };
 

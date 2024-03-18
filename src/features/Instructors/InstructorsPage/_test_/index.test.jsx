@@ -1,6 +1,5 @@
 import React from 'react';
 import { waitFor } from '@testing-library/react';
-import { IntlProvider } from 'react-intl';
 import InstructorsPage from 'features/Instructors/InstructorsPage';
 import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
@@ -44,9 +43,7 @@ const mockStore = {
 describe('InstructorPage', () => {
   test('render instructor page', () => {
     const component = renderWithProviders(
-      <IntlProvider locale="en">
-        <InstructorsPage />
-      </IntlProvider>,
+        <InstructorsPage />,
       { preloadedState: mockStore },
     );
 

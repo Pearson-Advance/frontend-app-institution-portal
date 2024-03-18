@@ -10,7 +10,6 @@ import {
   AlertModal,
   useToggle,
 } from '@edx/paragon';
-import { IntlProvider } from 'react-intl';
 import { handleEnrollments } from 'features/Students/data/api';
 import { getColumns, hideColumns } from 'features/Students/StudentsTable/columns';
 import { fetchStudentsData } from 'features/Students/data/thunks';
@@ -34,7 +33,7 @@ const StudentsTable = ({
   };
 
   return (
-    <IntlProvider locale="en">
+    <>
       <Row className="justify-content-center my-4 my-3">
         <Col xs={11} className="p-0">
           <DataTable
@@ -67,7 +66,7 @@ const StudentsTable = ({
           Learner with email <b>{selectedRow.learnerEmail}</b> will be revoked from <b>{selectedRow.ccxName}</b>
         </p>
       </AlertModal>
-    </IntlProvider>
+    </>
   );
 };
 

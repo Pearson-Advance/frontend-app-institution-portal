@@ -1,14 +1,15 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { MemoryRouter, Route } from 'react-router-dom';
-import { render, screen } from '@testing-library/react';
+import {  screen } from '@testing-library/react';
+import { renderWithProviders } from 'test-utils';
 
 import CoursesTable from 'features/Courses/CoursesTable';
 import { columns } from 'features/Courses/CoursesTable/columns';
 
 describe('Courses Table', () => {
   test('renders CoursesTable without data', () => {
-    render(<CoursesTable data={[]} count={0} columns={[]} />);
+    renderWithProviders(<CoursesTable data={[]} count={0} columns={[]} />);
     const emptyTableText = screen.getByText('No instructors found.');
     expect(emptyTableText).toBeInTheDocument();
   });
@@ -31,7 +32,7 @@ describe('Courses Table', () => {
       },
     ];
 
-    const component = render(
+    const component = renderWithProviders(
       <MemoryRouter initialEntries={['/courses']}>
         <Route path="/courses">
           <CoursesTable data={data} count={data.length} columns={columns} />

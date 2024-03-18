@@ -1,5 +1,4 @@
 import React from 'react';
-import { IntlProvider } from 'react-intl';
 import MockAdapter from 'axios-mock-adapter';
 import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, act } from '@testing-library/react';
@@ -13,7 +12,7 @@ import ClassesFilters from 'features/Classes/ClassesFilters';
 
 jest.mock('react-router-dom', () => ({
   useParams: jest.fn(() => ({})),
-  useLocation: jest.fn().mockReturnValue({ }),
+  useLocation: jest.fn().mockReturnValue({}),
 }));
 
 let axiosMock;
@@ -128,9 +127,7 @@ describe('ClassesFilters Component', () => {
     () => {
       const resetPagination = jest.fn();
       const { getByText, getAllByTestId } = renderWithProviders(
-        <IntlProvider locale="en">
-          <ClassesFilters resetPagination={resetPagination} />
-        </IntlProvider>,
+        <ClassesFilters resetPagination={resetPagination} />,
         { preloadedState: mockStore },
       );
 
@@ -150,9 +147,7 @@ describe('ClassesFilters Component', () => {
   test('Should call the service when apply filters', async () => {
     const resetPagination = jest.fn();
     const { getByText, getAllByTestId } = renderWithProviders(
-      <IntlProvider locale="en">
-        <ClassesFilters resetPagination={resetPagination} />
-      </IntlProvider>,
+        <ClassesFilters resetPagination={resetPagination} />,
       { preloadedState: mockStore },
     );
 
@@ -182,9 +177,7 @@ describe('ClassesFilters Component', () => {
   test('Should clear the filters', async () => {
     const resetPagination = jest.fn();
     const { getByText, getAllByTestId } = renderWithProviders(
-      <IntlProvider locale="en">
-        <ClassesFilters resetPagination={resetPagination} />
-      </IntlProvider>,
+        <ClassesFilters resetPagination={resetPagination} />,
       { preloadedState: mockStore },
     );
 

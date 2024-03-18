@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { IntlProvider } from 'react-intl';
 import MockAdapter from 'axios-mock-adapter';
 import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, act } from '@testing-library/react';
@@ -130,9 +129,7 @@ describe('LicensesFilters Component', () => {
     () => {
       const resetPagination = jest.fn();
       const { getByText, getAllByTestId } = renderWithProviders(
-        <IntlProvider locale="en">
-          <LicensesFilters resetPagination={resetPagination} />{/*  */}
-        </IntlProvider>,
+        <LicensesFilters resetPagination={resetPagination} />,
         { preloadedState: mockStore },
       );
 
@@ -152,9 +149,7 @@ describe('LicensesFilters Component', () => {
   test('Should call the service when apply filters', async () => {
     const resetPagination = jest.fn();
     const { getByText, getAllByTestId } = renderWithProviders(
-      <IntlProvider locale="en">
-        <LicensesFilters resetPagination={resetPagination} />
-      </IntlProvider>,
+      <LicensesFilters resetPagination={resetPagination} />,
       { preloadedState: mockStore },
     );
 
@@ -184,9 +179,7 @@ describe('LicensesFilters Component', () => {
   test('Should clear the filters', async () => {
     const resetPagination = jest.fn();
     const { getByText, getAllByTestId } = renderWithProviders(
-      <IntlProvider locale="en">
-        <LicensesFilters resetPagination={resetPagination} />
-      </IntlProvider>,
+        <LicensesFilters resetPagination={resetPagination} />,
       { preloadedState: mockStore },
     );
 

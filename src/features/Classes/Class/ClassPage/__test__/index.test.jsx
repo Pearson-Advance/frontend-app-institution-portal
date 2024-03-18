@@ -2,7 +2,6 @@ import React from 'react';
 import { waitFor } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
-import { IntlProvider } from 'react-intl';
 
 import { renderWithProviders } from 'test-utils';
 
@@ -51,9 +50,7 @@ describe('ClassesPage', () => {
     const component = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201/demo%20class%20cxx1']}>
         <Route path="/courses/:courseId/:classId">
-          <IntlProvider locale="en">
-            <ClassPage />
-          </IntlProvider>
+          <ClassPage />
         </Route>
       </MemoryRouter>,
       { preloadedState: mockStore },
