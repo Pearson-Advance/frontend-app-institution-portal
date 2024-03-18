@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { format } from 'date-fns';
 import { ProgressBar } from '@edx/paragon';
+import { Link } from 'react-router-dom';
 
 const getColumns = () => [
   {
@@ -14,6 +15,14 @@ const getColumns = () => [
   {
     Header: 'Class Name',
     accessor: 'className',
+    Cell: ({ row }) => (
+      <Link
+        to={`/courses/${row.original.courseName}/${row.values.className}?classId=${row.original.classId}`}
+        className="text-truncate link"
+      >
+        {row.values.className}
+      </Link>
+    ),
   },
   {
     Header: 'Class Id',
