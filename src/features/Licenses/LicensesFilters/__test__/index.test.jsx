@@ -179,7 +179,7 @@ describe('LicensesFilters Component', () => {
   test('Should clear the filters', async () => {
     const resetPagination = jest.fn();
     const { getByText, getAllByTestId } = renderWithProviders(
-        <LicensesFilters resetPagination={resetPagination} />,
+      <LicensesFilters resetPagination={resetPagination} />,
       { preloadedState: mockStore },
     );
 

@@ -43,7 +43,7 @@ const mockStore = {
 describe('InstructorPage', () => {
   test('render instructor page', () => {
     const component = renderWithProviders(
-        <InstructorsPage />,
+      <InstructorsPage />,
       { preloadedState: mockStore },
     );
 

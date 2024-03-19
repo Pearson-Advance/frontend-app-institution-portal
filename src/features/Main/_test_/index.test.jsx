@@ -1,7 +1,5 @@
 import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { initializeStore } from 'store';
+import { fireEvent, screen } from '@testing-library/react';
 import { AppContext } from '@edx/frontend-platform/react';
 import Main from 'features/Main';
 import '@testing-library/jest-dom/extend-expect';

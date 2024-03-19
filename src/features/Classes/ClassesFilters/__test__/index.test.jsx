@@ -147,7 +147,7 @@ describe('ClassesFilters Component', () => {
   test('Should call the service when apply filters', async () => {
     const resetPagination = jest.fn();
     const { getByText, getAllByTestId } = renderWithProviders(
-        <ClassesFilters resetPagination={resetPagination} />,
+      <ClassesFilters resetPagination={resetPagination} />,
       { preloadedState: mockStore },
     );
 
@@ -177,7 +177,7 @@ describe('ClassesFilters Component', () => {
   test('Should clear the filters', async () => {
     const resetPagination = jest.fn();
     const { getByText, getAllByTestId } = renderWithProviders(
-        <ClassesFilters resetPagination={resetPagination} />,
+      <ClassesFilters resetPagination={resetPagination} />,
       { preloadedState: mockStore },
     );
 

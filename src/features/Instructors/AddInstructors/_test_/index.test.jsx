@@ -39,7 +39,7 @@ const mockStore = {
 describe('Add instructor modal', () => {
   test('Render add insctructor modal', async () => {
     const { getByText, getByPlaceholderText } = renderWithProviders(
-        <AddInstructors isOpen onClose={() => {}} />,
+      <AddInstructors isOpen onClose={() => {}} />,
       { preloadedState: mockStore },
     );
 

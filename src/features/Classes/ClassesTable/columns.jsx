@@ -14,10 +14,6 @@ import { initialPage } from 'features/constants';
 
 const columns = [
   {
-    Header: 'Course',
-    accessor: 'masterCourseName',
-  },
-  {
     Header: 'Class',
     accessor: 'className',
     Cell: ({ row }) => (
@@ -28,6 +24,10 @@ const columns = [
         {row.values.className}
       </Link>
     ),
+  },
+  {
+    Header: 'Course',
+    accessor: 'masterCourseName',
   },
   {
     Header: 'Start Date',

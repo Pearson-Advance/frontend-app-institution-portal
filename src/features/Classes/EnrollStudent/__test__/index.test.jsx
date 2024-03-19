@@ -21,7 +21,7 @@ jest.mock('@edx/frontend-platform/logging', () => ({
 describe('EnrollStudent', () => {
   test('Should render with correct elements', () => {
     const { getByText, getByPlaceholderText } = renderWithProviders(
-        <EnrollStudent isOpen onClose={() => {}} />,
+      <EnrollStudent isOpen onClose={() => {}} />,
       { preloadedState: {} },
     );
 
@@ -35,7 +35,7 @@ describe('EnrollStudent', () => {
     const onCloseMock = jest.fn();
 
     const { getByPlaceholderText, getByText } = renderWithProviders(
-        <EnrollStudent isOpen onClose={onCloseMock} />,
+      <EnrollStudent isOpen onClose={onCloseMock} />,
       { preloadedState: {} },
     );
 

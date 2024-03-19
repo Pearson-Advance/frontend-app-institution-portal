@@ -6,7 +6,7 @@ import { renderWithProviders } from 'test-utils';
 describe('StudentsMetrics component', () => {
   test('renders components', () => {
     const { getByText } = renderWithProviders(
-        <StudentsMetrics />,
+      <StudentsMetrics />,
     );
 
     expect(getByText('This week')).toBeInTheDocument();

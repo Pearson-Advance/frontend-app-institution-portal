@@ -3,17 +3,10 @@ import '@testing-library/jest-dom';
 import { MemoryRouter, Route } from 'react-router-dom';
 import { screen } from '@testing-library/react';
 import { StudentsTable } from 'features/Students/StudentsTable';
-import { getColumns } from 'features/Students/StudentsTable/columns';
-import { initializeStore } from 'store';
+import { columns } from 'features/Students/StudentsTable/columns';
 import { renderWithProviders } from 'test-utils';
 
-let store;
-
 describe('Student Table', () => {
-  beforeEach(() => {
-    store = initializeStore();
-  });
-
   test('renders StudentsTable without data', () => {
     renderWithProviders(
       <StudentsTable data={[]} count={0} columns={[]} />,
@@ -52,7 +45,7 @@ describe('Student Table', () => {
       <MemoryRouter initialEntries={['/students']}>
         <Route path="/students">
           <Provider store={store}>
-            <StudentsTable data={data} count={data.length} columns={getColumns()} />
+            <StudentsTable data={data} count={data.length} columns={columns} />
           </Provider>,
         </Route>
       </MemoryRouter>,

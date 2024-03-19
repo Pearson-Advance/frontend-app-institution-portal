@@ -1,7 +1,7 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { MemoryRouter, Route } from 'react-router-dom';
-import {  screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { renderWithProviders } from 'test-utils';
 
 import CoursesTable from 'features/Courses/CoursesTable';
