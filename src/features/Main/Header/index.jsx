@@ -17,7 +17,7 @@ export const Header = () => {
         </a>
         <h3 className="platform-name">CertPREP Management Portal</h3>
       </div>
-      <div className="header-rigth d-flex align-items-center">
+      <div className="header-right d-flex align-items-center">
         <a href={questionsLink()}>
           <i className="fa-regular fa-circle-question icon" />
         </a>
