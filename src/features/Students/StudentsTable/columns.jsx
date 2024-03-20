@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { ProgressBar } from '@edx/paragon';
 import { Link } from 'react-router-dom';
 
-const getColumns = () => [
+const columns = [
   {
     Header: 'Student',
     accessor: 'learnerName',
@@ -25,15 +25,11 @@ const getColumns = () => [
     ),
   },
   {
-    Header: 'Class Id',
-    accessor: 'classId',
-  },
-  {
     Header: 'Start - End Date',
     accessor: 'startDate',
     Cell: ({ row }) => {
-      const startDate = row.values.startDate ? format(row.values.startDate, 'MM/dd/yy') : '';
-      const endDate = row.values.endDate ? format(row.values.endDate, 'MM/dd/yy') : '';
+      const startDate = row.original.startDate ? format(row.original.startDate, 'MM/dd/yy') : '';
+      const endDate = row.original.endDate ? format(row.original.endDate, 'MM/dd/yy') : '';
       return <div>{startDate} - {endDate}</div>;
     },
   },
@@ -49,7 +45,4 @@ const getColumns = () => [
   },
 ];
 
-// We don't need to show ccxId column but we need it to use handleStudentsActions.
-const hideColumns = { hiddenColumns: ['classId'] };
-
-export { hideColumns, getColumns };
+export { columns };

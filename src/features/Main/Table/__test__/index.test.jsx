@@ -1,6 +1,6 @@
 import React from 'react';
-import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
+import { renderWithProviders } from 'test-utils';
 
 import Table from 'features/Main/Table';
 
@@ -21,7 +21,7 @@ describe('Table component', () => {
   const text = 'No data available';
 
   test('Should render table with provided data', () => {
-    const { getByText } = render(
+    const { getByText } = renderWithProviders(
       <Table columns={columns} data={data} count={count} text={text} />,
     );
 
@@ -36,7 +36,7 @@ describe('Table component', () => {
   });
 
   test('Should render empty table with provided text when no data is available', () => {
-    const { getByText } = render(
+    const { getByText } = renderWithProviders(
       <Table columns={columns} data={[]} count={0} text={text} />,
     );
 

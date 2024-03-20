@@ -1,22 +1,12 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { render } from '@testing-library/react';
 import StudentsMetrics from 'features/Students/StudentsMetrics';
 import '@testing-library/jest-dom/extend-expect';
-import { initializeStore } from 'store';
-
-let store;
+import { renderWithProviders } from 'test-utils';
 
 describe('StudentsMetrics component', () => {
-  beforeEach(() => {
-    store = initializeStore();
-  });
-
   test('renders components', () => {
-    const { getByText } = render(
-      <Provider store={store}>
-        <StudentsMetrics />
-      </Provider>,
+    const { getByText } = renderWithProviders(
+      <StudentsMetrics />,
     );
 
     expect(getByText('This week')).toBeInTheDocument();

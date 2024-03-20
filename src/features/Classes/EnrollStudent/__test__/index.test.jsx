@@ -1,5 +1,4 @@
 import React from 'react';
-import { IntlProvider } from 'react-intl';
 import { renderWithProviders } from 'test-utils';
 import { fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
@@ -22,9 +21,7 @@ jest.mock('@edx/frontend-platform/logging', () => ({
 describe('EnrollStudent', () => {
   test('Should render with correct elements', () => {
     const { getByText, getByPlaceholderText } = renderWithProviders(
-      <IntlProvider locale="en">
-        <EnrollStudent isOpen onClose={() => {}} />
-      </IntlProvider>,
+      <EnrollStudent isOpen onClose={() => {}} />,
       { preloadedState: {} },
     );
 
@@ -38,9 +35,7 @@ describe('EnrollStudent', () => {
     const onCloseMock = jest.fn();
 
     const { getByPlaceholderText, getByText } = renderWithProviders(
-      <IntlProvider locale="en">
-        <EnrollStudent isOpen onClose={onCloseMock} />
-      </IntlProvider>,
+      <EnrollStudent isOpen onClose={onCloseMock} />,
       { preloadedState: {} },
     );
 

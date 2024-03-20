@@ -6,8 +6,8 @@ describe('columns', () => {
     expect(columns).toHaveLength(8);
 
     const [
-      masterCourseNameColumn,
       classNameColumn,
+      masterCourseNameColumn,
       startDateColumn,
       endDateColumn,
       minStudentsAllowedColumn,
@@ -16,11 +16,11 @@ describe('columns', () => {
       instructorsColumn,
     ] = columns;
 
-    expect(masterCourseNameColumn).toHaveProperty('Header', 'Course');
-    expect(masterCourseNameColumn).toHaveProperty('accessor', 'masterCourseName');
-
     expect(classNameColumn).toHaveProperty('Header', 'Class');
     expect(classNameColumn).toHaveProperty('accessor', 'className');
+
+    expect(masterCourseNameColumn).toHaveProperty('Header', 'Course');
+    expect(masterCourseNameColumn).toHaveProperty('accessor', 'masterCourseName');
 
     expect(startDateColumn).toHaveProperty('Header', 'Start Date');
     expect(startDateColumn).toHaveProperty('accessor', 'startDate');

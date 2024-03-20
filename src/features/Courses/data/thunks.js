@@ -51,7 +51,7 @@ function addClass(classData, instructorData) {
       dispatch(newClassSuccess(response.data));
       if (Array.from(instructorData.keys()).length > 0) {
         instructorData.append('class_id', response.data.class_id);
-        dispatch(assignInstructors(instructorData));
+        await dispatch(assignInstructors(instructorData));
       }
       dispatch(updateNotificationMsg(`${response.data.name} has been added successfullly!`));
     } catch (error) {

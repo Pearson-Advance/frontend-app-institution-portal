@@ -1,11 +1,8 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
-import { Provider } from 'react-redux';
+import { fireEvent } from '@testing-library/react';
 import { Sidebar } from 'features/Main/Sidebar';
 import '@testing-library/jest-dom/extend-expect';
-import { initializeStore } from 'store';
-
-let store;
+import { renderWithProviders } from 'test-utils';
 
 const mockHistoryPush = jest.fn();
 
@@ -20,15 +17,9 @@ jest.mock('react-router', () => ({
 }));
 
 describe('Sidebar', () => {
-  beforeEach(() => {
-    store = initializeStore();
-  });
-
   it('should render properly', () => {
-    const { getByRole } = render(
-      <Provider store={store}>
-        <Sidebar />
-      </Provider>,
+    const { getByRole } = renderWithProviders(
+      <Sidebar />,
     );
 
     const studentsTabButton = getByRole('button', { name: /students/i });

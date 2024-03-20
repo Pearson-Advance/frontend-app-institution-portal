@@ -1,24 +1,15 @@
 import React from 'react';
-import { Provider } from 'react-redux';
 import '@testing-library/jest-dom';
 import { MemoryRouter, Route } from 'react-router-dom';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { StudentsTable } from 'features/Students/StudentsTable';
-import { getColumns } from 'features/Students/StudentsTable/columns';
-import { initializeStore } from 'store';
-
-let store;
+import { columns } from 'features/Students/StudentsTable/columns';
+import { renderWithProviders } from 'test-utils';
 
 describe('Student Table', () => {
-  beforeEach(() => {
-    store = initializeStore();
-  });
-
   test('renders StudentsTable without data', () => {
-    render(
-      <Provider store={store}>
-        <StudentsTable data={[]} count={0} columns={[]} />
-      </Provider>,
+    renderWithProviders(
+      <StudentsTable data={[]} count={0} columns={[]} />,
     );
     const emptyTableText = screen.getByText('No students found.');
     expect(emptyTableText).toBeInTheDocument();
@@ -50,12 +41,10 @@ describe('Student Table', () => {
       },
     ];
 
-    const component = render(
+    const component = renderWithProviders(
       <MemoryRouter initialEntries={['/students']}>
         <Route path="/students">
-          <Provider store={store}>
-            <StudentsTable data={data} count={data.length} columns={getColumns()} />
-          </Provider>,
+          <StudentsTable data={data} count={data.length} columns={columns} />
         </Route>
       </MemoryRouter>,
     );

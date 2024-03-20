@@ -1,12 +1,9 @@
 import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { initializeStore } from 'store';
+import { fireEvent, screen } from '@testing-library/react';
 import { AppContext } from '@edx/frontend-platform/react';
 import Main from 'features/Main';
 import '@testing-library/jest-dom/extend-expect';
-
-let store;
+import { renderWithProviders } from 'test-utils';
 
 jest.mock('features/Students/StudentsPage');
 jest.mock('features/Students/data/api');
@@ -24,17 +21,12 @@ describe('Main component', () => {
     ACCOUNT_PROFILE_URL: 'https://example.com/profile',
     LMS_BASE_URL: 'http://localhost:18000',
   };
-  beforeEach(() => {
-    store = initializeStore();
-  });
 
   it('toggles account menu on button click (Header)', () => {
-    const { getByText } = render(
-      <Provider store={store}>
-        <AppContext.Provider value={{ authenticatedUser, config }}>
-          <Main />
-        </AppContext.Provider>
-      </Provider>,
+    const { getByText } = renderWithProviders(
+      <AppContext.Provider value={{ authenticatedUser, config }}>
+        <Main />
+      </AppContext.Provider>,
     );
 
     const titleApp = getByText('CertPREP Management Portal');
@@ -50,12 +42,10 @@ describe('Main component', () => {
     expect(logOutLink).toBeInTheDocument();
   });
   it('Should render Sidebar', () => {
-    render(
-      <Provider store={store}>
-        <AppContext.Provider value={{ authenticatedUser, config }}>
-          <Main />
-        </AppContext.Provider>
-      </Provider>,
+    renderWithProviders(
+      <AppContext.Provider value={{ authenticatedUser, config }}>
+        <Main />
+      </AppContext.Provider>,
     );
 
     const studentsTabButton = screen.getByRole('button', { name: /students/i });
@@ -63,12 +53,10 @@ describe('Main component', () => {
   });
 
   it('should render two footer links', () => {
-    const { getByText } = render(
-      <Provider store={store}>
-        <AppContext.Provider value={{ authenticatedUser, config }}>
-          <Main />
-        </AppContext.Provider>
-      </Provider>,
+    const { getByText } = renderWithProviders(
+      <AppContext.Provider value={{ authenticatedUser, config }}>
+        <Main />
+      </AppContext.Provider>,
     );
 
     const linkPrivacyPolicy = getByText('Privacy');
