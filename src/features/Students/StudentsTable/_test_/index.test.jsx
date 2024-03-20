@@ -1,6 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import '@testing-library/jest-dom';
+import { MemoryRouter, Route } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { StudentsTable } from 'features/Students/StudentsTable';
 import { getColumns } from 'features/Students/StudentsTable/columns';
@@ -50,9 +51,13 @@ describe('Student Table', () => {
     ];
 
     const component = render(
-      <Provider store={store}>
-        <StudentsTable data={data} count={data.length} columns={getColumns()} />
-      </Provider>,
+      <MemoryRouter initialEntries={['/students']}>
+        <Route path="/students">
+          <Provider store={store}>
+            <StudentsTable data={data} count={data.length} columns={getColumns()} />
+          </Provider>,
+        </Route>
+      </MemoryRouter>,
     );
 
     const tableRows = screen.getAllByRole('row');

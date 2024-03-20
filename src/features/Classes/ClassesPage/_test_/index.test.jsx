@@ -1,17 +1,11 @@
 import React from 'react';
-import ClassesPage from 'features/Classes/ClassesPage';
 import { waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
+import { MemoryRouter, Route } from 'react-router-dom';
 
-jest.mock('react-router-dom', () => ({
-  useParams: jest.fn(() => ({})),
-  useLocation: jest.fn().mockReturnValue({ }),
-}));
-
-jest.mock('@edx/frontend-platform/logging', () => ({
-  logError: jest.fn(),
-}));
+import ClassesPage from 'features/Classes/ClassesPage';
+import { columns } from 'features/Classes/ClassesTable/columns';
 
 const mockStore = {
   classes: {
@@ -46,7 +40,15 @@ const mockStore = {
 describe('ClassesPage', () => {
   it('renders classes data and pagination', async () => {
     const component = renderWithProviders(
-      <ClassesPage />,
+      <MemoryRouter initialEntries={['/classes']}>
+        <Route path="/classes">
+          <ClassesPage
+            data={mockStore.classes.table.data}
+            count={mockStore.classes.table.data.length}
+            columns={columns}
+          />
+        </Route>
+      </MemoryRouter>,
       { preloadedState: mockStore },
     );
 

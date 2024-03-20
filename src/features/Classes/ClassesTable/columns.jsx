@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 
 import { Button } from 'react-paragon-topaz';
 import AssignInstructors from 'features/Instructors/AssignInstructors';
@@ -19,6 +20,14 @@ const columns = [
   {
     Header: 'Class',
     accessor: 'className',
+    Cell: ({ row }) => (
+      <Link
+        to={`/courses/${row.values.masterCourseName}/${row.values.className}?classId=${row.original.classId}`}
+        className="text-truncate link"
+      >
+        {row.values.className}
+      </Link>
+    ),
   },
   {
     Header: 'Start Date',
