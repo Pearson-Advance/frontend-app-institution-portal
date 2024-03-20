@@ -41,12 +41,10 @@ describe('Student Table', () => {
       },
     ];
 
-    const component = render(
+    const component = renderWithProviders(
       <MemoryRouter initialEntries={['/students']}>
         <Route path="/students">
-          <Provider store={store}>
-            <StudentsTable data={data} count={data.length} columns={columns} />
-          </Provider>,
+          <StudentsTable data={data} count={data.length} columns={columns} />
         </Route>
       </MemoryRouter>,
     );
