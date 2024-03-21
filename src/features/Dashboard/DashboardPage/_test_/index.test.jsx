@@ -67,8 +67,8 @@ describe('DashboardPage component', () => {
     const { getByText } = component;
 
     expect(getByText('This week')).toBeInTheDocument();
-    expect(getByText('Next week')).toBeInTheDocument();
-    expect(getByText('Next month')).toBeInTheDocument();
+    expect(getByText('Last month')).toBeInTheDocument();
+    expect(getByText('Last quarter')).toBeInTheDocument();
     expect(getByText('New students registered')).toBeInTheDocument();
     expect(getByText('Classes scheduled')).toBeInTheDocument();
     expect(getByText('License inventory')).toBeInTheDocument();
