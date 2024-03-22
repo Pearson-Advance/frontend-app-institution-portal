@@ -1,6 +1,7 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { screen } from '@testing-library/react';
+import { MemoryRouter, Route } from 'react-router-dom';
 import { renderWithProviders } from 'test-utils';
 
 import InstructorsTable from 'features/Instructors/InstructorsTable';
@@ -34,7 +35,11 @@ describe('Instructor Table', () => {
     ];
 
     const component = renderWithProviders(
-      <InstructorsTable data={data} count={data.length} columns={columns} />,
+      <MemoryRouter initialEntries={['/instructors']}>
+        <Route path="/instructors">
+          <InstructorsTable data={data} count={data.length} columns={columns} />
+        </Route>
+      </MemoryRouter>,
     );
 
     // Check if the table rows are present

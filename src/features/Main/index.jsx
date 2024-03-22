@@ -20,6 +20,7 @@ import DashboardPage from 'features/Dashboard/DashboardPage';
 import CoursesDetailPage from 'features/Courses/CoursesDetailPage';
 import LicensesDetailPage from 'features/Licenses/LicensesDetailPage';
 import InstructorsPage from 'features/Instructors/InstructorsPage';
+import InstructorsDetailPage from 'features/Instructors/InstructorsDetailPage';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
 import { updateSelectedInstitution } from 'features/Main/data/slice';
@@ -91,6 +92,9 @@ const Main = () => {
             </Switch>
             <Switch>
               <Route path="/instructors" exact component={InstructorsPage} />
+            </Switch>
+            <Switch>
+              <Route path="/instructors/:instructorUsername" exact component={InstructorsDetailPage} />
             </Switch>
             <Switch>
               <Route path="/courses" exact component={CoursesPage} />
