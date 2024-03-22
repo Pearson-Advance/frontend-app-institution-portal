@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Card, CardGrid, ToggleButton } from '@edx/paragon';
 import { ToggleButtonGroup } from 'react-paragon-topaz';
 import { fetchClassesMetricsData, fetchStudentsMetricsData } from 'features/Students/data/thunks';
-import { daysWeek } from 'features/constants';
 
 import 'features/Students/StudentsMetrics/index.scss';
 
@@ -12,25 +11,28 @@ const StudentsMetrics = () => {
   const institution = useSelector((state) => state.main.selectedInstitution);
   const studentsMetrics = useSelector((state) => state.students.studentsMetrics.data);
   const classesMetrics = useSelector((state) => state.students.classesMetrics.data);
+  const [periodDays, setPeriodDays] = useState(7);
+
+  const handleChangePeriodDays = (val) => setPeriodDays(val);
 
   useEffect(() => {
     if (Object.keys(institution).length > 0) {
-      dispatch(fetchStudentsMetricsData(institution.id, daysWeek));
-      dispatch(fetchClassesMetricsData(institution.id, daysWeek));
+      dispatch(fetchStudentsMetricsData(institution.id, periodDays));
+      dispatch(fetchClassesMetricsData(institution.id, periodDays));
     }
-  }, [institution, dispatch]);
+  }, [institution, dispatch, periodDays]);
 
   return (
     <div className="container-cards d-flex flex-column">
-      <ToggleButtonGroup type="radio" defaultValue={1} name="period">
-        <ToggleButton id="tbg-radio-1" value={1} variant="outline-primary">
+      <ToggleButtonGroup type="radio" defaultValue={7} name="period" onChange={handleChangePeriodDays}>
+        <ToggleButton id="tbg-radio-1" value={7} variant="outline-primary">
           This week
         </ToggleButton>
-        <ToggleButton id="tbg-radio-2" value={2} variant="outline-primary" disabled> {/* Temporarily disabled */}
-          Next week
+        <ToggleButton id="tbg-radio-2" value={30} variant="outline-primary">
+          Last month
         </ToggleButton>
-        <ToggleButton id="tbg-radio-3" value={3} variant="outline-primary" disabled> {/* Temporarily disabled */}
-          Next month
+        <ToggleButton id="tbg-radio-3" value={90} variant="outline-primary">
+          Last quarter
         </ToggleButton>
       </ToggleButtonGroup>
       <CardGrid
