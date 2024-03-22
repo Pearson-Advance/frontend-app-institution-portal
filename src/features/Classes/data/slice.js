@@ -12,6 +12,7 @@ const initialState = {
     count: 0,
   },
   filters: {},
+  selectOptions: [],
 };
 
 export const classesSlice = createSlice({
@@ -40,6 +41,9 @@ export const classesSlice = createSlice({
     updateFilters: (state, { payload }) => {
       state.filters = payload;
     },
+    updateClassesOptions: (state, { payload }) => {
+      state.selectOptions = payload;
+    },
   },
 });
 
@@ -50,6 +54,7 @@ export const {
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
   updateFilters,
+  updateClassesOptions
 } = classesSlice.actions;
 
 export const { reducer } = classesSlice;

@@ -11,12 +11,6 @@ const initialState = {
     numPages: 0,
     count: 0,
   },
-  courses: {
-    ...initialStateService,
-  },
-  classes: {
-    ...initialStateService,
-  },
   classesMetrics: {
     ...initialStateService,
   },
@@ -52,26 +46,6 @@ export const studentsSlice = createSlice({
     updateFilters: (state, { payload }) => {
       state.filters = payload;
     },
-    fetchCoursesDataRequest: (state) => {
-      state.courses.status = RequestStatus.LOADING;
-    },
-    fetchCoursesDataSuccess: (state, { payload }) => {
-      state.courses.status = RequestStatus.SUCCESS;
-      state.courses.data = payload;
-    },
-    fetchCoursesDataFailed: (state) => {
-      state.courses.status = RequestStatus.ERROR;
-    },
-    fetchClassesDataRequest: (state) => {
-      state.classes.status = RequestStatus.LOADING;
-    },
-    fetchClassesDataSuccess: (state, { payload }) => {
-      state.classes.status = RequestStatus.SUCCESS;
-      state.classes.data = payload;
-    },
-    fetchClassesDataFailed: (state) => {
-      state.classes.status = RequestStatus.ERROR;
-    },
     fetchClassesMetricsDataRequest: (state) => {
       state.classesMetrics.status = RequestStatus.LOADING;
     },
@@ -102,12 +76,6 @@ export const {
   fetchStudentsDataFailed,
   updateFilters,
   resetStudentsTable,
-  fetchCoursesDataRequest,
-  fetchCoursesDataSuccess,
-  fetchCoursesDataFailed,
-  fetchClassesDataRequest,
-  fetchClassesDataSuccess,
-  fetchClassesDataFailed,
   fetchClassesMetricsDataRequest,
   fetchClassesMetricsDataSuccess,
   fetchClassesMetricsDataFailed,
