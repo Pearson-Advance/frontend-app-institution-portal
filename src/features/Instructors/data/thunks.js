@@ -1,14 +1,11 @@
 import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
 import { handleInstructorsEnrollment, handleNewInstructor } from 'features/Instructors/data/api';
-import { getCoursesByInstitution, getInstructorByInstitution } from 'features/Common/data/api';
+import { getInstructorByInstitution } from 'features/Common/data/api';
 import {
   fetchInstructorsDataRequest,
   fetchInstructorsDataSuccess,
   fetchInstructorsDataFailed,
-  fetchCoursesDataRequest,
-  fetchCoursesDataSuccess,
-  fetchCoursesDataFailed,
   assignInstructorsRequest,
   assignInstructorsSuccess,
   assignInstructorsFailed,
@@ -40,19 +37,6 @@ function fetchInstructorsOptionsData(id, currentPage, filtersData) {
       dispatch(updateInstructorOptions(response.data));
     } catch (error) {
       dispatch(fetchInstructorsDataFailed());
-      logError(error);
-    }
-  };
-}
-
-function fetchCoursesData(id) {
-  return async (dispatch) => {
-    try {
-      dispatch(fetchCoursesDataRequest());
-      const response = camelCaseObject(await getCoursesByInstitution(id, false));
-      dispatch(fetchCoursesDataSuccess(response.data));
-    } catch (error) {
-      dispatch(fetchCoursesDataFailed());
       logError(error);
     }
   };
@@ -99,7 +83,6 @@ function addInstructor(institutionId, instructorEmail) {
 
 export {
   fetchInstructorsData,
-  fetchCoursesData,
   assignInstructors,
   addInstructor,
   fetchInstructorsOptionsData,

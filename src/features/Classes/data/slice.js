@@ -54,7 +54,7 @@ export const {
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
   updateFilters,
-  updateClassesOptions
+  updateClassesOptions,
 } = classesSlice.actions;
 
 export const { reducer } = classesSlice;

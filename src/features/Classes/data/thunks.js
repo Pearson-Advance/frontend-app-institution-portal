@@ -4,7 +4,7 @@ import {
   fetchClassesDataRequest,
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
-  updateClassesOptions
+  updateClassesOptions,
 } from 'features/Classes/data/slice';
 import { getClassesByInstitution } from 'features/Common/data/api';
 
