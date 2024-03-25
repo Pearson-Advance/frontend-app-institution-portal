@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Container, Pagination, useToggle } from '@edx/paragon';
 import CourseDetailTable from 'features/Courses/CourseDetailTable';
 import { Button } from 'react-paragon-topaz';
+import { getConfig } from '@edx/frontend-platform';
 import AddClass from 'features/Courses/AddClass';
 
 import { fetchClassesData } from 'features/Classes/data/thunks';
@@ -27,6 +28,7 @@ const CoursesDetailPage = () => {
   const defaultCourseInfo = {
     numberOfStudents: '-',
     numberOfPendingStudents: '-',
+    masterCourseId: '-',
   };
 
   const courseInfo = useSelector((state) => state.courses.table.data)
@@ -34,6 +36,7 @@ const CoursesDetailPage = () => {
   const institution = useSelector((state) => state.main.selectedInstitution);
   const classes = useSelector((state) => state.classes.table);
   const totalStudents = courseInfo.numberOfStudents + courseInfo.numberOfPendingStudents;
+  const courseDetailsLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${courseInfo.masterCourseId}`;
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -99,6 +102,16 @@ const CoursesDetailPage = () => {
         </div>
       </div>
       <div className="d-flex justify-content-end align-items-center my-3">
+        <Button
+          as="a"
+          href={courseDetailsLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-decoration-none button-course-details mr-3"
+        >
+          <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />
+          Course details
+        </Button>
         <Button onClick={openModal}>
           Add Class
         </Button>
