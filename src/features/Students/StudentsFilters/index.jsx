@@ -24,6 +24,8 @@ const StudentsFilters = ({ resetPagination }) => {
   const [examSelected, setExamSelected] = useState(null);
   const [inputFieldDisplay, setInputFieldDisplay] = useState('name');
 
+  const isButtonDisabled = studentName === '' && studentEmail === '' && courseSelected === null && examSelected === null;
+
   const resetFields = () => {
     setStudentName('');
     setStudentEmail('');
@@ -68,6 +70,7 @@ const StudentsFilters = ({ resetPagination }) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
+    formData.delete('inputField');
     const formJson = Object.fromEntries(formData.entries());
     dispatch(updateFilters(formJson));
     try {
@@ -110,29 +113,29 @@ const StudentsFilters = ({ resetPagination }) => {
             </Form.Row>
             <Form.Row className="col-12">
               {inputFieldDisplay === 'name' && (
-              <Form.Group as={Col}>
-                <Form.Control
-                  type="text"
-                  floatingLabel="Student Name"
-                  name="learner_name"
-                  placeholder="Enter Student Name"
-                  data-testid="learnerName"
-                  onChange={(e) => setStudentName(e.target.value)}
-                  value={studentName}
-                />
-              </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.Control
+                    type="text"
+                    floatingLabel="Student Name"
+                    name="learner_name"
+                    placeholder="Enter Student Name"
+                    data-testid="learnerName"
+                    onChange={(e) => setStudentName(e.target.value)}
+                    value={studentName}
+                  />
+                </Form.Group>
               )}
               {inputFieldDisplay === 'email' && (
-              <Form.Group as={Col}>
-                <Form.Control
-                  type="email"
-                  floatingLabel="Student Email"
-                  name="learner_email"
-                  placeholder="Enter Student Email"
-                  onChange={(e) => setStudentEmail(e.target.value)}
-                  value={studentEmail}
-                />
-              </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.Control
+                    type="email"
+                    floatingLabel="Student Email"
+                    name="learner_email"
+                    placeholder="Enter Student Email"
+                    onChange={(e) => setStudentEmail(e.target.value)}
+                    value={studentEmail}
+                  />
+                </Form.Group>
               )}
             </Form.Row>
             <Form.Row className="col-12">
@@ -172,8 +175,16 @@ const StudentsFilters = ({ resetPagination }) => {
               </Form.Group>
             </Form.Row>
             <div className="d-flex col-12 justify-content-end mr-3">
-              <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
-              <Button type="submit">Apply</Button>
+              <Button
+                onClick={handleCleanFilters}
+                variant="tertiary"
+                text
+                className="mr-2"
+                disabled={isButtonDisabled}
+              >
+                Reset
+              </Button>
+              <Button type="submit" disabled={isButtonDisabled}>Apply</Button>
             </div>
           </Form>
         </div>

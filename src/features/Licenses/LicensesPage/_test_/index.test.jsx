@@ -30,6 +30,20 @@ const mockStore = {
       num_pages: 1,
       current_page: 1,
     },
+    selectOptions: [
+      {
+        licenseName: 'License Name 1',
+        purchasedSeats: 20,
+        numberOfStudents: 6,
+        numberOfPendingStudents: 11,
+      },
+      {
+        licenseName: 'License Name 2',
+        purchasedSeats: 10,
+        numberOfStudents: 1,
+        numberOfPendingStudents: 5,
+      },
+    ],
   },
 };
 

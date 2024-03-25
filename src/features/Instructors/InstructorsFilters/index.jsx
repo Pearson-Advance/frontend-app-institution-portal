@@ -19,13 +19,14 @@ import { initialPage } from 'features/constants';
 const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const courses = useSelector((state) => state.courses.selectOptions);
-  const currentPage = useSelector((state) => state.instructors.table.currentPage);
   const dispatch = useDispatch();
   const [courseOptions, setCourseOptions] = useState([]);
   const [instructorName, setInstructorName] = useState('');
   const [instructorEmail, setInstructorEmail] = useState('');
   const [courseSelected, setCourseSelected] = useState(null);
   const [inputFieldDisplay, setInputFieldDisplay] = useState('name');
+
+  const isButtonDisabled = instructorEmail === '' && instructorName === '' && courseSelected === null;
 
   const resetFields = () => {
     setInstructorName('');
@@ -34,7 +35,7 @@ const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
   };
 
   const handleCleanFilters = () => {
-    dispatch(fetchInstructorsData(selectedInstitution?.id, currentPage));
+    dispatch(fetchInstructorsData(selectedInstitution?.id));
     resetPagination();
     dispatch(updateFilters({}));
     resetFields();
@@ -44,6 +45,7 @@ const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
+    formData.delete('inputField');
     const formJson = Object.fromEntries(formData.entries());
     dispatch(updateFilters(formJson));
     try {
@@ -135,8 +137,22 @@ const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
                 </Form.Row>
               )}
               <div className="d-flex col-4 justify-content-end mr-3">
-                <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
-                <Button variant={`${isAssignModal ? 'outline-primary' : 'primary'}`} type="submit">Apply</Button>
+                <Button
+                  onClick={handleCleanFilters}
+                  variant="tertiary"
+                  text
+                  className="mr-2"
+                  disabled={isButtonDisabled}
+                >
+                  Reset
+                </Button>
+                <Button
+                  variant={`${isAssignModal ? 'outline-primary' : 'primary'}`}
+                  type="submit"
+                  disabled={isButtonDisabled}
+                >
+                  Apply
+                </Button>
               </div>
             </div>
           </Form>

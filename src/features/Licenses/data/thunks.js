@@ -6,6 +6,7 @@ import {
   fetchLicensesDataRequest,
   fetchLicensesDataSuccess,
   fetchLicensesDataFailed,
+  updateLicensesOptions,
 } from 'features/Licenses/data/slice';
 
 function fetchLicensesData(id, currentPage, urlParamsFilters) {
@@ -21,6 +22,20 @@ function fetchLicensesData(id, currentPage, urlParamsFilters) {
   };
 }
 
+function fetchLicensesOptionsData(id) {
+  return async (dispatch) => {
+    dispatch(fetchLicensesDataRequest());
+    try {
+      const response = camelCaseObject(await getLicensesByInstitution(id, false));
+      dispatch(updateLicensesOptions(response.data));
+    } catch (error) {
+      dispatch(fetchLicensesDataFailed());
+      logError(error);
+    }
+  };
+}
+
 export {
   fetchLicensesData,
+  fetchLicensesOptionsData,
 };

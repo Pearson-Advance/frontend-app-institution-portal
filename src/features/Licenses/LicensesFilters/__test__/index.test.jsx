@@ -50,6 +50,9 @@ const mockStore = {
         courseOption,
       ],
     },
+    selectOptions: [
+      courseOption,
+    ],
     filters: {},
   },
   licenses: {
@@ -59,6 +62,9 @@ const mockStore = {
         licenseOption,
       ],
     },
+    selectOptions: [
+      licenseOption,
+    ],
     filters: {},
   },
   main: {

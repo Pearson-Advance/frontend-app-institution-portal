@@ -1,2 +1,2 @@
 export { reducer } from 'features/Licenses/data/slice';
-export { fetchLicensesData } from 'features/Licenses/data/thunks';
+export { fetchLicensesData, fetchLicensesOptionsData } from 'features/Licenses/data/thunks';

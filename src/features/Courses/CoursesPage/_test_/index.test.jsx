@@ -33,6 +33,22 @@ const mockStore = {
       num_pages: 1,
       current_page: 1,
     },
+    selectOptions: [
+      {
+        masterCourseName: 'Demo Course 1',
+        numberOfClasses: 1,
+        missingClassesForInstructor: null,
+        numberOfStudents: 1,
+        numberOfPendingStudents: 1,
+      },
+      {
+        masterCourseName: 'Demo Course 2',
+        numberOfClasses: 1,
+        missingClassesForInstructor: 1,
+        numberOfStudents: 16,
+        numberOfPendingStudents: 0,
+      },
+    ],
   },
 };
 

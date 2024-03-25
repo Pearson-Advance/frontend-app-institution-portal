@@ -12,6 +12,7 @@ const initialState = {
     count: 0,
   },
   filters: {},
+  selectOptions: [],
 };
 
 export const licensesSlice = createSlice({
@@ -37,6 +38,9 @@ export const licensesSlice = createSlice({
     updateFilters: (state, { payload }) => {
       state.filters = payload;
     },
+    updateLicensesOptions: (state, { payload }) => {
+      state.selectOptions = payload;
+    },
   },
 });
 
@@ -46,6 +50,7 @@ export const {
   fetchLicensesDataRequest,
   fetchLicensesDataSuccess,
   fetchLicensesDataFailed,
+  updateLicensesOptions,
 } = licensesSlice.actions;
 
 export const { reducer } = licensesSlice;
