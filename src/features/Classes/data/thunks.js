@@ -5,8 +5,11 @@ import {
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
   updateClassesOptions,
+  updateAllClasses,
 } from 'features/Classes/data/slice';
+
 import { getClassesByInstitution } from 'features/Common/data/api';
+import { initialPage } from 'features/constants';
 
 function fetchClassesData(id, currentPage, courseName = '', urlParamsFilters = '', limit = true) {
   return async (dispatch) => {
@@ -38,7 +41,24 @@ function fetchClassesOptionsData(id, courseName) {
   };
 }
 
+function fetchAllClassesData(id, courseName = '', urlParamsFilters = '', limit = false) {
+  return async (dispatch) => {
+    dispatch(fetchClassesDataRequest);
+
+    try {
+      const response = camelCaseObject(
+        await getClassesByInstitution(id, courseName, limit, initialPage, urlParamsFilters),
+      );
+      dispatch(updateAllClasses(response.data));
+    } catch (error) {
+      dispatch(fetchClassesDataFailed());
+      logError(error);
+    }
+  };
+}
+
 export {
   fetchClassesData,
   fetchClassesOptionsData,
+  fetchAllClassesData,
 };

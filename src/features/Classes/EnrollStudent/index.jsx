@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -14,9 +14,9 @@ import {
 import { Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 
-import { fetchClassesData } from 'features/Classes/data/thunks';
 import { fetchStudentsData } from 'features/Students/data';
 import { handleEnrollments } from 'features/Students/data/api';
+import { fetchAllClassesData } from 'features/Classes/data/thunks';
 import { initialPage } from 'features/constants';
 
 import 'features/Classes/EnrollStudent/index.scss';
@@ -54,6 +54,9 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
       };
 
       dispatch(fetchStudentsData(institution.id, initialPage, params));
+
+      // Get the classes info updated with the new number of students enrolled.
+      dispatch(fetchAllClassesData(institution.id, courseId));
       setShowToast(true);
       onClose();
     } catch (error) {
@@ -62,12 +65,6 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (institution.id) {
-      dispatch(fetchClassesData(institution.id, initialPage, courseId));
-    }
-  }, [dispatch, courseId, institution.id]);
 
   return (
     <>

@@ -1,5 +1,5 @@
-@import "assets/variables.scss";
-@import "assets/colors.scss";
+@import 'assets/variables.scss';
+@import 'assets/colors.scss';
 
 .course-title {
   max-width: 700px;
@@ -55,6 +55,11 @@
     color: $color-white;
     background: $primary;
   }
+}
+
+.btntpz.button-view-class.btn.btn-primary {
+  height: 48px;
+  width: fit-content;
 }
 
 @media screen and (max-width: 576px) {

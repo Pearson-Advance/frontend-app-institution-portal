@@ -2,18 +2,22 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Link, useParams, useHistory, useLocation,
 } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-paragon-topaz';
+import { getConfig } from '@edx/frontend-platform';
 import { Container, Pagination } from '@edx/paragon';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Table from 'features/Main/Table';
 import EnrollStudent from 'features/Classes/EnrollStudent';
+import InstructorCard from 'features/Classes/InstructorCard';
 
 import { columns } from 'features/Classes/Class/ClassPage/columns';
 import { resetStudentsTable, updateCurrentPage } from 'features/Students/data/slice';
 import { fetchStudentsData } from 'features/Students/data';
 
 import { initialPage } from 'features/constants';
+import { resetClassesTable, resetClasses } from 'features/Classes/data/slice';
+import { fetchAllClassesData } from 'features/Classes/data/thunks';
 
 const ClassPage = () => {
   const history = useHistory();
@@ -29,6 +33,7 @@ const ClassPage = () => {
 
   const queryParams = new URLSearchParams(location.search);
   const queryClassId = queryParams.get('classId')?.replaceAll(' ', '+');
+  const classLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${queryClassId}/home`;
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -65,6 +70,17 @@ const ClassPage = () => {
   }, [dispatch, institution.id, courseId, classId, currentPage]);
 
   useEffect(() => {
+    if (institution.id) {
+      dispatch(fetchAllClassesData(institution.id, courseId));
+    }
+
+    return () => {
+      dispatch(resetClassesTable());
+      dispatch(resetClasses());
+    };
+  }, [dispatch, institution.id, courseId]);
+
+  useEffect(() => {
     if (institution.id !== undefined && institutionRef.current === undefined) {
       institutionRef.current = institution.id;
     }
@@ -84,9 +100,19 @@ const ClassPage = () => {
           </Link>
           <h3 className="h2 mb-0 course-title">Class details: {classId}</h3>
         </div>
+        <Button
+          as="a"
+          href={classLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-decoration-none text-white button-view-class"
+        >
+          <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />View class
+        </Button>
       </div>
 
       <div className="d-flex flex-column">
+        <InstructorCard />
         <div className="d-flex justify-content-end mb-3">
           <Button className="button-assign mb-2" onClick={handleEnrollStudentModal}>
             Invite student to enroll
@@ -94,15 +120,15 @@ const ClassPage = () => {
         </div>
         <Table columns={columns} count={students.count} data={students.data} text="No students were found for this class." />
         {students.numPages > 1 && (
-        <Pagination
-          paginationLabel="paginationNavigation"
-          pageCount={students.numPages}
-          currentPage={currentPage}
-          onPageSelect={handlePagination}
-          variant="reduced"
-          className="mx-auto pagination-table"
-          size="small"
-        />
+          <Pagination
+            paginationLabel="paginationNavigation"
+            pageCount={students.numPages}
+            currentPage={currentPage}
+            onPageSelect={handlePagination}
+            variant="reduced"
+            className="mx-auto pagination-table"
+            size="small"
+          />
         )}
       </div>
     </Container>
