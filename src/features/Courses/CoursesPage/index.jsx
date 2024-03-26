@@ -18,9 +18,15 @@ const CoursesPage = () => {
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
+      dispatch(fetchCoursesData(selectedInstitution.id, initialPage));
+    }
+  }, [selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (Object.keys(selectedInstitution).length > 0) {
       dispatch(fetchCoursesData(selectedInstitution.id, currentPage, stateCourses.filters));
     }
-  }, [currentPage, selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);

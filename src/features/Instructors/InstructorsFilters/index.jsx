@@ -2,21 +2,23 @@ import React, {
   useState, useEffect,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import {
   Form, Col,
 } from '@edx/paragon';
 import { Select, Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 
-import { fetchInstructorsData, fetchCoursesData } from 'features/Instructors/data/thunks';
+import { fetchInstructorsData } from 'features/Instructors/data/thunks';
 import { updateFilters, updateCurrentPage } from 'features/Instructors/data/slice';
-import PropTypes from 'prop-types';
+import { fetchCoursesOptionsData } from 'features/Courses/data/thunks';
+
 import { initialPage } from 'features/constants';
 
 const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
-  const stateInstructors = useSelector((state) => state.instructors.courses);
-  const currentPage = useSelector((state) => state.instructors.table.currentPage);
+  const courses = useSelector((state) => state.courses.selectOptions);
   const dispatch = useDispatch();
   const [courseOptions, setCourseOptions] = useState([]);
   const [instructorName, setInstructorName] = useState('');
@@ -24,19 +26,26 @@ const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
   const [courseSelected, setCourseSelected] = useState(null);
   const [inputFieldDisplay, setInputFieldDisplay] = useState('name');
 
-  const handleCleanFilters = () => {
-    dispatch(fetchInstructorsData(selectedInstitution?.id, currentPage));
-    resetPagination();
+  const isButtonDisabled = instructorEmail === '' && instructorName === '' && courseSelected === null;
+
+  const resetFields = () => {
     setInstructorName('');
     setInstructorEmail('');
     setCourseSelected(null);
+  };
+
+  const handleCleanFilters = () => {
+    dispatch(fetchInstructorsData(selectedInstitution?.id));
+    resetPagination();
     dispatch(updateFilters({}));
+    resetFields();
   };
 
   const handleInstructorsFilter = async (e) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
+    formData.delete('inputField');
     const formJson = Object.fromEntries(formData.entries());
     dispatch(updateFilters(formJson));
     try {
@@ -49,20 +58,22 @@ const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0 && !isAssignModal) {
-      dispatch(fetchCoursesData(selectedInstitution.id));
+      resetFields();
+      dispatch(fetchCoursesOptionsData(selectedInstitution.id));
     }
   }, [selectedInstitution, dispatch, isAssignModal]);
 
   useEffect(() => {
-    if (stateInstructors.data.length > 0) {
-      const options = stateInstructors.data.map(course => ({
+    const options = courses.length > 0
+      ? courses.map(course => ({
         ...course,
         label: course.masterCourseName,
         value: course.masterCourseName,
-      }));
-      setCourseOptions(options);
-    }
-  }, [stateInstructors]);
+      }))
+      : [];
+
+    setCourseOptions(options);
+  }, [courses]);
 
   return (
     <div className="filter-container justify-content-center row">
@@ -126,8 +137,22 @@ const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
                 </Form.Row>
               )}
               <div className="d-flex col-4 justify-content-end mr-3">
-                <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
-                <Button variant={`${isAssignModal ? 'outline-primary' : 'primary'}`} type="submit">Apply</Button>
+                <Button
+                  onClick={handleCleanFilters}
+                  variant="tertiary"
+                  text
+                  className="mr-2"
+                  disabled={isButtonDisabled}
+                >
+                  Reset
+                </Button>
+                <Button
+                  variant={`${isAssignModal ? 'outline-primary' : 'primary'}`}
+                  type="submit"
+                  disabled={isButtonDisabled}
+                >
+                  Apply
+                </Button>
               </div>
             </div>
           </Form>

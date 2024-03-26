@@ -7,16 +7,15 @@ import { Select, Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 
 import { initialPage } from 'features/constants';
-import { fetchCoursesData } from 'features/Courses/data/thunks';
+import { fetchCoursesOptionsData } from 'features/Courses/data/thunks';
 import { updateFilters, updateCurrentPage } from 'features/Licenses/data/slice';
-
-import { fetchLicensesData } from 'features/Licenses/data';
+import { fetchLicensesData, fetchLicensesOptionsData } from 'features/Licenses/data';
 
 const LicensesFilters = ({ resetPagination }) => {
   const dispatch = useDispatch();
   const institution = useSelector((state) => state.main.selectedInstitution);
-  const courses = useSelector((state) => state.courses.table.data);
-  const licenses = useSelector((state) => state.licenses.table.data);
+  const courses = useSelector((state) => state.courses.selectOptions);
+  const licensesSelect = useSelector((state) => state.licenses.selectOptions);
 
   const [courseOptions, setCourseOptions] = useState([]);
   const [licenseOptions, setLicenseOptions] = useState([]);
@@ -64,8 +63,8 @@ const LicensesFilters = ({ resetPagination }) => {
         value: course.masterCourseName,
       })) : [];
 
-    const parseLicensesToOptions = licenses.length > 0
-      ? licenses.map(license => ({
+    const parseLicensesToOptions = licensesSelect.length > 0
+      ? licensesSelect.map(license => ({
         ...license,
         label: license.licenseName,
         value: license.licenseName,
@@ -74,12 +73,15 @@ const LicensesFilters = ({ resetPagination }) => {
 
     setCourseOptions(parseCoursesToOptions);
     setLicenseOptions(parseLicensesToOptions);
-  }, [licenses, courses]);
+  }, [licensesSelect, courses]);
 
   useEffect(() => {
-    setLicenseSelected(null);
-    setCourseSelected(null);
-    dispatch(fetchCoursesData(institution.id, initialPage));
+    if (Object.keys(institution).length > 0) {
+      setLicenseSelected(null);
+      setCourseSelected(null);
+      dispatch(fetchCoursesOptionsData(institution.id));
+      dispatch(fetchLicensesOptionsData(institution.id));
+    }
   }, [institution, dispatch]);
 
   return (

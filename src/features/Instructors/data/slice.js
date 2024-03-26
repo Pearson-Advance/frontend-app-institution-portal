@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-import { RequestStatus, initialStateService } from 'features/constants';
+import { RequestStatus } from 'features/constants';
 
 const initialState = {
   table: {
@@ -10,9 +10,6 @@ const initialState = {
     error: null,
     numPages: 0,
     count: 0,
-  },
-  courses: {
-    ...initialStateService,
   },
   filters: {
   },
@@ -50,16 +47,6 @@ export const instructorsSlice = createSlice({
     },
     fetchInstructorsDataFailed: (state) => {
       state.table.status = RequestStatus.ERROR;
-    },
-    fetchCoursesDataRequest: (state) => {
-      state.courses.status = RequestStatus.LOADING;
-    },
-    fetchCoursesDataSuccess: (state, { payload }) => {
-      state.courses.status = RequestStatus.SUCCESS;
-      state.courses.data = payload;
-    },
-    fetchCoursesDataFailed: (state) => {
-      state.courses.status = RequestStatus.ERROR;
     },
     updateFilters: (state, { payload }) => {
       state.filters = payload;
@@ -107,9 +94,6 @@ export const {
   fetchInstructorsDataRequest,
   fetchInstructorsDataSuccess,
   fetchInstructorsDataFailed,
-  fetchCoursesDataRequest,
-  fetchCoursesDataSuccess,
-  fetchCoursesDataFailed,
   updateFilters,
   updateClassSelected,
   assignInstructorsRequest,

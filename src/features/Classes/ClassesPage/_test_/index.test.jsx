@@ -7,6 +7,10 @@ import { MemoryRouter, Route } from 'react-router-dom';
 import ClassesPage from 'features/Classes/ClassesPage';
 import { columns } from 'features/Classes/ClassesTable/columns';
 
+jest.mock('@edx/frontend-platform/logging', () => ({
+  logError: jest.fn(),
+}));
+
 const mockStore = {
   classes: {
     table: {

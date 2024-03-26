@@ -4,12 +4,6 @@ import {
   fetchStudentsDataRequest,
   fetchStudentsDataSuccess,
   fetchStudentsDataFailed,
-  fetchCoursesDataRequest,
-  fetchCoursesDataSuccess,
-  fetchCoursesDataFailed,
-  fetchClassesDataRequest,
-  fetchClassesDataSuccess,
-  fetchClassesDataFailed,
   fetchClassesMetricsDataRequest,
   fetchClassesMetricsDataSuccess,
   fetchClassesMetricsDataFailed,
@@ -22,7 +16,6 @@ import {
   getStudentsMetrics,
   getStudentbyInstitutionAdmin,
 } from 'features/Students/data/api';
-import { getCoursesByInstitution, getClassesByInstitution } from 'features/Common/data/api';
 
 function fetchStudentsData(id, currentPage, filtersData) {
   return async (dispatch) => {
@@ -33,34 +26,6 @@ function fetchStudentsData(id, currentPage, filtersData) {
       dispatch(fetchStudentsDataSuccess(response.data));
     } catch (error) {
       dispatch(fetchStudentsDataFailed());
-      logError(error);
-    }
-  };
-}
-
-function fetchCoursesData(id) {
-  return async (dispatch) => {
-    dispatch(fetchCoursesDataRequest());
-
-    try {
-      const response = camelCaseObject(await getCoursesByInstitution(id, false));
-      dispatch(fetchCoursesDataSuccess(response.data));
-    } catch (error) {
-      dispatch(fetchCoursesDataFailed());
-      logError(error);
-    }
-  };
-}
-
-function fetchClassesData(id, courseName) {
-  return async (dispatch) => {
-    dispatch(fetchClassesDataRequest());
-
-    try {
-      const response = camelCaseObject(await getClassesByInstitution(id, courseName, false));
-      dispatch(fetchClassesDataSuccess(response.data));
-    } catch (error) {
-      dispatch(fetchClassesDataFailed());
       logError(error);
     }
   };
@@ -96,8 +61,6 @@ function fetchStudentsMetricsData(institutionId, days) {
 
 export {
   fetchStudentsData,
-  fetchCoursesData,
-  fetchClassesData,
   fetchClassesMetricsData,
   fetchStudentsMetricsData,
 };

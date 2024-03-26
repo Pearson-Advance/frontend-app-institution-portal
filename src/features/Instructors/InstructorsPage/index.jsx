@@ -21,9 +21,13 @@ const InstructorsPage = () => {
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      dispatch(fetchInstructorsData(selectedInstitution.id, currentPage, stateInstructors.filters));
+      dispatch(fetchInstructorsData(selectedInstitution.id, initialPage));
     }
-  }, [currentPage, selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    dispatch(fetchInstructorsData(selectedInstitution.id, currentPage, stateInstructors.filters));
+  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -63,7 +67,6 @@ const InstructorsPage = () => {
             size="small"
           />
         )}
-
       </div>
     </Container>
   );

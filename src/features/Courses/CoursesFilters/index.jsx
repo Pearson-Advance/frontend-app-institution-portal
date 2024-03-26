@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { Col, Form } from '@edx/paragon';
 import { Select, Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
-import PropTypes from 'prop-types';
 
 import { updateFilters, updateCurrentPage } from 'features/Courses/data/slice';
-import { fetchCoursesData } from 'features/Courses/data/thunks';
+import { fetchCoursesData, fetchCoursesOptionsData } from 'features/Courses/data/thunks';
+
 import { initialPage } from 'features/constants';
 
 const CoursesFilters = ({ resetPagination }) => {
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
-  const stateCourses = useSelector((state) => state.courses.table.data);
+  const courses = useSelector((state) => state.courses.selectOptions);
   const [courseOptions, setCourseOptions] = useState([]);
   const [courseSelected, setCourseSelected] = useState(null);
+
+  const isButtonDisabled = courseSelected === null;
 
   const handleCoursesFilter = async (e) => {
     e.preventDefault();
@@ -39,15 +42,23 @@ const CoursesFilters = ({ resetPagination }) => {
   };
 
   useEffect(() => {
-    if (stateCourses.length > 0) {
-      const options = stateCourses.map(course => ({
+    if (Object.keys(selectedInstitution).length > 0) {
+      setCourseSelected(null);
+      dispatch(fetchCoursesOptionsData(selectedInstitution.id));
+    }
+  }, [selectedInstitution, dispatch]);
+
+  useEffect(() => {
+    const options = courses.length > 0
+      ? courses.map(course => ({
         ...course,
         label: course.masterCourseName,
         value: course.masterCourseName,
-      }));
-      setCourseOptions(options);
-    }
-  }, [stateCourses]);
+      }))
+      : [];
+
+    setCourseOptions(options);
+  }, [courses]);
 
   return (
     <div className="filter-container justify-content-center row">
@@ -66,8 +77,16 @@ const CoursesFilters = ({ resetPagination }) => {
               />
             </Form.Group>
             <div className="d-flex col-3 justify-content-end align-items-start">
-              <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
-              <Button type="submit">Apply</Button>
+              <Button
+                onClick={handleCleanFilters}
+                variant="tertiary"
+                text
+                className="mr-2"
+                disabled={isButtonDisabled}
+              >
+                Reset
+              </Button>
+              <Button type="submit" disabled={isButtonDisabled}>Apply</Button>
             </div>
           </Form.Row>
         </Form>

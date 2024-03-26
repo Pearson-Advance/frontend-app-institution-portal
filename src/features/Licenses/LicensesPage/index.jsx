@@ -12,7 +12,7 @@ import LicensesFilters from 'features/Licenses/LicensesFilters';
 const LicensesPage = () => {
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
-  const stateLicenses = useSelector((state) => state.licenses.table);
+  const stateLicenses = useSelector((state) => state.licenses);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -25,9 +25,13 @@ const LicensesPage = () => {
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      dispatch(fetchLicensesData(selectedInstitution?.id, currentPage));
+      dispatch(fetchLicensesData(selectedInstitution?.id, initialPage));
     }
-  }, [currentPage, selectedInstitution, dispatch]);
+  }, [selectedInstitution, dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchLicensesData(selectedInstitution?.id, currentPage, stateLicenses.filters));
+  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container size="xl" className="px-4">
@@ -35,13 +39,13 @@ const LicensesPage = () => {
       <div className="page-content-container">
         <LicensesFilters resetPagination={resetPagination} />
         <LicensesTable
-          data={stateLicenses.data}
-          count={stateLicenses.count}
+          data={stateLicenses.table.data}
+          count={stateLicenses.table.count}
         />
-        {stateLicenses.numPages > 1 && (
+        {stateLicenses.table.numPages > 1 && (
           <Pagination
             paginationLabel="paginationNavigation"
-            pageCount={stateLicenses.numPages}
+            pageCount={stateLicenses.table.numPages}
             currentPage={currentPage}
             onPageSelect={handlePagination}
             variant="reduced"

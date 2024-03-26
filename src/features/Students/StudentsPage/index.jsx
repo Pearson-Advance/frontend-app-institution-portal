@@ -17,9 +17,13 @@ const StudentsPage = () => {
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      dispatch(fetchStudentsData(selectedInstitution.id, currentPage, stateStudents.filters));
+      dispatch(fetchStudentsData(selectedInstitution.id, initialPage));
     }
-  }, [currentPage, selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    dispatch(fetchStudentsData(selectedInstitution.id, currentPage, stateStudents.filters));
+  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const resetPagination = () => {
     setCurrentPage(initialPage);

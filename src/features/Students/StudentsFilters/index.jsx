@@ -5,14 +5,16 @@ import { logError } from '@edx/frontend-platform/logging';
 import { Select, Button } from 'react-paragon-topaz';
 import PropTypes from 'prop-types';
 import { updateCurrentPage, updateFilters } from 'features/Students/data/slice';
-import { fetchCoursesData, fetchClassesData, fetchStudentsData } from 'features/Students/data/thunks';
+import { fetchStudentsData } from 'features/Students/data/thunks';
+import { fetchCoursesOptionsData } from 'features/Courses/data/thunks';
+import { fetchClassesOptionsData } from 'features/Classes/data/thunks';
 import { initialPage } from 'features/constants';
 
 const StudentsFilters = ({ resetPagination }) => {
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
-  const stateCourses = useSelector((state) => state.students.courses);
-  const stateClasses = useSelector((state) => state.students.classes);
+  const courses = useSelector((state) => state.courses.selectOptions);
+  const classes = useSelector((state) => state.classes.selectOptions);
   const [courseOptions, setCourseOptions] = useState([]);
   const [classesOptions, setClassesOptions] = useState([]);
   const [studentName, setStudentName] = useState('');
@@ -22,44 +24,53 @@ const StudentsFilters = ({ resetPagination }) => {
   const [examSelected, setExamSelected] = useState(null);
   const [inputFieldDisplay, setInputFieldDisplay] = useState('name');
 
-  const handleCleanFilters = () => {
-    dispatch(fetchStudentsData(selectedInstitution.id));
-    resetPagination();
+  const isButtonDisabled = studentName === '' && studentEmail === '' && courseSelected === null && examSelected === null;
+
+  const resetFields = () => {
     setStudentName('');
     setStudentEmail('');
     setCourseSelected(null);
     setClassSelected(null);
     setExamSelected(null);
+  };
+
+  const handleCleanFilters = () => {
+    dispatch(fetchStudentsData(selectedInstitution.id));
+    resetPagination();
     dispatch(updateFilters({}));
+    resetFields();
   };
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      dispatch(fetchCoursesData(selectedInstitution.id));
+      resetFields();
+      dispatch(fetchCoursesOptionsData(selectedInstitution.id));
     }
   }, [selectedInstitution, dispatch]);
 
   useEffect(() => {
     if (courseSelected) {
-      dispatch(fetchClassesData(selectedInstitution.id, courseSelected.value));
+      dispatch(fetchClassesOptionsData(selectedInstitution.id, courseSelected.value));
     }
   }, [selectedInstitution, courseSelected, dispatch]);
 
   useEffect(() => {
-    if (stateCourses.data.length > 0) {
-      const options = stateCourses.data.map(course => ({
+    const options = courses.length > 0
+      ? courses.map(course => ({
         ...course,
         label: course.masterCourseName,
         value: course.masterCourseName,
-      }));
-      setCourseOptions(options);
-    }
-  }, [stateCourses]);
+      }))
+      : [];
+
+    setCourseOptions(options);
+  }, [courses]);
 
   const handleStudentsFilter = async (e) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
+    formData.delete('inputField');
     const formJson = Object.fromEntries(formData.entries());
     dispatch(updateFilters(formJson));
     try {
@@ -71,15 +82,15 @@ const StudentsFilters = ({ resetPagination }) => {
   };
 
   useEffect(() => {
-    if (stateClasses.data.length > 0) {
-      const options = stateClasses.data.map(ccx => ({
+    const options = classes.length > 0
+      ? classes.map(ccx => ({
         ...ccx,
         label: ccx.className,
         value: ccx.className,
-      }));
-      setClassesOptions(options);
-    }
-  }, [stateClasses]);
+      }))
+      : [];
+    setClassesOptions(options);
+  }, [classes]);
 
   return (
     <div className="filter-container justify-content-center row">
@@ -164,8 +175,16 @@ const StudentsFilters = ({ resetPagination }) => {
               </Form.Group>
             </Form.Row>
             <div className="d-flex col-12 justify-content-end mr-3">
-              <Button onClick={handleCleanFilters} variant="tertiary" text className="mr-2">Reset</Button>
-              <Button type="submit">Apply</Button>
+              <Button
+                onClick={handleCleanFilters}
+                variant="tertiary"
+                text
+                className="mr-2"
+                disabled={isButtonDisabled}
+              >
+                Reset
+              </Button>
+              <Button type="submit" disabled={isButtonDisabled}>Apply</Button>
             </div>
           </Form>
         </div>
