@@ -98,8 +98,14 @@ const LicensesDetailPage = () => {
       </div>
       <div className="license-page-content-container">
         <div className="flex-end">
-          <Button type="button">
-            <a className="btn-license" href={licenseBuyLink} target="_blank" rel="noreferrer">Buy a license</a>
+          <Button
+            as="a"
+            href={licenseBuyLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-decoration-none text-white"
+          >
+            Buy a license
           </Button>
         </div>
         <Table columns={columns} data={coursesTable.data} count={coursesTable.count} text="No courses found." />
