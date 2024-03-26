@@ -36,7 +36,7 @@ const CoursesDetailPage = () => {
   const institution = useSelector((state) => state.main.selectedInstitution);
   const classes = useSelector((state) => state.classes.table);
   const totalStudents = courseInfo.numberOfStudents + courseInfo.numberOfPendingStudents;
-  const courseDetailsLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${courseInfo.masterCourseId}`;
+  const courseDetailsLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${courseInfo.masterCourseId}/home`;
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);

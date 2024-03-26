@@ -47,6 +47,14 @@
   background-color: $color-white;
   border-color: $primary;
   color: $primary;
+
+  &:hover,
+  &:active,
+  &:focus,
+  &:focus-visible {
+    color: $color-white;
+    background: $primary;
+  }
 }
 
 @media screen and (max-width: 576px) {
