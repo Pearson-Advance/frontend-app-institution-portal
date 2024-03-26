@@ -1,8 +1,10 @@
 import React from 'react';
 import { waitFor } from '@testing-library/react';
-import InstructorsPage from 'features/Instructors/InstructorsPage';
 import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
+import { MemoryRouter, Route } from 'react-router-dom';
+
+import InstructorsPage from 'features/Instructors/InstructorsPage';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -43,7 +45,11 @@ const mockStore = {
 describe('InstructorPage', () => {
   test('render instructor page', () => {
     const component = renderWithProviders(
-      <InstructorsPage />,
+      <MemoryRouter initialEntries={['/instructors']}>
+        <Route path="/instructors">
+          <InstructorsPage />
+        </Route>
+      </MemoryRouter>,
       { preloadedState: mockStore },
     );
 

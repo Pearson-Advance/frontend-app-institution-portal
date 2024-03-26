@@ -40,3 +40,25 @@ export const daysWeek = 7;
  * @string
  */
 export const licenseBuyLink = 'https://www.mindhubpro.com/';
+
+/**
+ * Constants status.
+ * @readonly
+ * @enum {string}
+ */
+export const ClassStatus = {
+  in_progress: 'In progress',
+  complete: 'Complete',
+  pending: 'Pending',
+};
+
+/**
+ * Badge Variants.
+ * @readonly
+ * @enum {string}
+ */
+export const badgeVariants = {
+  in_progress: 'primary',
+  complete: 'success',
+  pending: 'warning',
+};
