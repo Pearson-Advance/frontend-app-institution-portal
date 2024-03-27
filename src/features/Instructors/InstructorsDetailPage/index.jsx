@@ -75,7 +75,7 @@ const InstructorsDetailPage = () => {
         </div>
       </div>
 
-      <Tabs variant="tabs" defaultActiveKey="classes" id="uncontrolled-tab-example">
+      <Tabs variant="tabs" defaultActiveKey="classes" id="uncontrolled-tab-example" className="mb-3">
         <Tab eventKey="classes" title="Classes" />
       </Tabs>
 
