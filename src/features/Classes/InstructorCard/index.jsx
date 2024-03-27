@@ -6,6 +6,7 @@ import { formatDateRange } from 'helpers';
 import { initialPage } from 'features/constants';
 import { updateInstructorOptions } from 'features/Instructors/data/slice';
 import { fetchInstructorsOptionsData } from 'features/Instructors/data/thunks';
+import { getConfig } from '@edx/frontend-platform';
 
 import instructorDefaultImage from 'assets/avatar.svg';
 
@@ -68,7 +69,11 @@ const InstructorCard = () => {
         <h4 className="text-color text-uppercase mb-3 h5">Instructor</h4>
         <div className="d-flex align-items-center">
           <img
-            src={instructors[0]?.instructorImage ? instructors[0]?.instructorImage : instructorDefaultImage}
+            src={
+              instructors[0]?.instructorImage
+                ? getConfig().LMS_BASE_URL + (instructors[0]?.instructorImage || '')
+                : instructorDefaultImage
+            }
             alt="Instructor profile"
             className="instructor-image"
           />
