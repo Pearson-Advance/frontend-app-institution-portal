@@ -5,6 +5,7 @@ import { Row, Col } from '@edx/paragon';
 import DataTable from '@edx/paragon/dist/DataTable';
 
 import { columns } from 'features/Courses/CoursesTable/columns';
+import 'features/Courses/CoursesTable/index.scss';
 
 const CoursesTable = ({ data, count }) => {
   const COLUMNS = useMemo(() => columns, []);

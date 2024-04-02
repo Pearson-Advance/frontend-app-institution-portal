@@ -21,7 +21,7 @@
 }
 
 [role=table] {
-  [role=cell]{
+  [role=cell] {
     .custom-progress {
       @extend %progress-styles;
     }
@@ -51,5 +51,19 @@
 .link {
   &:-webkit-any-link {
     color: $primary;
+  }
+}
+
+.dropdowntpz {
+  .btn-icon.btn-icon-primary {
+    color: $gray-70;
+
+    &:hover,
+    &:active {
+      color: $gray-70;
+      background-color: $gray-20;
+      outline: none;
+      box-shadow: none;
+    }
   }
 }
