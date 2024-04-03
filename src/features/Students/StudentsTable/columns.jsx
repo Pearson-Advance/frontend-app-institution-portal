@@ -11,6 +11,14 @@ const columns = [
   {
     Header: 'Email',
     accessor: 'learnerEmail',
+    Cell: ({ row }) => (
+      <a
+        href={`mailto:${row.values.learnerEmail}`}
+        className="link"
+      >
+        {row.values.learnerEmail}
+      </a>
+    ),
   },
   {
     Header: 'Class Name',
