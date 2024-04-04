@@ -1,8 +1,7 @@
 @import "assets/colors.scss";
 
 .page-content-container .pgn__data-table-container {
-  overflow-x: hidden;
-  overflow-y: hidden;
+  overflow: visible;
 }
 
 .dropdownColumn.pgn__data-table-cell-wrap {

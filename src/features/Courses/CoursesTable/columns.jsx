@@ -41,6 +41,7 @@ const columns = [
     Header: '',
     accessor: 'className',
     cellClassName: 'dropdownColumn',
+    disableSortBy: true,
     Cell: ({ row }) => {
       const [isOpenModal, openModal, closeModal] = useToggle(false);
       const courseDetailsLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${row.original.masterCourseId}/home`;
@@ -52,9 +53,10 @@ const columns = [
             src={MoreHoriz}
             iconAs={Icon}
             variant="primary"
+            data-testid="droprown-action"
           />
           <Dropdown.Menu>
-            <Dropdown.Item href={courseDetailsLink} target="_blank">
+            <Dropdown.Item href={courseDetailsLink} target="_blank" rel="noopener noreferrer">
               <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />
               Course Details
             </Dropdown.Item>
