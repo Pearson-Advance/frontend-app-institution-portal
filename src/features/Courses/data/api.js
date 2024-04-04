@@ -10,6 +10,16 @@ function handleNewClass(data) {
   );
 }
 
+function handleEditClass(data) {
+  const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
+
+  return getAuthenticatedHttpClient().patch(
+    `${apiV2BaseUrl}/classes/`,
+    data,
+  );
+}
+
 export {
   handleNewClass,
+  handleEditClass,
 };

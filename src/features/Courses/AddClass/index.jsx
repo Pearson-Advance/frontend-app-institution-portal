@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import format from 'date-fns/format';
 
 import {
   FormGroup, ModalDialog, Form, ModalCloseButton, Toast, Col,
@@ -9,7 +10,7 @@ import {
 import { Button, Select } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 
-import { addClass, fetchCoursesData } from 'features/Courses/data';
+import { addClass, fetchCoursesData, editClass } from 'features/Courses/data';
 import { fetchInstructorsOptionsData } from 'features/Instructors/data/thunks';
 import { fetchClassesData } from 'features/Classes/data/thunks';
 import { updateCurrentPage as updateCoursesCurrentPage } from 'features/Courses/data/slice';
@@ -20,7 +21,7 @@ import { initialPage } from 'features/constants';
 import 'features/Courses/AddClass/index.scss';
 
 const AddClass = ({
-  isOpen, onClose, courseInfo, isCoursePage,
+  isOpen, onClose, courseInfo, isCoursePage, isEdit,
 }) => {
   const { courseId } = useParams();
   const dispatch = useDispatch();
@@ -33,43 +34,58 @@ const AddClass = ({
   const [className, setClassName] = useState('');
   const [minStudents, setMinStudents] = useState('');
   const [maxStudents, setMaxStudents] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const handleAddClass = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const dataCreateClass = new FormData(form);
-    const classNameField = dataCreateClass.get('name');
-    const startDate = dataCreateClass.get('start_date');
-    const endDate = dataCreateClass.get('end_date');
-    dataCreateClass.append('course_id', courseInfo.masterCourseId);
-    dataCreateClass.set('start_date', startDate ? new Date(startDate).toISOString() : '');
-    dataCreateClass.set('end_date', endDate ? new Date(endDate).toISOString() : '');
+    const dataClass = new FormData(form);
+    const classNameField = dataClass.get('name');
+    dataClass.set('start_date', startDate ? new Date(startDate).toISOString() : '');
+    dataClass.set('end_date', endDate ? new Date(endDate).toISOString() : '');
 
     if (!classNameField || !startDate) {
       return onClose();
     }
 
-    try {
-      const enrollmentDataInst = new FormData();
-      if (instructorSelected) {
-        enrollmentDataInst.append('unique_student_identifier', instructorSelected.value);
-        enrollmentDataInst.append('rolename', 'staff');
-        enrollmentDataInst.append('action', 'allow');
-      }
-      await dispatch(addClass(dataCreateClass, enrollmentDataInst));
-      onClose();
-      setShowToast(true);
-    } catch (error) {
-      logError(error);
-    } finally {
-      if (isCoursePage) {
-        dispatch(fetchCoursesData(selectedInstitution.id, initialPage));
-        dispatch(updateCoursesCurrentPage(initialPage));
-      } else {
+    if (isEdit) {
+      try {
+        dataClass.append('class_id', courseInfo.classId);
+        await dispatch(editClass(dataClass));
+        onClose();
+        setShowToast(true);
+      } catch (error) {
+        logError(error);
+      } finally {
         dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseId));
         dispatch(updateClassesCurrentPage(initialPage));
       }
+    } else {
+      try {
+        dataClass.append('course_id', courseInfo.masterCourseId);
+        const enrollmentDataInst = new FormData();
+        if (instructorSelected) {
+          enrollmentDataInst.append('unique_student_identifier', instructorSelected.value);
+          enrollmentDataInst.append('rolename', 'staff');
+          enrollmentDataInst.append('action', 'allow');
+        }
+        await dispatch(addClass(dataClass, enrollmentDataInst));
+        onClose();
+        setShowToast(true);
+      } catch (error) {
+        logError(error);
+      } finally {
+        if (isCoursePage) {
+          dispatch(fetchCoursesData(selectedInstitution.id, initialPage));
+          dispatch(updateCoursesCurrentPage(initialPage));
+        } else {
+          dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseId));
+          dispatch(updateClassesCurrentPage(initialPage));
+        }
+      }
     }
+
     return null;
   };
 
@@ -78,6 +94,8 @@ const AddClass = ({
     setInstructorSelected(null);
     setMinStudents('');
     setMaxStudents('');
+    setStartDate('');
+    setEndDate('');
   };
 
   const handleNumericField = (e, field) => {
@@ -91,10 +109,10 @@ const AddClass = ({
   };
 
   useEffect(() => {
-    if (Object.keys(selectedInstitution).length > 0 && isOpen) {
+    if (Object.keys(selectedInstitution).length > 0 && isOpen && !isEdit) {
       dispatch(fetchInstructorsOptionsData(selectedInstitution.id, initialPage, { limit: false }));
     }
-  }, [selectedInstitution, isOpen, dispatch]);
+  }, [selectedInstitution, isOpen, dispatch, isEdit]);
 
   useEffect(() => {
     if (instructorsList.length > 0) {
@@ -113,6 +131,18 @@ const AddClass = ({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (isEdit && Object.keys(courseInfo).length > 2) {
+      const formatedStartDate = courseInfo?.startDate ? format(courseInfo?.startDate, 'yyyy-MM-dd') : '';
+      const formatedEndDate = courseInfo?.endDate ? format(courseInfo?.endDate, 'yyyy-MM-dd') : '';
+      setClassName(courseInfo?.className);
+      setMinStudents(courseInfo?.minStudents ? courseInfo?.minStudents : '');
+      setMaxStudents(courseInfo?.maxStudents ? courseInfo?.maxStudents : '');
+      setStartDate(formatedStartDate);
+      setEndDate(formatedEndDate);
+    }
+  }, [courseInfo, isEdit]);
+
   return (
     <>
       <Toast
@@ -122,7 +152,7 @@ const AddClass = ({
         {notificationMsg}
       </Toast>
       <ModalDialog
-        title="Add Class"
+        title={isEdit ? 'Edit Class' : 'Add Class'}
         isOpen={isOpen}
         onClose={onClose}
         hasCloseButton
@@ -130,7 +160,7 @@ const AddClass = ({
       >
         <ModalDialog.Header>
           <ModalDialog.Title>
-            Add Class
+            {isEdit ? 'Edit Class' : 'Add Class'}
           </ModalDialog.Title>
           <p className="course-name my-1">
             {courseInfo?.masterCourseName}
@@ -150,15 +180,17 @@ const AddClass = ({
                 required
               />
             </FormGroup>
-            <Form.Group as={Col} className="px-0">
-              <Select
-                placeholder="Instructor"
-                name="instructor"
-                options={instructorsOptions}
-                onChange={option => setInstructorSelected(option)}
-                value={instructorSelected}
-              />
-            </Form.Group>
+            {!isEdit && (
+              <Form.Group as={Col} className="px-0">
+                <Select
+                  placeholder="Instructor"
+                  name="instructor"
+                  options={instructorsOptions}
+                  onChange={option => setInstructorSelected(option)}
+                  value={instructorSelected}
+                />
+              </Form.Group>
+            )}
             <Form.Row>
               <Form.Group as={Col}>
                 <Form.Control
@@ -168,6 +200,8 @@ const AddClass = ({
                   className="my-1 mr-0"
                   name="start_date"
                   required
+                  value={startDate}
+                  onChange={e => setStartDate(e.target.value)}
                 />
               </Form.Group>
               <Form.Group as={Col}>
@@ -177,6 +211,8 @@ const AddClass = ({
                   floatingLabel="End date"
                   className="my-1 mr-0"
                   name="end_date"
+                  value={endDate}
+                  onChange={e => setEndDate(e.target.value)}
                 />
               </Form.Group>
             </Form.Row>
@@ -221,14 +257,22 @@ AddClass.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   courseInfo: PropTypes.shape({
-    masterCourseName: PropTypes.string,
+    masterCourseName: PropTypes.string.isRequired,
     masterCourseId: PropTypes.string,
+    classId: PropTypes.string,
+    className: PropTypes.string,
+    startDate: PropTypes.string,
+    endDate: PropTypes.string,
+    minStudents: PropTypes.number,
+    maxStudents: PropTypes.number,
   }).isRequired,
   isCoursePage: PropTypes.bool,
+  isEdit: PropTypes.bool,
 };
 
 AddClass.defaultProps = {
   isCoursePage: false,
+  isEdit: false,
 };
 
 export default AddClass;

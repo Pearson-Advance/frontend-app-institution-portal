@@ -1,9 +1,15 @@
+import { MemoryRouter, Route } from 'react-router-dom';
+import { fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+
 import { columns } from 'features/Classes/ClassesTable/columns';
+
+import { renderWithProviders } from 'test-utils';
 
 describe('columns', () => {
   test('returns an array of columns with correct properties', () => {
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(8);
+    expect(columns).toHaveLength(9);
 
     const [
       classNameColumn,
@@ -39,5 +45,52 @@ describe('columns', () => {
 
     expect(instructorsColumn).toHaveProperty('Header', 'Instructors');
     expect(instructorsColumn).toHaveProperty('accessor', 'instructors');
+  });
+
+  test('Show menu dropdown', async () => {
+    const classDataMock = {
+      masterCourseName: 'course example',
+      masterCourseId: 'demo course',
+      classId: 'class 01',
+      className: 'class example',
+      startDate: '',
+      endDate: '',
+      minStudents: 10,
+      maxStudents: 100,
+    };
+    const ActionColumn = () => columns[8].Cell({
+      row: {
+        values: {
+          masterCourseName: 'course example',
+        },
+        original: { ...classDataMock },
+      },
+    });
+
+    const mockStore = {
+      classes: {
+        table: {
+          data: [
+            { ...classDataMock },
+          ],
+          count: 2,
+          num_pages: 1,
+          current_page: 1,
+        },
+      },
+    };
+
+    const component = renderWithProviders(
+      <MemoryRouter initialEntries={['/classes/']}>
+        <Route path="/classes/">
+          <ActionColumn />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    const button = component.getByTestId('droprown-action');
+    fireEvent.click(button);
+    expect(component.getByText('Edit Class')).toBeInTheDocument();
   });
 });
