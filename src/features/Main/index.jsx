@@ -21,6 +21,7 @@ import CoursesDetailPage from 'features/Courses/CoursesDetailPage';
 import LicensesDetailPage from 'features/Licenses/LicensesDetailPage';
 import InstructorsPage from 'features/Instructors/InstructorsPage';
 import InstructorsDetailPage from 'features/Instructors/InstructorsDetailPage';
+import ActiveTabUpdater from 'features/Main//ActiveTabUpdater';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
 import { updateSelectedInstitution } from 'features/Main/data/slice';
@@ -48,6 +49,19 @@ const Main = () => {
       dispatch(updateSelectedInstitution(options[0]));
     }
   }, [stateInstitutions, dispatch]);
+
+  const routes = [
+    { path: '/dashboard', component: DashboardPage, exact: true },
+    { path: '/students', component: StudentsPage, exact: true },
+    { path: '/instructors', component: InstructorsPage, exact: true },
+    { path: '/instructors/:instructorUsername', component: InstructorsDetailPage, exact: true },
+    { path: '/courses', component: CoursesPage, exact: true },
+    { path: '/courses/:courseId', component: CoursesDetailPage, exact: true },
+    { path: '/courses/:courseId/:classId', component: ClassPage, exact: true },
+    { path: '/licenses', component: LicensesPage, exact: true },
+    { path: '/licenses/:licenseId', component: LicensesDetailPage, exact: true },
+    { path: '/classes', component: ClassesPage, exact: true },
+  ];
 
   return (
     <BrowserRouter basename={getConfig().INSTITUTION_PORTAL_PATH}>
@@ -83,36 +97,18 @@ const Main = () => {
               <Route exact path="/">
                 <Redirect to="/dashboard" />
               </Route>
-            </Switch>
-            <Switch>
-              <Route path="/dashboard" exact component={DashboardPage} />
-            </Switch>
-            <Switch>
-              <Route path="/students" exact component={StudentsPage} />
-            </Switch>
-            <Switch>
-              <Route path="/instructors" exact component={InstructorsPage} />
-            </Switch>
-            <Switch>
-              <Route path="/instructors/:instructorUsername" exact component={InstructorsDetailPage} />
-            </Switch>
-            <Switch>
-              <Route path="/courses" exact component={CoursesPage} />
-            </Switch>
-            <Switch>
-              <Route path="/courses/:courseId" exact component={CoursesDetailPage} />
-            </Switch>
-            <Switch>
-              <Route path="/courses/:courseId/:classId" exact component={ClassPage} />
-            </Switch>
-            <Switch>
-              <Route path="/licenses" exact component={LicensesPage} />
-            </Switch>
-            <Switch>
-              <Route path="/licenses/:licenseId" exact component={LicensesDetailPage} />
-            </Switch>
-            <Switch>
-              <Route path="/classes" exact component={ClassesPage} />
+              {routes.map(({ path, exact, component: Component }) => (
+                <Route
+                  key={path}
+                  path={path}
+                  exact={exact}
+                  render={() => (
+                    <ActiveTabUpdater path={path}>
+                      <Component />
+                    </ActiveTabUpdater>
+                  )}
+                />
+              ))}
             </Switch>
             <Footer />
           </Container>
