@@ -9,16 +9,19 @@ import {
 import { Button, Select } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 
-import { addClass } from 'features/Courses/data/thunks';
+import { addClass, fetchCoursesData } from 'features/Courses/data';
 import { fetchInstructorsOptionsData } from 'features/Instructors/data/thunks';
 import { fetchClassesData } from 'features/Classes/data/thunks';
-import { updateCurrentPage } from 'features/Courses/data/slice';
+import { updateCurrentPage as updateCoursesCurrentPage } from 'features/Courses/data/slice';
+import { updateCurrentPage as updateClassesCurrentPage } from 'features/Classes/data/slice';
 
 import { initialPage } from 'features/constants';
 
 import 'features/Courses/AddClass/index.scss';
 
-const AddClass = ({ isOpen, onClose, courseInfo }) => {
+const AddClass = ({
+  isOpen, onClose, courseInfo, isCoursePage,
+}) => {
   const { courseId } = useParams();
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
@@ -59,8 +62,13 @@ const AddClass = ({ isOpen, onClose, courseInfo }) => {
     } catch (error) {
       logError(error);
     } finally {
-      dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseId));
-      dispatch(updateCurrentPage(initialPage));
+      if (isCoursePage) {
+        dispatch(fetchCoursesData(selectedInstitution.id, initialPage));
+        dispatch(updateCoursesCurrentPage(initialPage));
+      } else {
+        dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseId));
+        dispatch(updateClassesCurrentPage(initialPage));
+      }
     }
     return null;
   };
@@ -216,6 +224,11 @@ AddClass.propTypes = {
     masterCourseName: PropTypes.string,
     masterCourseId: PropTypes.string,
   }).isRequired,
+  isCoursePage: PropTypes.bool,
+};
+
+AddClass.defaultProps = {
+  isCoursePage: false,
 };
 
 export default AddClass;

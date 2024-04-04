@@ -1,9 +1,13 @@
+import { MemoryRouter, Route } from 'react-router-dom';
+import { fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { columns } from 'features/Courses/CoursesTable/columns';
+import { renderWithProviders } from 'test-utils';
 
 describe('columns', () => {
   test('returns an array of columns with correct properties', () => {
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(5);
+    expect(columns).toHaveLength(6);
 
     const [
       courseColumn,
@@ -27,5 +31,49 @@ describe('columns', () => {
 
     expect(studentsInvitedColumn).toHaveProperty('Header', 'Students invited');
     expect(studentsInvitedColumn).toHaveProperty('accessor', 'numberOfPendingStudents');
+  });
+
+  test('Show menu dropdown', async () => {
+    const ActionColumn = () => columns[5].Cell({
+      row: {
+        values: {
+          masterCourseName: 'course example',
+        },
+        original: {
+          masterCourseName: 'course example',
+          masterCourseId: 'course01',
+        },
+      },
+    });
+
+    const mockStore = {
+      courses: {
+        table: {
+          data: [
+            {
+              masterCourseName: 'Demo MasterCourse 1',
+              masterCourseId: 'Demo Class 1',
+            },
+          ],
+          count: 2,
+          num_pages: 1,
+          current_page: 1,
+        },
+      },
+    };
+
+    const component = renderWithProviders(
+      <MemoryRouter initialEntries={['/courses/']}>
+        <Route path="/courses/">
+          <ActionColumn />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    const button = component.getByTestId('droprown-action');
+    fireEvent.click(button);
+    expect(component.getByText('Course Details')).toBeInTheDocument();
+    expect(component.getByText('Add Class')).toBeInTheDocument();
   });
 });

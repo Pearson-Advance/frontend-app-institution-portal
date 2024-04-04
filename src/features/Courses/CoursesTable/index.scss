@@ -1,0 +1,27 @@
+@import "assets/colors.scss";
+
+.page-content-container .pgn__data-table-container {
+  overflow: visible;
+}
+
+.dropdownColumn.pgn__data-table-cell-wrap {
+  overflow: visible;
+}
+
+.dropdowntpz {
+  .dropdown-menu {
+    min-width: 190px;
+
+    .dropdown-item {
+      color: $black;
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+
+      &:hover {
+        color: $primary;
+        background-color: $blue-20;
+      }
+    }
+  }
+}
