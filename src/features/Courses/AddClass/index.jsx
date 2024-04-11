@@ -21,7 +21,7 @@ import { initialPage } from 'features/constants';
 import 'features/Courses/AddClass/index.scss';
 
 const AddClass = ({
-  isOpen, onClose, courseInfo, isCoursePage, isEdit,
+  isOpen, onClose, courseInfo, isCoursePage, isEditing,
 }) => {
   const { courseId } = useParams();
   const dispatch = useDispatch();
@@ -49,7 +49,7 @@ const AddClass = ({
       return onClose();
     }
 
-    if (isEdit) {
+    if (isEditing) {
       try {
         dataClass.append('class_id', courseInfo.classId);
         await dispatch(editClass(dataClass));
@@ -109,10 +109,10 @@ const AddClass = ({
   };
 
   useEffect(() => {
-    if (Object.keys(selectedInstitution).length > 0 && isOpen && !isEdit) {
+    if (Object.keys(selectedInstitution).length > 0 && isOpen && !isEditing) {
       dispatch(fetchInstructorsOptionsData(selectedInstitution.id, initialPage, { limit: false }));
     }
-  }, [selectedInstitution, isOpen, dispatch, isEdit]);
+  }, [selectedInstitution, isOpen, dispatch, isEditing]);
 
   useEffect(() => {
     if (instructorsList.length > 0) {
@@ -132,7 +132,7 @@ const AddClass = ({
   }, [isOpen]);
 
   useEffect(() => {
-    if (isEdit && Object.keys(courseInfo).length > 2) {
+    if (isEditing && Object.keys(courseInfo).length > 2) {
       const formatedStartDate = courseInfo?.startDate ? format(courseInfo?.startDate, 'yyyy-MM-dd') : '';
       const formatedEndDate = courseInfo?.endDate ? format(courseInfo?.endDate, 'yyyy-MM-dd') : '';
       setClassName(courseInfo?.className);
@@ -141,7 +141,7 @@ const AddClass = ({
       setStartDate(formatedStartDate);
       setEndDate(formatedEndDate);
     }
-  }, [courseInfo, isEdit]);
+  }, [courseInfo, isEditing]);
 
   return (
     <>
@@ -152,7 +152,7 @@ const AddClass = ({
         {notificationMsg}
       </Toast>
       <ModalDialog
-        title={isEdit ? 'Edit Class' : 'Add Class'}
+        title={isEditing ? 'Edit Class' : 'Add Class'}
         isOpen={isOpen}
         onClose={onClose}
         hasCloseButton
@@ -160,7 +160,7 @@ const AddClass = ({
       >
         <ModalDialog.Header>
           <ModalDialog.Title>
-            {isEdit ? 'Edit Class' : 'Add Class'}
+            {isEditing ? 'Edit Class' : 'Add Class'}
           </ModalDialog.Title>
           <p className="course-name my-1">
             {courseInfo?.masterCourseName}
@@ -180,7 +180,7 @@ const AddClass = ({
                 required
               />
             </FormGroup>
-            {!isEdit && (
+            {!isEditing && (
               <Form.Group as={Col} className="px-0">
                 <Select
                   placeholder="Instructor"
@@ -267,12 +267,12 @@ AddClass.propTypes = {
     maxStudents: PropTypes.number,
   }).isRequired,
   isCoursePage: PropTypes.bool,
-  isEdit: PropTypes.bool,
+  isEditing: PropTypes.bool,
 };
 
 AddClass.defaultProps = {
   isCoursePage: false,
-  isEdit: false,
+  isEditing: false,
 };
 
 export default AddClass;

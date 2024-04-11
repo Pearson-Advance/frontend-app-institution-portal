@@ -103,6 +103,16 @@ const columns = [
     cellClassName: 'dropdownColumn',
     disableSortBy: true,
     Cell: ({ row }) => {
+      const {
+        masterCourseName,
+        masterCourseId,
+        classId,
+        className,
+        startDate,
+        endDate,
+        minStudentsAllowed,
+        maxStudents,
+      } = row.original;
       const [isOpenModal, openModal, closeModal] = useToggle(false);
       return (
         <Dropdown className="dropdowntpz">
@@ -113,7 +123,7 @@ const columns = [
             iconAs={Icon}
             variant="primary"
             data-testid="droprown-action"
-            alt="menuAction"
+            alt="menu for actions"
           />
           <Dropdown.Menu>
             <Dropdown.Item onClick={openModal}>
@@ -124,17 +134,17 @@ const columns = [
               isOpen={isOpenModal}
               onClose={closeModal}
               courseInfo={{
-                masterCourseName: row.original.masterCourseName,
-                masterCourseId: row.original.masterCourseId,
-                classId: row.original.classId,
-                className: row.original.className,
-                startDate: row.original.startDate,
-                endDate: row.original.endDate,
-                minStudents: row.original.minStudentsAllowed,
-                maxStudents: row.original.maxStudents,
+                masterCourseName,
+                masterCourseId,
+                classId,
+                className,
+                startDate,
+                endDate,
+                minStudents: minStudentsAllowed,
+                maxStudents,
               }}
               isCoursePage
-              isEdit
+              isEditing
             />
           </Dropdown.Menu>
         </Dropdown>

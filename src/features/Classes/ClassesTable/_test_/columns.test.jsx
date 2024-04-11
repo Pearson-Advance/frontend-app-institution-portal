@@ -80,7 +80,9 @@ describe('columns', () => {
       },
     };
 
-    const component = renderWithProviders(
+    const {
+      getByText, getByTestId, getAllByRole, getAllByText,
+    } = renderWithProviders(
       <MemoryRouter initialEntries={['/classes/']}>
         <Route path="/classes/">
           <ActionColumn />
@@ -89,8 +91,12 @@ describe('columns', () => {
       { preloadedState: mockStore },
     );
 
-    const button = component.getByTestId('droprown-action');
+    const button = getByTestId('droprown-action');
     fireEvent.click(button);
-    expect(component.getByText('Edit Class')).toBeInTheDocument();
+    const editButton = getAllByRole('button')[1];
+    expect(editButton).toBeInTheDocument();
+    fireEvent.click(editButton);
+    expect(getAllByText('Edit Class')).toHaveLength(2);
+    expect(getByText('course example')).toBeInTheDocument();
   });
 });
