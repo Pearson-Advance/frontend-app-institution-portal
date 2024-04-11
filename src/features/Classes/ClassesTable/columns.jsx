@@ -6,6 +6,11 @@ import { Link } from 'react-router-dom';
 
 import { Button } from 'react-paragon-topaz';
 import AssignInstructors from 'features/Instructors/AssignInstructors';
+import {
+  Dropdown, IconButton, Icon, useToggle,
+} from '@edx/paragon';
+import AddClass from 'features/Courses/AddClass';
+import { MoreHoriz } from '@edx/paragon/icons';
 
 import { updateClassSelected } from 'features/Instructors/data/slice';
 import { fetchClassesData } from 'features/Classes/data/thunks';
@@ -89,6 +94,60 @@ const columns = [
             getClasses={false}
           />
         </>
+      );
+    },
+  },
+  {
+    Header: '',
+    accessor: 'courseName',
+    cellClassName: 'dropdownColumn',
+    disableSortBy: true,
+    Cell: ({ row }) => {
+      const {
+        masterCourseName,
+        masterCourseId,
+        classId,
+        className,
+        startDate,
+        endDate,
+        minStudentsAllowed,
+        maxStudents,
+      } = row.original;
+      const [isOpenModal, openModal, closeModal] = useToggle(false);
+      return (
+        <Dropdown className="dropdowntpz">
+          <Dropdown.Toggle
+            id="dropdown-toggle-with-iconbutton"
+            as={IconButton}
+            src={MoreHoriz}
+            iconAs={Icon}
+            variant="primary"
+            data-testid="droprown-action"
+            alt="menu for actions"
+          />
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={openModal}>
+              <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />
+              Edit Class
+            </Dropdown.Item>
+            <AddClass
+              isOpen={isOpenModal}
+              onClose={closeModal}
+              courseInfo={{
+                masterCourseName,
+                masterCourseId,
+                classId,
+                className,
+                startDate,
+                endDate,
+                minStudents: minStudentsAllowed,
+                maxStudents,
+              }}
+              isCoursePage
+              isEditing
+            />
+          </Dropdown.Menu>
+        </Dropdown>
       );
     },
   },

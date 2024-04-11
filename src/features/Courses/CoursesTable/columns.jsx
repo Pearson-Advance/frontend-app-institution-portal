@@ -54,6 +54,7 @@ const columns = [
             iconAs={Icon}
             variant="primary"
             data-testid="droprown-action"
+            alt="menu for action"
           />
           <Dropdown.Menu>
             <Dropdown.Item href={courseDetailsLink} target="_blank" rel="noopener noreferrer">

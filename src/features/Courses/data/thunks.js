@@ -12,7 +12,7 @@ import {
 } from 'features/Courses/data/slice';
 import { getCoursesByInstitution } from 'features/Common/data/api';
 import { initialPage } from 'features/constants';
-import { handleNewClass } from 'features/Courses/data/api';
+import { handleNewClass, handleEditClass } from 'features/Courses/data/api';
 import { assignInstructors } from 'features/Instructors/data';
 
 function fetchCoursesData(id, currentPage, filtersData) {
@@ -62,8 +62,24 @@ function addClass(classData, instructorData) {
   };
 }
 
+function editClass(classData) {
+  return async (dispatch) => {
+    dispatch(newClassRequest());
+    try {
+      const response = await handleEditClass(classData);
+      dispatch(newClassSuccess(response.data));
+      dispatch(updateNotificationMsg('Class updated successfully'));
+    } catch (error) {
+      dispatch(newClassFailed());
+      logError(error);
+      dispatch(updateNotificationMsg('Class could not be updated'));
+    }
+  };
+}
+
 export {
   fetchCoursesData,
   fetchCoursesOptionsData,
   addClass,
+  editClass,
 };
