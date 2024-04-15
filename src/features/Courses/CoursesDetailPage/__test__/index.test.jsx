@@ -53,7 +53,7 @@ const mockStore = {
         {
           masterCourseName: 'Demo MasterCourse 1',
           className: 'Demo Class 1',
-          startDate: '09/21/24',
+          startDate: '2024-09-21',
           endDate: null,
           numberOfStudents: 1,
           maxStudents: 100,
@@ -62,7 +62,7 @@ const mockStore = {
         {
           masterCourseName: 'Demo MasterCourse 2',
           className: 'Demo Class 2',
-          startDate: '09/21/25',
+          startDate: '2025-09-21',
           endDate: null,
           numberOfStudents: 2,
           maxStudents: 200,

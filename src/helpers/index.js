@@ -1,6 +1,26 @@
 import { format } from 'date-fns';
 
 /**
+ * Format a UTC date
+ *
+ * @param {string} date - UTC date
+ * @param {string} formatStr - pattern to be formatted
+ * @returns {string} Formatted date
+ */
+export const formatUTCDate = (date, formatStr = 'MM/dd/yy') => {
+  if (!date) {
+    return null;
+  }
+
+  const [year, month, day] = date.slice(0, 10).split('-');
+  return format(new Date(
+    year,
+    (month - 1),
+    day,
+  ), formatStr);
+};
+
+/**
  * Formats a date range string based on the start and end dates.
  *
  * @param {Date} startDate The start date of the range.
@@ -16,31 +36,31 @@ export const formatDateRange = (startDate, endDate) => {
   }
 
   if (!endDate) {
-    return format(startDate, 'MMM d, yyyy');
+    return formatUTCDate(startDate, 'MMM d, yyyy');
   }
 
-  const startYearFormatted = format(startDate, 'yyyy');
-  const endYearFormatted = format(endDate, 'yyyy');
+  const startYearFormatted = formatUTCDate(startDate, 'yyyy');
+  const endYearFormatted = formatUTCDate(endDate, 'yyyy');
 
   if (startYearFormatted < endYearFormatted) {
-    const formattedStartDate = format(startDate, 'MMM d, yyyy');
-    const formattedEndDate = format(endDate, 'MMM d, yyyy');
+    const formattedStartDate = formatUTCDate(startDate, 'MMM d, yyyy');
+    const formattedEndDate = formatUTCDate(endDate, 'MMM d, yyyy');
 
     return `${formattedStartDate} - ${formattedEndDate}`;
   }
 
-  const startMonthFormatted = format(startDate, 'MM');
-  const endMonthFormatted = format(endDate, 'MM');
+  const startMonthFormatted = formatUTCDate(startDate, 'MM');
+  const endMonthFormatted = formatUTCDate(endDate, 'MM');
 
   if (startMonthFormatted < endMonthFormatted) {
-    const formattedStartDate = format(startDate, 'MMM d');
-    const formattedEndDate = format(endDate, 'MMM d, yyyy');
+    const formattedStartDate = formatUTCDate(startDate, 'MMM d');
+    const formattedEndDate = formatUTCDate(endDate, 'MMM d, yyyy');
 
     return `${formattedStartDate} - ${formattedEndDate}`;
   }
 
-  const formattedStartDate = format(startDate, 'MMM d');
-  const formattedEndDate = format(endDate, 'd, yyyy');
+  const formattedStartDate = formatUTCDate(startDate, 'MMM d');
+  const formattedEndDate = formatUTCDate(endDate, 'd, yyyy');
 
   return `${formattedStartDate}-${formattedEndDate}`;
 };

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 
 import { Button } from 'react-paragon-topaz';
@@ -9,12 +8,14 @@ import AssignInstructors from 'features/Instructors/AssignInstructors';
 
 import { updateClassSelected } from 'features/Instructors/data/slice';
 
+import { formatUTCDate } from 'helpers';
+
 import 'features/Dashboard/InstructorAssignSection/index.scss';
 
 const ClassCard = ({ data }) => {
   const dispatch = useDispatch();
   const [isOpen, open, close] = useToggle(false);
-  const fullDate = format(new Date(data.startDate), 'PP');
+  const fullDate = formatUTCDate(data.startDate, 'PP');
 
   const handleAssignModal = () => {
     dispatch(updateClassSelected(data.classId)); // eslint-disable-line react/prop-types

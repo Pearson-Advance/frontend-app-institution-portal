@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import format from 'date-fns/format';
 
 import {
   FormGroup, ModalDialog, Form, ModalCloseButton, Toast, Col,
@@ -17,6 +16,7 @@ import { updateCurrentPage as updateCoursesCurrentPage } from 'features/Courses/
 import { updateCurrentPage as updateClassesCurrentPage } from 'features/Classes/data/slice';
 
 import { initialPage } from 'features/constants';
+import { formatUTCDate } from 'helpers';
 
 import 'features/Courses/AddClass/index.scss';
 
@@ -133,8 +133,8 @@ const AddClass = ({
 
   useEffect(() => {
     if (isEditing && Object.keys(courseInfo).length > 2) {
-      const formatedStartDate = courseInfo?.startDate ? format(courseInfo?.startDate, 'yyyy-MM-dd') : '';
-      const formatedEndDate = courseInfo?.endDate ? format(courseInfo?.endDate, 'yyyy-MM-dd') : '';
+      const formatedStartDate = courseInfo?.startDate ? formatUTCDate(courseInfo?.startDate, 'yyyy-MM-dd') : '';
+      const formatedEndDate = courseInfo?.endDate ? formatUTCDate(courseInfo?.endDate, 'yyyy-MM-dd') : '';
       setClassName(courseInfo?.className);
       setMinStudents(courseInfo?.minStudents ? courseInfo?.minStudents : '');
       setMaxStudents(courseInfo?.maxStudents ? courseInfo?.maxStudents : '');

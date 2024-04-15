@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, Link } from 'react-router-dom';
-import { format } from 'date-fns';
 
 import { Badge, Button } from 'react-paragon-topaz';
 import AssignInstructors from 'features/Instructors/AssignInstructors';
@@ -11,6 +10,7 @@ import { fetchClassesData } from 'features/Classes/data/thunks';
 import { updateClassSelected } from 'features/Instructors/data/slice';
 
 import { initialPage } from 'features/constants';
+import { formatUTCDate } from 'helpers';
 
 const columns = [
   {
@@ -97,12 +97,12 @@ const columns = [
   {
     Header: 'Start date',
     accessor: 'startDate',
-    Cell: ({ row }) => (row.values.startDate ? format(row.values.startDate, 'MM/dd/yy') : '-'),
+    Cell: ({ row }) => (row.values.startDate ? formatUTCDate(row.values.startDate, 'MM/dd/yy') : '-'),
   },
   {
     Header: 'End date',
     accessor: 'endDate',
-    Cell: ({ row }) => (row.values.endDate ? format(row.values.endDate, 'MM/dd/yy') : '-'),
+    Cell: ({ row }) => (row.values.endDate ? formatUTCDate(row.values.endDate, 'MM/dd/yy') : '-'),
   },
 ];
 
