@@ -5,11 +5,12 @@ import { Calendar } from 'react-date-range';
 import {
   startOfWeek,
   endOfWeek,
-  format,
   isWithinInterval,
 } from 'date-fns';
 
 import { fetchClassesData } from 'features/Dashboard/data';
+
+import { formatUTCDate } from 'helpers';
 
 import 'features/Dashboard/WeeklySchedule/index.scss';
 
@@ -73,7 +74,7 @@ const WeeklySchedule = () => {
         <div className="container-class-schedule">
           {classList.length > 0 ? (
             classList.map(classInfo => {
-              const date = format(new Date(classInfo?.startDate), 'PP');
+              const date = formatUTCDate(classInfo?.startDate, 'PP');
               return (
                 <div className="class-schedule" key={classInfo?.classId}>
                   <div className="class-text">

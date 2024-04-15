@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types, no-nested-ternary */
 import React from 'react';
-import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { Badge } from 'react-paragon-topaz';
 
 import { ClassStatus, badgeVariants } from 'features/constants';
+import { formatUTCDate } from 'helpers';
 
 const columns = [
   {
@@ -27,8 +27,8 @@ const columns = [
     Header: 'Start - End Date',
     accessor: 'startDate',
     Cell: ({ row }) => {
-      const startDate = row.values.startDate ? format(row.values.startDate, 'MM/dd/yy') : '';
-      const endDate = row.original.endDate ? format(row.original.endDate, 'MM/dd/yy') : '';
+      const startDate = row.values.startDate ? formatUTCDate(row.values.startDate, 'MM/dd/yy') : '';
+      const endDate = row.original.endDate ? formatUTCDate(row.original.endDate, 'MM/dd/yy') : '';
       return <div>{startDate} - {endDate}</div>;
     },
   },

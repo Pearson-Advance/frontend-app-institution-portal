@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
-import { format } from 'date-fns';
 import { ProgressBar } from '@edx/paragon';
 import { Link } from 'react-router-dom';
+
+import { formatUTCDate } from 'helpers';
 
 const columns = [
   {
@@ -36,8 +37,8 @@ const columns = [
     Header: 'Start - End Date',
     accessor: 'startDate',
     Cell: ({ row }) => {
-      const startDate = row.original.startDate ? format(row.original.startDate, 'MM/dd/yy') : '';
-      const endDate = row.original.endDate ? format(row.original.endDate, 'MM/dd/yy') : '';
+      const startDate = row.original.startDate ? formatUTCDate(row.original.startDate, 'MM/dd/yy') : '';
+      const endDate = row.original.endDate ? formatUTCDate(row.original.endDate, 'MM/dd/yy') : '';
       return <div>{startDate} - {endDate}</div>;
     },
   },
