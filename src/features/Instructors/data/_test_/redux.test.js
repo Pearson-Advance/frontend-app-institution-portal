@@ -143,11 +143,15 @@ describe('Instructors redux tests', () => {
   });
 
   test('successful add instructor', async () => {
-    const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/instructors/?instructor_email=testEmail@example.com&institution_id=1`;
+    const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/instructors/?institution_id=1&instructor_email=instructor%40example.com&first_name=Sam&last_name=F`;
     const institutionId = '1';
-    const instructorEmail = 'testEmail@example.com';
+    const instructorForm = new FormData();
+    instructorForm.append('instructor_email', 'instructor@example.com');
+    instructorForm.append('first_name', 'Sam');
+    instructorForm.append('last_name', 'F');
+
     const mockResponse = {
-      instructor_email: instructorEmail,
+      instructor_email: instructorForm.get('instructor_email'),
       institution_id: institutionId,
     };
     axiosMock.onPost(instructorsApiUrl)
@@ -156,7 +160,7 @@ describe('Instructors redux tests', () => {
     expect(store.getState().instructors.addInstructor.status)
       .toEqual('loading');
 
-    await executeThunk(addInstructor(institutionId, instructorEmail), store.dispatch, store.getState);
+    await executeThunk(addInstructor(institutionId, instructorForm), store.dispatch, store.getState);
 
     expect(store.getState().instructors.addInstructor.data)
       .toEqual(mockResponse);
@@ -166,23 +170,35 @@ describe('Instructors redux tests', () => {
   });
 
   test('failed add instructor', async () => {
-    const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/instructors/?instructor_email=testEmail@example.com&institution_id=1`;
+    const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/instructors/?institution_id=1&instructor_email=instructor%40example.com&first_name=Sam&last_name=F`;
     const institutionId = '1';
-    const instructorEmail = 'testEmail@example.com';
+    const instructorForm = new FormData();
+    instructorForm.append('instructor_email', 'instructor@example.com');
+    instructorForm.append('first_name', 'Sam');
+    instructorForm.append('last_name', 'F');
 
     axiosMock.onPost(instructorsApiUrl)
-      .reply(500);
+      .reply(500, {
+        customAttributes: {
+          httpErrorResponseData: '{}',
+          httpErrorStatus: 500,
+        },
+      });
 
     expect(store.getState().instructors.addInstructor.status)
       .toEqual('loading');
 
-    await executeThunk(addInstructor(institutionId, instructorEmail), store.dispatch, store.getState);
+    try {
+      await executeThunk(addInstructor(institutionId, instructorForm), store.dispatch, store.getState);
+    } catch (error) {
+      expect(error.response.status).toBe(500);
+    }
 
     expect(store.getState().instructors.addInstructor.data)
       .toEqual(null);
 
     expect(store.getState().instructors.addInstructor.status)
-      .toEqual('error');
+      .toEqual('complete-with-errors');
   });
 
   test('Reset rowsSelected', () => {

@@ -7,6 +7,8 @@ export const RequestStatus = {
   LOADING: 'loading',
   SUCCESS: 'success',
   ERROR: 'error',
+  INITIAL: 'initial',
+  COMPLETE_WITH_ERRORS: 'complete-with-errors',
 };
 
 /**

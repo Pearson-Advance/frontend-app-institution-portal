@@ -48,11 +48,14 @@ describe('should call getAuthenticatedHttpClient with the correct parameters', (
     };
 
     const institutionId = '1';
-    const instructorEmail = 'testEmail@example.com';
+    const instructorForm = new FormData();
+    instructorForm.append('instructor_email', 'instructor@example.com');
+    instructorForm.append('first_name', 'Sam');
+    instructorForm.append('last_name', 'F');
 
     getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
 
-    handleNewInstructor(institutionId, instructorEmail);
+    handleNewInstructor(institutionId, instructorForm);
 
     expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
     expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
@@ -60,7 +63,7 @@ describe('should call getAuthenticatedHttpClient with the correct parameters', (
     expect(httpClientMock.post).toHaveBeenCalledTimes(1);
     expect(httpClientMock.post).toHaveBeenCalledWith(
       'http://localhost:18000/pearson_course_operation/api/v2/instructors/'
-      + '?instructor_email=testEmail@example.com&institution_id=1',
+      + '?institution_id=1&instructor_email=instructor%40example.com&first_name=Sam&last_name=F',
     );
   });
 });

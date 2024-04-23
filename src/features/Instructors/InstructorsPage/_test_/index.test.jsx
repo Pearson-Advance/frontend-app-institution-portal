@@ -5,6 +5,7 @@ import { renderWithProviders } from 'test-utils';
 import { MemoryRouter, Route } from 'react-router-dom';
 
 import InstructorsPage from 'features/Instructors/InstructorsPage';
+import { RequestStatus } from 'features/constants';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -38,6 +39,9 @@ const mockStore = {
     },
     courses: {
       data: [],
+    },
+    addInstructor: {
+      status: RequestStatus.INITIAL,
     },
   },
 };

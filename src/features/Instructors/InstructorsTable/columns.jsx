@@ -21,6 +21,10 @@ const columns = [
     Header: 'Last seen',
     accessor: 'lastAccess',
     Cell: ({ row }) => {
+      if (!row.values.lastAccess) {
+        return <span>-</span>;
+      }
+
       const currentDate = Date.now();
       const lastDate = new Date(row.values.lastAccess);
       const diffHours = differenceInHours(currentDate, lastDate);
