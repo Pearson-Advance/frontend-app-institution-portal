@@ -43,7 +43,7 @@ describe('Header', () => {
       </AppContext.Provider>,
     );
 
-    const titleApp = getByText('CertPREP Management Portal');
+    const titleApp = getByText('CertPREP Manager');
     const userName = getByText('User');
 
     expect(userName).toBeInTheDocument();
@@ -79,7 +79,7 @@ describe('Header', () => {
     const profileLink = getByText('Profile');
     const logOutLink = getByText('Log Out');
 
-    expect(profileLink).toHaveAttribute('href', `${config.ACCOUNT_PROFILE_URL}/${authenticatedUser.username}`);
+    expect(profileLink).toHaveAttribute('href', `${config.ACCOUNT_PROFILE_URL}/u/${authenticatedUser.username}`);
     expect(logOutLink).toHaveAttribute('href', `${config.LMS_BASE_URL}/logout`);
   });
 });
