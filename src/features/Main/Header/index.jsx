@@ -8,6 +8,7 @@ export const Header = () => {
   const { authenticatedUser } = useContext(AppContext);
   const userName = authenticatedUser.username;
   const questionsLink = () => `${getConfig().HEADER_QUESTIONS_LINK}`;
+  const platformName = getConfig().PLATFORM_NAME ? getConfig().PLATFORM_NAME : 'CertPREP Manager';
 
   return (
     <header className="institution-header py-4 px-3">
@@ -15,7 +16,7 @@ export const Header = () => {
         <a href={`${getConfig().LMS_BASE_URL}`}>
           <img src={`${getConfig().LOGO_INSTITUTION_PORTAL}`} alt="icon" />
         </a>
-        <h3 className="platform-name">CertPREP Management Portal</h3>
+        <h3 className="platform-name">{platformName}</h3>
       </div>
       <div className="header-right d-flex align-items-center">
         <a href={questionsLink()}>
@@ -28,7 +29,7 @@ export const Header = () => {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item
-              href={`${getConfig().ACCOUNT_PROFILE_URL}/${authenticatedUser.username}`}
+              href={`${getConfig().ACCOUNT_PROFILE_URL}/u/${authenticatedUser.username}`}
             >
               Profile
             </Dropdown.Item>

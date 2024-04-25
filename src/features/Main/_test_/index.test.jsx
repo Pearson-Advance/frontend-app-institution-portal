@@ -29,7 +29,7 @@ describe('Main component', () => {
       </AppContext.Provider>,
     );
 
-    const titleApp = getByText('CertPREP Management Portal');
+    const titleApp = getByText('CertPREP Manager');
     expect(titleApp).toBeInTheDocument();
 
     const button = screen.getByRole('button', { expanded: false });
