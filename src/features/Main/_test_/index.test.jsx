@@ -65,4 +65,15 @@ describe('Main component', () => {
     const linkTermsOfService = getByText('Terms');
     expect(linkTermsOfService).toBeInTheDocument();
   });
+
+  test('Should render cookie consent banner', () => {
+    const { container } = renderWithProviders(
+      <AppContext.Provider value={{ authenticatedUser, config }}>
+        <Main />
+      </AppContext.Provider>,
+    );
+
+    const cookieText = 'This website uses cookies to ensure you get the best experience on our website.';
+    expect(container).toHaveTextContent(cookieText);
+  });
 });
