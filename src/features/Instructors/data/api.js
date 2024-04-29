@@ -10,12 +10,11 @@ function handleInstructorsEnrollment(data) {
   );
 }
 
-function handleNewInstructor(institutionId, instructorEmail) {
-  const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
+function handleNewInstructor(institutionId, instructorFormData) {
+  const apiV2BaseUrl = `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/instructors/?institution_id=${institutionId}`;
+  const searchParams = new URLSearchParams(instructorFormData);
 
-  return getAuthenticatedHttpClient().post(
-    `${apiV2BaseUrl}/instructors/?instructor_email=${instructorEmail}&institution_id=${institutionId}`,
-  );
+  return getAuthenticatedHttpClient().post(`${apiV2BaseUrl}&${searchParams}`);
 }
 
 export {

@@ -1,54 +1,101 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
-  FormGroup, ModalDialog, Form, ModalCloseButton, Toast,
+  Form,
+  Icon,
+  Toast,
+  Alert,
+  Spinner,
+  FormGroup,
+  ModalDialog,
+  ModalCloseButton,
 } from '@edx/paragon';
+
 import { Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
+import { Info, Close, MailOutline } from '@edx/paragon/icons';
 
+import { RequestStatus } from 'features/constants';
 import { addInstructor } from 'features/Instructors/data/thunks';
+import { updateInstructorAdditionRequest, resetInstructorAdditionRequest } from 'features/Instructors/data/slice';
+
+import './index.scss';
+
+const SUCCESS_MESSAGE = 'Email invite has been sent successfully';
+
+const initialState = {
+  showToast: false,
+  instructor: {
+    email: '',
+    firstName: '',
+    lastName: '',
+  },
+};
 
 const AddInstructors = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
+  const instructorRequest = useSelector((state) => state.instructors.addInstructor);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
-  const [showToast, setShowToast] = useState(false);
-  const successMessage = 'Email invite has been sent successfully';
+  const [formState, setFormState] = useState(initialState);
+
+  const handleInputChange = ({ target }) => (
+    setFormState({ ...formState, instructor: { ...formState.instructor, [target.name]: target.value } })
+  );
+
+  const handleCloseModal = () => {
+    onClose();
+    setFormState(initialState);
+    dispatch(resetInstructorAdditionRequest());
+  };
 
   const handleAddInstructor = async (e) => {
     e.preventDefault();
-    const form = e.target;
-    const formData = new FormData(form);
-    const formJson = Object.fromEntries(formData.entries());
-    const { instructorEmail } = formJson;
 
-    if (!instructorEmail) {
-      onClose();
-      return;
+    if (formState.instructor.email.length === 0) {
+      return null;
     }
 
     try {
-      dispatch(addInstructor(selectedInstitution.id, instructorEmail));
-      onClose();
-      setShowToast(true);
+      const formData = new FormData();
+      formData.append('instructor_email', formState.instructor.email);
+      formData.append('first_name', formState.instructor.firstName);
+      formData.append('last_name', formState.instructor.lastName);
+
+      await dispatch(addInstructor(selectedInstitution.id, formData));
+      handleCloseModal();
+      setFormState({ ...initialState, showToast: true });
+      dispatch(updateInstructorAdditionRequest({ status: RequestStatus.INITIAL }));
+
+      setTimeout(() => {
+        setFormState(initialState);
+      }, 5000);
     } catch (error) {
       logError(error);
     }
+
+    return null;
   };
+
+  useEffect(() => {
+    dispatch(updateInstructorAdditionRequest({ status: RequestStatus.INITIAL }));
+
+    return () => dispatch(resetInstructorAdditionRequest());
+  }, [dispatch]);
 
   return (
     <>
       <Toast
-        onClose={() => setShowToast(false)}
-        show={showToast}
+        onClose={() => setFormState(initialState)}
+        show={formState.showToast}
       >
-        {successMessage}
+        {SUCCESS_MESSAGE}
       </Toast>
       <ModalDialog
         title="Add Instructor"
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={handleCloseModal}
         hasCloseButton
       >
         <ModalDialog.Header>
@@ -57,22 +104,70 @@ const AddInstructors = ({ isOpen, onClose }) => {
           </ModalDialog.Title>
         </ModalDialog.Header>
         <ModalDialog.Body>
-          <Form onSubmit={handleAddInstructor}>
-            <FormGroup controlId="instructorInfo">
-              <Form.Control
-                type="email"
-                placeholder="Enter Email of the instructor"
-                floatingLabel="Email"
-                className="my-4 mr-0"
-                name="instructorEmail"
-                required
-              />
-            </FormGroup>
-            <div className="d-flex justify-content-end">
-              <ModalCloseButton className="btntpz btn-text btn-tertiary">Cancel</ModalCloseButton>
-              <Button type="submit">Send invite</Button>
-            </div>
-          </Form>
+          {
+            instructorRequest.status === RequestStatus.LOADING && (
+              <div className="loading-wrapper">
+                <Spinner animation="border" className="me-3" />
+                <p>Loading...</p>
+              </div>
+            )
+          }
+          {(instructorRequest.status === RequestStatus.INITIAL
+            || instructorRequest.status === RequestStatus.COMPLETE_WITH_ERRORS) && (
+              <Form>
+                <FormGroup controlId="formState">
+                  <Form.Control
+                    type="email"
+                    placeholder="Enter Email of the instructor"
+                    floatingLabel="Email *"
+                    className="my-4 mr-0"
+                    name="email"
+                    leadingElement={<Icon src={MailOutline} className="mt-2 icon" />}
+                    onChange={handleInputChange}
+                    value={formState.instructor.email}
+                    required
+                  />
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter the first name of the instructor"
+                    floatingLabel="First name"
+                    className="my-4 mr-0"
+                    name="firstName"
+                    onChange={handleInputChange}
+                    value={formState.instructor.firstName}
+                  />
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter the last name of the instructor"
+                    floatingLabel="Last name"
+                    className="my-4 mr-0"
+                    name="lastName"
+                    onChange={handleInputChange}
+                    value={formState.instructor.lastName}
+                  />
+                </FormGroup>
+                {instructorRequest.status === RequestStatus.COMPLETE_WITH_ERRORS && (
+                  <Alert
+                    variant="danger"
+                    icon={Info}
+                    actions={[
+                      <Button variant="outline-primary" onClick={() => dispatch(resetInstructorAdditionRequest())}>
+                        <Close />
+                      </Button>,
+                    ]}
+                  >
+                    <Alert.Heading>We could not process this request.</Alert.Heading>
+                    <p>
+                      {instructorRequest.error}
+                    </p>
+                  </Alert>
+                )}
+                <div className="d-flex justify-content-end">
+                  <ModalCloseButton className="btntpz btn-text btn-tertiary mr-2" onClose={handleCloseModal}>Cancel</ModalCloseButton>
+                  <Button type="submit" disabled={formState.instructor.email.length === 0} onClick={handleAddInstructor}>Send invite</Button>
+                </div>
+              </Form>
+          )}
         </ModalDialog.Body>
       </ModalDialog>
     </>

@@ -73,15 +73,15 @@ export const instructorsSlice = createSlice({
     resetRowSelect: (state) => {
       state.rowsSelected = [];
     },
-    addInstructorRequest: (state) => {
-      state.addInstructor.status = RequestStatus.LOADING;
+    updateInstructorAdditionRequest: (state, { payload }) => {
+      state.addInstructor.status = payload.status;
+      state.addInstructor.data = payload?.data || null;
+      state.addInstructor.error = payload?.error || null;
     },
-    addInstructorSuccess: (state, { payload }) => {
-      state.addInstructor.status = RequestStatus.SUCCESS;
-      state.addInstructor.data = payload;
-    },
-    addInstructorFailed: (state) => {
-      state.addInstructor.status = RequestStatus.ERROR;
+    resetInstructorAdditionRequest: (state) => {
+      state.addInstructor.status = RequestStatus.INITIAL;
+      state.addInstructor.data = null;
+      state.addInstructor.error = null;
     },
     updateInstructorOptions: (state, { payload }) => {
       state.selectOptions = payload;
@@ -102,10 +102,9 @@ export const {
   addRowSelect,
   deleteRowSelect,
   resetRowSelect,
-  addInstructorRequest,
-  addInstructorSuccess,
-  addInstructorFailed,
   updateInstructorOptions,
+  resetInstructorAdditionRequest,
+  updateInstructorAdditionRequest,
 } = instructorsSlice.actions;
 
 export const { reducer } = instructorsSlice;

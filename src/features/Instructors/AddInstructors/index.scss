@@ -1,0 +1,15 @@
+@import 'assets/colors.scss';
+@import 'assets/variables.scss';
+
+.loading-wrapper {
+  color: $primary;
+  height: 269px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  color: $gray-70;
+}

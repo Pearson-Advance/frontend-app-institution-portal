@@ -9,12 +9,10 @@ import {
   assignInstructorsRequest,
   assignInstructorsSuccess,
   assignInstructorsFailed,
-  addInstructorRequest,
-  addInstructorSuccess,
-  addInstructorFailed,
   updateInstructorOptions,
+  updateInstructorAdditionRequest,
 } from 'features/Instructors/data/slice';
-import { initialPage } from 'features/constants';
+import { RequestStatus, initialPage } from 'features/constants';
 
 function fetchInstructorsData(id, currentPage, filtersData) {
   return async (dispatch) => {
@@ -63,18 +61,29 @@ function assignInstructors(data) {
 /**
  * Add instructor to an institution.
  * @param {number} institutionId - The ID of the institution to which it will be assigned.
- * @param {string} instructorEmail - The instructor email to be added.
+ * @param {FormData} instructorFormData - Instructor formData {instructorEmail, firstName, lastName}.
  * @returns {Promise<void>} - A promise that resolves after dispatching appropriate actions.
  */
-function addInstructor(institutionId, instructorEmail) {
+function addInstructor(institutionId, instructorFormData) {
   return async (dispatch) => {
-    dispatch(addInstructorRequest());
+    dispatch(updateInstructorAdditionRequest({ status: RequestStatus.LOADING }));
     try {
-      const response = await handleNewInstructor(institutionId, instructorEmail);
-      dispatch(addInstructorSuccess(response.data));
+      const { data } = await handleNewInstructor(institutionId, instructorFormData);
+      dispatch(updateInstructorAdditionRequest({ status: RequestStatus.SUCCESS, data }));
     } catch (error) {
-      dispatch(addInstructorFailed());
-      logError(error);
+      let errors = '';
+      const { customAttributes } = error || {};
+      const { httpErrorResponseData, httpErrorStatus } = customAttributes || {};
+
+      if (httpErrorStatus === 500) {
+        errors = 'Error: The operation failed. Possible reasons: the user may already exist, or the server is temporarily unavailable.';
+      } else if (typeof httpErrorResponseData === 'string') {
+        const [[errorMessage]] = Object.values(JSON.parse(httpErrorResponseData)) ?? [['Internal server error']];
+        errors = errorMessage;
+      }
+
+      dispatch(updateInstructorAdditionRequest({ status: RequestStatus.COMPLETE_WITH_ERRORS, error: errors }));
+      throw error;
     } finally {
       dispatch(fetchInstructorsData(institutionId, initialPage));
     }
