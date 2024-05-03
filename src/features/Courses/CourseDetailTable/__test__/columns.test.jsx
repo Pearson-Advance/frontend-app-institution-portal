@@ -95,12 +95,16 @@ describe('columns', () => {
     const pendingStudents = { row: { values: { numberOfStudents: 3, numberOfPendingStudents: 1 } } };
 
     const enrollmentStatus = columns[2].Cell(pendingStudents);
-    expect(enrollmentStatus.props).toEqual({ children: ['Pending (', 1, ')'], light: true, variant: 'warning' });
+    expect(enrollmentStatus.props).toEqual({
+      children: ['Pending (', 1, ')'], light: true, variant: 'warning', className: '', small: false,
+    });
 
     const completeStudents = { row: { values: { numberOfStudents: 3, numberOfPendingStudents: 0 } } };
 
     const enrollmentStatusComplete = columns[2].Cell(completeStudents);
-    expect(enrollmentStatusComplete.props).toEqual({ children: 'Complete', light: true, variant: 'success' });
+    expect(enrollmentStatusComplete.props).toEqual({
+      children: 'Complete', light: true, variant: 'success', className: '', small: false,
+    });
   });
 
   test('Should render the students enrolled', () => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Calendar } from 'react-date-range';
+import { Schedule } from 'react-paragon-topaz';
 import {
   startOfWeek,
   endOfWeek,
@@ -11,8 +11,6 @@ import {
 import { fetchClassesData } from 'features/Dashboard/data';
 
 import { formatUTCDate } from 'helpers';
-
-import 'features/Dashboard/WeeklySchedule/index.scss';
 
 const WeeklySchedule = () => {
   const dispatch = useDispatch();
@@ -91,15 +89,15 @@ const WeeklySchedule = () => {
             <div className="empty-classes">No classes scheduled at this time</div>
           )}
         </div>
-        <Calendar
+        <Schedule
           onChange={item => handleDateChange(item)}
           showDateDisplay={false}
           ranges={stateDate}
           direction="horizontal"
-          displayMode="dateRange"
           rangeColors={['#e4faff']}
           fixedHeigh
           showMonthName={false}
+          isWeekRange
         />
       </div>
     </>
