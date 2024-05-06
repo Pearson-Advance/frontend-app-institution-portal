@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types, no-nested-ternary */
+/* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
 
 const columns = [
@@ -16,8 +16,15 @@ const columns = [
     accessor: 'numberOfStudents',
   },
   {
-    Header: 'Remaining',
+    Header: 'Pending',
     accessor: 'numberOfPendingStudents',
+  },
+  {
+    Header: 'Remaining',
+    accessor: 'remaining',
+    Cell: ({ row: { original: { purchasedSeats = 0, numberOfStudents = 0, numberOfPendingStudents = 0 } } }) => (
+      <span>{purchasedSeats - numberOfStudents - numberOfPendingStudents}</span>
+    ),
   },
 ];
 
