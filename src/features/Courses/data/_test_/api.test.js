@@ -32,6 +32,6 @@ describe('should call getAuthenticatedHttpClient with the correct parameters', (
     expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
 
     expect(httpClientMock.post).toHaveBeenCalledTimes(1);
-    expect(httpClientMock.post).toHaveBeenCalledWith('http://localhost:18000/pearson_course_operation/api/v2/create-class/', data);
+    expect(httpClientMock.post).toHaveBeenCalledWith('http://localhost:18000/pearson_course_operation/api/v2/classes/', data);
   });
 });
