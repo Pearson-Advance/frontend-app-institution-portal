@@ -14,8 +14,6 @@ import { fetchInstructorsData } from 'features/Instructors/data/thunks';
 import { columns } from 'features/Instructors/InstructorDetailTable/columns';
 import { initialPage } from 'features/constants';
 
-import 'features/Instructors/InstructorsDetailPage/index.scss';
-
 const InstructorsDetailPage = () => {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -75,7 +73,7 @@ const InstructorsDetailPage = () => {
         </div>
       </div>
 
-      <Tabs variant="tabs" defaultActiveKey="classes" id="uncontrolled-tab-example" className="mb-3">
+      <Tabs variant="tabs" defaultActiveKey="classes" id="uncontrolled-tab-example" className="mb-3 tabstpz">
         <Tab eventKey="classes" title="Classes" />
       </Tabs>
 
