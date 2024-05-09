@@ -103,7 +103,7 @@ describe('Courses redux tests', () => {
   });
 
   test('successful add class', async () => {
-    const classApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/create-class/`;
+    const classApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/`;
     const dataCreateClass = new FormData();
     const instructorData = new FormData();
     const classId = 'ccx1';
@@ -126,7 +126,7 @@ describe('Courses redux tests', () => {
   });
 
   test('failed add class', async () => {
-    const classApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/create-class/`;
+    const classApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/`;
     const dataCreateClass = new FormData();
     const instructorData = new FormData();
 

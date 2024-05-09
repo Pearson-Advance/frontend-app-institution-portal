@@ -5,7 +5,7 @@ function handleNewClass(data) {
   const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
 
   return getAuthenticatedHttpClient().post(
-    `${apiV2BaseUrl}/create-class/`,
+    `${apiV2BaseUrl}/classes/`,
     data,
   );
 }
