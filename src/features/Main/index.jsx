@@ -22,6 +22,7 @@ import LicensesDetailPage from 'features/Licenses/LicensesDetailPage';
 import InstructorsPage from 'features/Instructors/InstructorsPage';
 import InstructorsDetailPage from 'features/Instructors/InstructorsDetailPage';
 import ActiveTabUpdater from 'features/Main//ActiveTabUpdater';
+import CookiePolicyBanner from '@edx/frontend-component-cookie-policy-banner';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
 import { updateSelectedInstitution } from 'features/Main/data/slice';
@@ -33,6 +34,7 @@ const Main = () => {
   const stateInstitutions = useSelector((state) => state.main.institution.data);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const [institutionOptions, setInstitutionOptions] = useState([]);
+  const cookieText = 'This website uses cookies to ensure you get the best experience on our website. If you continue browsing this site, we understand that you accept the use of cookies.';
 
   useEffect(() => {
     dispatch(fetchInstitutionData());
@@ -65,6 +67,7 @@ const Main = () => {
 
   return (
     <BrowserRouter basename={getConfig().INSTITUTION_PORTAL_PATH}>
+      <CookiePolicyBanner policyText={{ en: cookieText }} />
       <Header />
       <div className="pageWrapper">
         <Sidebar />

@@ -122,3 +122,24 @@ li {
     }
   }
 }
+
+.edx-cookie-banner-wrapper .edx-cookie-banner.alert {
+  background-color: $gray-90;
+  border-radius: 0;
+  padding: 1.8rem;
+
+  .alert-dialog {
+    color: $color-white;
+    font-size: 1rem;
+    font-family: $font-family;
+    text-align: start;
+    max-width: none;
+    margin: 0 1rem 0;
+  }
+
+  .btn.close,
+  .btn.close:hover {
+    color: $color-white;
+    padding: 1.75rem 1.25rem;
+  }
+}
