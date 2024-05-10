@@ -1,3 +1,4 @@
+// TODO: this test should be refactor,takes more than half the total time. temporarily disabled
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { AppContext } from '@edx/frontend-platform/react';

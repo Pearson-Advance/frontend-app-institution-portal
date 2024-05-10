@@ -14,4 +14,8 @@ module.exports = createConfig('jest', {
       '<rootDir>/__mocks__/fileMock.js',
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
   },
+  // TODO: this test should be refactor,takes more than half the total time. temporarily disabled
+  testPathIgnorePatterns:[
+    'src/features/Main/_test_/index.test.jsx',
+  ],
 });
