@@ -64,6 +64,7 @@ const AddClass = ({
     } else {
       try {
         dataClass.append('course_id', courseInfo.masterCourseId);
+        dataClass.append('institution_id', selectedInstitution.id);
         const enrollmentDataInst = new FormData();
         if (instructorSelected) {
           enrollmentDataInst.append('unique_student_identifier', instructorSelected.value);
