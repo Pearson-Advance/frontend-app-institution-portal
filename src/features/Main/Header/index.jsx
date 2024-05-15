@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { AppContext } from '@edx/frontend-platform/react';
 import { getConfig } from '@edx/frontend-platform';
 import { Dropdown } from '@edx/paragon';
-import 'features/Main/Header/index.scss';
+import { Header as HeaderBase } from 'react-paragon-topaz';
 
 export const Header = () => {
   const { authenticatedUser } = useContext(AppContext);
@@ -11,13 +11,11 @@ export const Header = () => {
   const platformName = getConfig().PLATFORM_NAME ? getConfig().PLATFORM_NAME : 'CertPREP Manager';
 
   return (
-    <header className="institution-header py-4 px-3">
-      <div className="header-left d-flex">
-        <a href={`${getConfig().LMS_BASE_URL}`}>
-          <img src={`${getConfig().LOGO_INSTITUTION_PORTAL}`} alt="icon" />
-        </a>
-        <h3 className="platform-name">{platformName}</h3>
-      </div>
+    <HeaderBase
+      title={platformName}
+      src={`${getConfig().LOGO_INSTITUTION_PORTAL}`}
+      logoUrl={`${getConfig().LMS_BASE_URL}`}
+    >
       <div className="header-right d-flex align-items-center">
         <a href={questionsLink()}>
           <i className="fa-regular fa-circle-question icon" />
@@ -37,6 +35,6 @@ export const Header = () => {
           </Dropdown.Menu>
         </Dropdown>
       </div>
-    </header>
+    </HeaderBase>
   );
 };
