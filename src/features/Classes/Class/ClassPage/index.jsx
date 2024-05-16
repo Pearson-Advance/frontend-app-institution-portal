@@ -11,6 +11,7 @@ import Table from 'features/Main/Table';
 import EnrollStudent from 'features/Classes/EnrollStudent';
 import InstructorCard from 'features/Classes/InstructorCard';
 
+import { updateActiveTab } from 'features/Main/data/slice';
 import { columns } from 'features/Classes/Class/ClassPage/columns';
 import { resetStudentsTable, updateCurrentPage } from 'features/Students/data/slice';
 import { fetchStudentsData } from 'features/Students/data';
@@ -46,11 +47,13 @@ const ClassPage = () => {
     const initialTitle = document.title;
 
     document.title = classId;
+    // Leaves a gap time space to prevent being override by ActiveTabUpdater component
+    setTimeout(() => dispatch(updateActiveTab('classes')), 100);
 
     return () => {
       document.title = initialTitle;
     };
-  }, [classId]);
+  }, [dispatch, classId]);
 
   useEffect(() => {
     if (institution.id) {
