@@ -1,0 +1,46 @@
+@import 'assets/colors.scss';
+@import 'assets/variables.scss';
+
+.manage-instructors-page {
+  .instructors-content {
+    background-color: $color-white;
+    border-radius: $border-radius-1;
+    box-shadow: 0px 3px 12px 0px rgba(0, 0, 0, 0.16);
+  }
+
+  .empty-list {
+    font-size: 1rem;
+    color: $black;
+  }
+
+  .class-name {
+    color: $gray-70;
+    text-transform: capitalize;
+  }
+
+  .course-name {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 0.75rem;
+  }
+
+  .list-instructors {
+    border-radius: $border-radius-1;
+    border: 1px solid $gray-20;
+  }
+
+  .list-item {
+    padding: 0.75rem 1rem;
+    margin: 0;
+    color: $black;
+  }
+
+  .list-item:not(:last-child) {
+    border-bottom: 1px solid $gray-20;
+  }
+
+  .pgn__data-table-status-left .test_selection_state_select_all_button,
+  .pgn__data-table-status-left .test_selection_state_clear_selection_button {
+    display: none;
+  }
+}

@@ -16,7 +16,7 @@ import { fetchCoursesOptionsData } from 'features/Courses/data/thunks';
 
 import { initialPage } from 'features/constants';
 
-const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
+const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const courses = useSelector((state) => state.courses.selectOptions);
   const dispatch = useDispatch();
@@ -57,11 +57,11 @@ const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
   };
 
   useEffect(() => {
-    if (Object.keys(selectedInstitution).length > 0 && !isAssignModal) {
+    if (Object.keys(selectedInstitution).length > 0 && !isAssignSection) {
       resetFields();
       dispatch(fetchCoursesOptionsData(selectedInstitution.id));
     }
-  }, [selectedInstitution, dispatch, isAssignModal]);
+  }, [selectedInstitution, dispatch, isAssignSection]);
 
   useEffect(() => {
     const options = courses.length > 0
@@ -77,9 +77,9 @@ const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
 
   return (
     <div className="filter-container justify-content-center row">
-      <div className="col-11 px-0">
-        <h3>Search</h3>
-        <div className="filters">
+      <div className={isAssignSection ? 'col-12 px-3' : 'col-11 px-0'}>
+        {!isAssignSection && (<h3>Search</h3>)}
+        <div className={isAssignSection ? 'py-3' : 'filters'}>
           <Form className="row justify-content-center" onSubmit={handleInstructorsFilter}>
             <Form.Row className="col-12">
               <Form.Group>
@@ -121,8 +121,8 @@ const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
                 </Form.Group>
               )}
             </Form.Row>
-            <div className={`col-12 px-1 d-flex align-items-baseline ${isAssignModal ? 'justify-content-end' : 'justify-content-between'}`}>
-              {!isAssignModal && (
+            <div className={`col-12 px-1 d-flex align-items-baseline ${isAssignSection ? 'justify-content-end' : 'justify-content-between'}`}>
+              {!isAssignSection && (
                 <Form.Row className="col-6">
                   <Form.Group as={Col}>
                     <Select
@@ -147,7 +147,7 @@ const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
                   Reset
                 </Button>
                 <Button
-                  variant={`${isAssignModal ? 'outline-primary' : 'primary'}`}
+                  variant={`${isAssignSection ? 'outline-primary' : 'primary'}`}
                   type="submit"
                   disabled={isButtonDisabled}
                 >
@@ -164,11 +164,11 @@ const InstructorsFilters = ({ resetPagination, isAssignModal }) => {
 
 InstructorsFilters.propTypes = {
   resetPagination: PropTypes.func.isRequired,
-  isAssignModal: PropTypes.bool,
+  isAssignSection: PropTypes.bool,
 };
 
 InstructorsFilters.defaultProps = {
-  isAssignModal: false,
+  isAssignSection: false,
 };
 
 export default InstructorsFilters;

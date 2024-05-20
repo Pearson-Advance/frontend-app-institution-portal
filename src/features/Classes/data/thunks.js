@@ -5,7 +5,9 @@ import {
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
   updateClassesOptions,
-  updateAllClasses,
+  fetchAllClassesDataRequest,
+  fetchAllClassesDataSuccess,
+  fetchAllClassesDataFailed,
 } from 'features/Classes/data/slice';
 
 import { getClassesByInstitution } from 'features/Common/data/api';
@@ -43,15 +45,15 @@ function fetchClassesOptionsData(id, courseName) {
 
 function fetchAllClassesData(id, courseName = '', urlParamsFilters = '', limit = false) {
   return async (dispatch) => {
-    dispatch(fetchClassesDataRequest);
+    dispatch(fetchAllClassesDataRequest());
 
     try {
       const response = camelCaseObject(
         await getClassesByInstitution(id, courseName, limit, initialPage, urlParamsFilters),
       );
-      dispatch(updateAllClasses(response.data));
+      dispatch(fetchAllClassesDataSuccess(response.data));
     } catch (error) {
-      dispatch(fetchClassesDataFailed());
+      dispatch(fetchAllClassesDataFailed());
       logError(error);
     }
   };

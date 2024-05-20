@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useMemo,
-} from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 

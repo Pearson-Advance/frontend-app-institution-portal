@@ -16,6 +16,8 @@ const initialState = {
   allClasses: {
     data: [],
     count: 0,
+    status: RequestStatus.LOADING,
+    error: null,
   },
 };
 
@@ -54,9 +56,16 @@ export const classesSlice = createSlice({
       state.table.numPages = 1;
       state.table.count = payload?.length;
     },
-    updateAllClasses: (state, { payload }) => {
+    fetchAllClassesDataRequest: (state) => {
+      state.allClasses.status = RequestStatus.LOADING;
+    },
+    fetchAllClassesDataSuccess: (state, { payload }) => {
       state.allClasses.data = payload;
       state.allClasses.count = payload?.length;
+      state.allClasses.status = RequestStatus.SUCCESS;
+    },
+    fetchAllClassesDataFailed: (state) => {
+      state.allClasses.status = RequestStatus.ERROR;
     },
     resetClasses: (state) => {
       state.allClasses = initialState.allClasses;
@@ -72,7 +81,9 @@ export const {
   updateFilters,
   updateClassesOptions,
   fillClassesTable,
-  updateAllClasses,
+  fetchAllClassesDataRequest,
+  fetchAllClassesDataSuccess,
+  fetchAllClassesDataFailed,
   resetClasses,
   resetClassesTable,
 } = classesSlice.actions;

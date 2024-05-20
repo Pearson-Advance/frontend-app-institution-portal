@@ -1,3 +1,4 @@
+// THIS FOLDER WILL BE REMOVED AFTER INTEGRATE ALL SECTIONS WITH NEW MANAGE INSTRUCTORS PAGE
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -88,7 +89,7 @@ const AssignInstructors = ({ isOpen, close, getClasses }) => {
         </ModalDialog.Title>
       </ModalDialog.Header>
       <ModalDialog.Body>
-        <InstructorsFilters isAssignModal resetPagination={resetPagination} />
+        <InstructorsFilters isAssignSection resetPagination={resetPagination} />
         <AssignTable />
         {stateInstructors.table.numPages > 1 && (
           <Pagination
