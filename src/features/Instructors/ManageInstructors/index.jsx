@@ -3,20 +3,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams, useLocation } from 'react-router-dom';
 
 import { Container, Toast } from '@edx/paragon';
-import ListInstructors from 'features/Instructors/ManageInstructorsPage/ListInstructors';
-import AssignSection from 'features/Instructors/ManageInstructorsPage/AssignSection';
-import { Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
+import { Button } from 'react-paragon-topaz';
+import ListInstructors from 'features/Instructors/ManageInstructors/ListInstructors';
+import AssignSection from 'features/Instructors/ManageInstructors/AssignSection';
 
 import { RequestStatus } from 'features/constants';
 import { resetClassesTable, resetClasses } from 'features/Classes/data/slice';
 import { fetchAllClassesData } from 'features/Classes/data/thunks';
 import { updateFilters, resetRowSelect } from 'features/Instructors/data/slice';
 import { assignInstructors } from 'features/Instructors/data';
+import { updateActiveTab } from 'features/Main/data/slice';
 
-import 'features/Instructors/ManageInstructorsPage/index.scss';
+import 'features/Instructors/ManageInstructors/index.scss';
 
-const ManageInstructorsPage = () => {
+const ManageInstructors = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const cancelButtonRef = useRef(null);
@@ -74,6 +75,7 @@ const ManageInstructorsPage = () => {
   useEffect(() => {
     if (selectedInstitution.id) {
       dispatch(fetchAllClassesData(selectedInstitution.id, courseName));
+      dispatch(updateActiveTab('courses'));
     }
 
     return () => {
@@ -93,7 +95,7 @@ const ManageInstructorsPage = () => {
       <Container size="xl" className="px-4 mt-3 manage-instructors-page">
         <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
           <div className="d-flex align-items-center mb-3">
-            <Link to="/instructors" className="mr-3 link">
+            <Link to="/courses" className="mr-3 link">
               <i className="fa-solid fa-arrow-left" />
             </Link>
             <h3 className="h2 mb-0 course-title">Manage Instructors</h3>
@@ -127,4 +129,4 @@ const ManageInstructorsPage = () => {
   );
 };
 
-export default ManageInstructorsPage;
+export default ManageInstructors;

@@ -22,11 +22,10 @@ const columns = [
       const diffDays = differenceInDays(currentDate, lastDate);
       const diffWeeks = differenceInWeeks(currentDate, lastDate);
       return (
-        <span>{diffHours < hoursDay
-          ? 'Today'
-          : diffDays < daysWeek
-            ? `${diffDays} days ago`
-            : `${diffWeeks} wks ago`}
+        <span>
+          {diffHours < hoursDay && 'Today'}
+          {diffDays < daysWeek && `${diffDays} days ago`}
+          {diffDays > daysWeek && `${diffWeeks} wks ago`}
         </span>
       );
     },

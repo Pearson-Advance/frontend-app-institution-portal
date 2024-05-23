@@ -5,7 +5,7 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { renderWithProviders } from 'test-utils';
 
-import ManageInstructorsPage from 'features/Instructors/ManageInstructorsPage';
+import ManageInstructors from 'features/Instructors/ManageInstructors';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -56,7 +56,7 @@ describe('Manage instructors page', () => {
     const { getByText, getAllByRole, getByTestId } = renderWithProviders(
       <MemoryRouter initialEntries={['/manageInstructors/Demo%20Course%201/demo%20class%20cxx1?classId=ccx1']}>
         <Route path="/manageInstructors/:courseName/:className">
-          <ManageInstructorsPage />
+          <ManageInstructors />
         </Route>
       </MemoryRouter>,
       { preloadedState: mockStore },

@@ -8,14 +8,14 @@ import {
   Container, Row, Col, DataTable, Pagination, Button,
 } from '@edx/paragon';
 import InstructorsFilters from 'features/Instructors/InstructorsFilters';
-import ControlledSelect from 'features/Instructors/ManageInstructorsPage/ControlledSelect';
+import ControlledSelect from 'features/Instructors/ManageInstructors/ControlledSelect';
 
 import { fetchInstructorsData } from 'features/Instructors/data';
 import {
   updateCurrentPage,
 } from 'features/Instructors/data/slice';
 
-import { columns } from 'features/Instructors/ManageInstructorsPage/columns';
+import { columns } from 'features/Instructors/ManageInstructors/columns';
 import { initialPage, RequestStatus } from 'features/constants';
 
 // Component to get access the clearSelection function
