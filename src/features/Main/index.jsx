@@ -70,8 +70,8 @@ const Main = () => {
       <CookiePolicyBanner policyText={{ en: cookieText }} />
       <Header />
       <div className="pageWrapper">
-        <Sidebar />
-        <main>
+        <main className="d-flex">
+          <Sidebar />
           <Container className="px-0 container-pages">
             <Container size="xl" className="px-4">
               {stateInstitutions.length > 1 && (
@@ -113,9 +113,9 @@ const Main = () => {
                 />
               ))}
             </Switch>
-            <Footer />
           </Container>
         </main>
+        <Footer />
       </div>
     </BrowserRouter>
   );

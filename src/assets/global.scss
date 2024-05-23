@@ -34,3 +34,16 @@
     color: $primary;
   }
 }
+
+@media screen and (max-width: 880px) {
+  .title-page {
+    padding-left: 20px;
+  }
+}
+
+@media screen and (min-width: 600px) and (max-width: 1024px) {
+  .page-content-container {
+    max-width: 680px;
+    min-width: 680px;
+  }
+}
