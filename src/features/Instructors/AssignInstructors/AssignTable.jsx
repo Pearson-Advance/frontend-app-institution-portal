@@ -6,7 +6,7 @@ import {
   Col,
   DataTable,
 } from '@edx/paragon';
-import ControlledSelect from 'features/Instructors/AssignInstructors/ControlledSelect';
+import ControlledSelect from 'features/Instructors/ManageInstructors/ControlledSelect';
 
 import { columns } from 'features/Instructors/AssignInstructors/columns';
 

@@ -23,6 +23,7 @@ import InstructorsPage from 'features/Instructors/InstructorsPage';
 import InstructorsDetailPage from 'features/Instructors/InstructorsDetailPage';
 import ActiveTabUpdater from 'features/Main//ActiveTabUpdater';
 import CookiePolicyBanner from '@pearsonedunext/frontend-component-cookie-policy-banner';
+import ManageInstructors from 'features/Instructors/ManageInstructors';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
 import { updateSelectedInstitution } from 'features/Main/data/slice';
@@ -63,6 +64,7 @@ const Main = () => {
     { path: '/licenses', component: LicensesPage, exact: true },
     { path: '/licenses/:licenseId', component: LicensesDetailPage, exact: true },
     { path: '/classes', component: ClassesPage, exact: true },
+    { path: '/manage-instructors/:courseName/:className', component: ManageInstructors, exact: true },
   ];
 
   return (
