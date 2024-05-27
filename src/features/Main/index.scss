@@ -24,14 +24,14 @@ input {
   overflow: visible;
 }
 
+.pageWrapper,
+.container-pages {
+  background-color: $bg-main-color;
+}
+
 .pageWrapper {
   .vertical-nav {
     z-index: 10;
-  }
-
-  nav {
-    color: $color-white;
-    width: 100%;
   }
 
   main {
@@ -41,11 +41,11 @@ input {
   }
 
   .container-pages {
-    background-color: $bg-main-color;
     background-image: url('https://pearson-production-media.s3.amazonaws.com/IPbackground.svg');
     background-repeat: no-repeat;
     background-position: top right;
     background-size: 55%;
+    padding-bottom: 40px;
   }
 }
 
@@ -96,7 +96,6 @@ li {
   .pageWrapper {
     display: grid;
     min-height: 100vh;
-    padding-left: 240px;
   }
 
   header.vertical-nav {
@@ -109,8 +108,15 @@ li {
 @media (max-width: 700px) {
   .pageWrapper {
     .container-pages {
+      padding-top: 1em;
       background-size: 90%;
     }
+  }
+}
+
+@media (max-width: 880px) {
+  .selector-institution {
+    padding-left: 20px;
   }
 }
 

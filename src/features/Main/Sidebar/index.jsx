@@ -1,13 +1,49 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
+import { Sidebar as SidebarBase, MenuSection, MenuItem } from 'react-paragon-topaz';
+
 import { updateActiveTab } from 'features/Main/data/slice';
 import './index.scss';
 
+const menuItems = [
+  {
+    link: 'dashboard',
+    label: 'Home',
+    icon: <i className="fa-regular fa-house" />,
+  },
+  {
+    link: 'licenses',
+    label: 'License inventory',
+    icon: <i className="fa-regular fa-list-check" />,
+  },
+  {
+    link: 'instructors',
+    label: 'Instructors',
+    icon: <i className="fa-regular fa-chalkboard-user" />,
+  },
+  {
+    link: 'students',
+    label: 'Students',
+    icon: <i className="fa-regular fa-screen-users" />,
+  },
+  {
+    link: 'courses',
+    label: 'Courses',
+    icon: <i className="fa-regular fa-bars-sort" />,
+  },
+  {
+    link: 'classes',
+    label: 'Classes',
+    icon: <i className="fa-regular fa-books" />,
+  },
+];
+
 export const Sidebar = () => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const activeTab = useSelector((state) => state.main.activeTab);
-  const history = useHistory();
 
   const handleTabClick = (tabName) => {
     dispatch(updateActiveTab(tabName));
@@ -15,77 +51,21 @@ export const Sidebar = () => {
   };
 
   return (
-    <header className="vertical-nav">
-      <nav className="nav-menu">
-        <ul className="nav-links">
-          <li>
-            <button
-              type="button"
-              className={`${activeTab === 'dashboard' ? 'active' : ''} sidebar-item`}
-              aria-current="page"
-              onClick={() => handleTabClick('dashboard')}
-            >
-              <i className="fa-regular fa-house" />
-              <span className="nav-text">Home</span>
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              className={`${activeTab === 'licenses' ? 'active' : ''} sidebar-item`}
-              aria-current="page"
-              onClick={() => handleTabClick('licenses')}
-            >
-              <i className="fa-regular fa-list-check" />
-              <span className="nav-text">License inventory</span>
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              className={`${activeTab === 'instructors' ? 'active' : ''} sidebar-item`}
-              aria-current="page"
-              onClick={() => handleTabClick('instructors')}
-            >
-              <i className="fa-regular fa-chalkboard-user" />
-              <span className="nav-text">Instructors</span>
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              className={`${activeTab === 'students' ? 'active' : ''} sidebar-item`}
-              aria-current="page"
-              onClick={() => handleTabClick('students')}
-            >
-              <i className="fa-regular fa-screen-users" />
-              <span className="nav-text">Students</span>
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              className={`${activeTab === 'courses' ? 'active' : ''} sidebar-item`}
-              aria-current="page"
-              onClick={() => handleTabClick('courses')}
-            >
-              <i className="fa-regular fa-bars-sort" />
-              <span className="nav-text">Courses</span>
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              className={`${activeTab === 'classes' ? 'active' : ''} sidebar-item`}
-              aria-current="page"
-              onClick={() => handleTabClick('classes')}
-            >
-              <i className="fa-regular fa-books" />
-              <span className="nav-text">Classes</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
-    </header>
+    <SidebarBase>
+      <MenuSection>
+        {
+          menuItems.map(({ link, label, icon }) => (
+            <MenuItem
+              key={link}
+              title={label}
+              path={link}
+              active={activeTab === link}
+              onClick={handleTabClick}
+              icon={icon}
+            />
+          ))
+        }
+      </MenuSection>
+    </SidebarBase>
   );
 };
