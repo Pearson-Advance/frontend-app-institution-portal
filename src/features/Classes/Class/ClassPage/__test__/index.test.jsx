@@ -1,5 +1,5 @@
 import React from 'react';
-import { waitFor } from '@testing-library/react';
+import { waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -48,7 +48,7 @@ const mockStore = {
 describe('ClassesPage', () => {
   test('renders classes data and pagination', async () => {
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses/Demo%20Course%201/demo%20class%20cxx1']}>
+      <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
         <Route path="/courses/:courseId/:classId">
           <ClassPage />
         </Route>
@@ -66,5 +66,23 @@ describe('ClassesPage', () => {
       expect(component.container).toHaveTextContent('Exam ready');
       expect(component.container).toHaveTextContent('Invite student to enroll');
     });
+  });
+
+  test('renders actions', async () => {
+    const { getByText, getByTestId } = renderWithProviders(
+      <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
+        <Route path="/courses/:courseId/:classId">
+          <ClassPage />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    expect(getByText('Manage Instructors')).toBeInTheDocument();
+    expect(getByText('View class content')).toBeInTheDocument();
+    const button = getByTestId('droprown-action');
+    fireEvent.click(button);
+    expect(getByText('Edit Class')).toBeInTheDocument();
+    expect(getByText('Invite student to enroll')).toBeInTheDocument();
   });
 });
