@@ -64,3 +64,41 @@ export const formatDateRange = (startDate, endDate) => {
 
   return `${formattedStartDate}-${formattedEndDate}`;
 };
+
+/**
+ * Returns the initials of a given name. If the name is not provided or is empty, returns "?".
+ *
+ * @param {string} name - The name from which to extract initials.
+ * @returns {string} The initials of the name or "?" if the name is not provided.
+ *
+ * @example
+ * getInitials('Sam');
+ * // Returns 'S'
+ *
+ * @example
+ * getInitials('Sam Sepiol');
+ * // Returns 'SS'
+ *
+ * @example
+ * getInitials('');
+ * // Returns '?'
+ *
+ * @example
+ * getInitials('   ');
+ * // Returns '?'
+ *
+ * @example
+ * getInitials('John Doe Smith');
+ * // Returns 'JDS'
+ *
+ * @example
+ * getInitials('Mary-Jane Watson');
+ * // Returns 'MW'
+ */
+export const getInitials = (name) => {
+  if (!name || name.trim() === '') {
+    return '?';
+  }
+
+  return name.trim().split(/\s+/).map(word => word.charAt(0).toUpperCase()).join('');
+};

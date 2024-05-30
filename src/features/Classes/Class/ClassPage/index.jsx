@@ -17,6 +17,8 @@ import { initialPage } from 'features/constants';
 import { resetClassesTable, resetClasses } from 'features/Classes/data/slice';
 import { fetchAllClassesData } from 'features/Classes/data/thunks';
 
+import 'features/Classes/Class/ClassPage/index.scss';
+
 const ClassPage = () => {
   const location = useLocation();
   const history = useHistory();
@@ -96,13 +98,14 @@ const ClassPage = () => {
         </div>
       </div>
 
-      <div className="d-flex flex-column">
+      <div className="class-wrapper">
         <InstructorCard />
-        <div className="d-flex justify-content-end my-3">
-          <Actions previousPage={previousPage} />
-        </div>
-        <Table columns={columns} count={students.count} data={students.data} text="No students were found for this class." />
-        {students.numPages > 1 && (
+        <div>
+          <div className="d-flex justify-content-end my-3 flex-wrap">
+            <Actions previousPage={previousPage} />
+          </div>
+          <Table columns={columns} count={students.count} data={students.data} text="No students were found for this class." />
+          {students.numPages > 1 && (
           <Pagination
             paginationLabel="paginationNavigation"
             pageCount={students.numPages}
@@ -112,7 +115,8 @@ const ClassPage = () => {
             className="mx-auto pagination-table"
             size="small"
           />
-        )}
+          )}
+        </div>
       </div>
     </Container>
   );

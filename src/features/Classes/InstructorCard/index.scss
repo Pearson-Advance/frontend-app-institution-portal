@@ -1,4 +1,5 @@
 @import 'assets/colors.scss';
+@import 'assets/variables.scss';
 
 .separator {
   width: 2px;
@@ -9,8 +10,12 @@
 
 article.instructor-wrapper {
   padding: 1.8rem;
-  height: 220px;
   color: $gray-70;
+  overflow: hidden;
+  border: 1px solid $gray-20;
+  border-radius: $border-radius-1;
+  box-shadow: 0px 3px 12px 0px $gray-30;
+  background-color: $color-white;
 
   .text-color {
     color: inherit;
@@ -19,24 +24,10 @@ article.instructor-wrapper {
   div:first-child > h4 {
     margin-top: -20px;
   }
-
-  $size: 90px;
-  .instructor-image {
-    height: $size;
-    width: $size;
-    max-width: $size;
-    max-height: $size;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  .text-black {
-    color: $black;
-  }
 }
 
 .instructor-details {
-  width: 25%;
+  width: 40%;
 }
 
 @media screen and (max-width: 575px) {

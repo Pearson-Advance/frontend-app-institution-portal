@@ -9,7 +9,7 @@ jest.mock('react-router-dom', () => ({
     courseId: 'Demo course',
     classId: 'demo class',
   })),
-  useLocation: jest.fn().mockReturnValue({ search: '?classId=demo class' }),
+  useLocation: jest.fn().mockReturnValue({ search: '?classId=demo+class' }),
 }));
 
 jest.mock('@edx/frontend-platform/logging', () => ({
@@ -17,6 +17,15 @@ jest.mock('@edx/frontend-platform/logging', () => ({
 }));
 
 const stateMock = {
+  instructors: {
+    selectOptions: [
+      {
+        instructorUsername: 'Sam Sepiol',
+        instructorImage: null,
+        instructorName: 'Sam Deer',
+      },
+    ],
+  },
   classes: {
     allClasses: {
       data: [{
@@ -40,7 +49,7 @@ describe('InstructorCard', () => {
 
     expect(getByText('Demo course')).toBeInTheDocument();
     expect(getByText('demo class')).toBeInTheDocument();
-    expect(getByText('Sam Sepiol')).toBeInTheDocument();
+    expect(getByText('Sam Deer')).toBeInTheDocument();
     expect(getByText('Feb 13, 2024')).toBeInTheDocument();
   });
 
@@ -49,12 +58,36 @@ describe('InstructorCard', () => {
       <InstructorCard isOpen onClose={() => { }} />,
       {
         preloadedState: {
+          instructors: {
+            selectOptions: [
+              {
+                instructorUsername: 'Sam Sepiol',
+                instructorImage: null,
+                instructorName: 'Sam Deer',
+              },
+              {
+                instructorUsername: 'Aldo Pearson',
+                instructorImage: null,
+                instructorName: 'Aldo Pearson',
+              },
+              {
+                instructorUsername: 'John Deer',
+                instructorImage: null,
+                instructorName: 'John Deer',
+              },
+              {
+                instructorUsername: 'Deer Ton',
+                instructorImage: null,
+                instructorName: 'Deer Ton',
+              },
+            ],
+          },
           classes: {
             allClasses: {
               data: [
                 {
                   ...stateMock.classes.allClasses.data[0],
-                  instructors: ['Sam Sepiol', 'Aldo Pearson', 'lionel messi'],
+                  instructors: ['Sam Sepiol', 'Aldo Pearson', 'John Deer', 'Deer Ton'],
                 },
               ],
             },
@@ -66,7 +99,7 @@ describe('InstructorCard', () => {
     expect(getByText(/more\.\.\./)).toBeInTheDocument();
   });
 
-  test('Should render both dates when the duration is to loong', () => {
+  test('Should render both dates when the duration is to long', () => {
     const { getByText } = renderWithProviders(
       <InstructorCard isOpen onClose={() => { }} />,
       {

@@ -1,4 +1,4 @@
-import { formatDateRange, formatUTCDate } from 'helpers';
+import { formatDateRange, formatUTCDate, getInitials } from 'helpers';
 
 describe('formatDateRange', () => {
   test('Should return "-" when startDate is not provided', () => {
@@ -36,5 +36,27 @@ describe('formatUTCDate', () => {
   test('should return formatted date', () => {
     const dateUTC = '2024-04-02T00:00:00Z';
     expect(formatUTCDate(dateUTC)).toBe('04/02/24');
+  });
+});
+
+describe('getInitials', () => {
+  test('Should return correct initials for a given name', () => {
+    expect(getInitials('Sam Sepiol')).toBe('SS');
+  });
+
+  test('Should return "?" for an empty name', () => {
+    expect(getInitials('')).toBe('?');
+  });
+
+  test('Should return "?" for a name with only spaces', () => {
+    expect(getInitials('   ')).toBe('?');
+  });
+
+  test('Should return correct initials for a name with multiple spaces between words', () => {
+    expect(getInitials('John   Doe   Smith')).toBe('JDS');
+  });
+
+  test('Should return correct initials for a hyphenated name', () => {
+    expect(getInitials('Mary-Jane Watson')).toBe('MW');
   });
 });
