@@ -94,7 +94,7 @@ const ClassPage = () => {
 
       <div className="d-flex flex-column">
         <InstructorCard />
-        <div className="d-flex justify-content-end mb-3">
+        <div className="d-flex justify-content-end my-3">
           <Actions />
         </div>
         <Table columns={columns} count={students.count} data={students.data} text="No students were found for this class." />

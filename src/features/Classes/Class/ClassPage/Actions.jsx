@@ -36,8 +36,6 @@ const Actions = () => {
         variant="outline-primary"
         as="a"
         href={`/manage-instructors/${courseId}/${classId}?classId=${queryClassId}`}
-        target="_blank"
-        rel="noopener noreferrer"
         className="text-decoration-none text-primary bg-white mr-3"
       >
         Manage Instructors
