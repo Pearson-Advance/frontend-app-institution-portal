@@ -21,7 +21,7 @@ const ListInstructors = ({ instructors, isLoading }) => (
           {instructors.map(instructor => <p className="list-item" key={instructor}>{instructor}</p>)}
         </div>
       )}
-      {instructors.length === 0 && <p className="empty-list m-0 py-2 px-0 col-12">No records found.</p>}
+      {instructors.length === 0 && !isLoading && <p className="empty-list m-0 py-2 px-0 col-12">No records found.</p>}
     </Row>
   </Container>
 );

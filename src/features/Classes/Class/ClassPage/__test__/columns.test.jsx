@@ -1,4 +1,7 @@
+import { MemoryRouter, Route } from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
+
+import { renderWithProviders } from 'test-utils';
 
 import { columns } from 'features/Classes/Class/ClassPage/columns';
 
@@ -33,5 +36,170 @@ describe('columns', () => {
 
     expect(examReady).toHaveProperty('Header', 'Exam ready');
     expect(examReady).toHaveProperty('accessor', 'examReady');
+  });
+
+  test('Show student info', async () => {
+    const StudentColumn = () => columns[1].Cell({
+      row: {
+        values: {
+          learnerName: 'Test User',
+        },
+      },
+    });
+
+    const mockStore = {
+      main: {
+        selectedInstitution: {
+          id: 1,
+        },
+      },
+      students: {
+        table: {
+          next: null,
+          previous: null,
+          count: 1,
+          numPages: 1,
+          currentPage: 1,
+          start: 0,
+          results: [
+            {
+              learnerName: 'Test User',
+              learnerEmail: 'testuser@example.com',
+              courseId: 'course-v1:demo+demo1+2020',
+              courseName: 'Demo Course 1',
+              classId: 'ccx-v1:demo+demo1+2020+ccx@3',
+              className: 'test ccx1',
+              created: '2024-02-13T18:31:27.399407Z',
+              status: 'Active',
+              examReady: false,
+              startDate: '2024-02-13T17:42:22Z',
+              endDate: null,
+              completePercentage: 0.0,
+            },
+          ],
+        },
+      },
+    };
+
+    const { getByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
+        <Route path="/courses/:courseId/:classId">
+          <StudentColumn />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    expect(getByText('Test User')).toBeInTheDocument();
+  });
+
+  test('Show status info', async () => {
+    const StatusColumn = () => columns[3].Cell({
+      row: {
+        values: {
+          status: 'Active',
+        },
+      },
+    });
+
+    const mockStore = {
+      main: {
+        selectedInstitution: {
+          id: 1,
+        },
+      },
+      students: {
+        table: {
+          next: null,
+          previous: null,
+          count: 1,
+          numPages: 1,
+          currentPage: 1,
+          start: 0,
+          results: [
+            {
+              learnerName: 'Test User',
+              learnerEmail: 'testuser@example.com',
+              courseId: 'course-v1:demo+demo1+2020',
+              courseName: 'Demo Course 1',
+              classId: 'ccx-v1:demo+demo1+2020+ccx@3',
+              className: 'test ccx1',
+              created: '2024-02-13T18:31:27.399407Z',
+              status: 'Active',
+              examReady: false,
+              startDate: '2024-02-13T17:42:22Z',
+              endDate: null,
+              completePercentage: 0.0,
+            },
+          ],
+        },
+      },
+    };
+
+    const { getByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
+        <Route path="/courses/:courseId/:classId">
+          <StatusColumn />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    expect(getByText('Active')).toBeInTheDocument();
+  });
+
+  test('Show exam ready info', async () => {
+    const ExamColumn = () => columns[5].Cell({
+      row: {
+        values: {
+          examReady: false,
+        },
+      },
+    });
+
+    const mockStore = {
+      main: {
+        selectedInstitution: {
+          id: 1,
+        },
+      },
+      students: {
+        table: {
+          next: null,
+          previous: null,
+          count: 1,
+          numPages: 1,
+          currentPage: 1,
+          start: 0,
+          results: [
+            {
+              learnerName: 'Test User',
+              learnerEmail: 'testuser@example.com',
+              courseId: 'course-v1:demo+demo1+2020',
+              courseName: 'Demo Course 1',
+              classId: 'ccx-v1:demo+demo1+2020+ccx@3',
+              className: 'test ccx1',
+              created: '2024-02-13T18:31:27.399407Z',
+              status: 'Active',
+              examReady: false,
+              startDate: '2024-02-13T17:42:22Z',
+              endDate: null,
+              completePercentage: 0.0,
+            },
+          ],
+        },
+      },
+    };
+
+    const { getByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
+        <Route path="/courses/:courseId/:classId">
+          <ExamColumn />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    expect(getByText('No')).toBeInTheDocument();
   });
 });

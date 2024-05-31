@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  Link, useParams, useHistory, useLocation,
-} from 'react-router-dom';
-import { Button } from 'react-paragon-topaz';
-import { getConfig } from '@edx/frontend-platform';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import { Container, Pagination } from '@edx/paragon';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Table from 'features/Main/Table';
-import EnrollStudent from 'features/Classes/EnrollStudent';
 import InstructorCard from 'features/Classes/InstructorCard';
+import Actions from 'features/Classes/Class/ClassPage/Actions';
 
 import { updateActiveTab } from 'features/Main/data/slice';
 import { columns } from 'features/Classes/Class/ClassPage/columns';
@@ -22,26 +18,18 @@ import { fetchAllClassesData } from 'features/Classes/data/thunks';
 
 const ClassPage = () => {
   const history = useHistory();
-  const location = useLocation();
   const dispatch = useDispatch();
   const { courseId, classId } = useParams();
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const institution = useSelector((state) => state.main.selectedInstitution);
   const students = useSelector((state) => state.students.table);
-
-  const queryParams = new URLSearchParams(location.search);
-  const queryClassId = queryParams.get('classId')?.replaceAll(' ', '+');
-  const classLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${queryClassId}/home`;
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
     dispatch(updateCurrentPage(targetPage));
   };
-
-  const handleEnrollStudentModal = () => setIsModalOpen(!isModalOpen);
 
   useEffect(() => {
     const initialTitle = document.title;
@@ -95,7 +83,6 @@ const ClassPage = () => {
 
   return (
     <Container size="xl" className="px-4 mt-3">
-      <EnrollStudent isOpen={isModalOpen} onClose={handleEnrollStudentModal} queryClassId={queryClassId} />
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="d-flex align-items-center mb-3">
           <Link to={`/courses/${courseId}`} className="mr-3 link">
@@ -103,23 +90,12 @@ const ClassPage = () => {
           </Link>
           <h3 className="h2 mb-0 course-title">Class details: {classId}</h3>
         </div>
-        <Button
-          as="a"
-          href={classLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-decoration-none text-white button-view-class"
-        >
-          <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />View class
-        </Button>
       </div>
 
       <div className="d-flex flex-column">
         <InstructorCard />
-        <div className="d-flex justify-content-end mb-3">
-          <Button className="button-assign mb-2" onClick={handleEnrollStudentModal}>
-            Invite student to enroll
-          </Button>
+        <div className="d-flex justify-content-end my-3">
+          <Actions />
         </div>
         <Table columns={columns} count={students.count} data={students.data} text="No students were found for this class." />
         {students.numPages > 1 && (

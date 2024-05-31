@@ -11,7 +11,7 @@ import { logError } from '@edx/frontend-platform/logging';
 
 import { addClass, fetchCoursesData, editClass } from 'features/Courses/data';
 import { fetchInstructorsOptionsData } from 'features/Instructors/data/thunks';
-import { fetchClassesData } from 'features/Classes/data/thunks';
+import { fetchClassesData, fetchAllClassesData } from 'features/Classes/data/thunks';
 import { updateCurrentPage as updateCoursesCurrentPage } from 'features/Courses/data/slice';
 import { updateCurrentPage as updateClassesCurrentPage } from 'features/Classes/data/slice';
 
@@ -21,7 +21,7 @@ import { formatUTCDate } from 'helpers';
 import 'features/Courses/AddClass/index.scss';
 
 const AddClass = ({
-  isOpen, onClose, courseInfo, isCoursePage, isEditing,
+  isOpen, onClose, courseInfo, isCoursePage, isEditing, isDetailClassPage,
 }) => {
   const { courseId } = useParams();
   const dispatch = useDispatch();
@@ -58,8 +58,12 @@ const AddClass = ({
       } catch (error) {
         logError(error);
       } finally {
-        dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseId));
-        dispatch(updateClassesCurrentPage(initialPage));
+        if (isDetailClassPage) {
+          dispatch(fetchAllClassesData(selectedInstitution.id, courseId));
+        } else {
+          dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseId));
+          dispatch(updateClassesCurrentPage(initialPage));
+        }
       }
     } else {
       try {
@@ -269,11 +273,13 @@ AddClass.propTypes = {
   }).isRequired,
   isCoursePage: PropTypes.bool,
   isEditing: PropTypes.bool,
+  isDetailClassPage: PropTypes.bool,
 };
 
 AddClass.defaultProps = {
   isCoursePage: false,
   isEditing: false,
+  isDetailClassPage: false,
 };
 
 export default AddClass;
