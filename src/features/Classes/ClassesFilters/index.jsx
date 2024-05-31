@@ -25,7 +25,7 @@ const ClassesFilters = ({ resetPagination }) => {
 
   const institution = useSelector((state) => state.main.selectedInstitution);
   const courses = useSelector((state) => state.courses.selectOptions);
-  const instructors = useSelector((state) => state.instructors.selectOptions);
+  const instructors = useSelector((state) => state.instructors.selectOptions.data);
 
   const queryParams = new URLSearchParams(location.search);
   const queryNotInstructors = queryParams.get('instructors');

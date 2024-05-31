@@ -25,7 +25,10 @@ const initialState = {
     error: null,
     data: null,
   },
-  selectOptions: [],
+  selectOptions: {
+    status: RequestStatus.LOADING,
+    data: [],
+  },
 };
 
 export const instructorsSlice = createSlice({
@@ -83,8 +86,19 @@ export const instructorsSlice = createSlice({
       state.addInstructor.data = null;
       state.addInstructor.error = null;
     },
-    updateInstructorOptions: (state, { payload }) => {
-      state.selectOptions = payload;
+    fetchInstructorOptionsRequest: (state) => {
+      state.selectOptions.status = RequestStatus.LOADING;
+    },
+    fetchInstructorOptionsSuccess: (state, { payload }) => {
+      state.selectOptions.data = payload;
+      state.selectOptions.status = RequestStatus.SUCCESS;
+    },
+    fetchInstructorOptionsFailed: (state) => {
+      state.selectOptions.status = RequestStatus.ERROR;
+    },
+    resetInstructorOptions: (state) => {
+      state.selectOptions.status = RequestStatus.LOADING;
+      state.selectOptions.data = [];
     },
   },
 });
@@ -102,9 +116,12 @@ export const {
   addRowSelect,
   deleteRowSelect,
   resetRowSelect,
-  updateInstructorOptions,
   resetInstructorAdditionRequest,
   updateInstructorAdditionRequest,
+  fetchInstructorOptionsRequest,
+  fetchInstructorOptionsSuccess,
+  fetchInstructorOptionsFailed,
+  resetInstructorOptions,
 } = instructorsSlice.actions;
 
 export const { reducer } = instructorsSlice;

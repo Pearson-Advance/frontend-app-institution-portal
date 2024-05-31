@@ -9,8 +9,10 @@ import {
   assignInstructorsRequest,
   assignInstructorsSuccess,
   assignInstructorsFailed,
-  updateInstructorOptions,
   updateInstructorAdditionRequest,
+  fetchInstructorOptionsRequest,
+  fetchInstructorOptionsSuccess,
+  fetchInstructorOptionsFailed,
 } from 'features/Instructors/data/slice';
 import { RequestStatus, initialPage } from 'features/constants';
 
@@ -29,12 +31,12 @@ function fetchInstructorsData(id, currentPage, filtersData) {
 
 function fetchInstructorsOptionsData(id, currentPage, filtersData) {
   return async (dispatch) => {
-    dispatch(fetchInstructorsDataRequest());
+    dispatch(fetchInstructorOptionsRequest());
     try {
       const response = camelCaseObject(await getInstructorByInstitution(id, currentPage, filtersData));
-      dispatch(updateInstructorOptions(response.data));
+      dispatch(fetchInstructorOptionsSuccess(response.data));
     } catch (error) {
-      dispatch(fetchInstructorsDataFailed());
+      dispatch(fetchInstructorOptionsFailed());
       logError(error);
     }
   };

@@ -4,7 +4,7 @@ import { useParams, useLocation } from 'react-router-dom';
 
 import { formatDateRange } from 'helpers';
 import { initialPage } from 'features/constants';
-import { updateInstructorOptions } from 'features/Instructors/data/slice';
+import { resetInstructorOptions } from 'features/Instructors/data/slice';
 import { fetchInstructorsOptionsData } from 'features/Instructors/data/thunks';
 
 import InstructorAvatar from 'features/Classes/InstructorAvatar';
@@ -18,7 +18,7 @@ const InstructorCard = () => {
   const dispatch = useDispatch();
   const { courseId, classId } = useParams();
   const institution = useSelector((state) => state.main.selectedInstitution);
-  const instructors = useSelector((state) => state.instructors.selectOptions);
+  const instructors = useSelector((state) => state.instructors.selectOptions.data);
   const classes = useSelector((state) => state.classes.allClasses.data);
 
   const queryParams = new URLSearchParams(location.search);
@@ -35,7 +35,7 @@ const InstructorCard = () => {
     if (institution.id) {
       dispatch(fetchInstructorsOptionsData(institution.id, initialPage, { limit: false, class_id: classIdQuery }));
     }
-    return () => dispatch(updateInstructorOptions([]));
+    return () => dispatch(resetInstructorOptions());
   }, [institution.id, classIdQuery, dispatch]);
 
   return (
