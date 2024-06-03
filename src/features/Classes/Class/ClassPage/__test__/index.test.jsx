@@ -65,6 +65,7 @@ describe('ClassesPage', () => {
       expect(component.container).toHaveTextContent('Courseware Progress');
       expect(component.container).toHaveTextContent('Exam ready');
       expect(component.container).toHaveTextContent('Invite student to enroll');
+      expect(component.container).toHaveTextContent('Manage Instructors');
     });
   });
 
@@ -78,11 +79,13 @@ describe('ClassesPage', () => {
       { preloadedState: mockStore },
     );
 
-    expect(getByText('Manage Instructors')).toBeInTheDocument();
-    expect(getByText('View class content')).toBeInTheDocument();
-    const button = getByTestId('droprown-action');
-    fireEvent.click(button);
-    expect(getByText('Edit Class')).toBeInTheDocument();
-    expect(getByText('Invite student to enroll')).toBeInTheDocument();
+    waitFor(() => {
+      expect(getByText('Manage Instructors')).toBeInTheDocument();
+      expect(getByText('View class content')).toBeInTheDocument();
+      const button = getByTestId('droprown-action');
+      fireEvent.click(button);
+      expect(getByText('Edit Class')).toBeInTheDocument();
+      expect(getByText('Invite student to enroll')).toBeInTheDocument();
+    });
   });
 });
