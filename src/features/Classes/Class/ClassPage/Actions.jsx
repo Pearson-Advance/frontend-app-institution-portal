@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useParams, useLocation, useHistory } from 'react-router-dom';
 import { getConfig } from '@edx/frontend-platform';
@@ -12,7 +13,7 @@ import { MoreVert } from '@edx/paragon/icons';
 import AddClass from 'features/Courses/AddClass';
 import EnrollStudent from 'features/Classes/EnrollStudent';
 
-const Actions = () => {
+const Actions = ({ previousPage }) => {
   const location = useLocation();
   const history = useHistory();
   const { courseId, classId } = useParams();
@@ -31,12 +32,16 @@ const Actions = () => {
 
   const handleEnrollStudentModal = () => setIsEnrollModalOpen(!isEnrollModalOpen);
 
+  const handeManageButton = () => {
+    history.push(`/manage-instructors/${courseId}/${classId}?classId=${queryClassId}&previous=${previousPage}`);
+  };
+
   return (
     <>
       <Button
         variant="outline-primary"
         className="text-decoration-none text-primary bg-white mr-3"
-        onClick={history.push(`/manage-instructors/${courseId}/${classId}?classId=${queryClassId}`)}
+        onClick={handeManageButton}
       >
         Manage Instructors
       </Button>
@@ -89,6 +94,14 @@ const Actions = () => {
       <EnrollStudent isOpen={isEnrollModalOpen} onClose={handleEnrollStudentModal} queryClassId={queryClassId} />
     </>
   );
+};
+
+Actions.propTypes = {
+  previousPage: PropTypes.string,
+};
+
+Actions.defaultProps = {
+  previousPage: 'courses',
 };
 
 export default Actions;

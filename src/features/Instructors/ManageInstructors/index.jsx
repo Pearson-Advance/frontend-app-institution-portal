@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useHistory } from 'react-router-dom';
 
 import { Container, Toast } from '@edx/paragon';
 import { logError } from '@edx/frontend-platform/logging';
@@ -19,6 +19,7 @@ import 'features/Instructors/ManageInstructors/index.scss';
 
 const ManageInstructors = () => {
   const location = useLocation();
+  const history = useHistory();
   const dispatch = useDispatch();
   const cancelButtonRef = useRef(null);
   const [showToast, setShowToast] = useState(false);
@@ -29,6 +30,7 @@ const ManageInstructors = () => {
   const { courseName, className } = useParams();
   const queryParams = new URLSearchParams(location.search);
   const classId = queryParams.get('classId')?.replaceAll(' ', '+');
+  const previousPage = queryParams.get('previous') || 'courses';
   const isLoading = classes?.status === RequestStatus.LOADING;
   const isButtonDisabled = rowsSelected.length === 0;
 
@@ -75,14 +77,15 @@ const ManageInstructors = () => {
   useEffect(() => {
     if (selectedInstitution.id) {
       dispatch(fetchAllClassesData(selectedInstitution.id, courseName));
-      dispatch(updateActiveTab('courses'));
+      // Leaves a gap time space to prevent being override by ActiveTabUpdater component
+      setTimeout(() => dispatch(updateActiveTab(previousPage)), 100);
     }
 
     return () => {
       dispatch(resetClassesTable());
       dispatch(resetClasses());
     };
-  }, [dispatch, selectedInstitution.id, courseName]);
+  }, [dispatch, selectedInstitution.id, courseName, previousPage]);
 
   return (
     <>
@@ -95,9 +98,9 @@ const ManageInstructors = () => {
       <Container size="xl" className="px-4 mt-3 manage-instructors-page">
         <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
           <div className="d-flex align-items-center mb-3">
-            <Link to="/courses" className="mr-3 link">
+            <Button onClick={() => history.goBack()} className="mr-3 link back-arrow" variant="tertiary">
               <i className="fa-solid fa-arrow-left" />
-            </Link>
+            </Button>
             <h3 className="h2 mb-0 course-title">Manage Instructors</h3>
           </div>
         </div>

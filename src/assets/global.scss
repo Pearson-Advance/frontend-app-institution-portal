@@ -35,6 +35,16 @@
   }
 }
 
+.back-arrow.btn {
+  color: $primary;
+  padding: 0;
+  font-size: 18px;
+
+  &:hover {
+    background-color: transparent;
+  }
+}
+
 @media screen and (max-width: 880px) {
   .title-page {
     padding-left: 20px;
