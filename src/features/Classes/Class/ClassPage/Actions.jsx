@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useHistory } from 'react-router-dom';
 import { getConfig } from '@edx/frontend-platform';
 
 import { Button } from 'react-paragon-topaz';
@@ -14,6 +14,7 @@ import EnrollStudent from 'features/Classes/EnrollStudent';
 
 const Actions = () => {
   const location = useLocation();
+  const history = useHistory();
   const { courseId, classId } = useParams();
   const classes = useSelector((state) => state.classes.allClasses.data);
 
@@ -34,9 +35,8 @@ const Actions = () => {
     <>
       <Button
         variant="outline-primary"
-        as="a"
-        href={`/manage-instructors/${courseId}/${classId}?classId=${queryClassId}`}
         className="text-decoration-none text-primary bg-white mr-3"
+        onClick={history.push(`/manage-instructors/${courseId}/${classId}?classId=${queryClassId}`)}
       >
         Manage Instructors
       </Button>
