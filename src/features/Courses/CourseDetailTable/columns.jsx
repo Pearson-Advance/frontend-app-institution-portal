@@ -18,7 +18,14 @@ const columns = [
     accessor: 'className',
     Cell: ({ row }) => {
       const { courseId } = useParams();
-      return (<Link to={`/courses/${courseId}/${row.values.className}?classId=${row.original.classId}`} className="text-truncate link">{row.values.className}</Link>);
+      return (
+        <Link
+          to={`/courses/${courseId}/${row.values.className}?classId=${row.original.classId}&previous=courses`}
+          className="text-truncate link"
+        >
+          {row.values.className}
+        </Link>
+      );
     },
   },
   {

@@ -12,7 +12,7 @@ const columns = [
     accessor: 'className',
     Cell: ({ row }) => (
       <Link
-        to={`/courses/${row.values.masterCourseName}/${row.values.className}?classId=${row.original.classId}`}
+        to={`/courses/${row.values.masterCourseName}/${row.values.className}?classId=${row.original.classId}&previous=instructors`}
         className="link"
       >
         {row.values.className}

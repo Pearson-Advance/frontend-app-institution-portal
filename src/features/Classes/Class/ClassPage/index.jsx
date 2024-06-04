@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { Container, Pagination } from '@edx/paragon';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Table from 'features/Main/Table';
 import InstructorCard from 'features/Classes/InstructorCard';
 import Actions from 'features/Classes/Class/ClassPage/Actions';
+import { Button } from 'react-paragon-topaz';
 
 import { updateActiveTab } from 'features/Main/data/slice';
 import { columns } from 'features/Classes/Class/ClassPage/columns';
@@ -17,9 +18,12 @@ import { resetClassesTable, resetClasses } from 'features/Classes/data/slice';
 import { fetchAllClassesData } from 'features/Classes/data/thunks';
 
 const ClassPage = () => {
+  const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
   const { courseId, classId } = useParams();
+  const queryParams = new URLSearchParams(location.search);
+  const previousPage = queryParams.get('previous') || 'classes';
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -36,12 +40,12 @@ const ClassPage = () => {
 
     document.title = classId;
     // Leaves a gap time space to prevent being override by ActiveTabUpdater component
-    setTimeout(() => dispatch(updateActiveTab('classes')), 100);
+    setTimeout(() => dispatch(updateActiveTab(previousPage)), 100);
 
     return () => {
       document.title = initialTitle;
     };
-  }, [dispatch, classId]);
+  }, [dispatch, classId, previousPage]);
 
   useEffect(() => {
     if (institution.id) {
@@ -85,9 +89,9 @@ const ClassPage = () => {
     <Container size="xl" className="px-4 mt-3">
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="d-flex align-items-center mb-3">
-          <Link to={`/courses/${courseId}`} className="mr-3 link">
+          <Button onClick={() => history.goBack()} className="mr-3 link back-arrow" variant="tertiary">
             <i className="fa-solid fa-arrow-left" />
-          </Link>
+          </Button>
           <h3 className="h2 mb-0 course-title">Class details: {classId}</h3>
         </div>
       </div>
@@ -95,7 +99,7 @@ const ClassPage = () => {
       <div className="d-flex flex-column">
         <InstructorCard />
         <div className="d-flex justify-content-end my-3">
-          <Actions />
+          <Actions previousPage={previousPage} />
         </div>
         <Table columns={columns} count={students.count} data={students.data} text="No students were found for this class." />
         {students.numPages > 1 && (
