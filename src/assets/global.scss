@@ -1,16 +1,22 @@
 @import "assets/colors.scss";
 @import "assets/variables.scss";
 
+.custom-text-black {
+  &:-webkit-any-link {
+    color: $color-black;
+  }
+}
+
 .page-content-container {
   .progress {
-    @extend %progress-styles;
+    @extend %progress-styles !optional;
   }
 }
 
 [role=table] {
   [role=cell] {
     .custom-progress {
-      @extend %progress-styles;
+      @extend %progress-styles !optional;
     }
   }
 }
