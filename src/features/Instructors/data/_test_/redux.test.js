@@ -277,7 +277,7 @@ describe('Instructors redux tests', () => {
       .reply(200, instructorForm);
 
     expect(store.getState().instructors.assignInstructors.status)
-      .toEqual('loading');
+      .toEqual('initial');
 
     await executeThunk(assignInstructors(instructorForm), store.dispatch, store.getState);
 

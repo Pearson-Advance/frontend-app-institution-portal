@@ -16,7 +16,7 @@ const initialState = {
   rowsSelected: [],
   classSelected: '',
   assignInstructors: {
-    status: RequestStatus.LOADING,
+    status: RequestStatus.INITIAL,
     error: null,
     data: null,
   },

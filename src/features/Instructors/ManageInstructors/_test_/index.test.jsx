@@ -57,6 +57,10 @@ const mockStore = {
         lastAcess: '2023-10-04T15:02:17.016088Z',
       }],
     },
+    assignInstructors: {
+      data: [],
+      status: RequestStatus.INITIAL,
+    },
   },
 };
 

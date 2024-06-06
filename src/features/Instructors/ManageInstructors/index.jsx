@@ -32,7 +32,7 @@ const ManageInstructors = () => {
   const queryParams = new URLSearchParams(location.search);
   const classId = queryParams.get('classId')?.replaceAll(' ', '+');
   const previousPage = queryParams.get('previous') || 'courses';
-  const isLoading = instructorsByClass?.status === RequestStatus.LOADING;
+  const isLoadingInstructors = instructorsByClass?.status === RequestStatus.LOADING;
   const isButtonDisabled = rowsSelected.length === 0;
 
   const resetValues = () => {
@@ -105,7 +105,7 @@ const ManageInstructors = () => {
           <h4 className="class-name">{className}</h4>
           <p className="course-name">{courseName}</p>
         </div>
-        <ListInstructors instructors={instructorsByClass?.data} isLoading={isLoading} />
+        <ListInstructors instructors={instructorsByClass?.data} isLoadingInstructors={isLoadingInstructors} />
         <AssignSection ref={cancelButtonRef} />
         <div className="d-flex col-12 justify-content-end align-items-start p-0 mt-4">
           <Button
