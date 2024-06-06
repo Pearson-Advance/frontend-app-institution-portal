@@ -1,0 +1,23 @@
+@import 'assets/colors.scss';
+
+$size: 48px;
+.instructor-image {
+  height: $size;
+  width: $size;
+  max-width: $size;
+  max-height: $size;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: $gray-20;
+  display: grid;
+  place-items: center;
+}
+
+.text-black {
+  color: $black;
+}
+
+article .multiline-text {
+  white-space: pre-line;
+  line-height: 1.2em;
+}

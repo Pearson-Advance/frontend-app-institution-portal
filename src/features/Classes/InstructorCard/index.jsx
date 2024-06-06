@@ -7,9 +7,11 @@ import { initialPage } from 'features/constants';
 import { updateInstructorOptions } from 'features/Instructors/data/slice';
 import { fetchInstructorsOptionsData } from 'features/Instructors/data/thunks';
 
-import instructorDefaultImage from 'assets/avatar.svg';
+import InstructorAvatar from 'features/Classes/InstructorAvatar';
 
 import 'features/Classes/InstructorCard/index.scss';
+
+const INSTRUCTORS_NUMBER = 3;
 
 const InstructorCard = () => {
   const location = useLocation();
@@ -29,10 +31,6 @@ const InstructorCard = () => {
   const totalEnrolled = (classInfo?.numberOfStudents || 0)
     + (classInfo?.numberOfPendingStudents || 0);
 
-  const extraInstructors = classInfo?.instructors?.length === 1
-    ? (classInfo?.instructors?.length || 0)
-    : (classInfo?.instructors?.length || 0) - 1;
-
   useEffect(() => {
     if (institution.id) {
       dispatch(fetchInstructorsOptionsData(institution.id, initialPage, { limit: false, class_id: classIdQuery }));
@@ -41,7 +39,7 @@ const InstructorCard = () => {
   }, [institution.id, classIdQuery, dispatch]);
 
   return (
-    <article className="instructor-wrapper page-content-container mb-4 d-flex flex-column flex-sm-row justify-content-between align-items-start">
+    <article className="instructor-wrapper mb-4 d-flex flex-column flex-sm-row justify-content-between align-items-start">
       <div className="d-flex flex-column w-75 justify-content-between h-100">
         <h3 className="text-color text-uppercase font-weight-bold text-truncate w-75" title={classId}>
           {classId}
@@ -65,21 +63,29 @@ const InstructorCard = () => {
       </div>
       <div className="separator" />
       <div className="instructor-details">
-        <h4 className="text-color text-uppercase mb-3 h5">Instructor</h4>
-        <div className="d-flex align-items-center">
-          <img
-            src={instructors[0]?.instructorImage ? instructors[0]?.instructorImage : instructorDefaultImage}
-            alt="Instructor profile"
-            className="instructor-image"
-          />
-          <span className="text-capitalize ml-3 text-black font-weight-bold text-truncate w-50 d-block" title={classInfo?.instructors[0]}>
-            {classInfo?.instructors[0]}
-          </span>
+        <h4 className="text-color text-uppercase mb-3 h5">Instructor{instructors.length > 1 && 's'}</h4>
+        <div className="d-flex align-items-center flex-wrap">
+          {classInfo?.instructors.length === 0 && <span>No instructor assigned</span>}
+          {
+            classInfo?.instructors?.slice(0, INSTRUCTORS_NUMBER)?.map((instructor) => {
+              const instructorInfo = instructors.find((user) => user.instructorUsername === instructor);
+
+              if (!instructorInfo) { return null; }
+
+              return (
+                <InstructorAvatar
+                  key={instructorInfo.instructorUsername}
+                  profileImage={instructorInfo.instructorImage}
+                  name={instructorInfo.instructorName}
+                />
+              );
+            })
+          }
         </div>
-        {classInfo?.instructors?.length > 1 && (
+        {classInfo?.instructors?.length > INSTRUCTORS_NUMBER && (
           <div className="mt-2">
             +
-            <span className="mx-1">{extraInstructors}</span>
+            <span className="mx-1">{classInfo.instructors.slice(INSTRUCTORS_NUMBER).length}</span>
             more...
           </div>
         )}
