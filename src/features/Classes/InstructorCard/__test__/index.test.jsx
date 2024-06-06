@@ -18,13 +18,15 @@ jest.mock('@edx/frontend-platform/logging', () => ({
 
 const stateMock = {
   instructors: {
-    selectOptions: [
-      {
-        instructorUsername: 'Sam Sepiol',
-        instructorImage: null,
-        instructorName: 'Sam Deer',
-      },
-    ],
+    selectOptions: {
+      data: [
+        {
+          instructorUsername: 'Sam Sepiol',
+          instructorImage: null,
+          instructorName: 'Sam Deer',
+        },
+      ],
+    },
   },
   classes: {
     allClasses: {
@@ -59,28 +61,30 @@ describe('InstructorCard', () => {
       {
         preloadedState: {
           instructors: {
-            selectOptions: [
-              {
-                instructorUsername: 'Sam Sepiol',
-                instructorImage: null,
-                instructorName: 'Sam Deer',
-              },
-              {
-                instructorUsername: 'Aldo Pearson',
-                instructorImage: null,
-                instructorName: 'Aldo Pearson',
-              },
-              {
-                instructorUsername: 'John Deer',
-                instructorImage: null,
-                instructorName: 'John Deer',
-              },
-              {
-                instructorUsername: 'Deer Ton',
-                instructorImage: null,
-                instructorName: 'Deer Ton',
-              },
-            ],
+            selectOptions: {
+              data: [
+                {
+                  instructorUsername: 'Sam Sepiol',
+                  instructorImage: null,
+                  instructorName: 'Sam Deer',
+                },
+                {
+                  instructorUsername: 'Aldo Pearson',
+                  instructorImage: null,
+                  instructorName: 'Aldo Pearson',
+                },
+                {
+                  instructorUsername: 'John Deer',
+                  instructorImage: null,
+                  instructorName: 'John Deer',
+                },
+                {
+                  instructorUsername: 'Deer Ton',
+                  instructorImage: null,
+                  instructorName: 'Deer Ton',
+                },
+              ],
+            },
           },
           classes: {
             allClasses: {
