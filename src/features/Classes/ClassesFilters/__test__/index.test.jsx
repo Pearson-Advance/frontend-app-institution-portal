@@ -61,7 +61,10 @@ const mockStore = {
       data: [courseOption],
       status: 'success',
     },
-    selectOptions: [instructorOption],
+    selectOptions: {
+      data: [instructorOption],
+      status: 'success',
+    },
     filters: {},
   },
   main: {

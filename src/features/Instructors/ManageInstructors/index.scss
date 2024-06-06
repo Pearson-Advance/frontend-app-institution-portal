@@ -43,4 +43,13 @@
   .pgn__data-table-status-left .test_selection_state_clear_selection_button {
     display: none;
   }
+
+  .delete-icon {
+    cursor: pointer;
+
+    &:hover,
+    &:active {
+      background-color: transparent;
+    }
+  }
 }

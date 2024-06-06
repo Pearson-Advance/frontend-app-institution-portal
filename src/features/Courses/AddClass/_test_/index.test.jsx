@@ -11,15 +11,17 @@ jest.mock('@edx/frontend-platform/logging', () => ({
 
 const mockStore = {
   instructors: {
-    selectOptions: [
-      {
-        masterCourseName: 'Demo Course 1',
-        numberOfClasses: 1,
-        missingClassesForInstructor: null,
-        numberOfStudents: 1,
-        numberOfPendingStudents: 11,
-      },
-    ],
+    selectOptions: {
+      data: [
+        {
+          masterCourseName: 'Demo Course 1',
+          numberOfClasses: 1,
+          missingClassesForInstructor: null,
+          numberOfStudents: 1,
+          numberOfPendingStudents: 11,
+        },
+      ],
+    },
   },
 };
 

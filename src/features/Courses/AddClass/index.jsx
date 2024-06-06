@@ -26,7 +26,7 @@ const AddClass = ({
   const { courseId } = useParams();
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
-  const instructorsList = useSelector((state) => state.instructors.selectOptions);
+  const instructorsList = useSelector((state) => state.instructors.selectOptions.data);
   const notificationMsg = useSelector((state) => state.courses.notificationMessage);
   const [showToast, setShowToast] = useState(false);
   const [instructorsOptions, setInstructorsOptions] = useState([]);

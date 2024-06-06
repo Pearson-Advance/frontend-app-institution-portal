@@ -8,11 +8,10 @@ import { Button } from 'react-paragon-topaz';
 import ListInstructors from 'features/Instructors/ManageInstructors/ListInstructors';
 import AssignSection from 'features/Instructors/ManageInstructors/AssignSection';
 
-import { RequestStatus } from 'features/constants';
+import { RequestStatus, initialPage } from 'features/constants';
 import { resetClassesTable, resetClasses } from 'features/Classes/data/slice';
-import { fetchAllClassesData } from 'features/Classes/data/thunks';
 import { updateFilters, resetRowSelect } from 'features/Instructors/data/slice';
-import { assignInstructors } from 'features/Instructors/data';
+import { assignInstructors, fetchInstructorsOptionsData } from 'features/Instructors/data';
 import { updateActiveTab } from 'features/Main/data/slice';
 
 import 'features/Instructors/ManageInstructors/index.scss';
@@ -22,21 +21,19 @@ const ManageInstructors = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const cancelButtonRef = useRef(null);
+
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
-  const classes = useSelector((state) => state.classes.allClasses);
   const rowsSelected = useSelector((state) => state.instructors.rowsSelected);
+  const instructorsByClass = useSelector((state) => state.instructors.selectOptions);
+
   const { courseName, className } = useParams();
   const queryParams = new URLSearchParams(location.search);
   const classId = queryParams.get('classId')?.replaceAll(' ', '+');
   const previousPage = queryParams.get('previous') || 'courses';
-  const isLoading = classes?.status === RequestStatus.LOADING;
+  const isLoadingInstructors = instructorsByClass?.status === RequestStatus.LOADING;
   const isButtonDisabled = rowsSelected.length === 0;
-
-  const [classInfo] = classes.data.filter(
-    (classElement) => classElement.classId === classId,
-  );
 
   const resetValues = () => {
     cancelButtonRef?.current?.clearSelectionFunc();
@@ -60,7 +57,7 @@ const ManageInstructors = () => {
       };
 
       await dispatch(assignInstructors(enrollmentData));
-      dispatch(fetchAllClassesData(selectedInstitution.id, courseName));
+      dispatch(fetchInstructorsOptionsData(selectedInstitution.id, initialPage, { limit: false, class_id: classId }));
       if (rowsSelected.length === 1) {
         setToastMessage(`${rowsSelected[0]} has been successfully assigned to Class ${className}`);
       } else if (rowsSelected.length > 1) {
@@ -76,16 +73,16 @@ const ManageInstructors = () => {
 
   useEffect(() => {
     if (selectedInstitution.id) {
-      dispatch(fetchAllClassesData(selectedInstitution.id, courseName));
       // Leaves a gap time space to prevent being override by ActiveTabUpdater component
       setTimeout(() => dispatch(updateActiveTab(previousPage)), 100);
+      dispatch(fetchInstructorsOptionsData(selectedInstitution.id, initialPage, { limit: false, class_id: classId }));
     }
 
     return () => {
       dispatch(resetClassesTable());
       dispatch(resetClasses());
     };
-  }, [dispatch, selectedInstitution.id, courseName, previousPage]);
+  }, [dispatch, selectedInstitution.id, courseName, previousPage, classId]);
 
   return (
     <>
@@ -108,7 +105,7 @@ const ManageInstructors = () => {
           <h4 className="class-name">{className}</h4>
           <p className="course-name">{courseName}</p>
         </div>
-        <ListInstructors instructors={classInfo?.instructors} isLoading={isLoading} />
+        <ListInstructors instructors={instructorsByClass?.data} isLoadingInstructors={isLoadingInstructors} />
         <AssignSection ref={cancelButtonRef} />
         <div className="d-flex col-12 justify-content-end align-items-start p-0 mt-4">
           <Button
