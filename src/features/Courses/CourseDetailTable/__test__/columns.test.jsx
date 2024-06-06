@@ -1,6 +1,5 @@
 import {
   fireEvent,
-  waitFor,
   screen,
 } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
@@ -12,7 +11,7 @@ import { columns } from 'features/Courses/CourseDetailTable/columns';
 describe('columns', () => {
   test('returns an array of columns with correct properties', () => {
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(8);
+    expect(columns).toHaveLength(9);
 
     const [
       className,
@@ -168,7 +167,7 @@ describe('columns', () => {
     expect(component.getByText('Sam Sepiol')).toBeInTheDocument();
   });
 
-  test('Should render the assign button if instructor is not present', async () => {
+  test('Should render the label text if instructor is not present', async () => {
     const values = {
       row: {
         values: { instructors: [] },
@@ -219,14 +218,57 @@ describe('columns', () => {
       { preloadedState: mockStore },
     );
 
-    const modalButton = component.getByRole('button');
-    expect(modalButton).toBeInTheDocument();
+    const title = component.getByText('Unassigned');
+    expect(title).toBeInTheDocument();
+  });
 
-    fireEvent.click(modalButton);
+  test('Should render the dropdown menu', () => {
+    const values = {
+      row: {
+        values: { instructors: ['Sam Sepiol'] },
+        original: {
+          classId: 'Demo Course 1',
+        },
+      },
+    };
 
-    await waitFor(() => {
-      const title = component.getAllByText('Assign instructor')[0];
-      expect(title).toBeInTheDocument();
-    });
+    const Component = () => columns[8].Cell(values);
+    const mockStore = {
+      classes: {
+        table: {
+          data: [
+            {
+              masterCourseName: 'Demo MasterCourse 1',
+              className: 'Demo Class 1',
+              startDate: '09/21/24',
+              endDate: null,
+              numberOfStudents: 1,
+              maxStudents: 100,
+              instructors: ['Sam Sepiol'],
+            },
+          ],
+          count: 2,
+          num_pages: 1,
+          current_page: 1,
+        },
+      },
+    };
+
+    const component = renderWithProviders(
+      <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
+        <Route path="/courses/:courseId">
+          <Component />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    const buttonTrigger = component.getByTestId('droprown-action');
+
+    fireEvent.click(buttonTrigger);
+
+    expect(component.getByText('View class content')).toBeInTheDocument();
+    expect(component.getByText('Manage Instructors')).toBeInTheDocument();
+    expect(component.getByText('Edit Class')).toBeInTheDocument();
   });
 });
