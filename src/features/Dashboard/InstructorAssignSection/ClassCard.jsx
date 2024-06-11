@@ -1,52 +1,40 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { Button } from 'react-paragon-topaz';
-import { useToggle } from '@edx/paragon';
-import AssignInstructors from 'features/Instructors/AssignInstructors';
 
-import { updateClassSelected } from 'features/Instructors/data/slice';
-
-import { formatUTCDate } from 'helpers';
+import { formatDateRange } from 'helpers';
 
 import 'features/Dashboard/InstructorAssignSection/index.scss';
 
 const ClassCard = ({ data }) => {
-  const dispatch = useDispatch();
-  const [isOpen, open, close] = useToggle(false);
-  const fullDate = formatUTCDate(data.startDate, 'PP');
+  const history = useHistory();
 
-  const handleAssignModal = () => {
-    dispatch(updateClassSelected(data.classId)); // eslint-disable-line react/prop-types
-    open();
+  const handleManageButton = () => {
+    history.push(`/manage-instructors/${data?.masterCourseName}/${data?.className}?classId=${data?.classId}&previous=dashboard`);
   };
 
   return (
-    <>
-      <AssignInstructors
-        isOpen={isOpen}
-        close={close}
-      />
-      <div className="class-card-container">
-        <h4>{data?.className}</h4>
-        <p className="course-name">{data?.masterCourseName}</p>
-        <p className="date"><i className="fa-sharp fa-regular fa-calendar-day" />{fullDate}</p>
-        <Button variant="outline-primary" size="sm" onClick={handleAssignModal}>
-          <i className="fa-regular fa-chalkboard-user" />
-          Assign instructor
-        </Button>
-      </div>
-    </>
-
+    <div className="class-card-container">
+      <h4>{data?.className}</h4>
+      <p className="course-name">{data?.masterCourseName}</p>
+      <p className="date"><i className="fa-sharp fa-regular fa-calendar-day" />{formatDateRange(data.startDate, data?.endDate)}</p>
+      <Button variant="outline-primary" size="sm" onClick={handleManageButton}>
+        <i className="fa-regular fa-chalkboard-user" />
+        Manage instructor
+      </Button>
+    </div>
   );
 };
 
 ClassCard.propTypes = {
   data: PropTypes.shape({
+    classId: PropTypes.string,
     className: PropTypes.string,
     masterCourseName: PropTypes.string,
     startDate: PropTypes.string,
+    endDate: PropTypes.string,
   }),
 };
 
