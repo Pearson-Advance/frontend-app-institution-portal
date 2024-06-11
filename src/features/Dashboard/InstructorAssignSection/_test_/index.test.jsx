@@ -39,6 +39,6 @@ describe('Instructor Assign component', () => {
     expect(getByText('ccx 1')).toBeInTheDocument();
     expect(getByText('Demo Course 1')).toBeInTheDocument();
     expect(getByText('Jan 23, 2024')).toBeInTheDocument();
-    expect(getByText('Assign instructor')).toBeInTheDocument();
+    expect(getByText('Manage instructor')).toBeInTheDocument();
   });
 });

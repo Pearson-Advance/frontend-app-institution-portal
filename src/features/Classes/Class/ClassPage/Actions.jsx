@@ -32,7 +32,7 @@ const Actions = ({ previousPage }) => {
 
   const handleEnrollStudentModal = () => setIsEnrollModalOpen(!isEnrollModalOpen);
 
-  const handeManageButton = () => {
+  const handleManageButton = () => {
     history.push(`/manage-instructors/${courseId}/${classId}?classId=${queryClassId}&previous=${previousPage}`);
   };
 
@@ -41,7 +41,7 @@ const Actions = ({ previousPage }) => {
       <Button
         variant="outline-primary"
         className="text-decoration-none text-primary bg-white mr-3"
-        onClick={handeManageButton}
+        onClick={handleManageButton}
       >
         Manage Instructors
       </Button>
