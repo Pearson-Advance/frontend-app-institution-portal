@@ -57,7 +57,7 @@ describe('Students redux tests', () => {
       .reply(200, mockResponse);
 
     expect(store.getState().students.table.status)
-      .toEqual('loading');
+      .toEqual('initial');
 
     await executeThunk(fetchStudentsData(), store.dispatch, store.getState);
 
@@ -74,7 +74,7 @@ describe('Students redux tests', () => {
       .reply(500);
 
     expect(store.getState().students.table.status)
-      .toEqual('loading');
+      .toEqual('initial');
 
     await executeThunk(fetchStudentsData(), store.dispatch, store.getState);
 

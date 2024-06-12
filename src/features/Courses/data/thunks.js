@@ -17,7 +17,7 @@ import { assignInstructors } from 'features/Instructors/data';
 
 function fetchCoursesData(id, currentPage, filtersData) {
   return async (dispatch) => {
-    dispatch(fetchCoursesDataRequest);
+    dispatch(fetchCoursesDataRequest());
 
     try {
       const response = camelCaseObject(await getCoursesByInstitution(id, true, currentPage, filtersData));

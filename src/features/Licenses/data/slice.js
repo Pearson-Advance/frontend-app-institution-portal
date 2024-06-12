@@ -6,7 +6,7 @@ const initialState = {
   table: {
     currentPage: 1,
     data: [],
-    status: RequestStatus.LOADING,
+    status: RequestStatus.INITIAL,
     error: null,
     numPages: 0,
     count: 0,
@@ -35,6 +35,9 @@ export const licensesSlice = createSlice({
     fetchLicensesDataFailed: (state) => {
       state.table.status = RequestStatus.ERROR;
     },
+    resetLicensesTable: (state) => {
+      state.table = initialState.table;
+    },
     updateFilters: (state, { payload }) => {
       state.filters = payload;
     },
@@ -51,6 +54,7 @@ export const {
   fetchLicensesDataSuccess,
   fetchLicensesDataFailed,
   updateLicensesOptions,
+  resetLicensesTable,
 } = licensesSlice.actions;
 
 export const { reducer } = licensesSlice;

@@ -6,7 +6,7 @@ const initialState = {
   table: {
     currentPage: 1,
     data: [],
-    status: RequestStatus.LOADING,
+    status: RequestStatus.INITIAL,
     error: null,
     numPages: 0,
     count: 0,
@@ -16,7 +16,7 @@ const initialState = {
   allClasses: {
     data: [],
     count: 0,
-    status: RequestStatus.LOADING,
+    status: RequestStatus.INITIAL,
     error: null,
   },
 };

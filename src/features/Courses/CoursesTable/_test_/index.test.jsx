@@ -10,7 +10,7 @@ import { columns } from 'features/Courses/CoursesTable/columns';
 describe('Courses Table', () => {
   test('renders CoursesTable without data', () => {
     renderWithProviders(<CoursesTable data={[]} count={0} columns={[]} />);
-    const emptyTableText = screen.getByText('No instructors found.');
+    const emptyTableText = screen.getByText('No courses found.');
     expect(emptyTableText).toBeInTheDocument();
   });
 

@@ -65,7 +65,7 @@ describe('Instructors redux tests', () => {
       .reply(200, mockResponse);
 
     expect(store.getState().instructors.table.status)
-      .toEqual('loading');
+      .toEqual('initial');
 
     await executeThunk(fetchInstructorsData(), store.dispatch, store.getState);
 
@@ -82,7 +82,7 @@ describe('Instructors redux tests', () => {
       .reply(500);
 
     expect(store.getState().instructors.table.status)
-      .toEqual('loading');
+      .toEqual('initial');
 
     await executeThunk(fetchInstructorsData(), store.dispatch, store.getState);
 

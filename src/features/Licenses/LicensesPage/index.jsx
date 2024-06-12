@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Pagination, Container } from '@edx/paragon';
 
 import { initialPage } from 'features/constants';
-import { updateCurrentPage } from 'features/Licenses/data/slice';
+import { updateCurrentPage, resetLicensesTable } from 'features/Licenses/data/slice';
 import { fetchLicensesData } from 'features/Licenses/data';
 import LicensesTable from 'features/Licenses/LicensesTable';
 import LicensesFilters from 'features/Licenses/LicensesFilters';
@@ -27,6 +27,10 @@ const LicensesPage = () => {
     if (Object.keys(selectedInstitution).length > 0) {
       dispatch(fetchLicensesData(selectedInstitution?.id, initialPage));
     }
+
+    return () => {
+      dispatch(resetLicensesTable());
+    };
   }, [selectedInstitution, dispatch]);
 
   useEffect(() => {

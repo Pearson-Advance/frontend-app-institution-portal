@@ -50,7 +50,7 @@ describe('Classes redux tests', () => {
       .reply(200, mockResponse);
 
     expect(store.getState().classes.table.status)
-      .toEqual('loading');
+      .toEqual('initial');
 
     await executeThunk(fetchClassesData(1, 1), store.dispatch, store.getState);
 
@@ -67,7 +67,7 @@ describe('Classes redux tests', () => {
       .reply(500);
 
     expect(store.getState().classes.table.status)
-      .toEqual('loading');
+      .toEqual('initial');
 
     await executeThunk(fetchClassesData(1, 1), store.dispatch, store.getState);
 
@@ -107,7 +107,7 @@ describe('Classes redux tests', () => {
       .reply(200, mockResponse);
 
     expect(store.getState().classes.allClasses.status)
-      .toEqual('loading');
+      .toEqual('initial');
 
     await executeThunk(fetchAllClassesData(1), store.dispatch, store.getState);
 
@@ -124,7 +124,7 @@ describe('Classes redux tests', () => {
       .reply(500);
 
     expect(store.getState().classes.allClasses.status)
-      .toEqual('loading');
+      .toEqual('initial');
 
     await executeThunk(fetchAllClassesData(1), store.dispatch, store.getState);
 

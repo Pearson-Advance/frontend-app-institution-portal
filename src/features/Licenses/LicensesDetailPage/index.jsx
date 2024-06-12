@@ -3,14 +3,14 @@ import { Link, useParams, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Button } from 'react-paragon-topaz';
-import { Container, Pagination } from '@edx/paragon';
+import { Container, Pagination, Spinner } from '@edx/paragon';
 import Table from 'features/Main/Table';
 import { columns } from 'features/Licenses/LicenseDetailTable/columns';
 import { fetchCoursesData } from 'features/Courses/data/thunks';
 import { resetCoursesTable, updateCurrentPage } from 'features/Courses/data/slice';
 import { fetchLicensesData } from 'features/Licenses/data';
 
-import { initialPage, licenseBuyLink } from 'features/constants';
+import { initialPage, licenseBuyLink, RequestStatus } from 'features/constants';
 import 'features/Licenses/LicensesDetailPage/index.scss';
 
 const LicensesDetailPage = () => {
@@ -29,9 +29,12 @@ const LicensesDetailPage = () => {
   };
 
   const institution = useSelector((state) => state.main.selectedInstitution);
-  const coursesTable = useSelector((state) => state.courses.table);
-  const licenseInfo = useSelector((state) => state.licenses.table.data)
+  const coursesTable = useSelector((state) => state.courses);
+  const licenseTable = useSelector((state) => state.licenses.table);
+  const licenseInfo = licenseTable.data
     .find((license) => license?.licenseId === parseInt(licenseId, 10)) || defaultLicenseInfo;
+  const isLoadingCourses = coursesTable.table.status === RequestStatus.LOADING;
+  const isLoadingLicenses = licenseTable.status === RequestStatus.LOADING;
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -74,26 +77,39 @@ const LicensesDetailPage = () => {
           </div>
         </div>
         <div className="card-container d-flex justify-content-around align-items-center">
-          <div className="d-flex flex-column align-items-center">
-            <p className="title">Purchased</p>
-            <span className="value purchased-seats">
-              {licenseInfo.purchasedSeats}
-            </span>
-          </div>
-          <div className="separator mx-4" />
-          <div className="d-flex flex-column align-items-center">
-            <p className="title">Enrolled</p>
-            <span className="value">
-              {licenseInfo.numberOfStudents}
-            </span>
-          </div>
-          <div className="separator mx-4" />
-          <div className="d-flex flex-column align-items-center">
-            <p className="title">Remaining</p>
-            <span className="value number-of-pending">
-              {licenseInfo.numberOfPendingStudents}
-            </span>
-          </div>
+          {isLoadingLicenses && (
+            <div className="w-100 h-100 d-flex justify-content-center align-items-center">
+              <Spinner
+                animation="border"
+                className="mie-3"
+                screenReaderText="loading"
+              />
+            </div>
+          )}
+          {!isLoadingLicenses && (
+            <>
+              <div className="d-flex flex-column align-items-center">
+                <p className="title">Purchased</p>
+                <span className="value purchased-seats">
+                  {licenseInfo.purchasedSeats}
+                </span>
+              </div>
+              <div className="separator mx-4" />
+              <div className="d-flex flex-column align-items-center">
+                <p className="title">Enrolled</p>
+                <span className="value">
+                  {licenseInfo.numberOfStudents}
+                </span>
+              </div>
+              <div className="separator mx-4" />
+              <div className="d-flex flex-column align-items-center">
+                <p className="title">Remaining</p>
+                <span className="value number-of-pending">
+                  {licenseInfo.numberOfPendingStudents}
+                </span>
+              </div>
+            </>
+          )}
         </div>
       </div>
       <div className="license-page-content-container">
@@ -108,17 +124,23 @@ const LicensesDetailPage = () => {
             Buy a license
           </Button>
         </div>
-        <Table columns={columns} data={coursesTable.data} count={coursesTable.count} text="No courses found." />
-        {coursesTable.numPages > 1 && (
-        <Pagination
-          paginationLabel="paginationNavigation"
-          pageCount={coursesTable.numPages}
-          currentPage={currentPage}
-          onPageSelect={handlePagination}
-          variant="reduced"
-          className="mx-auto pagination-table"
-          size="small"
+        <Table
+          isLoading={isLoadingCourses}
+          columns={columns}
+          data={coursesTable.table.data}
+          count={coursesTable.table.count}
+          text="No courses found."
         />
+        {coursesTable.table.numPages > 1 && (
+          <Pagination
+            paginationLabel="paginationNavigation"
+            pageCount={coursesTable.table.numPages}
+            currentPage={currentPage}
+            onPageSelect={handlePagination}
+            variant="reduced"
+            className="mx-auto pagination-table"
+            size="small"
+          />
         )}
       </div>
     </Container>

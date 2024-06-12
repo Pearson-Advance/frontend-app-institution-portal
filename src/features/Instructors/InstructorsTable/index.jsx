@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
@@ -8,17 +9,21 @@ import {
 import DataTable from '@edx/paragon/dist/DataTable';
 
 import { columns } from 'features/Instructors/InstructorsTable/columns';
+import { RequestStatus } from 'features/constants';
 
 const InstructorsTable = ({
   data,
   count,
 }) => {
+  const instructorsRequest = useSelector((state) => state.instructors.table.status);
   const COLUMNS = useMemo(() => columns, []);
+  const isLoading = instructorsRequest === RequestStatus.LOADING;
 
   return (
     <Row className="justify-content-center my-4 my-3">
       <Col xs={11} className="p-0">
         <DataTable
+          isLoading={isLoading}
           isSortable
           columns={COLUMNS}
           itemCount={count}

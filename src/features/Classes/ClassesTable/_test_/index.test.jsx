@@ -1,15 +1,23 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
 import { MemoryRouter, Route } from 'react-router-dom';
 
 import ClassesTable from 'features/Classes/ClassesTable';
 import { columns } from 'features/Classes/ClassesTable/columns';
+import { RequestStatus } from 'features/constants';
 
 describe('Classes Table', () => {
   test('Should render the table without data', () => {
-    render(<ClassesTable data={[]} count={0} columns={[]} />);
+    const mockStore = {
+      classes: {
+        table: {
+          status: RequestStatus.SUCCESS,
+        },
+      },
+    };
+    renderWithProviders(<ClassesTable data={[]} count={0} columns={[]} />, { preloadedState: mockStore });
     const emptyTableText = screen.getByText('No classes found.');
     expect(emptyTableText).toBeInTheDocument();
   });
