@@ -1,20 +1,18 @@
-/* eslint-disable react/prop-types, no-nested-ternary */
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+/* eslint-disable react/prop-types */
+import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { Button } from 'react-paragon-topaz';
-import AssignInstructors from 'features/Instructors/AssignInstructors';
 import {
-  Dropdown, IconButton, Icon, useToggle,
+  Dropdown,
+  IconButton,
+  Icon,
+  useToggle,
 } from '@edx/paragon';
-import AddClass from 'features/Courses/AddClass';
 import { MoreHoriz } from '@edx/paragon/icons';
+import { getConfig } from '@edx/frontend-platform';
 
-import { updateClassSelected } from 'features/Instructors/data/slice';
-import { fetchClassesData } from 'features/Classes/data/thunks';
+import AddClass from 'features/Courses/AddClass';
 
-import { initialPage } from 'features/constants';
 import { formatUTCDate } from 'helpers';
 
 const columns = [
@@ -60,21 +58,6 @@ const columns = [
     Header: 'Instructors',
     accessor: 'instructors',
     Cell: ({ row }) => {
-      const [isModalOpen, setIsModalOpen] = useState(false);
-
-      const dispatch = useDispatch();
-      const institution = useSelector((state) => state.main.selectedInstitution);
-
-      const handleOpenModal = () => {
-        dispatch(updateClassSelected(row.original.classId));
-        setIsModalOpen(true);
-      };
-
-      const handleCloseModal = () => {
-        dispatch(fetchClassesData(institution.id, initialPage));
-        setIsModalOpen(false);
-      };
-
       if (row.values.instructors?.length > 0) {
         return (
           <ul className="instructors-list mb-0">
@@ -82,18 +65,11 @@ const columns = [
           </ul>
         );
       }
+
       return (
-        <>
-          <Button onClick={handleOpenModal} className="button-assign">
-            <i className="fa fa-plus mr-2" />
-            Assign
-          </Button>
-          <AssignInstructors
-            isOpen={isModalOpen}
-            close={handleCloseModal}
-            getClasses={false}
-          />
-        </>
+        <span className="text-danger">
+          Unassigned
+        </span>
       );
     },
   },
@@ -127,8 +103,26 @@ const columns = [
           />
           <Dropdown.Menu>
             <Dropdown.Item onClick={openModal}>
-              <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />
+              <i className="fa-regular fa-pen-to-square mr-2 mb-1" />
               Edit Class
+            </Dropdown.Item>
+            <Dropdown.Item
+              href={`${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/home`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-truncate text-decoration-none custom-text-black"
+            >
+              <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />
+              View class content
+            </Dropdown.Item>
+            <Dropdown.Item>
+              <Link
+                to={`/manage-instructors/${masterCourseName}/${row.values.className}?classId=${classId}&previous=classes`}
+                className="text-truncate text-decoration-none custom-text-black"
+              >
+                <i className="fa-regular fa-chalkboard-user mr-2 mb-1" />
+                Manage Instructors
+              </Link>
             </Dropdown.Item>
             <AddClass
               isOpen={isOpenModal}
