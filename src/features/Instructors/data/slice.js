@@ -6,7 +6,7 @@ const initialState = {
   table: {
     currentPage: 1,
     data: [],
-    status: RequestStatus.LOADING,
+    status: RequestStatus.INITIAL,
     error: null,
     numPages: 0,
     count: 0,
@@ -50,6 +50,9 @@ export const instructorsSlice = createSlice({
     },
     fetchInstructorsDataFailed: (state) => {
       state.table.status = RequestStatus.ERROR;
+    },
+    resetInstructorsRequest: (state) => {
+      state.table = initialState.table;
     },
     updateFilters: (state, { payload }) => {
       state.filters = payload;
@@ -108,6 +111,7 @@ export const {
   fetchInstructorsDataRequest,
   fetchInstructorsDataSuccess,
   fetchInstructorsDataFailed,
+  resetInstructorsRequest,
   updateFilters,
   updateClassSelected,
   assignInstructorsRequest,

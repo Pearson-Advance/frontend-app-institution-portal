@@ -1,15 +1,23 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { MemoryRouter, Route } from 'react-router-dom';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
 import { renderWithProviders } from 'test-utils';
 import CourseDetailTable from 'features/Courses/CourseDetailTable';
 import { columns } from 'features/Courses/CourseDetailTable/columns';
+import { RequestStatus } from 'features/constants';
 
 describe('Course Details Table', () => {
   test('Should render the table without data', () => {
-    render(<CourseDetailTable data={[]} count={0} columns={[]} />);
+    const mockStore = {
+      classes: {
+        table: {
+          status: RequestStatus.SUCCESS,
+        },
+      },
+    };
+    renderWithProviders(<CourseDetailTable data={[]} count={0} columns={[]} />, { preloadedState: mockStore });
     const emptyTableText = screen.getByText('No classes were found.');
     expect(emptyTableText).toBeInTheDocument();
   });
@@ -43,6 +51,7 @@ describe('Course Details Table', () => {
           count: 2,
           num_pages: 1,
           current_page: 1,
+          status: RequestStatus.SUCCESS,
         },
       },
     };

@@ -7,6 +7,7 @@ const Table = ({
   data,
   count,
   text,
+  ...props
 }) => {
   const COLUMNS = useMemo(() => columns, [columns]);
 
@@ -16,6 +17,7 @@ const Table = ({
       columns={COLUMNS}
       itemCount={count}
       data={data}
+      {...props}
     >
       <DataTable.Table />
       <DataTable.EmptyTable content={text} />

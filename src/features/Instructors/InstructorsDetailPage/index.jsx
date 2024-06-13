@@ -12,7 +12,7 @@ import { fetchClassesData } from 'features/Classes/data/thunks';
 import { resetClassesTable, updateCurrentPage } from 'features/Classes/data/slice';
 import { fetchInstructorsData } from 'features/Instructors/data/thunks';
 import { columns } from 'features/Instructors/InstructorDetailTable/columns';
-import { initialPage } from 'features/constants';
+import { initialPage, RequestStatus } from 'features/constants';
 
 const InstructorsDetailPage = () => {
   const history = useHistory();
@@ -31,6 +31,7 @@ const InstructorsDetailPage = () => {
   const classes = useSelector((state) => state.classes.table);
   const instructorInfo = useSelector((state) => state.instructors.table.data)
     .find((instructor) => instructor?.instructorUsername === instructorUsername) || defaultInstructorInfo;
+  const isLoading = classes.status === RequestStatus.LOADING;
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -38,18 +39,18 @@ const InstructorsDetailPage = () => {
   };
 
   useEffect(() => {
-    if (institution.id) {
-      dispatch(fetchClassesData(institution.id, initialPage, '', { instructor: instructorInfo.instructorUsername }));
-      dispatch(fetchInstructorsData(institution.id, initialPage, instructorInfo.instructorUsername));
+    if (institution.id && instructorUsername) {
+      dispatch(fetchClassesData(institution.id, initialPage, '', { instructor: instructorUsername }));
+      dispatch(fetchInstructorsData(institution.id, initialPage, { instructor: instructorUsername }));
     }
 
     return () => {
       dispatch(resetClassesTable());
     };
-  }, [dispatch, institution.id, instructorInfo.instructorUsername]);
+  }, [dispatch, institution.id, instructorUsername]);
 
   useEffect(() => {
-    dispatch(fetchClassesData(institution.id, currentPage, '', { instructor: instructorInfo.instructorUsername }));
+    dispatch(fetchClassesData(institution.id, currentPage, '', { instructor: instructorUsername }));
   }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -77,7 +78,13 @@ const InstructorsDetailPage = () => {
         <Tab eventKey="classes" title="Classes" />
       </Tabs>
 
-      <Table columns={columns} count={classes.count} data={classes.data} text="No classes found." />
+      <Table
+        isLoading={isLoading}
+        columns={columns}
+        count={classes.count}
+        data={classes.data}
+        text="No classes found."
+      />
       {classes.numPages > initialPage && (
       <Pagination
         paginationLabel="paginationNavigation"

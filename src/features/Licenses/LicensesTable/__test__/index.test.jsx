@@ -1,14 +1,25 @@
 import React from 'react';
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
 
 import LicensesTable from 'features/Licenses/LicensesTable';
 import { columns } from 'features/Licenses/LicensesTable/columns';
 
+import { RequestStatus } from 'features/constants';
+import { renderWithProviders } from 'test-utils';
+
 describe('Licenses Table', () => {
+  const mockStore = {
+    licenses: {
+      table: {
+        status: RequestStatus.SUCCESS,
+      },
+    },
+  };
+
   test('renders Licenses table without data', () => {
-    render(<LicensesTable data={[]} count={0} columns={[]} />);
+    renderWithProviders(<LicensesTable data={[]} count={0} columns={[]} />, { preloadedState: mockStore });
     const emptyTableText = screen.getByText('No licenses found.');
     expect(emptyTableText).toBeInTheDocument();
   });
@@ -29,12 +40,13 @@ describe('Licenses Table', () => {
       },
     ];
 
-    const component = render(
+    const component = renderWithProviders(
       <MemoryRouter initialEntries={['/licenses']}>
         <Route path="/licenses">
           <LicensesTable data={data} count={data.length} columns={columns} />
         </Route>
       </MemoryRouter>,
+      { preloadedState: mockStore },
     );
 
     // Check if the table rows are present

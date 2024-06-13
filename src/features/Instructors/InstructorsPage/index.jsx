@@ -8,7 +8,7 @@ import InstructorsFilters from 'features/Instructors/InstructorsFilters';
 import AddInstructors from 'features/Instructors/AddInstructors';
 import { Button } from 'react-paragon-topaz';
 
-import { updateCurrentPage } from 'features/Instructors/data/slice';
+import { updateCurrentPage, resetInstructorsRequest } from 'features/Instructors/data/slice';
 import { fetchInstructorsData } from 'features/Instructors/data/thunks';
 import { initialPage } from 'features/constants';
 
@@ -23,6 +23,10 @@ const InstructorsPage = () => {
     if (Object.keys(selectedInstitution).length > 0) {
       dispatch(fetchInstructorsData(selectedInstitution.id, initialPage));
     }
+
+    return () => {
+      dispatch(resetInstructorsRequest());
+    };
   }, [selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {

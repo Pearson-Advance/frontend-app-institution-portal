@@ -13,7 +13,7 @@ import { columns } from 'features/Classes/Class/ClassPage/columns';
 import { resetStudentsTable, updateCurrentPage } from 'features/Students/data/slice';
 import { fetchStudentsData } from 'features/Students/data';
 
-import { initialPage } from 'features/constants';
+import { initialPage, RequestStatus } from 'features/constants';
 import { resetClassesTable, resetClasses } from 'features/Classes/data/slice';
 import { fetchAllClassesData } from 'features/Classes/data/thunks';
 
@@ -31,6 +31,8 @@ const ClassPage = () => {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const institution = useSelector((state) => state.main.selectedInstitution);
   const students = useSelector((state) => state.students.table);
+
+  const isLoadingStudents = students.status === RequestStatus.LOADING;
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -104,7 +106,13 @@ const ClassPage = () => {
           <div className="d-flex justify-content-end my-3 flex-wrap">
             <Actions previousPage={previousPage} />
           </div>
-          <Table columns={columns} count={students.count} data={students.data} text="No students were found for this class." />
+          <Table
+            isLoading={isLoadingStudents}
+            columns={columns}
+            count={students.count}
+            data={students.data}
+            text="No students were found for this class."
+          />
           {students.numPages > 1 && (
           <Pagination
             paginationLabel="paginationNavigation"

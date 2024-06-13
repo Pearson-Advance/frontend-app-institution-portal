@@ -5,7 +5,7 @@ import StudentsFilters from 'features/Students/StudentsFilters';
 import StudentsMetrics from 'features/Students/StudentsMetrics';
 import Container from '@edx/paragon/dist/Container';
 import { Pagination } from '@edx/paragon';
-import { updateCurrentPage } from 'features/Students/data/slice';
+import { updateCurrentPage, resetStudentsTable } from 'features/Students/data/slice';
 import { fetchStudentsData } from 'features/Students/data/thunks';
 import { initialPage } from 'features/constants';
 
@@ -19,6 +19,10 @@ const StudentsPage = () => {
     if (Object.keys(selectedInstitution).length > 0) {
       dispatch(fetchStudentsData(selectedInstitution.id, initialPage));
     }
+
+    return () => {
+      dispatch(resetStudentsTable());
+    };
   }, [selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {

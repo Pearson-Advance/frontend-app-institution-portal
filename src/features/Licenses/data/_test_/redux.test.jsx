@@ -54,7 +54,7 @@ describe('Licenses redux tests', () => {
       .reply(200, mockResponse);
 
     expect(store.getState().licenses.table.status)
-      .toEqual('loading');
+      .toEqual('initial');
 
     await executeThunk(fetchLicensesData(1), store.dispatch, store.getState);
 
@@ -72,7 +72,7 @@ describe('Licenses redux tests', () => {
       .reply(500);
 
     expect(store.getState().licenses.table.status)
-      .toEqual('loading');
+      .toEqual('initial');
 
     await executeThunk(fetchLicensesData(1), store.dispatch, store.getState);
 
