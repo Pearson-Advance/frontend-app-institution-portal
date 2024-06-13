@@ -57,9 +57,6 @@ export const instructorsSlice = createSlice({
     updateFilters: (state, { payload }) => {
       state.filters = payload;
     },
-    updateClassSelected: (state, { payload }) => {
-      state.classSelected = payload;
-    },
     assignInstructorsRequest: (state) => {
       state.assignInstructors.status = RequestStatus.LOADING;
     },
@@ -113,7 +110,6 @@ export const {
   fetchInstructorsDataFailed,
   resetInstructorsRequest,
   updateFilters,
-  updateClassSelected,
   assignInstructorsRequest,
   assignInstructorsSuccess,
   assignInstructorsFailed,

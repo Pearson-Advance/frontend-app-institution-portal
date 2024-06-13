@@ -7,7 +7,6 @@ import {
 import {
   updateCurrentPage,
   updateFilters,
-  updateClassSelected,
   addRowSelect,
   deleteRowSelect,
   resetRowSelect,
@@ -117,14 +116,6 @@ describe('Instructors redux tests', () => {
 
     store.dispatch(updateFilters(filters));
     expect(store.getState().instructors.filters).toEqual(expectState);
-  });
-
-  test('update classSelected', () => {
-    const classSelected = 'ccx1';
-    const expectState = classSelected;
-
-    store.dispatch(updateClassSelected(classSelected));
-    expect(store.getState().instructors.classSelected).toEqual(expectState);
   });
 
   test('Add rowsSelected', () => {
