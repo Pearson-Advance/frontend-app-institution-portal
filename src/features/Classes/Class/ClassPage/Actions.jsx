@@ -10,6 +10,8 @@ import {
 } from '@edx/paragon';
 import { MoreVert } from '@edx/paragon/icons';
 
+import { setAssignStaffRole } from 'helpers';
+
 import AddClass from 'features/Courses/AddClass';
 import EnrollStudent from 'features/Classes/EnrollStudent';
 
@@ -47,9 +49,7 @@ const Actions = ({ previousPage }) => {
       </Button>
       <Button
         as="a"
-        href={classLink}
-        target="_blank"
-        rel="noopener noreferrer"
+        onClick={() => setAssignStaffRole(classLink, classId)}
         className="text-decoration-none text-white button-view-class mr-3"
       >
         <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />

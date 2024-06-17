@@ -8,7 +8,7 @@ import { Badge } from 'react-paragon-topaz';
 import { MoreHoriz } from '@edx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 
-import { formatUTCDate } from 'helpers';
+import { formatUTCDate, setAssignStaffRole } from 'helpers';
 
 import AddClass from 'features/Courses/AddClass';
 
@@ -121,9 +121,9 @@ const columns = [
           />
           <Dropdown.Menu>
             <Dropdown.Item
-              href={`${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/home`}
               target="_blank"
               rel="noreferrer"
+              onClick={() => setAssignStaffRole(`${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/home`, classId)}
               className="text-truncate text-decoration-none custom-text-black"
             >
               <i className="fa-regular fa-eye mr-2 mb-1" />
