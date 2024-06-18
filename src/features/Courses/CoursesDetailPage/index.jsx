@@ -29,15 +29,15 @@ const CoursesDetailPage = () => {
     numberOfStudents: '-',
     numberOfPendingStudents: '-',
     masterCourseId: '-',
+    masterCourseName: '-',
   };
 
   const courseInfo = useSelector((state) => state.courses.table.data)
-    .find((course) => course?.masterCourseName === courseId) || defaultCourseInfo;
+    .find((course) => course?.masterCourseId === courseId) || defaultCourseInfo;
   const institution = useSelector((state) => state.main.selectedInstitution);
   const classes = useSelector((state) => state.classes.table);
   const totalStudents = courseInfo.numberOfStudents + courseInfo.numberOfPendingStudents;
   const courseDetailsLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${courseInfo.masterCourseId}/home`;
-
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
     dispatch(updateCurrentPage(targetPage));
@@ -51,7 +51,7 @@ const CoursesDetailPage = () => {
     };
 
     if (institution.id) {
-      dispatch(fetchClassesData(institution.id, initialPage, courseId));
+      dispatch(fetchClassesData(institution.id, initialPage, courseInfo.masterCourseName));
       dispatch(fetchCoursesData(institution.id, initialPage, null));
     }
 
@@ -59,10 +59,10 @@ const CoursesDetailPage = () => {
       dispatch(fetchCoursesDataSuccess(initialState));
       dispatch(fetchClassesDataSuccess(initialState));
     };
-  }, [dispatch, institution.id, courseId]);
+  }, [dispatch, institution.id, courseId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    dispatch(fetchClassesData(institution.id, currentPage, courseId));
+    dispatch(fetchClassesData(institution.id, currentPage, courseInfo.masterCourseName));
   }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
