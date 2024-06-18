@@ -1,4 +1,7 @@
 import { format } from 'date-fns';
+import { logError } from '@edx/frontend-platform/logging';
+
+import { assignStaffRole } from 'features/Main/data/api';
 
 /**
  * Format a UTC date
@@ -102,3 +105,16 @@ export const getInitials = (name) => {
 
   return name.trim().split(/\s+/).map(word => word.charAt(0).toUpperCase()).join('');
 };
+
+/**
+ * Assigns a staff role to a class and then opens a new window or tab with a specific URL.
+ *
+ * @param {string} url - The URL to open in a new window or tab after assigning the role.
+ * @param {string} classId - The ID of the class to which the staff role will be assigned.
+ *
+ * @returns {Promise} - The promise returned by the assignStaffRole function, which resolves once
+ * the role assignment is complete.
+ */
+export const setAssignStaffRole = (url, classId) => assignStaffRole(classId).catch(logError).finally(() => {
+  window.open(url, '_blank', 'noopener,noreferrer');
+});

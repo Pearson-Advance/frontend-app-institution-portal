@@ -13,7 +13,7 @@ import { getConfig } from '@edx/frontend-platform';
 
 import AddClass from 'features/Courses/AddClass';
 
-import { formatUTCDate } from 'helpers';
+import { formatUTCDate, setAssignStaffRole } from 'helpers';
 
 const columns = [
   {
@@ -107,9 +107,7 @@ const columns = [
               Edit Class
             </Dropdown.Item>
             <Dropdown.Item
-              href={`${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/home`}
-              target="_blank"
-              rel="noreferrer"
+              onClick={() => setAssignStaffRole(`${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/home`, classId)}
               className="text-truncate text-decoration-none custom-text-black"
             >
               <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />

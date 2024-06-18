@@ -1,4 +1,21 @@
-import { formatDateRange, formatUTCDate, getInitials } from 'helpers';
+import { logError } from '@edx/frontend-platform/logging';
+
+import {
+  formatDateRange,
+  formatUTCDate,
+  getInitials,
+  setAssignStaffRole,
+} from 'helpers';
+
+import { assignStaffRole } from 'features/Main/data/api';
+
+jest.mock('@edx/frontend-platform/logging', () => ({
+  logError: jest.fn(),
+}));
+
+jest.mock('features/Main/data/api', () => ({
+  assignStaffRole: jest.fn(),
+}));
 
 describe('formatDateRange', () => {
   test('Should return "-" when startDate is not provided', () => {
@@ -58,5 +75,48 @@ describe('getInitials', () => {
 
   test('Should return correct initials for a hyphenated name', () => {
     expect(getInitials('Mary-Jane Watson')).toBe('MW');
+  });
+});
+
+describe('setAssignStaffRole', () => {
+  const originalWindowOpen = window.open;
+
+  beforeAll(() => {
+    window.open = jest.fn();
+  });
+
+  afterAll(() => {
+    window.open = originalWindowOpen;
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('Should open a new window with the correct URL on success', async () => {
+    assignStaffRole.mockResolvedValueOnce();
+
+    const url = 'http://example.com';
+    const classId = '12345';
+
+    await setAssignStaffRole(url, classId);
+
+    expect(assignStaffRole).toHaveBeenCalledWith(classId);
+    expect(logError).not.toHaveBeenCalled();
+    expect(window.open).toHaveBeenCalledWith(url, '_blank', 'noopener,noreferrer');
+  });
+
+  test('Should log an error and open a new window with the correct URL on failure', async () => {
+    const error = new Error('Assignment failed');
+    assignStaffRole.mockRejectedValueOnce(error);
+
+    const url = 'http://example.com';
+    const classId = '12345';
+
+    await setAssignStaffRole(url, classId);
+
+    expect(assignStaffRole).toHaveBeenCalledWith(classId);
+    expect(logError).toHaveBeenCalledWith(error);
+    expect(window.open).toHaveBeenCalledWith(url, '_blank', 'noopener,noreferrer');
   });
 });
