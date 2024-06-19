@@ -29,7 +29,7 @@ const CoursesDetailPage = () => {
     numberOfStudents: '-',
     numberOfPendingStudents: '-',
     masterCourseId: '-',
-    masterCourseName: '-',
+    masterCourseName: '',
   };
 
   const courseInfo = useSelector((state) => state.courses.table.data)
@@ -51,7 +51,7 @@ const CoursesDetailPage = () => {
     };
 
     if (institution.id) {
-      dispatch(fetchClassesData(institution.id, initialPage, courseInfo.masterCourseName));
+      dispatch(fetchClassesData(institution.id, initialPage, courseId));
       dispatch(fetchCoursesData(institution.id, initialPage, null));
     }
 
@@ -62,7 +62,7 @@ const CoursesDetailPage = () => {
   }, [dispatch, institution.id, courseId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    dispatch(fetchClassesData(institution.id, currentPage, courseInfo.masterCourseName));
+    dispatch(fetchClassesData(institution.id, currentPage, courseId));
   }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const CoursesDetailPage = () => {
           <Link to="/courses" className="mr-3 link">
             <i className="fa-solid fa-arrow-left" />
           </Link>
-          <h3 className="h2 mb-0 course-title">{courseId}</h3>
+          <h3 className="h2 mb-0 course-title">{courseInfo.masterCourseName}</h3>
         </div>
 
         <div className="card-container d-flex justify-content-around align-items-center">

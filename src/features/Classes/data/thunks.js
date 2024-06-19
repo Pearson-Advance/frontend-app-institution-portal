@@ -13,13 +13,13 @@ import {
 import { getClassesByInstitution } from 'features/Common/data/api';
 import { initialPage } from 'features/constants';
 
-function fetchClassesData(id, currentPage, courseName = '', urlParamsFilters = '', limit = true) {
+function fetchClassesData(id, currentPage, courseId = '', urlParamsFilters = '', limit = true) {
   return async (dispatch) => {
     dispatch(fetchClassesDataRequest());
 
     try {
       const response = camelCaseObject(
-        await getClassesByInstitution(id, courseName, limit, currentPage, urlParamsFilters),
+        await getClassesByInstitution(id, courseId, limit, currentPage, urlParamsFilters),
       );
       dispatch(fetchClassesDataSuccess(response.data));
     } catch (error) {
@@ -43,13 +43,13 @@ function fetchClassesOptionsData(id, courseName) {
   };
 }
 
-function fetchAllClassesData(id, courseName = '', urlParamsFilters = '', limit = false) {
+function fetchAllClassesData(id, courseId = '', urlParamsFilters = '', limit = false) {
   return async (dispatch) => {
     dispatch(fetchAllClassesDataRequest());
 
     try {
       const response = camelCaseObject(
-        await getClassesByInstitution(id, courseName, limit, initialPage, urlParamsFilters),
+        await getClassesByInstitution(id, courseId, limit, initialPage, urlParamsFilters),
       );
       dispatch(fetchAllClassesDataSuccess(response.data));
     } catch (error) {

@@ -29,10 +29,11 @@ describe('Classes redux tests', () => {
   });
 
   test('successful fetch classes data', async () => {
-    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_name=`;
+    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_id=`;
     const mockResponse = {
       results: [
         {
+          masterCourseId: 'course-v1:USB+CCD+2023',
           masterCourseName: 'Demo MasterCourse 1',
           className: 'Demo Class 1',
           startDate: '09/21/24',
@@ -91,9 +92,10 @@ describe('Classes redux tests', () => {
   });
 
   test('successful fetch all classes data', async () => {
-    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_name=`;
+    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_id=`;
     const mockResponse = [
       {
+        masterCourseId: 'course-v1:USB+CCD+2023',
         masterCourseName: 'Demo MasterCourse 1',
         className: 'Demo Class 1',
         startDate: '09/21/24',
