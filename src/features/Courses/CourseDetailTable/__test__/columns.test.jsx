@@ -62,7 +62,7 @@ describe('columns', () => {
     });
 
     renderWithProviders(
-      <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
+      <MemoryRouter initialEntries={['/courses/course-v1:USB+CDDD+2023']}>
         <Route path="/courses/:courseId">
           <Component />
         </Route>
@@ -73,7 +73,7 @@ describe('columns', () => {
     const linkElement = screen.getByText('Class example');
     expect(linkElement).toBeInTheDocument();
     expect(linkElement).toHaveClass('text-truncate link');
-    expect(linkElement).toHaveAttribute('href', '/courses/Demo Course 1/Class example?classId=class id&previous=courses');
+    expect(linkElement).toHaveAttribute('href', '/courses/course-v1:USB+CDDD+2023/Class example?classId=class id&previous=courses');
   });
 
   test('Should render the dates', () => {
@@ -156,7 +156,7 @@ describe('columns', () => {
     };
 
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
+      <MemoryRouter initialEntries={['/courses/course-v1:USB+CDDD+2023']}>
         <Route path="/courses/:courseId">
           <Component />
         </Route>
@@ -210,7 +210,7 @@ describe('columns', () => {
     };
 
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
+      <MemoryRouter initialEntries={['/courses/course-v1:USB+CDDD+2023']}>
         <Route path="/courses/:courseId">
           <ComponentNoInstructor />
         </Route>
@@ -255,7 +255,7 @@ describe('columns', () => {
     };
 
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
+      <MemoryRouter initialEntries={['/courses/course-v1:USB+CDDD+2023']}>
         <Route path="/courses/:courseId">
           <Component />
         </Route>
