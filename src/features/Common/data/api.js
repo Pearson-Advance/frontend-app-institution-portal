@@ -19,8 +19,8 @@ function getLicensesByInstitution(institutionId, limit, page = 1, urlParamsFilte
   );
 }
 
-function getClassesByInstitution(institutionId, courseName, limit = false, page = '', urlParamsFilters = '') {
-  const encodedCourseName = encodeURIComponent(courseName);
+function getClassesByInstitution(institutionId, courseId, limit = false, page = '', urlParamsFilters = '') {
+  const encodedCourseId = encodeURIComponent(courseId);
   const params = {
     limit,
     institution_id: institutionId,
@@ -28,7 +28,7 @@ function getClassesByInstitution(institutionId, courseName, limit = false, page 
     ...urlParamsFilters,
   };
   return getAuthenticatedHttpClient().get(
-    `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_name=${encodedCourseName}`,
+    `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_id=${encodedCourseId}`,
     { params },
   );
 }
