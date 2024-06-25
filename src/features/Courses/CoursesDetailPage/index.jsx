@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState, useEffect, useRef, useMemo,
+} from 'react';
 import { Link, useParams, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -25,18 +27,27 @@ const CoursesDetailPage = () => {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [isOpenModal, openModal, closeModal] = useToggle(false);
 
-  const defaultCourseInfo = {
+  const defaultCourseInfo = useMemo(() => ({
     numberOfStudents: '-',
     numberOfPendingStudents: '-',
     masterCourseId: '-',
-  };
+  }), []);
 
   const courseInfo = useSelector((state) => state.courses.table.data)
     .find((course) => course?.masterCourseName === courseId) || defaultCourseInfo;
+  const lastCourseInfoRef = useRef(courseInfo);
+
+  useEffect(() => {
+    if (courseInfo !== defaultCourseInfo) {
+      lastCourseInfoRef.current = courseInfo;
+    }
+  }, [courseInfo, defaultCourseInfo]);
+
+  const nextCourseInfo = lastCourseInfoRef.current;
   const institution = useSelector((state) => state.main.selectedInstitution);
   const classes = useSelector((state) => state.classes.table);
-  const totalStudents = courseInfo.numberOfStudents + courseInfo.numberOfPendingStudents;
-  const courseDetailsLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${courseInfo.masterCourseId}/home`;
+  const totalStudents = nextCourseInfo.numberOfStudents + nextCourseInfo.numberOfPendingStudents;
+  const courseDetailsLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${nextCourseInfo.masterCourseId}/home`;
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -89,7 +100,7 @@ const CoursesDetailPage = () => {
           <div className="d-flex flex-column align-items-center">
             <p className="title">Students enrolled</p>
             <span className="value">
-              {courseInfo.numberOfStudents}
+              {nextCourseInfo.numberOfStudents}
               {' / '}
               {totalStudents}
             </span>
@@ -118,7 +129,7 @@ const CoursesDetailPage = () => {
         <AddClass
           isOpen={isOpenModal}
           onClose={closeModal}
-          courseInfo={courseInfo}
+          courseInfo={nextCourseInfo}
         />
       </div>
       <CourseDetailTable count={classes.count} data={classes.data} />
