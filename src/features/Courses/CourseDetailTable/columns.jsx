@@ -22,7 +22,7 @@ const columns = [
       const { courseId } = useParams();
       return (
         <Link
-          to={`/courses/${courseId}/${row.values.className}?classId=${row.original.classId}&previous=courses`}
+          to={`/courses/${courseId}/${encodeURIComponent(row.values.className)}?classId=${encodeURIComponent(row.original.classId)}&previous=courses`}
           className="text-truncate link"
         >
           {row.values.className}

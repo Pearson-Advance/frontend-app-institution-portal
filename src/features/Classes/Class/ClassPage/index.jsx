@@ -96,7 +96,7 @@ const ClassPage = () => {
           <Button onClick={() => history.goBack()} className="mr-3 link back-arrow" variant="tertiary">
             <i className="fa-solid fa-arrow-left" />
           </Button>
-          <h3 className="h2 mb-0 course-title">Class details: {classId}</h3>
+          <h3 className="h2 mb-0 course-title">Class details: {decodeURIComponent(classId)}</h3>
         </div>
       </div>
 

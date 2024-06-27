@@ -45,7 +45,7 @@ const InstructorCard = () => {
     <article className="instructor-wrapper mb-4 d-flex flex-column flex-sm-row justify-content-between align-items-start">
       <div className="d-flex flex-column w-75 justify-content-between h-100">
         <h3 className="text-color text-uppercase font-weight-bold text-truncate w-75" title={classId}>
-          {classId}
+          {decodeURIComponent(classId)}
         </h3>
         {isLoadingClasses && (
           <div className="w-100 h-100 d-flex justify-content-center align-items-center">
