@@ -73,7 +73,7 @@ describe('columns', () => {
     const linkElement = screen.getByText('Class example');
     expect(linkElement).toBeInTheDocument();
     expect(linkElement).toHaveClass('text-truncate link');
-    expect(linkElement).toHaveAttribute('href', '/courses/Demo Course 1/Class example?classId=class id&previous=courses');
+    expect(linkElement).toHaveAttribute('href', '/courses/Demo Course 1/Class example?classId=class%20id&previous=courses');
   });
 
   test('Should render the dates', () => {
