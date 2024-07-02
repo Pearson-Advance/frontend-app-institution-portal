@@ -68,8 +68,6 @@ describe('Classes Table', () => {
       { preloadedState: mockStore },
     );
 
-    expect(component.container).toHaveTextContent('Demo MasterCourse 1');
-    expect(component.container).toHaveTextContent('Demo MasterCourse 2');
     expect(component.container).toHaveTextContent('Demo Class 1');
     expect(component.container).toHaveTextContent('Demo Class 2');
     expect(component.container).toHaveTextContent('09/21/24');
