@@ -8,6 +8,7 @@ import {
   Icon,
   useToggle,
 } from '@edx/paragon';
+import { Badge } from 'react-paragon-topaz';
 import { MoreHoriz } from '@edx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 
@@ -29,33 +30,7 @@ const columns = [
     ),
   },
   {
-    Header: 'Course',
-    accessor: 'masterCourseName',
-  },
-  {
-    Header: 'Start Date',
-    accessor: 'startDate',
-    Cell: ({ row }) => (row.values.startDate ? formatUTCDate(row.values.startDate, 'MM/dd/yy') : ''),
-  },
-  {
-    Header: 'End Date',
-    accessor: 'endDate',
-    Cell: ({ row }) => (row.values.endDate ? formatUTCDate(row.values.endDate, 'MM/dd/yy') : ''),
-  },
-  {
-    Header: 'Min',
-    accessor: 'minStudentsAllowed',
-  },
-  {
-    Header: 'Students Enrolled',
-    accessor: 'numberOfStudents',
-  },
-  {
-    Header: 'Max',
-    accessor: 'maxStudents',
-  },
-  {
-    Header: 'Instructors',
+    Header: 'Instructor',
     accessor: 'instructors',
     Cell: ({ row }) => {
       if (row.values.instructors?.length > 0) {
@@ -72,6 +47,41 @@ const columns = [
         </span>
       );
     },
+  },
+  {
+    Header: 'Enrollment status',
+    accessor: 'numberOfPendingStudents',
+    Cell: ({ row }) => {
+      const isEnrollmentComplete = row.values.numberOfPendingStudents === 0;
+
+      return isEnrollmentComplete ? (
+        <Badge variant="success" light>Complete</Badge>
+      ) : (
+        <Badge variant="warning" light>Pending ({row.values.numberOfPendingStudents})</Badge>
+      );
+    },
+  },
+  {
+    Header: 'Min',
+    accessor: 'minStudentsAllowed',
+  },
+  {
+    Header: 'Students Enrolled',
+    accessor: 'numberOfStudents',
+  },
+  {
+    Header: 'Max',
+    accessor: 'maxStudents',
+  },
+  {
+    Header: 'Start Date',
+    accessor: 'startDate',
+    Cell: ({ row }) => (row.values.startDate ? formatUTCDate(row.values.startDate, 'MM/dd/yy') : '-'),
+  },
+  {
+    Header: 'End Date',
+    accessor: 'endDate',
+    Cell: ({ row }) => (row.values.endDate ? formatUTCDate(row.values.endDate, 'MM/dd/yy') : '-'),
   },
   {
     Header: '',

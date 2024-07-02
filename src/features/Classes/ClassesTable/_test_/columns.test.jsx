@@ -13,38 +13,38 @@ describe('columns', () => {
 
     const [
       classNameColumn,
-      masterCourseNameColumn,
-      startDateColumn,
-      endDateColumn,
-      minStudentsAllowedColumn,
-      numberOfStudentsColumn,
-      maxStudentsColumn,
-      instructorsColumn,
+      instructor,
+      enrollmentStatus,
+      minStudentsAllowed,
+      studentsEnrolled,
+      maxStudents,
+      startDate,
+      endDate,
     ] = columns;
 
     expect(classNameColumn).toHaveProperty('Header', 'Class');
     expect(classNameColumn).toHaveProperty('accessor', 'className');
 
-    expect(masterCourseNameColumn).toHaveProperty('Header', 'Course');
-    expect(masterCourseNameColumn).toHaveProperty('accessor', 'masterCourseName');
+    expect(instructor).toHaveProperty('Header', 'Instructor');
+    expect(instructor).toHaveProperty('accessor', 'instructors');
 
-    expect(startDateColumn).toHaveProperty('Header', 'Start Date');
-    expect(startDateColumn).toHaveProperty('accessor', 'startDate');
+    expect(minStudentsAllowed).toHaveProperty('Header', 'Min');
+    expect(minStudentsAllowed).toHaveProperty('accessor', 'minStudentsAllowed');
 
-    expect(endDateColumn).toHaveProperty('Header', 'End Date');
-    expect(endDateColumn).toHaveProperty('accessor', 'endDate');
+    expect(enrollmentStatus).toHaveProperty('Header', 'Enrollment status');
+    expect(enrollmentStatus).toHaveProperty('accessor', 'numberOfPendingStudents');
 
-    expect(minStudentsAllowedColumn).toHaveProperty('Header', 'Min');
-    expect(minStudentsAllowedColumn).toHaveProperty('accessor', 'minStudentsAllowed');
+    expect(studentsEnrolled).toHaveProperty('Header', 'Students Enrolled');
+    expect(studentsEnrolled).toHaveProperty('accessor', 'numberOfStudents');
 
-    expect(numberOfStudentsColumn).toHaveProperty('Header', 'Students Enrolled');
-    expect(numberOfStudentsColumn).toHaveProperty('accessor', 'numberOfStudents');
+    expect(maxStudents).toHaveProperty('Header', 'Max');
+    expect(maxStudents).toHaveProperty('accessor', 'maxStudents');
 
-    expect(maxStudentsColumn).toHaveProperty('Header', 'Max');
-    expect(maxStudentsColumn).toHaveProperty('accessor', 'maxStudents');
+    expect(startDate).toHaveProperty('Header', 'Start Date');
+    expect(startDate).toHaveProperty('accessor', 'startDate');
 
-    expect(instructorsColumn).toHaveProperty('Header', 'Instructors');
-    expect(instructorsColumn).toHaveProperty('accessor', 'instructors');
+    expect(endDate).toHaveProperty('Header', 'End Date');
+    expect(endDate).toHaveProperty('accessor', 'endDate');
   });
 
   test('Show menu dropdown', async () => {
