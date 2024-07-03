@@ -7,6 +7,11 @@ import { MemoryRouter, Route } from 'react-router-dom';
 
 import { renderWithProviders } from 'test-utils';
 import { columns } from 'features/Courses/CourseDetailTable/columns';
+import { RequestStatus } from 'features/constants';
+
+jest.mock('@edx/frontend-platform/logging', () => ({
+  logError: jest.fn(),
+}));
 
 describe('columns', () => {
   test('returns an array of columns with correct properties', () => {
@@ -126,6 +131,11 @@ describe('columns', () => {
 
     const Component = () => columns[1].Cell(values);
     const mockStore = {
+      courses: {
+        newClass: {
+          status: RequestStatus.INITIAL,
+        },
+      },
       classes: {
         table: {
           data: [
@@ -180,6 +190,11 @@ describe('columns', () => {
     const ComponentNoInstructor = () => columns[1].Cell(values);
 
     const mockStore = {
+      courses: {
+        newClass: {
+          status: RequestStatus.INITIAL,
+        },
+      },
       classes: {
         table: {
           data: [
@@ -234,11 +249,17 @@ describe('columns', () => {
 
     const Component = () => columns[8].Cell(values);
     const mockStore = {
+      courses: {
+        newClass: {
+          status: RequestStatus.INITIAL,
+        },
+      },
       classes: {
         table: {
           data: [
             {
               masterCourseName: 'Demo MasterCourse 1',
+              classId: 'cxx-demo-id',
               className: 'Demo Class 1',
               startDate: '09/21/24',
               endDate: null,
@@ -270,5 +291,11 @@ describe('columns', () => {
     expect(component.getByText('View class content')).toBeInTheDocument();
     expect(component.getByText('Manage Instructors')).toBeInTheDocument();
     expect(component.getByText('Edit Class')).toBeInTheDocument();
+    expect(component.getByText('Delete Class')).toBeInTheDocument();
+
+    const deleteButton = component.getByText('Delete Class');
+
+    fireEvent.click(deleteButton);
+    expect(screen.getByText(/This action will permanently delete this class/i)).toBeInTheDocument();
   });
 });

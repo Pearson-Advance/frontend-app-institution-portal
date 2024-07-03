@@ -50,6 +50,10 @@ export const coursesSlice = createSlice({
     updateFilters: (state, { payload }) => {
       state.filters = payload;
     },
+    resetClassState: (state) => {
+      state.newClass.status = RequestStatus.INITIAL;
+      state.notificationMessage = null;
+    },
     newClassRequest: (state) => {
       state.newClass.status = RequestStatus.LOADING;
     },
@@ -77,6 +81,7 @@ export const {
   newClassRequest,
   newClassSuccess,
   newClassFailed,
+  resetClassState,
   updateNotificationMsg,
 } = coursesSlice.actions;
 

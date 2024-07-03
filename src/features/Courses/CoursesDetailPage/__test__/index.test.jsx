@@ -3,6 +3,8 @@ import { waitFor } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
 
+import { RequestStatus } from 'features/constants';
+
 import { renderWithProviders } from 'test-utils';
 import CoursesDetailPage from 'features/Courses/CoursesDetailPage';
 
@@ -25,6 +27,9 @@ const mockStore = {
     },
   },
   courses: {
+    newClass: {
+      status: RequestStatus.INITIAL,
+    },
     table: {
       data: [
         {
