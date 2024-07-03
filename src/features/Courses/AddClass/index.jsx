@@ -23,7 +23,7 @@ import 'features/Courses/AddClass/index.scss';
 const AddClass = ({
   isOpen, onClose, courseInfo, isCoursePage, isEditing, isDetailClassPage,
 }) => {
-  const { courseId } = useParams();
+  const { courseName } = useParams();
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const instructorsList = useSelector((state) => state.instructors.selectOptions.data);
@@ -36,6 +36,8 @@ const AddClass = ({
   const [maxStudents, setMaxStudents] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  const courseNameDecoded = courseName ? decodeURIComponent(courseName) : '';
 
   const handleAddClass = async (e) => {
     e.preventDefault();
@@ -59,9 +61,9 @@ const AddClass = ({
         logError(error);
       } finally {
         if (isDetailClassPage) {
-          dispatch(fetchAllClassesData(selectedInstitution.id, courseId));
+          dispatch(fetchAllClassesData(selectedInstitution.id, courseNameDecoded));
         } else {
-          dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseId));
+          dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseNameDecoded));
           dispatch(updateClassesCurrentPage(initialPage));
         }
       }
@@ -85,7 +87,7 @@ const AddClass = ({
           dispatch(fetchCoursesData(selectedInstitution.id, initialPage));
           dispatch(updateCoursesCurrentPage(initialPage));
         } else {
-          dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseId));
+          dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseNameDecoded));
           dispatch(updateClassesCurrentPage(initialPage));
         }
       }

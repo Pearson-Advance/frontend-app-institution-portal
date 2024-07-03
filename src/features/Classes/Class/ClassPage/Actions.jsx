@@ -18,7 +18,7 @@ import EnrollStudent from 'features/Classes/EnrollStudent';
 const Actions = ({ previousPage }) => {
   const location = useLocation();
   const history = useHistory();
-  const { courseId, classId } = useParams();
+  const { courseName, className } = useParams();
   const classes = useSelector((state) => state.classes.allClasses.data);
 
   const queryParams = new URLSearchParams(location.search);
@@ -35,7 +35,7 @@ const Actions = ({ previousPage }) => {
   const handleEnrollStudentModal = () => setIsEnrollModalOpen(!isEnrollModalOpen);
 
   const handleManageButton = () => {
-    history.push(`/manage-instructors/${courseId}/${classId}?classId=${queryClassId}&previous=${previousPage}`);
+    history.push(`/manage-instructors/${courseName}/${className}?classId=${queryClassId}&previous=${previousPage}`);
   };
 
   return (
@@ -49,7 +49,7 @@ const Actions = ({ previousPage }) => {
       </Button>
       <Button
         as="a"
-        onClick={() => setAssignStaffRole(classLink, classId)}
+        onClick={() => setAssignStaffRole(classLink, queryClassId)}
         className="text-decoration-none text-white button-view-class mr-3"
       >
         <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />

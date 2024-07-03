@@ -17,10 +17,12 @@ const INSTRUCTORS_NUMBER = 3;
 const InstructorCard = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const { courseId, classId } = useParams();
+  const { courseName, className } = useParams();
   const institution = useSelector((state) => state.main.selectedInstitution);
   const instructors = useSelector((state) => state.instructors.selectOptions.data);
   const classes = useSelector((state) => state.classes.allClasses);
+  const courseNameDecoded = decodeURIComponent(courseName);
+  const classNameDecoded = decodeURIComponent(className);
 
   const queryParams = new URLSearchParams(location.search);
   const classIdQuery = queryParams.get('classId')?.replaceAll(' ', '+');
@@ -44,8 +46,8 @@ const InstructorCard = () => {
   return (
     <article className="instructor-wrapper mb-4 d-flex flex-column flex-sm-row justify-content-between align-items-start">
       <div className="d-flex flex-column w-75 justify-content-between h-100">
-        <h3 className="text-color text-uppercase font-weight-bold text-truncate w-75" title={classId}>
-          {classId}
+        <h3 className="text-color text-uppercase font-weight-bold text-truncate w-75" title={classNameDecoded}>
+          {classNameDecoded}
         </h3>
         {isLoadingClasses && (
           <div className="w-100 h-100 d-flex justify-content-center align-items-center">
@@ -58,8 +60,8 @@ const InstructorCard = () => {
         )}
         {!isLoadingClasses && (
           <>
-            <h4 className="text-color text-uppercase font-weight-bold text-truncate w-75" title={courseId}>
-              {courseId}
+            <h4 className="text-color text-uppercase font-weight-bold text-truncate w-75" title={courseNameDecoded}>
+              {courseNameDecoded}
             </h4>
             <div className="text-uppercase">
               <i className="fa-regular fa-calendar mr-2" />

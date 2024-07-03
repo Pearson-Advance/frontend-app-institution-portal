@@ -34,7 +34,7 @@ describe('Add class modal', () => {
   test('render add class modal', () => {
     const { getByText, getByPlaceholderText } = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:courseId">
+        <Route path="/courses/:courseName">
           <AddClass isOpen onClose={() => { }} courseInfo={courseInfoMocked} />
         </Route>
       </MemoryRouter>,
@@ -68,7 +68,7 @@ describe('Add class modal', () => {
   test('cancel button in add classmodal', () => {
     const { getByText, getByPlaceholderText } = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:courseId">
+        <Route path="/courses/:courseName">
           <AddClass isOpen onClose={() => { }} courseInfo={courseInfoMocked} />
         </Route>
       </MemoryRouter>,

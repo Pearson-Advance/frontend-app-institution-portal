@@ -23,9 +23,11 @@ const ClassPage = () => {
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { courseId, classId } = useParams();
+  const { courseName, className } = useParams();
   const queryParams = new URLSearchParams(location.search);
   const previousPage = queryParams.get('previous') || 'classes';
+  const courseNameDecoded = decodeURIComponent(courseName);
+  const classNameDecoded = decodeURIComponent(className);
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -42,20 +44,20 @@ const ClassPage = () => {
   useEffect(() => {
     const initialTitle = document.title;
 
-    document.title = classId;
+    document.title = classNameDecoded;
     // Leaves a gap time space to prevent being override by ActiveTabUpdater component
     setTimeout(() => dispatch(updateActiveTab(previousPage)), 100);
 
     return () => {
       document.title = initialTitle;
     };
-  }, [dispatch, classId, previousPage]);
+  }, [dispatch, classNameDecoded, previousPage]);
 
   useEffect(() => {
     if (institution.id) {
       const params = {
-        course_name: courseId,
-        class_name: classId,
+        course_name: courseNameDecoded,
+        class_name: classNameDecoded,
         limit: true,
       };
 
@@ -66,18 +68,18 @@ const ClassPage = () => {
       dispatch(resetStudentsTable());
       dispatch(updateCurrentPage(initialPage));
     };
-  }, [dispatch, institution.id, courseId, classId, currentPage]);
+  }, [dispatch, institution.id, courseNameDecoded, classNameDecoded, currentPage]);
 
   useEffect(() => {
     if (institution.id) {
-      dispatch(fetchAllClassesData(institution.id, courseId));
+      dispatch(fetchAllClassesData(institution.id, courseNameDecoded));
     }
 
     return () => {
       dispatch(resetClassesTable());
       dispatch(resetClasses());
     };
-  }, [dispatch, institution.id, courseId]);
+  }, [dispatch, institution.id, courseNameDecoded]);
 
   useEffect(() => {
     if (institution.id !== undefined && institutionRef.current === undefined) {
@@ -96,7 +98,7 @@ const ClassPage = () => {
           <Button onClick={() => history.goBack()} className="mr-3 link back-arrow" variant="tertiary">
             <i className="fa-solid fa-arrow-left" />
           </Button>
-          <h3 className="h2 mb-0 course-title">Class details: {classId}</h3>
+          <h3 className="h2 mb-0 course-title">Class details: {classNameDecoded}</h3>
         </div>
       </div>
 

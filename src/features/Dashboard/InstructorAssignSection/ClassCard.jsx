@@ -12,7 +12,7 @@ const ClassCard = ({ data }) => {
   const history = useHistory();
 
   const handleManageButton = () => {
-    history.push(`/manage-instructors/${data?.masterCourseName}/${data?.className}?classId=${data?.classId}&previous=dashboard`);
+    history.push(`/manage-instructors/${encodeURIComponent(data?.masterCourseName)}/${encodeURIComponent(data?.className)}?classId=${data?.classId}&previous=dashboard`);
   };
 
   return (

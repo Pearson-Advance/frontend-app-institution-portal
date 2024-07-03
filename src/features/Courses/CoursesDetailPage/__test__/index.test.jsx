@@ -80,7 +80,7 @@ describe('CoursesDetailPage', () => {
   test('Should render the table and the course info', async () => {
     const component = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:classId">
+        <Route path="/courses/:courseName">
           <CoursesDetailPage />
         </Route>
       </MemoryRouter>,

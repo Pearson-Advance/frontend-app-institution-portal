@@ -19,10 +19,10 @@ const columns = [
     Header: 'Class',
     accessor: 'className',
     Cell: ({ row }) => {
-      const { courseId } = useParams();
+      const { courseName } = useParams();
       return (
         <Link
-          to={`/courses/${courseId}/${row.values.className}?classId=${row.original.classId}&previous=courses`}
+          to={`/courses/${courseName}/${encodeURIComponent(row.values.className)}?classId=${row.original.classId}&previous=courses`}
           className="text-truncate link"
         >
           {row.values.className}
@@ -131,7 +131,7 @@ const columns = [
             </Dropdown.Item>
             <Dropdown.Item>
               <Link
-                to={`/manage-instructors/${masterCourseName}/${row.values.className}?classId=${classId}`}
+                to={`/manage-instructors/${encodeURIComponent(masterCourseName)}/${encodeURIComponent(row.values.className)}?classId=${classId}`}
                 className="text-truncate text-decoration-none custom-text-black"
               >
                 <i className="fa-regular fa-chalkboard-user mr-2 mb-1" />

@@ -56,7 +56,7 @@ describe('CoursesPage', () => {
   it('renders courses data and pagination', async () => {
     const component = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:classId">
+        <Route path="/courses/:courseName">
           <CoursesPage />
         </Route>
       </MemoryRouter>,

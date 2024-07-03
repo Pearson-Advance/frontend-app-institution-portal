@@ -6,8 +6,8 @@ import InstructorCard from 'features/Classes/InstructorCard';
 
 jest.mock('react-router-dom', () => ({
   useParams: jest.fn(() => ({
-    courseId: 'Demo course',
-    classId: 'demo class',
+    courseName: 'Demo course',
+    className: 'demo class',
   })),
   useLocation: jest.fn().mockReturnValue({ search: '?classId=demo+class' }),
 }));
