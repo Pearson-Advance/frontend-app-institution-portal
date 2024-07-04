@@ -22,7 +22,7 @@ const columns = [
     accessor: 'className',
     Cell: ({ row }) => (
       <Link
-        to={`/courses/${row.values.masterCourseName}/${row.values.className}?classId=${row.original.classId}&previous=classes`}
+        to={`/courses/${encodeURIComponent(row.original.masterCourseName)}/${encodeURIComponent(row.values.className)}?classId=${row.original.classId}&previous=classes`}
         className="text-truncate link"
       >
         {row.values.className}
@@ -125,7 +125,7 @@ const columns = [
             </Dropdown.Item>
             <Dropdown.Item>
               <Link
-                to={`/manage-instructors/${masterCourseName}/${row.values.className}?classId=${classId}&previous=classes`}
+                to={`/manage-instructors/${encodeURIComponent(masterCourseName)}/${encodeURIComponent(row.values.className)}?classId=${classId}&previous=classes`}
                 className="text-truncate text-decoration-none custom-text-black"
               >
                 <i className="fa-regular fa-chalkboard-user mr-2 mb-1" />

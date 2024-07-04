@@ -49,7 +49,7 @@ describe('ClassesPage', () => {
   test('renders classes data and pagination', async () => {
     const component = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
-        <Route path="/courses/:courseId/:classId">
+        <Route path="/courses/:courseName/:className">
           <ClassPage />
         </Route>
       </MemoryRouter>,
@@ -72,7 +72,7 @@ describe('ClassesPage', () => {
   test('renders actions', async () => {
     const { getByText, getByTestId } = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
-        <Route path="/courses/:courseId/:classId">
+        <Route path="/courses/:courseName/:className">
           <ClassPage />
         </Route>
       </MemoryRouter>,

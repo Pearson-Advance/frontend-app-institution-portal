@@ -24,7 +24,7 @@ const columns = [
       return (
         <span>
           {diffHours < hoursDay && 'Today'}
-          {diffDays < daysWeek && `${diffDays} days ago`}
+          {diffDays < daysWeek && diffDays > 0 && `${diffDays} days ago`}
           {diffDays > daysWeek && `${diffWeeks} wks ago`}
         </span>
       );

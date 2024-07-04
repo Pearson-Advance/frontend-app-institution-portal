@@ -21,7 +21,8 @@ import 'features/Courses/CoursesDetailPage/index.scss';
 const CoursesDetailPage = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { courseId } = useParams();
+  const { courseName } = useParams();
+  const courseNameDecoded = decodeURIComponent(courseName);
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -34,7 +35,7 @@ const CoursesDetailPage = () => {
   }), []);
 
   const courseInfo = useSelector((state) => state.courses.table.data)
-    .find((course) => course?.masterCourseName === courseId) || defaultCourseInfo;
+    .find((course) => course?.masterCourseName === courseNameDecoded) || defaultCourseInfo;
   const lastCourseInfoRef = useRef(courseInfo);
 
   useEffect(() => {
@@ -62,7 +63,7 @@ const CoursesDetailPage = () => {
     };
 
     if (institution.id) {
-      dispatch(fetchClassesData(institution.id, initialPage, courseId));
+      dispatch(fetchClassesData(institution.id, initialPage, courseNameDecoded));
       dispatch(fetchCoursesData(institution.id, initialPage, null));
     }
 
@@ -70,10 +71,10 @@ const CoursesDetailPage = () => {
       dispatch(fetchCoursesDataSuccess(initialState));
       dispatch(fetchClassesDataSuccess(initialState));
     };
-  }, [dispatch, institution.id, courseId]);
+  }, [dispatch, institution.id, courseNameDecoded]);
 
   useEffect(() => {
-    dispatch(fetchClassesData(institution.id, currentPage, courseId));
+    dispatch(fetchClassesData(institution.id, currentPage, courseNameDecoded));
   }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -93,7 +94,7 @@ const CoursesDetailPage = () => {
           <Link to="/courses" className="mr-3 link">
             <i className="fa-solid fa-arrow-left" />
           </Link>
-          <h3 className="h2 mb-0 course-title">{courseId}</h3>
+          <h3 className="h2 mb-0 course-title">{courseNameDecoded}</h3>
         </div>
 
         <div className="card-container d-flex justify-content-around align-items-center">

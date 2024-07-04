@@ -6,7 +6,7 @@ const columns = [
     Header: 'Course',
     accessor: 'masterCourseName',
     Cell: ({ row }) => (
-      <Link to={`/courses/${row.values.masterCourseName}`} className="link">{row.values.masterCourseName}</Link>
+      <Link to={`/courses/${encodeURIComponent(row.values.masterCourseName)}`} className="link">{row.values.masterCourseName}</Link>
     ),
   },
   {

@@ -26,10 +26,12 @@ const successToastMessage = 'Email invite has been sent successfully';
 const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
   const dispatch = useDispatch();
 
-  const { courseId, classId } = useParams();
+  const { courseName, className } = useParams();
   const [showToast, setShowToast] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const institution = useSelector((state) => state.main.selectedInstitution);
+  const courseNameDecoded = decodeURIComponent(courseName);
+  const classNameDecoded = decodeURIComponent(className);
 
   const handleEnrollStudent = async (e) => {
     e.preventDefault();
@@ -48,15 +50,15 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
       await handleEnrollments(formData, queryClassId);
 
       const params = {
-        course_name: courseId,
-        class_name: classId,
+        course_name: courseNameDecoded,
+        class_name: classNameDecoded,
         limit: true,
       };
 
       dispatch(fetchStudentsData(institution.id, initialPage, params));
 
       // Get the classes info updated with the new number of students enrolled.
-      dispatch(fetchAllClassesData(institution.id, courseId));
+      dispatch(fetchAllClassesData(institution.id, courseNameDecoded));
       setShowToast(true);
       onClose();
     } catch (error) {
@@ -82,7 +84,7 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
         </ModalDialog.Header>
         <ModalDialog.Body className="body-container h-100">
           <p className="text-uppercase font-weight-bold sub-title">
-            Class: {classId}
+            Class: {classNameDecoded}
           </p>
           {isLoading && (
             <div className="w-100 h-100 d-flex justify-content-center align-items-center">

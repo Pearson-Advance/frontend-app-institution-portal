@@ -34,6 +34,8 @@ const ManageInstructors = () => {
   const previousPage = queryParams.get('previous') || 'courses';
   const isLoadingInstructors = instructorsByClass?.status === RequestStatus.LOADING;
   const isButtonDisabled = rowsSelected.length === 0;
+  const courseNameDecoded = decodeURIComponent(courseName);
+  const classNameDecoded = decodeURIComponent(className);
 
   const resetValues = () => {
     cancelButtonRef?.current?.clearSelectionFunc();
@@ -82,7 +84,7 @@ const ManageInstructors = () => {
       dispatch(resetClassesTable());
       dispatch(resetClasses());
     };
-  }, [dispatch, selectedInstitution.id, courseName, previousPage, classId]);
+  }, [dispatch, selectedInstitution.id, previousPage, classId]);
 
   return (
     <>
@@ -102,8 +104,8 @@ const ManageInstructors = () => {
           </div>
         </div>
         <div className="d-flex flex-column mb-3">
-          <h4 className="class-name">{className}</h4>
-          <p className="course-name">{courseName}</p>
+          <h4 className="class-name">{classNameDecoded}</h4>
+          <p className="course-name">{courseNameDecoded}</p>
         </div>
         <ListInstructors instructors={instructorsByClass?.data} isLoadingInstructors={isLoadingInstructors} />
         <AssignSection ref={cancelButtonRef} />

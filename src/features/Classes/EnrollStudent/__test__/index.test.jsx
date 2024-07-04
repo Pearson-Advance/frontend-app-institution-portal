@@ -6,7 +6,7 @@ import '@testing-library/jest-dom/extend-expect';
 import EnrollStudent from 'features/Classes/EnrollStudent';
 
 jest.mock('react-router-dom', () => ({
-  useParams: jest.fn(() => ({ courseId: 'Demo course', classId: 'demo class' })),
+  useParams: jest.fn(() => ({ courseName: 'Demo course', className: 'demo class' })),
   useLocation: jest.fn().mockReturnValue({ search: '?classId=demo class' }),
 }));
 

@@ -83,7 +83,7 @@ describe('columns', () => {
 
     const { getByText } = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
-        <Route path="/courses/:courseId/:classId">
+        <Route path="/courses/:courseName/:className">
           <StudentColumn />
         </Route>
       </MemoryRouter>,
@@ -138,7 +138,7 @@ describe('columns', () => {
 
     const { getByText } = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
-        <Route path="/courses/:courseId/:classId">
+        <Route path="/courses/:courseName/:className">
           <StatusColumn />
         </Route>
       </MemoryRouter>,
@@ -193,7 +193,7 @@ describe('columns', () => {
 
     const { getByText } = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
-        <Route path="/courses/:courseId/:classId">
+        <Route path="/courses/:courseName/:className">
           <ExamColumn />
         </Route>
       </MemoryRouter>,

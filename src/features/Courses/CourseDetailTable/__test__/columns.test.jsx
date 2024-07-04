@@ -63,7 +63,7 @@ describe('columns', () => {
 
     renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:courseId">
+        <Route path="/courses/:courseName">
           <Component />
         </Route>
       </MemoryRouter>,
@@ -157,7 +157,7 @@ describe('columns', () => {
 
     const component = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:courseId">
+        <Route path="/courses/:courseName">
           <Component />
         </Route>
       </MemoryRouter>,
@@ -211,7 +211,7 @@ describe('columns', () => {
 
     const component = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:courseId">
+        <Route path="/courses/:courseName">
           <ComponentNoInstructor />
         </Route>
       </MemoryRouter>,
@@ -256,7 +256,7 @@ describe('columns', () => {
 
     const component = renderWithProviders(
       <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:courseId">
+        <Route path="/courses/:courseName">
           <Component />
         </Route>
       </MemoryRouter>,
