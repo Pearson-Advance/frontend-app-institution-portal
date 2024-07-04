@@ -21,7 +21,9 @@ function handleEnrollments(data, courseId) {
   return getAuthenticatedHttpClient().post(
     `${INSTRUCTOR_API_URL.replace(courseIdSearchPattern, courseId)}/students_update_enrollment`,
     data,
-  );
+  ).then(() => getAuthenticatedHttpClient().get(
+    `${getConfig().LMS_BASE_URL}/pearson_course_operation/api/messages/get-messages/`,
+  ));
 }
 
 function getStudentsMetrics(institutionId, days) {

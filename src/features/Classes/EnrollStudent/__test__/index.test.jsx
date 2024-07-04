@@ -5,6 +5,8 @@ import '@testing-library/jest-dom/extend-expect';
 
 import EnrollStudent from 'features/Classes/EnrollStudent';
 
+import * as api from 'features/Students/data/api';
+
 jest.mock('react-router-dom', () => ({
   useParams: jest.fn(() => ({ courseName: 'Demo course', className: 'demo class' })),
   useLocation: jest.fn().mockReturnValue({ search: '?classId=demo class' }),
@@ -39,6 +41,14 @@ describe('EnrollStudent', () => {
       { preloadedState: {} },
     );
 
+    const handleEnrollmentsMock = jest.spyOn(api, 'handleEnrollments').mockResolvedValue({
+      data: {
+        results: [{
+          tags: 'success',
+        }],
+      },
+    });
+
     const emailInput = getByPlaceholderText('Enter email of the student to enroll');
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
 
@@ -48,5 +58,37 @@ describe('EnrollStudent', () => {
     await waitFor(() => {
       expect(getByText('Email invite has been sent successfully')).toBeInTheDocument();
     });
+
+    expect(handleEnrollmentsMock).toHaveBeenCalledTimes(1);
+    handleEnrollmentsMock.mockRestore();
+  });
+
+  test('Should handle form submission and show error toast', async () => {
+    const onCloseMock = jest.fn();
+
+    const handleEnrollmentsMock = jest.spyOn(api, 'handleEnrollments').mockResolvedValue({
+      data: {
+        results: [{ tags: 'error', message: 'Enrollment limit reached' }],
+      },
+    });
+
+    const { getByPlaceholderText, getByText } = renderWithProviders(
+      <EnrollStudent isOpen onClose={onCloseMock} />,
+      { preloadedState: {} },
+    );
+
+    const emailInput = getByPlaceholderText('Enter email of the student to enroll');
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+
+    const submitButton = getByText('Send invite');
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(getByText('Enrollment limit reached')).toBeInTheDocument();
+    });
+
+    expect(handleEnrollmentsMock).toHaveBeenCalledTimes(1);
+
+    handleEnrollmentsMock.mockRestore();
   });
 });

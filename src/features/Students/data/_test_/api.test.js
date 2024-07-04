@@ -41,7 +41,8 @@ describe('getStudentbyInstitutionAdmin', () => {
 describe('handleEnrollments', () => {
   test('should call getAuthenticatedHttpClient with the correct parameters', () => {
     const httpClientMock = {
-      post: jest.fn(),
+      post: jest.fn().mockResolvedValue({}),
+      get: jest.fn().mockResolvedValue({}),
     };
     const courseId = 'course123';
     const data = new FormData();
