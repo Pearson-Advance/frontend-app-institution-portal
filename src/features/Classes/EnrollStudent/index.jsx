@@ -21,14 +21,13 @@ import { initialPage } from 'features/constants';
 
 import 'features/Classes/EnrollStudent/index.scss';
 
-const successToastMessage = 'Email invite has been sent successfully';
-
 const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
   const dispatch = useDispatch();
 
   const { courseName, className } = useParams();
   const [showToast, setShowToast] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
   const institution = useSelector((state) => state.main.selectedInstitution);
   const courseNameDecoded = decodeURIComponent(courseName);
   const classNameDecoded = decodeURIComponent(className);
@@ -47,7 +46,21 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
 
     try {
       setLoading(true);
-      await handleEnrollments(formData, queryClassId);
+      const response = await handleEnrollments(formData, queryClassId);
+
+      /**
+       * This is because the service that checks the enrollment status is a different
+       * endpoint, and that endpoint always returns a status 200, so the error cannot be
+       * caught with a .catch.
+       */
+      if (response?.data?.results[0]?.tags === 'error') {
+        setToastMessage(response?.data?.results[0]?.message);
+        setShowToast(true);
+
+        return onClose();
+      }
+
+      setToastMessage('Email invite has been sent successfully');
 
       const params = {
         course_name: courseNameDecoded,
@@ -59,10 +72,11 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
 
       // Get the classes info updated with the new number of students enrolled.
       dispatch(fetchAllClassesData(institution.id, courseNameDecoded));
+
       setShowToast(true);
-      onClose();
+      return onClose();
     } catch (error) {
-      logError(error);
+      return logError(error);
     } finally {
       setLoading(false);
     }
@@ -71,7 +85,7 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
   return (
     <>
       <Toast onClose={() => setShowToast(false)} show={showToast}>
-        {successToastMessage}
+        {toastMessage}
       </Toast>
       <ModalDialog
         title="Invite student to enroll"
