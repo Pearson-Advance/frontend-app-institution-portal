@@ -232,7 +232,7 @@ const columns = [
             onClose={handleResetDeletion}
             show={deletionClassState.isRequestComplete}
           >
-            {toastMessage}
+            {decodeURIComponent(toastMessage)}
           </Toast>
         </>
       );

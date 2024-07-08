@@ -61,9 +61,9 @@ const ManageInstructors = () => {
       await dispatch(assignInstructors(enrollmentData));
       dispatch(fetchInstructorsOptionsData(selectedInstitution.id, initialPage, { limit: false, class_id: classId }));
       if (rowsSelected.length === 1) {
-        setToastMessage(`${rowsSelected[0]} has been successfully assigned to Class ${className}`);
+        setToastMessage(`${rowsSelected[0]} has been successfully assigned to Class ${decodeURIComponent(className)}`);
       } else if (rowsSelected.length > 1) {
-        setToastMessage(`${rowsSelected.join()} have been successfully assigned to Class ${className}`);
+        setToastMessage(`${rowsSelected.join()} have been successfully assigned to Class ${decodeURIComponent(className)}`);
       }
       setShowToast(true);
     } catch (error) {
