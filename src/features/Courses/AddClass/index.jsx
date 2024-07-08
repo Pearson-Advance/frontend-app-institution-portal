@@ -156,7 +156,7 @@ const AddClass = ({
         onClose={() => setShowToast(false)}
         show={showToast}
       >
-        {notificationMsg}
+        {decodeURIComponent(notificationMsg)}
       </Toast>
       <ModalDialog
         title={isEditing ? 'Edit Class' : 'Add Class'}

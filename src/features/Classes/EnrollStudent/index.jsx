@@ -54,7 +54,7 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
        * caught with a .catch.
        */
       if (response?.data?.results[0]?.tags === 'error') {
-        setToastMessage(response?.data?.results[0]?.message);
+        setToastMessage(decodeURIComponent(response?.data?.results[0]?.message));
         setShowToast(true);
 
         return onClose();
