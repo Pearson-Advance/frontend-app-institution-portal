@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import { Schedule } from 'react-paragon-topaz';
 import {
@@ -76,7 +77,12 @@ const WeeklySchedule = () => {
               return (
                 <div className="class-schedule" key={classInfo?.classId}>
                   <div className="class-text">
-                    <p className="class-name">{classInfo?.className}</p>
+                    <Link
+                      className="class-name"
+                      to={`/courses/${encodeURIComponent(classInfo?.masterCourseName)}/${encodeURIComponent(classInfo?.className)}?classId=${classInfo?.classId}&previous=courses`}
+                    >
+                      {classInfo?.className}
+                    </Link>
                     <p className="class-descr">
                       <i className="fa-sharp fa-regular fa-calendar-day" />
                       {date}
