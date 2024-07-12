@@ -15,7 +15,7 @@ import { Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 
 import { fetchStudentsData } from 'features/Students/data';
-import { handleEnrollments } from 'features/Students/data/api';
+import { handleEnrollments, getMessages } from 'features/Students/data/api';
 import { fetchAllClassesData } from 'features/Classes/data/thunks';
 import { initialPage } from 'features/constants';
 
@@ -47,20 +47,47 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
     try {
       setLoading(true);
       const response = await handleEnrollments(formData, queryClassId);
+      const validationEmailList = response?.data?.results;
+      const messages = await getMessages();
+      let validEmails = [];
+      let invalidEmails = [];
+      let textToast = '';
 
       /**
        * This is because the service that checks the enrollment status is a different
        * endpoint, and that endpoint always returns a status 200, so the error cannot be
        * caught with a .catch.
        */
-      if (response?.data?.results[0]?.tags === 'error') {
-        setToastMessage(decodeURIComponent(response?.data?.results[0]?.message));
+      if (messages?.data?.results[0]?.tags === 'error') {
+        setToastMessage(decodeURIComponent(messages?.data?.results[0]?.message));
         setShowToast(true);
 
         return onClose();
       }
 
-      setToastMessage('Email invite has been sent successfully');
+      validationEmailList.map(email => {
+        if (email?.invalidIdentifier) {
+          invalidEmails = [
+            ...invalidEmails,
+            email.identifier,
+          ];
+          return invalidEmails;
+        }
+        validEmails = [
+          ...validEmails,
+          email.identifier,
+        ];
+        return validEmails;
+      });
+
+      if (invalidEmails.length > 0) {
+        textToast = `The following email adresses are invalid: ${invalidEmails.join(' ')}\n`;
+      }
+      if (validEmails.length > 0) {
+        textToast += `Successfully enrolled and sent email to the following users: ${validEmails.join(' ')}`;
+      }
+
+      setToastMessage(textToast);
 
       const params = {
         course_name: courseNameDecoded,
@@ -84,7 +111,7 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
 
   return (
     <>
-      <Toast onClose={() => setShowToast(false)} show={showToast}>
+      <Toast onClose={() => setShowToast(false)} show={showToast} className="toast-message">
         {toastMessage}
       </Toast>
       <ModalDialog
@@ -113,12 +140,13 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
             <Form onSubmit={handleEnrollStudent}>
               <FormGroup controlId="studentInfo">
                 <Form.Control
-                  type="email"
+                  as="textarea"
                   placeholder="Enter email of the student to enroll"
                   floatingLabel="Email"
-                  className="my-4 mr-0"
+                  className="my-4 mr-0 student-email"
                   name="studentEmail"
                   required
+                  autoResize
                 />
               </FormGroup>
               <div className="d-flex justify-content-end">
