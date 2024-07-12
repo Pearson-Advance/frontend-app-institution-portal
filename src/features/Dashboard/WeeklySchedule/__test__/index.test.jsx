@@ -1,7 +1,9 @@
 import React from 'react';
-import WeeklySchedule from 'features/Dashboard/WeeklySchedule';
 import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
+import { MemoryRouter } from 'react-router-dom';
+
+import WeeklySchedule from 'features/Dashboard/WeeklySchedule';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -58,7 +60,9 @@ describe('WeeklySchedule component', () => {
     },
   };
   const component = renderWithProviders(
-    <WeeklySchedule />,
+    <MemoryRouter>
+      <WeeklySchedule />
+    </MemoryRouter>,
     { preloadedState: mockStore },
   );
 
