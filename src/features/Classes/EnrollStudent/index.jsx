@@ -49,8 +49,8 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
       const response = await handleEnrollments(formData, queryClassId);
       const validationEmailList = response?.data?.results;
       const messages = await getMessages();
-      let validEmails = [];
-      let invalidEmails = [];
+      const validEmails = [];
+      const invalidEmails = [];
       let textToast = '';
 
       /**
@@ -65,26 +65,19 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
         return onClose();
       }
 
-      validationEmailList.map(email => {
-        if (email?.invalidIdentifier) {
-          invalidEmails = [
-            ...invalidEmails,
-            email.identifier,
-          ];
-          return invalidEmails;
-        }
-        validEmails = [
-          ...validEmails,
-          email.identifier,
-        ];
-        return validEmails;
+      validationEmailList.forEach(({ invalidIdentifier, identifier }) => {
+        (invalidIdentifier ? invalidEmails : validEmails).push(identifier);
       });
 
       if (invalidEmails.length > 0) {
-        textToast = `The following email adresses are invalid: ${invalidEmails.join(' ')}\n`;
+        textToast = `The following email ${invalidEmails.length === 1
+          ? 'adress is invalid'
+          : 'adresses are invalid'}:\n${invalidEmails.join('\n')}\n`;
       }
       if (validEmails.length > 0) {
-        textToast += `Successfully enrolled and sent email to the following users: ${validEmails.join(' ')}`;
+        textToast += `Successfully enrolled and sent email to the following ${validEmails.length === 1
+          ? 'user'
+          : 'users'}:\n${validEmails.join('\n')}`;
       }
 
       setToastMessage(textToast);
@@ -111,7 +104,12 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
 
   return (
     <>
-      <Toast onClose={() => setShowToast(false)} show={showToast} className="toast-message">
+      <Toast
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        className="toast-message"
+        data-testid="toast-message"
+      >
         {toastMessage}
       </Toast>
       <ModalDialog

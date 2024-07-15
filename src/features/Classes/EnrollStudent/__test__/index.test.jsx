@@ -41,7 +41,7 @@ describe('EnrollStudent', () => {
   test('Should handle form submission and shows success toast', async () => {
     const onCloseMock = jest.fn();
 
-    const { getByPlaceholderText, getByText } = renderWithProviders(
+    const { getByPlaceholderText, getByText, getByTestId } = renderWithProviders(
       <EnrollStudent isOpen onClose={onCloseMock} queryClassId="ccx1" />,
       { preloadedState: {} },
     );
@@ -61,7 +61,7 @@ describe('EnrollStudent', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(getByText('Successfully enrolled and sent email to the following users: test@example.com')).toBeInTheDocument();
+      expect(getByTestId('toast-message').textContent).toBe('Successfully enrolled and sent email to the following user:\ntest@example.com');
     });
 
     expect(handleEnrollmentsMock).toHaveBeenCalledTimes(1);
@@ -100,7 +100,7 @@ describe('EnrollStudent', () => {
   test('Should handle form submission and show error toast for invalid email', async () => {
     const onCloseMock = jest.fn();
 
-    const { getByPlaceholderText, getByText } = renderWithProviders(
+    const { getByPlaceholderText, getByText, getByTestId } = renderWithProviders(
       <EnrollStudent isOpen onClose={onCloseMock} queryClassId="ccx1" />,
       { preloadedState: {} },
     );
@@ -121,7 +121,7 @@ describe('EnrollStudent', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(getByText('The following email adresses are invalid: test@example.com')).toBeInTheDocument();
+      expect(getByTestId('toast-message').textContent).toBe('The following email adress is invalid:\ntest@example.com\n');
     });
 
     expect(handleEnrollmentsMock).toHaveBeenCalledTimes(1);
