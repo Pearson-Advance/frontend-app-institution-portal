@@ -7,4 +7,16 @@
 
 .body-container {
   min-height: 193px;
+
+  .student-email .pgn__form-control-floating-label {
+    display: block;
+  }
+
+  .student-email .form-control {
+    height: 44px;
+  }
+}
+
+.toast-message {
+  white-space: pre-wrap;
 }

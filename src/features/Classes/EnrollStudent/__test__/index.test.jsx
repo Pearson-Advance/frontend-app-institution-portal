@@ -13,7 +13,8 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('features/Students/data/api', () => ({
-  handleEnrollments: jest.fn(() => Promise.resolve()),
+  handleEnrollments: jest.fn().mockReturnValue({}),
+  getMessages: jest.fn().mockReturnValue({}),
 }));
 
 jest.mock('@edx/frontend-platform/logging', () => ({
@@ -21,9 +22,13 @@ jest.mock('@edx/frontend-platform/logging', () => ({
 }));
 
 describe('EnrollStudent', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('Should render with correct elements', () => {
     const { getByText, getByPlaceholderText } = renderWithProviders(
-      <EnrollStudent isOpen onClose={() => {}} />,
+      <EnrollStudent isOpen onClose={() => {}} queryClassId="ccx1" />,
       { preloadedState: {} },
     );
 
@@ -36,15 +41,15 @@ describe('EnrollStudent', () => {
   test('Should handle form submission and shows success toast', async () => {
     const onCloseMock = jest.fn();
 
-    const { getByPlaceholderText, getByText } = renderWithProviders(
-      <EnrollStudent isOpen onClose={onCloseMock} />,
+    const { getByPlaceholderText, getByText, getByTestId } = renderWithProviders(
+      <EnrollStudent isOpen onClose={onCloseMock} queryClassId="ccx1" />,
       { preloadedState: {} },
     );
 
     const handleEnrollmentsMock = jest.spyOn(api, 'handleEnrollments').mockResolvedValue({
       data: {
         results: [{
-          tags: 'success',
+          identifier: 'test@example.com',
         }],
       },
     });
@@ -56,7 +61,7 @@ describe('EnrollStudent', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(getByText('Email invite has been sent successfully')).toBeInTheDocument();
+      expect(getByTestId('toast-message').textContent).toBe('Successfully enrolled and sent email to the following user:\ntest@example.com');
     });
 
     expect(handleEnrollmentsMock).toHaveBeenCalledTimes(1);
@@ -66,14 +71,14 @@ describe('EnrollStudent', () => {
   test('Should handle form submission and show error toast', async () => {
     const onCloseMock = jest.fn();
 
-    const handleEnrollmentsMock = jest.spyOn(api, 'handleEnrollments').mockResolvedValue({
+    const messagesApiMock = jest.spyOn(api, 'getMessages').mockResolvedValue({
       data: {
         results: [{ tags: 'error', message: 'Enrollment limit reached' }],
       },
     });
 
     const { getByPlaceholderText, getByText } = renderWithProviders(
-      <EnrollStudent isOpen onClose={onCloseMock} />,
+      <EnrollStudent isOpen onClose={onCloseMock} queryClassId="ccx1" />,
       { preloadedState: {} },
     );
 
@@ -87,8 +92,39 @@ describe('EnrollStudent', () => {
       expect(getByText('Enrollment limit reached')).toBeInTheDocument();
     });
 
-    expect(handleEnrollmentsMock).toHaveBeenCalledTimes(1);
+    expect(messagesApiMock).toHaveBeenCalledTimes(1);
 
+    messagesApiMock.mockRestore();
+  });
+
+  test('Should handle form submission and show error toast for invalid email', async () => {
+    const onCloseMock = jest.fn();
+
+    const { getByPlaceholderText, getByText, getByTestId } = renderWithProviders(
+      <EnrollStudent isOpen onClose={onCloseMock} queryClassId="ccx1" />,
+      { preloadedState: {} },
+    );
+
+    const handleEnrollmentsMock = jest.spyOn(api, 'handleEnrollments').mockResolvedValue({
+      data: {
+        results: [{
+          identifier: 'test@example.com',
+          invalidIdentifier: true,
+        }],
+      },
+    });
+
+    const emailInput = getByPlaceholderText('Enter email of the student to enroll');
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+
+    const submitButton = getByText('Send invite');
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(getByTestId('toast-message').textContent).toBe('The following email adress is invalid:\ntest@example.com\n');
+    });
+
+    expect(handleEnrollmentsMock).toHaveBeenCalledTimes(1);
     handleEnrollmentsMock.mockRestore();
   });
 });
