@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { ProgressBar } from '@edx/paragon';
-import { Link } from 'react-router-dom';
+import LinkWithQuery from 'features/Main/LinkWithQuery';
 
 import { formatUTCDate } from 'helpers';
 
@@ -25,12 +25,12 @@ const columns = [
     Header: 'Class Name',
     accessor: 'className',
     Cell: ({ row }) => (
-      <Link
+      <LinkWithQuery
         to={`/courses/${encodeURIComponent(row.original.courseName)}/${encodeURIComponent(row.values.className)}?classId=${row.original.classId}`}
         className="text-truncate link"
       >
         {row.values.className}
-      </Link>
+      </LinkWithQuery>
     ),
   },
   {

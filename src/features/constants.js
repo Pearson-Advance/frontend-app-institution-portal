@@ -64,3 +64,15 @@ export const badgeVariants = {
   complete: 'success',
   pending: 'warning',
 };
+
+/**
+ * Query parameter name for the institution ID.
+ * @constant {string}
+ */
+export const INSTITUTION_QUERY_ID = 'institutionId';
+
+/**
+ * Text to inform users about the use of cookies on the website.
+ * @constant {string}
+ */
+export const cookieText = 'This website uses cookies to ensure you get the best experience on our website. If you continue browsing this site, we understand that you accept the use of cookies.';

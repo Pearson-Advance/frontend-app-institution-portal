@@ -1,22 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { Button } from 'react-paragon-topaz';
 import { Container, Pagination, Spinner } from '@edx/paragon';
+
 import Table from 'features/Main/Table';
+import LinkWithQuery from 'features/Main/LinkWithQuery';
+
 import { columns } from 'features/Licenses/LicenseDetailTable/columns';
 import { fetchCoursesData } from 'features/Courses/data/thunks';
 import { resetCoursesTable, updateCurrentPage } from 'features/Courses/data/slice';
 import { fetchLicensesData } from 'features/Licenses/data';
 
 import { initialPage, licenseBuyLink, RequestStatus } from 'features/constants';
+import { useInstitutionIdQueryParam } from 'hooks';
+
 import 'features/Licenses/LicensesDetailPage/index.scss';
 
 const LicensesDetailPage = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { licenseId } = useParams();
+  const addQueryParam = useInstitutionIdQueryParam();
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -58,17 +63,18 @@ const LicensesDetailPage = () => {
     }
 
     if (institution.id !== institutionRef.current) {
-      history.push('/licenses');
+      history.push(addQueryParam('/licenses'));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution, history]);
 
   return (
     <Container size="xl" className="px-4">
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="d-flex align-items-start mb-3">
-          <Link to="/licenses" className="mr-3 mt-2 link">
+          <LinkWithQuery to="/licenses" className="mr-3 mt-2 link">
             <i className="fa-solid fa-arrow-left" />
-          </Link>
+          </LinkWithQuery>
           <div>
             <h3 className="h2 mb-0 course-title">License pool: {licenseInfo.licenseName}</h3>
             <p>

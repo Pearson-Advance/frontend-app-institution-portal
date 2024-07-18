@@ -5,14 +5,16 @@ import PropTypes from 'prop-types';
 import { Button } from 'react-paragon-topaz';
 
 import { formatDateRange } from 'helpers';
+import { useInstitutionIdQueryParam } from 'hooks';
 
 import 'features/Dashboard/InstructorAssignSection/index.scss';
 
 const ClassCard = ({ data }) => {
   const history = useHistory();
+  const addQueryParam = useInstitutionIdQueryParam();
 
   const handleManageButton = () => {
-    history.push(`/manage-instructors/${encodeURIComponent(data?.masterCourseName)}/${encodeURIComponent(data?.className)}?classId=${data?.classId}&previous=dashboard`);
+    history.push(addQueryParam(`/manage-instructors/${encodeURIComponent(data?.masterCourseName)}/${encodeURIComponent(data?.className)}?classId=${data?.classId}&previous=dashboard`));
   };
 
   return (

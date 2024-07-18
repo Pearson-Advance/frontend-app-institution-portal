@@ -1,20 +1,21 @@
 /* eslint-disable react/prop-types, no-nested-ternary */
 import { differenceInHours, differenceInDays, differenceInWeeks } from 'date-fns';
-import { Link } from 'react-router-dom';
 
 import { daysWeek, hoursDay } from 'features/constants';
+
+import LinkWithQuery from 'features/Main/LinkWithQuery';
 
 const columns = [
   {
     Header: 'Instructor',
     accessor: 'instructorName',
     Cell: ({ row }) => (
-      <Link
+      <LinkWithQuery
         to={`/instructors/${row.original.instructorUsername}`}
         className="link"
       >
         {row.values.instructorName}
-      </Link>
+      </LinkWithQuery>
     ),
   },
   {

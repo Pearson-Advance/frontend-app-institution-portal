@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   Dropdown,
   useToggle,
@@ -18,6 +18,7 @@ import { formatUTCDate, setAssignStaffRole } from 'helpers';
 
 import AddClass from 'features/Courses/AddClass';
 import DeleteModal from 'features/Common/DeleteModal';
+import LinkWithQuery from 'features/Main/LinkWithQuery';
 
 import { RequestStatus, initialPage } from 'features/constants';
 
@@ -34,13 +35,14 @@ const columns = [
     accessor: 'className',
     Cell: ({ row }) => {
       const { courseName } = useParams();
+
       return (
-        <Link
+        <LinkWithQuery
           to={`/courses/${courseName}/${encodeURIComponent(row.values.className)}?classId=${row.original.classId}&previous=courses`}
           className="text-truncate link"
         >
           {row.values.className}
-        </Link>
+        </LinkWithQuery>
       );
     },
   },
@@ -186,13 +188,13 @@ const columns = [
                 View class content
               </Dropdown.Item>
               <Dropdown.Item>
-                <Link
+                <LinkWithQuery
                   to={`/manage-instructors/${encodeURIComponent(masterCourseName)}/${encodeURIComponent(row.values.className)}?classId=${classId}`}
                   className="text-truncate text-decoration-none custom-text-black"
                 >
                   <i className="fa-regular fa-chalkboard-user mr-2 mb-1" />
                   Manage Instructors
-                </Link>
+                </LinkWithQuery>
               </Dropdown.Item>
               <Dropdown.Item onClick={openModal}>
                 <i className="fa-solid fa-pencil mr-2 mb-1" />

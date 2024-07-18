@@ -17,6 +17,8 @@ import { initialPage, RequestStatus } from 'features/constants';
 import { resetClassesTable, resetClasses } from 'features/Classes/data/slice';
 import { fetchAllClassesData } from 'features/Classes/data/thunks';
 
+import { useInstitutionIdQueryParam } from 'hooks';
+
 import 'features/Classes/Class/ClassPage/index.scss';
 
 const ClassPage = () => {
@@ -33,6 +35,7 @@ const ClassPage = () => {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const institution = useSelector((state) => state.main.selectedInstitution);
   const students = useSelector((state) => state.students.table);
+  const addQueryParam = useInstitutionIdQueryParam();
 
   const isLoadingStudents = students.status === RequestStatus.LOADING;
 
@@ -87,8 +90,9 @@ const ClassPage = () => {
     }
 
     if (institution.id !== institutionRef.current) {
-      history.push('/courses');
+      history.push(addQueryParam('/courses'));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution, history]);
 
   return (

@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import {
   Dropdown,
@@ -13,6 +12,7 @@ import { MoreHoriz } from '@edx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 
 import AddClass from 'features/Courses/AddClass';
+import LinkWithQuery from 'features/Main/LinkWithQuery';
 
 import { formatUTCDate, setAssignStaffRole } from 'helpers';
 
@@ -21,12 +21,12 @@ const columns = [
     Header: 'Class',
     accessor: 'className',
     Cell: ({ row }) => (
-      <Link
+      <LinkWithQuery
         to={`/courses/${encodeURIComponent(row.original.masterCourseName)}/${encodeURIComponent(row.values.className)}?classId=${row.original.classId}&previous=classes`}
         className="text-truncate link"
       >
         {row.values.className}
-      </Link>
+      </LinkWithQuery>
     ),
   },
   {
@@ -124,13 +124,13 @@ const columns = [
               View class content
             </Dropdown.Item>
             <Dropdown.Item>
-              <Link
+              <LinkWithQuery
                 to={`/manage-instructors/${encodeURIComponent(masterCourseName)}/${encodeURIComponent(row.values.className)}?classId=${classId}&previous=classes`}
                 className="text-truncate text-decoration-none custom-text-black"
               >
                 <i className="fa-regular fa-chalkboard-user mr-2 mb-1" />
                 Manage Instructors
-              </Link>
+              </LinkWithQuery>
             </Dropdown.Item>
             <AddClass
               isOpen={isOpenModal}

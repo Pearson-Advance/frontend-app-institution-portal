@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
-import { Link } from 'react-router-dom';
+import LinkWithQuery from 'features/Main/LinkWithQuery';
 
 const columns = [
   {
     Header: 'License Pool',
     accessor: 'licenseName',
-    Cell: ({ row }) => (<Link to={`/licenses/${row.original.licenseId}`} className="link">{row.values.licenseName}</Link>),
+    Cell: ({ row }) => (<LinkWithQuery to={`/licenses/${row.original.licenseId}`} className="link">{row.values.licenseName}</LinkWithQuery>),
   },
   {
     Header: 'Purchased',
