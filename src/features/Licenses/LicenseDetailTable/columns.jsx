@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types, no-nested-ternary */
-import { Link } from 'react-router-dom';
+import LinkWithQuery from 'features/Main/LinkWithQuery';
 
 const columns = [
   {
     Header: 'Course',
     accessor: 'masterCourseName',
     Cell: ({ row }) => (
-      <Link to={`/courses/${encodeURIComponent(row.values.masterCourseName)}`} className="link">{row.values.masterCourseName}</Link>
+      <LinkWithQuery to={`/courses/${encodeURIComponent(row.values.masterCourseName)}`} className="link">{row.values.masterCourseName}</LinkWithQuery>
     ),
   },
   {

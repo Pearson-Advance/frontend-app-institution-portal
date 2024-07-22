@@ -118,3 +118,38 @@ export const getInitials = (name) => {
 export const setAssignStaffRole = (url, classId) => assignStaffRole(classId).catch(logError).finally(() => {
   window.open(url, '_blank', 'noopener,noreferrer');
 });
+
+/**
+ * Transforms an array of options to the format required for select components.
+ *
+ * @param {Array} options - The array of options to be formatted.
+ * @param {string} options[].name - The name of the option.
+ * @param {number|string} options[].id - The ID of the option.
+ *
+ * @returns {Array|null} The formatted options array or null if there's an error.
+ */
+export const formatSelectOptions = (options) => {
+  if (!Array.isArray(options)) {
+    logError('An array is required');
+
+    return [];
+  }
+
+  if (options.length === 0) {
+    logError('An array with options are required');
+
+    return [];
+  }
+
+  if (Object.keys(options[0]).length === 0) {
+    logError('An array with keys are required');
+
+    return [];
+  }
+
+  return options.map(option => ({
+    ...option,
+    label: option.name,
+    value: option.id,
+  }));
+};

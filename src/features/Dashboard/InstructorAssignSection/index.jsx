@@ -9,6 +9,8 @@ import { Button } from 'react-paragon-topaz';
 import { fetchClassesData } from 'features/Dashboard/data';
 import { updateActiveTab } from 'features/Main/data/slice';
 
+import { useInstitutionIdQueryParam } from 'hooks';
+
 import 'features/Dashboard/InstructorAssignSection/index.scss';
 
 const InstructorAssignSection = () => {
@@ -19,8 +21,10 @@ const InstructorAssignSection = () => {
   const [classCards, setClassCards] = useState([]);
   const numberOfClasses = 2;
 
+  const addQueryParam = useInstitutionIdQueryParam();
+
   const handleViewAllClasses = () => {
-    history.push('/classes?instructors=null');
+    history.push(addQueryParam('/classes?instructors=null'));
     dispatch(updateActiveTab('classes'));
   };
 

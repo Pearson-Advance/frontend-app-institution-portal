@@ -2,19 +2,20 @@
 import React from 'react';
 import { getConfig } from '@edx/frontend-platform';
 
-import { Link } from 'react-router-dom';
 import { Badge } from 'react-paragon-topaz';
 import {
   Dropdown, IconButton, Icon, useToggle,
 } from '@edx/paragon';
 import { MoreHoriz } from '@edx/paragon/icons';
+
 import AddClass from 'features/Courses/AddClass';
+import LinkWithQuery from 'features/Main/LinkWithQuery';
 
 const columns = [
   {
     Header: 'Courses',
     accessor: 'masterCourseName',
-    Cell: ({ row }) => (<Link to={`/courses/${encodeURIComponent(row.values.masterCourseName)}`} className="link">{row.values.masterCourseName}</Link>),
+    Cell: ({ row }) => (<LinkWithQuery to={`/courses/${encodeURIComponent(row.values.masterCourseName)}`} className="link">{row.values.masterCourseName}</LinkWithQuery>),
   },
   {
     Header: 'Classes',

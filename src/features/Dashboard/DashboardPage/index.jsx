@@ -13,6 +13,8 @@ import WeeklySchedule from 'features/Dashboard/WeeklySchedule';
 import { fetchLicensesData } from 'features/Dashboard/data';
 import { updateActiveTab } from 'features/Main/data/slice';
 
+import { useInstitutionIdQueryParam } from 'hooks';
+
 import 'features/Dashboard/DashboardPage/index.scss';
 
 const DashboardPage = () => {
@@ -24,8 +26,10 @@ const DashboardPage = () => {
   const [dataTableLicense, setDataTableLicense] = useState([]);
   const imageDashboard = getConfig().IMAGE_DASHBOARD_URL;
 
+  const addQueryParam = useInstitutionIdQueryParam();
+
   const handleViewAllLicenses = () => {
-    history.push('/licenses');
+    history.push(addQueryParam('/licenses'));
     dispatch(updateActiveTab('licenses'));
   };
 

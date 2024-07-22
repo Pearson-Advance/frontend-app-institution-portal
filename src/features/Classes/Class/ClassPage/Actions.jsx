@@ -11,6 +11,7 @@ import {
 import { MoreVert } from '@edx/paragon/icons';
 
 import { setAssignStaffRole } from 'helpers';
+import { useInstitutionIdQueryParam } from 'hooks';
 
 import AddClass from 'features/Courses/AddClass';
 import EnrollStudent from 'features/Classes/EnrollStudent';
@@ -33,9 +34,10 @@ const Actions = ({ previousPage }) => {
   const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
 
   const handleEnrollStudentModal = () => setIsEnrollModalOpen(!isEnrollModalOpen);
+  const addQueryParam = useInstitutionIdQueryParam();
 
   const handleManageButton = () => {
-    history.push(`/manage-instructors/${courseName}/${className}?classId=${queryClassId}&previous=${previousPage}`);
+    history.push(addQueryParam(`/manage-instructors/${courseName}/${className}?classId=${queryClassId}&previous=${previousPage}`));
   };
 
   return (

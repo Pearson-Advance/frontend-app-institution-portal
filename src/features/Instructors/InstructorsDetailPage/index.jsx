@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Container,
@@ -14,10 +14,15 @@ import { fetchInstructorsData } from 'features/Instructors/data/thunks';
 import { columns } from 'features/Instructors/InstructorDetailTable/columns';
 import { initialPage, RequestStatus } from 'features/constants';
 
+import { useInstitutionIdQueryParam } from 'hooks';
+
+import LinkWithQuery from 'features/Main/LinkWithQuery';
+
 const InstructorsDetailPage = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { instructorUsername } = useParams();
+  const addQueryParam = useInstitutionIdQueryParam();
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -59,17 +64,18 @@ const InstructorsDetailPage = () => {
     }
 
     if (institution.id !== institutionRef.current) {
-      history.push('/instructors');
+      history.push(addQueryParam('/instructors'));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution, history]);
 
   return (
     <Container size="xl" className="px-4 mt-3">
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="d-flex align-items-center mb-3">
-          <Link to="/instructors" className="mr-3 link">
+          <LinkWithQuery to="/instructors" className="mr-3 link">
             <i className="fa-solid fa-arrow-left" />
-          </Link>
+          </LinkWithQuery>
           <h3 className="h2 mb-0 course-title">{instructorInfo.instructorName}</h3>
         </div>
       </div>

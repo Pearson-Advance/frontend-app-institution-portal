@@ -5,6 +5,9 @@ import { useHistory } from 'react-router-dom';
 import { Sidebar as SidebarBase, MenuSection, MenuItem } from 'react-paragon-topaz';
 
 import { updateActiveTab } from 'features/Main/data/slice';
+
+import { useInstitutionIdQueryParam } from 'hooks';
+
 import './index.scss';
 
 const menuItems = [
@@ -50,6 +53,8 @@ export const Sidebar = () => {
     history.push(`/${tabName}`);
   };
 
+  const addQueryParam = useInstitutionIdQueryParam();
+
   return (
     <SidebarBase>
       <MenuSection>
@@ -58,7 +63,7 @@ export const Sidebar = () => {
             <MenuItem
               key={link}
               title={label}
-              path={link}
+              path={addQueryParam(link)}
               active={activeTab === link}
               onClick={handleTabClick}
               icon={icon}

@@ -1,22 +1,23 @@
 /* eslint-disable react/prop-types, no-nested-ternary */
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Badge } from 'react-paragon-topaz';
 
 import { ClassStatus, badgeVariants } from 'features/constants';
 import { formatUTCDate } from 'helpers';
+
+import LinkWithQuery from 'features/Main/LinkWithQuery';
 
 const columns = [
   {
     Header: 'Class',
     accessor: 'className',
     Cell: ({ row }) => (
-      <Link
+      <LinkWithQuery
         to={`/courses/${encodeURIComponent(row.values.masterCourseName)}/${encodeURIComponent(row.values.className)}?classId=${row.original.classId}&previous=instructors`}
         className="link"
       >
         {row.values.className}
-      </Link>
+      </LinkWithQuery>
     ),
   },
   {

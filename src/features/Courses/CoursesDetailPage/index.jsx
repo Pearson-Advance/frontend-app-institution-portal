@@ -1,20 +1,23 @@
 import React, {
   useState, useEffect, useRef, useMemo,
 } from 'react';
-import { Link, useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { Container, Pagination, useToggle } from '@edx/paragon';
-import CourseDetailTable from 'features/Courses/CourseDetailTable';
-import { Button } from 'react-paragon-topaz';
 import { getConfig } from '@edx/frontend-platform';
+import { Container, Pagination, useToggle } from '@edx/paragon';
+import { Button } from 'react-paragon-topaz';
+
 import AddClass from 'features/Courses/AddClass';
+import LinkWithQuery from 'features/Main/LinkWithQuery';
+import CourseDetailTable from 'features/Courses/CourseDetailTable';
 
 import { fetchClassesData } from 'features/Classes/data/thunks';
 import { fetchCoursesData } from 'features/Courses/data/thunks';
 import { fetchClassesDataSuccess } from 'features/Classes/data/slice';
 import { fetchCoursesDataSuccess, updateCurrentPage } from 'features/Courses/data/slice';
+
 import { initialPage } from 'features/constants';
+import { useInstitutionIdQueryParam } from 'hooks';
 
 import 'features/Courses/CoursesDetailPage/index.scss';
 
@@ -23,6 +26,7 @@ const CoursesDetailPage = () => {
   const dispatch = useDispatch();
   const { courseName } = useParams();
   const courseNameDecoded = decodeURIComponent(courseName);
+  const addQueryParam = useInstitutionIdQueryParam();
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -83,17 +87,18 @@ const CoursesDetailPage = () => {
     }
 
     if (institution.id !== institutionRef.current) {
-      history.push('/courses');
+      history.push(addQueryParam('/courses'));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution, history]);
 
   return (
     <Container size="xl" className="px-4 mt-3">
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="d-flex align-items-center mb-3">
-          <Link to="/courses" className="mr-3 link">
+          <LinkWithQuery to="/courses" className="mr-3 link">
             <i className="fa-solid fa-arrow-left" />
-          </Link>
+          </LinkWithQuery>
           <h3 className="h2 mb-0 course-title">{courseNameDecoded}</h3>
         </div>
 
