@@ -54,6 +54,7 @@ export const Sidebar = () => {
   };
 
   const addQueryParam = useInstitutionIdQueryParam();
+  const currentSelection = activeTab.replace(/\?institutionId=\d+/, '');
 
   return (
     <SidebarBase>
@@ -64,7 +65,7 @@ export const Sidebar = () => {
               key={link}
               title={label}
               path={addQueryParam(link)}
-              active={activeTab === link}
+              active={currentSelection === link}
               onClick={handleTabClick}
               icon={icon}
             />
