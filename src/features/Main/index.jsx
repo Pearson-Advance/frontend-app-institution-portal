@@ -5,6 +5,7 @@ import {
   Switch,
   Route,
   Redirect,
+  useLocation, useHistory,
 } from 'react-router-dom';
 
 import { getConfig } from '@edx/frontend-platform';
@@ -30,21 +31,35 @@ import ManageInstructors from 'features/Instructors/ManageInstructors';
 import InstitutionSelector from 'features/Main/InstitutionSelector';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
+import { updateSelectedInstitution } from 'features/Main/data/slice';
 
 import { useInstitutionIdQueryParam } from 'hooks';
 
-import { cookieText } from 'features/constants';
+import { cookieText, INSTITUTION_QUERY_ID } from 'features/constants';
 
 import './index.scss';
 
 const Main = () => {
+  const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
   const institutions = useSelector((state) => state.main.institution.data);
   const addQueryParam = useInstitutionIdQueryParam();
 
+  const searchParams = new URLSearchParams(location.search);
+
   useEffect(() => {
     dispatch(fetchInstitutionData());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (institutions.length === 1) {
+      searchParams.set(INSTITUTION_QUERY_ID, institutions[0].id);
+      history.push({ search: searchParams.toString() });
+
+      dispatch(updateSelectedInstitution(institutions[0]));
+    }
+  }, [institutions, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const routes = [
     { path: '/dashboard', component: DashboardPage, exact: true },
