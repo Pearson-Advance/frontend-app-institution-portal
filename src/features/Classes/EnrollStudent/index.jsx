@@ -44,6 +44,7 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
     formData.append('identifiers', studentEmail);
     formData.append('action', 'enroll');
     formData.append('auto_enroll', 'true');
+    formData.append('email_students', 'true');
 
     try {
       setLoading(true);
