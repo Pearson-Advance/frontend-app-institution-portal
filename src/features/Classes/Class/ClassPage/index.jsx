@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+} from 'react';
 import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { Container, Pagination } from '@edx/paragon';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,11 +30,11 @@ const ClassPage = () => {
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-  const { courseName, className } = useParams();
+  const { courseId, classId } = useParams();
   const queryParams = new URLSearchParams(location.search);
   const previousPage = queryParams.get('previous') || 'classes';
-  const courseNameDecoded = decodeURIComponent(courseName);
-  const classNameDecoded = decodeURIComponent(className);
+  const courseIdDecoded = decodeURIComponent(courseId);
+  const classIdDecoded = decodeURIComponent(classId);
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -44,23 +49,30 @@ const ClassPage = () => {
     dispatch(updateCurrentPage(targetPage));
   };
 
+  const defaultClassInfo = useMemo(() => ({
+    className: '',
+  }), []);
+
+  const classInfo = useSelector((state) => state.classes.allClasses.data)
+    .find((classElement) => classElement?.classId === classIdDecoded) || defaultClassInfo;
+
   useEffect(() => {
     const initialTitle = document.title;
 
-    document.title = classNameDecoded;
+    document.title = classIdDecoded;
     // Leaves a gap time space to prevent being override by ActiveTabUpdater component
     setTimeout(() => dispatch(updateActiveTab(previousPage)), 100);
 
     return () => {
       document.title = initialTitle;
     };
-  }, [dispatch, classNameDecoded, previousPage]);
+  }, [dispatch, classIdDecoded, previousPage]);
 
   useEffect(() => {
     if (institution.id) {
       const params = {
-        course_name: courseNameDecoded,
-        class_name: classNameDecoded,
+        course_id: courseIdDecoded,
+        class_id: classIdDecoded,
         limit: true,
       };
 
@@ -71,18 +83,18 @@ const ClassPage = () => {
       dispatch(resetStudentsTable());
       dispatch(updateCurrentPage(initialPage));
     };
-  }, [dispatch, institution.id, courseNameDecoded, classNameDecoded, currentPage]);
+  }, [dispatch, institution.id, courseIdDecoded, classIdDecoded, currentPage]);
 
   useEffect(() => {
     if (institution.id) {
-      dispatch(fetchAllClassesData(institution.id, courseNameDecoded));
+      dispatch(fetchAllClassesData(institution.id, courseIdDecoded));
     }
 
     return () => {
       dispatch(resetClassesTable());
       dispatch(resetClasses());
     };
-  }, [dispatch, institution.id, courseNameDecoded]);
+  }, [dispatch, institution.id, courseIdDecoded]);
 
   useEffect(() => {
     if (institution.id !== undefined && institutionRef.current === undefined) {
@@ -102,7 +114,7 @@ const ClassPage = () => {
           <Button onClick={() => history.goBack()} className="mr-3 link back-arrow" variant="tertiary">
             <i className="fa-solid fa-arrow-left" />
           </Button>
-          <h3 className="h2 mb-0 course-title">Class details: {classNameDecoded}</h3>
+          <h3 className="h2 mb-0 course-title">Class details: {classInfo.className}</h3>
         </div>
       </div>
 

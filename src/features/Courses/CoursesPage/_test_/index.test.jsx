@@ -16,6 +16,7 @@ const mockStore = {
       data: [
         {
           masterCourseName: 'Demo Course 1',
+          masterCourseId: 'course-v1:XXX+YYY+2023',
           numberOfClasses: 1,
           missingClassesForInstructor: null,
           numberOfStudents: 1,
@@ -23,6 +24,7 @@ const mockStore = {
         },
         {
           masterCourseName: 'Demo Course 2',
+          masterCourseId: 'course-v1:ZZZ+YYY+2023',
           numberOfClasses: 1,
           missingClassesForInstructor: 1,
           numberOfStudents: 16,
@@ -36,6 +38,7 @@ const mockStore = {
     selectOptions: [
       {
         masterCourseName: 'Demo Course 1',
+        masterCourseId: 'course-v1:XXX+YYY+2023',
         numberOfClasses: 1,
         missingClassesForInstructor: null,
         numberOfStudents: 1,
@@ -43,6 +46,7 @@ const mockStore = {
       },
       {
         masterCourseName: 'Demo Course 2',
+        masterCourseId: 'course-v1:ZZZ+YYY+2023',
         numberOfClasses: 1,
         missingClassesForInstructor: 1,
         numberOfStudents: 16,
@@ -55,8 +59,8 @@ const mockStore = {
 describe('CoursesPage', () => {
   it('renders courses data and pagination', async () => {
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:courseName">
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
+        <Route path="/courses/:courseId">
           <CoursesPage />
         </Route>
       </MemoryRouter>,

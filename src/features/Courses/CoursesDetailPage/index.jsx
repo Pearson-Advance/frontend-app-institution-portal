@@ -24,8 +24,9 @@ import 'features/Courses/CoursesDetailPage/index.scss';
 const CoursesDetailPage = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { courseName } = useParams();
-  const courseNameDecoded = decodeURIComponent(courseName);
+  const { courseId } = useParams();
+
+  const courseIdDecoded = decodeURIComponent(courseId);
   const addQueryParam = useInstitutionIdQueryParam();
 
   const institutionRef = useRef(undefined);
@@ -39,7 +40,7 @@ const CoursesDetailPage = () => {
   }), []);
 
   const courseInfo = useSelector((state) => state.courses.table.data)
-    .find((course) => course?.masterCourseName === courseNameDecoded) || defaultCourseInfo;
+    .find((course) => course?.masterCourseId === courseIdDecoded) || defaultCourseInfo;
   const lastCourseInfoRef = useRef(courseInfo);
 
   useEffect(() => {
@@ -67,7 +68,7 @@ const CoursesDetailPage = () => {
     };
 
     if (institution.id) {
-      dispatch(fetchClassesData(institution.id, initialPage, courseNameDecoded));
+      dispatch(fetchClassesData(institution.id, initialPage, courseIdDecoded));
       dispatch(fetchCoursesData(institution.id, initialPage, null));
     }
 
@@ -75,10 +76,10 @@ const CoursesDetailPage = () => {
       dispatch(fetchCoursesDataSuccess(initialState));
       dispatch(fetchClassesDataSuccess(initialState));
     };
-  }, [dispatch, institution.id, courseNameDecoded]);
+  }, [dispatch, institution.id, courseIdDecoded]);
 
   useEffect(() => {
-    dispatch(fetchClassesData(institution.id, currentPage, courseNameDecoded));
+    dispatch(fetchClassesData(institution.id, currentPage, courseIdDecoded));
   }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -99,7 +100,7 @@ const CoursesDetailPage = () => {
           <LinkWithQuery to="/courses" className="mr-3 link">
             <i className="fa-solid fa-arrow-left" />
           </LinkWithQuery>
-          <h3 className="h2 mb-0 course-title">{courseNameDecoded}</h3>
+          <h3 className="h2 mb-0 course-title">{nextCourseInfo.masterCourseName}</h3>
         </div>
 
         <div className="card-container d-flex justify-content-around align-items-center">

@@ -29,9 +29,9 @@ const mockStore = {
         {
           learnerName: 'Test User',
           learnerEmail: 'testuser@example.com',
-          courseId: 'course-v1:demo+demo1+2020',
+          courseId: 'course-v1:XXX+YYY+2023',
           courseName: 'Demo Course 1',
-          classId: 'ccx-v1:demo+demo1+2020+ccx@3',
+          classId: 'ccx-v1:XXX+YYY+2023+ccx@111',
           className: 'test ccx1',
           created: '2024-02-13T18:31:27.399407Z',
           status: 'Active',
@@ -48,8 +48,8 @@ const mockStore = {
 describe('ClassesPage', () => {
   test('renders classes data and pagination', async () => {
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
-        <Route path="/courses/:courseName/:className">
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111')}`]}>
+        <Route path="/courses/:courseId/:classId">
           <ClassPage />
         </Route>
       </MemoryRouter>,
@@ -71,8 +71,8 @@ describe('ClassesPage', () => {
 
   test('renders actions', async () => {
     const { getByText, getByTestId } = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
-        <Route path="/courses/:courseName/:className">
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111')}`]}>
+        <Route path="/courses/:courseId/:classId">
           <ClassPage />
         </Route>
       </MemoryRouter>,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -21,16 +21,23 @@ import { initialPage } from 'features/constants';
 
 import 'features/Classes/EnrollStudent/index.scss';
 
-const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
+const EnrollStudent = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
 
-  const { courseName, className } = useParams();
+  const { courseId, classId } = useParams();
   const [showToast, setShowToast] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const institution = useSelector((state) => state.main.selectedInstitution);
-  const courseNameDecoded = decodeURIComponent(courseName);
-  const classNameDecoded = decodeURIComponent(className);
+  const courseIdDecoded = decodeURIComponent(courseId);
+  const classIdDecoded = decodeURIComponent(classId);
+
+  const defaultClassInfo = useMemo(() => ({
+    className: '',
+  }), []);
+
+  const classInfo = useSelector((state) => state.classes.allClasses.data)
+    .find((classElement) => classElement?.classId === classIdDecoded) || defaultClassInfo;
 
   const handleEnrollStudent = async (e) => {
     e.preventDefault();
@@ -48,7 +55,7 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
 
     try {
       setLoading(true);
-      const response = await handleEnrollments(formData, queryClassId);
+      const response = await handleEnrollments(formData, classIdDecoded);
       const validationEmailList = response?.data?.results;
       const messages = await getMessages();
       const validEmails = [];
@@ -85,15 +92,15 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
       setToastMessage(textToast);
 
       const params = {
-        course_name: courseNameDecoded,
-        class_name: classNameDecoded,
+        course_id: courseIdDecoded,
+        class_id: classIdDecoded,
         limit: true,
       };
 
       dispatch(fetchStudentsData(institution.id, initialPage, params));
 
       // Get the classes info updated with the new number of students enrolled.
-      dispatch(fetchAllClassesData(institution.id, courseNameDecoded));
+      dispatch(fetchAllClassesData(institution.id, courseIdDecoded));
 
       setShowToast(true);
       return onClose();
@@ -125,7 +132,7 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
         </ModalDialog.Header>
         <ModalDialog.Body className="body-container h-100">
           <p className="text-uppercase font-weight-bold sub-title">
-            Class: {classNameDecoded}
+            Class: {classInfo.className}
           </p>
           {isLoading && (
             <div className="w-100 h-100 d-flex justify-content-center align-items-center">
@@ -166,7 +173,6 @@ const EnrollStudent = ({ isOpen, onClose, queryClassId }) => {
 EnrollStudent.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  queryClassId: PropTypes.string.isRequired,
 };
 
 export default EnrollStudent;

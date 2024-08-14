@@ -15,7 +15,7 @@ const columns = [
   {
     Header: 'Courses',
     accessor: 'masterCourseName',
-    Cell: ({ row }) => (<LinkWithQuery to={`/courses/${encodeURIComponent(row.values.masterCourseName)}`} className="link">{row.values.masterCourseName}</LinkWithQuery>),
+    Cell: ({ row }) => (<LinkWithQuery to={`/courses/${encodeURIComponent(row.original.masterCourseId)}`} className="link">{row.values.masterCourseName}</LinkWithQuery>),
   },
   {
     Header: 'Classes',

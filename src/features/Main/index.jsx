@@ -67,12 +67,12 @@ const Main = () => {
     { path: '/instructors', component: InstructorsPage, exact: true },
     { path: '/instructors/:instructorUsername', component: InstructorsDetailPage, exact: true },
     { path: '/courses', component: CoursesPage, exact: true },
-    { path: '/courses/:courseName', component: CoursesDetailPage, exact: true },
-    { path: '/courses/:courseName/:className', component: ClassPage, exact: true },
+    { path: '/courses/:courseId', component: CoursesDetailPage, exact: true },
+    { path: '/courses/:courseId/:classId', component: ClassPage, exact: true },
     { path: '/licenses', component: LicensesPage, exact: true },
     { path: '/licenses/:licenseId', component: LicensesDetailPage, exact: true },
     { path: '/classes', component: ClassesPage, exact: true },
-    { path: '/manage-instructors/:courseName/:className', component: ManageInstructors, exact: true },
+    { path: '/manage-instructors/:courseId/:classId', component: ManageInstructors, exact: true },
   ];
 
   return (

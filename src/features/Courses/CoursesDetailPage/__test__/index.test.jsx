@@ -84,8 +84,8 @@ const mockStore = {
 describe('CoursesDetailPage', () => {
   test('Should render the table and the course info', async () => {
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:courseName">
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
+        <Route path="/courses/:courseId">
           <CoursesDetailPage />
         </Route>
       </MemoryRouter>,

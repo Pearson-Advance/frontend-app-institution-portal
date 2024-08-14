@@ -1,4 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useLocation, useHistory } from 'react-router-dom';
 
@@ -10,6 +15,7 @@ import AssignSection from 'features/Instructors/ManageInstructors/AssignSection'
 
 import { RequestStatus, initialPage } from 'features/constants';
 import { resetClassesTable, resetClasses } from 'features/Classes/data/slice';
+import { fetchAllClassesData } from 'features/Classes/data/thunks';
 import { updateFilters, resetRowSelect } from 'features/Instructors/data/slice';
 import { assignInstructors, fetchInstructorsOptionsData } from 'features/Instructors/data';
 import { updateActiveTab } from 'features/Main/data/slice';
@@ -28,14 +34,21 @@ const ManageInstructors = () => {
   const rowsSelected = useSelector((state) => state.instructors.rowsSelected);
   const instructorsByClass = useSelector((state) => state.instructors.selectOptions);
 
-  const { courseName, className } = useParams();
+  const { courseId, classId } = useParams();
   const queryParams = new URLSearchParams(location.search);
-  const classId = queryParams.get('classId')?.replaceAll(' ', '+');
   const previousPage = queryParams.get('previous') || 'courses';
   const isLoadingInstructors = instructorsByClass?.status === RequestStatus.LOADING;
   const isButtonDisabled = rowsSelected.length === 0;
-  const courseNameDecoded = decodeURIComponent(courseName);
-  const classNameDecoded = decodeURIComponent(className);
+  const classIdDecoded = decodeURIComponent(classId);
+  const courseIdDecoded = decodeURIComponent(courseId);
+
+  const defaultClassInfo = useMemo(() => ({
+    className: '',
+    masterCourseName: '',
+  }), []);
+
+  const classInfo = useSelector((state) => state.classes.allClasses.data)
+    .find((classElement) => classElement?.classId === classIdDecoded) || defaultClassInfo;
 
   const resetValues = () => {
     cancelButtonRef?.current?.clearSelectionFunc();
@@ -49,7 +62,7 @@ const ManageInstructors = () => {
         unique_student_identifier: row,
         rolename: 'staff',
         action: 'allow',
-        class_id: classId,
+        class_id: classIdDecoded,
       }));
 
       const enrollmentData = {
@@ -59,11 +72,15 @@ const ManageInstructors = () => {
       };
 
       await dispatch(assignInstructors(enrollmentData));
-      dispatch(fetchInstructorsOptionsData(selectedInstitution.id, initialPage, { limit: false, class_id: classId }));
+      dispatch(fetchInstructorsOptionsData(
+        selectedInstitution.id,
+        initialPage,
+        { limit: false, class_id: classIdDecoded },
+      ));
       if (rowsSelected.length === 1) {
-        setToastMessage(`${rowsSelected[0]} has been successfully assigned to Class ${decodeURIComponent(className)}`);
+        setToastMessage(`${rowsSelected[0]} has been successfully assigned to Class ${classInfo.className}`);
       } else if (rowsSelected.length > 1) {
-        setToastMessage(`${rowsSelected.join()} have been successfully assigned to Class ${decodeURIComponent(className)}`);
+        setToastMessage(`${rowsSelected.join()} have been successfully assigned to Class ${classInfo.className}`);
       }
       setShowToast(true);
     } catch (error) {
@@ -77,14 +94,19 @@ const ManageInstructors = () => {
     if (selectedInstitution.id) {
       // Leaves a gap time space to prevent being override by ActiveTabUpdater component
       setTimeout(() => dispatch(updateActiveTab(previousPage)), 100);
-      dispatch(fetchInstructorsOptionsData(selectedInstitution.id, initialPage, { limit: false, class_id: classId }));
+      dispatch(fetchInstructorsOptionsData(
+        selectedInstitution.id,
+        initialPage,
+        { limit: false, class_id: classIdDecoded },
+      ));
+      dispatch(fetchAllClassesData(selectedInstitution.id, courseIdDecoded));
     }
 
     return () => {
       dispatch(resetClassesTable());
       dispatch(resetClasses());
     };
-  }, [dispatch, selectedInstitution.id, previousPage, classId]);
+  }, [dispatch, selectedInstitution.id, previousPage, classIdDecoded, courseIdDecoded]);
 
   return (
     <>
@@ -104,8 +126,8 @@ const ManageInstructors = () => {
           </div>
         </div>
         <div className="d-flex flex-column mb-3">
-          <h4 className="class-name">{classNameDecoded}</h4>
-          <p className="course-name">{courseNameDecoded}</p>
+          <h4 className="class-name">{classInfo.className}</h4>
+          <p className="course-name">{classInfo.masterCourseName}</p>
         </div>
         <ListInstructors instructors={instructorsByClass?.data} isLoadingInstructors={isLoadingInstructors} />
         <AssignSection ref={cancelButtonRef} />

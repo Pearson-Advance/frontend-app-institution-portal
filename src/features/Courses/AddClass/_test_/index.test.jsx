@@ -26,15 +26,15 @@ const mockStore = {
 };
 
 const courseInfoMocked = {
-  masterCourseId: 'course-v1:demo+demo1+2020',
+  masterCourseId: 'course-v1:XXX+YYY+2023',
   masterCourseName: 'Demo Course 1',
 };
 
 describe('Add class modal', () => {
   test('render add class modal', () => {
     const { getByText, getByPlaceholderText } = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:courseName">
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
+        <Route path="/courses/:courseId">
           <AddClass isOpen onClose={() => { }} courseInfo={courseInfoMocked} />
         </Route>
       </MemoryRouter>,
@@ -67,8 +67,8 @@ describe('Add class modal', () => {
 
   test('cancel button in add classmodal', () => {
     const { getByText, getByPlaceholderText } = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses/Demo%20Course%201']}>
-        <Route path="/courses/:courseName">
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
+        <Route path="/courses/:courseId">
           <AddClass isOpen onClose={() => { }} courseInfo={courseInfoMocked} />
         </Route>
       </MemoryRouter>,

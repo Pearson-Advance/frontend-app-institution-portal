@@ -34,11 +34,11 @@ const columns = [
     Header: 'Class',
     accessor: 'className',
     Cell: ({ row }) => {
-      const { courseName } = useParams();
+      const { courseId } = useParams();
 
       return (
         <LinkWithQuery
-          to={`/courses/${courseName}/${encodeURIComponent(row.values.className)}?classId=${row.original.classId}&previous=courses`}
+          to={`/courses/${courseId}/${encodeURIComponent(row.original.classId)}?previous=courses`}
           className="text-truncate link"
         >
           {row.values.className}
@@ -154,7 +154,7 @@ const columns = [
             isRequestComplete: true,
           });
 
-          await dispatch(fetchClassesData(institution.id, initialPage, masterCourseName));
+          await dispatch(fetchClassesData(institution.id, initialPage, masterCourseId));
         } catch (error) {
           logError(error);
         } finally {
@@ -189,7 +189,7 @@ const columns = [
               </Dropdown.Item>
               <Dropdown.Item>
                 <LinkWithQuery
-                  to={`/manage-instructors/${encodeURIComponent(masterCourseName)}/${encodeURIComponent(row.values.className)}?classId=${classId}`}
+                  to={`/manage-instructors/${encodeURIComponent(masterCourseId)}/${encodeURIComponent(classId)}`}
                   className="text-truncate text-decoration-none custom-text-black"
                 >
                   <i className="fa-regular fa-chalkboard-user mr-2 mb-1" />

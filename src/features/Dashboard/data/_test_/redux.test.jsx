@@ -78,12 +78,13 @@ describe('Dashboard redux tests', () => {
   });
 
   test('successful fetch classesNoInstructors data', async () => {
-    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_name=`;
+    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_id=`;
     const mockResponse = [
       {
         classId: 'ccx-v1:demo+demo1+2020+ccx1',
         className: 'ccx 1',
         masterCourseName: 'Demo Course 1',
+        masterCourseId: 'course-v1:XXX+YYY+2023',
         instructors: [],
         numberOfStudents: 0,
         numberOfPendingStudents: 0,
@@ -125,12 +126,13 @@ describe('Dashboard redux tests', () => {
   });
 
   test('successful fetch classes data', async () => {
-    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_name=`;
+    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_id=`;
     const mockResponse = [
       {
         classId: 'ccx-v1:demo+demo1+2020+ccx1',
         className: 'ccx 1',
         masterCourseName: 'Demo Course 1',
+        masterCourseId: 'course-v1:XXX+YYY+2023',
         instructors: [],
         numberOfStudents: 0,
         numberOfPendingStudents: 0,
