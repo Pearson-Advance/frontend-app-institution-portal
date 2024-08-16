@@ -164,7 +164,7 @@ const AddInstructors = ({ isOpen, onClose }) => {
                 )}
                 <div className="d-flex justify-content-end">
                   <ModalCloseButton className="btntpz btn-text btn-tertiary mr-2" onClose={handleCloseModal}>Cancel</ModalCloseButton>
-                  <Button type="submit" disabled={formState.instructor.email.length === 0} onClick={handleAddInstructor}>Send invite</Button>
+                  <Button type="submit" disabled={formState.instructor.email.length === 0} onClick={handleAddInstructor}>Add instructor</Button>
                 </div>
               </Form>
           )}

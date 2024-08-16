@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { formatDateRange } from 'helpers';
 import { initialPage, RequestStatus } from 'features/constants';
@@ -15,22 +15,17 @@ import 'features/Classes/InstructorCard/index.scss';
 const INSTRUCTORS_NUMBER = 3;
 
 const InstructorCard = () => {
-  const location = useLocation();
   const dispatch = useDispatch();
-  const { courseName, className } = useParams();
+  const { classId } = useParams();
   const institution = useSelector((state) => state.main.selectedInstitution);
   const instructors = useSelector((state) => state.instructors.selectOptions.data);
   const classes = useSelector((state) => state.classes.allClasses);
-  const courseNameDecoded = decodeURIComponent(courseName);
-  const classNameDecoded = decodeURIComponent(className);
-
-  const queryParams = new URLSearchParams(location.search);
-  const classIdQuery = queryParams.get('classId')?.replaceAll(' ', '+');
+  const classIdDecoded = decodeURIComponent(classId);
 
   const isLoadingClasses = classes.status === RequestStatus.LOADING;
 
   const [classInfo] = classes.data.filter(
-    (classElement) => classElement.classId === classIdQuery,
+    (classElement) => classElement.classId === classIdDecoded,
   );
 
   const totalEnrolled = (classInfo?.numberOfStudents || 0)
@@ -38,16 +33,16 @@ const InstructorCard = () => {
 
   useEffect(() => {
     if (institution.id) {
-      dispatch(fetchInstructorsOptionsData(institution.id, initialPage, { limit: false, class_id: classIdQuery }));
+      dispatch(fetchInstructorsOptionsData(institution.id, initialPage, { limit: false, class_id: classIdDecoded }));
     }
     return () => dispatch(resetInstructorOptions());
-  }, [institution.id, classIdQuery, dispatch]);
+  }, [institution.id, classIdDecoded, dispatch]);
 
   return (
     <article className="instructor-wrapper mb-4 d-flex flex-column flex-sm-row justify-content-between align-items-start">
       <div className="d-flex flex-column w-75 justify-content-between h-100">
-        <h3 className="text-color text-uppercase font-weight-bold text-truncate w-75" title={classNameDecoded}>
-          {classNameDecoded}
+        <h3 className="text-color text-uppercase font-weight-bold text-truncate w-75" title={classInfo?.className}>
+          {classInfo?.className}
         </h3>
         {isLoadingClasses && (
           <div className="w-100 h-100 d-flex justify-content-center align-items-center">
@@ -60,8 +55,8 @@ const InstructorCard = () => {
         )}
         {!isLoadingClasses && (
           <>
-            <h4 className="text-color text-uppercase font-weight-bold text-truncate w-75" title={courseNameDecoded}>
-              {courseNameDecoded}
+            <h4 className="text-color text-uppercase font-weight-bold text-truncate w-75" title={classInfo?.masterCourseName}>
+              {classInfo?.masterCourseName}
             </h4>
             <div className="text-uppercase">
               <i className="fa-regular fa-calendar mr-2" />

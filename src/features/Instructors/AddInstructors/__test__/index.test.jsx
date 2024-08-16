@@ -74,7 +74,7 @@ describe('Add instructor modal', () => {
     expect(getByText('First name')).toBeInTheDocument();
     expect(getByText('Last name')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
-    expect(getByText('Send invite')).toBeInTheDocument();
+    expect(getByText('Add instructor')).toBeInTheDocument();
   });
 
   test('Should handle input changes correctly', () => {
@@ -102,7 +102,7 @@ describe('Add instructor modal', () => {
       { preloadedState: mockStore },
     );
 
-    const sendButton = getByText('Send invite');
+    const sendButton = getByText('Add instructor');
     const emailInput = getByPlaceholderText('Enter Email of the instructor');
 
     expect(sendButton).toBeInTheDocument();
@@ -132,7 +132,7 @@ describe('Instructor modal - Request', () => {
     );
 
     const emailInput = getByPlaceholderText('Enter Email of the instructor');
-    const sendButton = getByText('Send invite');
+    const sendButton = getByText('Add instructor');
 
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
     fireEvent.click(sendButton);

@@ -72,18 +72,18 @@ describe('Common api services', () => {
     };
 
     const institutionId = 1;
-    const courseName = 'ccx1';
+    const courseId = 'course-v1';
 
     getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
 
-    getClassesByInstitution(institutionId, courseName);
+    getClassesByInstitution(institutionId, courseId);
 
     expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
     expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
 
     expect(httpClientMock.get).toHaveBeenCalledTimes(1);
     expect(httpClientMock.get).toHaveBeenCalledWith(
-      `${COURSE_OPERATIONS_API_V2}/classes/?course_name=ccx1`,
+      `${COURSE_OPERATIONS_API_V2}/classes/?course_id=course-v1`,
       {
         params: {
           institution_id: 1, limit: false, page: '',

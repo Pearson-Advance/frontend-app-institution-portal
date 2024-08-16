@@ -13,7 +13,7 @@ const columns = [
     accessor: 'className',
     Cell: ({ row }) => (
       <LinkWithQuery
-        to={`/courses/${encodeURIComponent(row.values.masterCourseName)}/${encodeURIComponent(row.values.className)}?classId=${row.original.classId}&previous=instructors`}
+        to={`/courses/${encodeURIComponent(row.original.masterCourseId)}/${encodeURIComponent(row.original.classId)}?previous=instructors`}
         className="link"
       >
         {row.values.className}

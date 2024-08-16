@@ -79,7 +79,7 @@ const WeeklySchedule = () => {
                   <div className="class-text">
                     <LinkWithQuery
                       className="class-name"
-                      to={`/courses/${encodeURIComponent(classInfo?.masterCourseName)}/${encodeURIComponent(classInfo?.className)}?classId=${classInfo?.classId}&previous=courses`}
+                      to={`/courses/${encodeURIComponent(classInfo?.masterCourseId)}/${encodeURIComponent(classInfo?.classId)}?previous=courses`}
                     >
                       {classInfo?.className}
                     </LinkWithQuery>

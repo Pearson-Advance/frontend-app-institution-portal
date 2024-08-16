@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { useParams, useLocation, useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { getConfig } from '@edx/frontend-platform';
 
 import { Button } from 'react-paragon-topaz';
@@ -17,17 +17,15 @@ import AddClass from 'features/Courses/AddClass';
 import EnrollStudent from 'features/Classes/EnrollStudent';
 
 const Actions = ({ previousPage }) => {
-  const location = useLocation();
   const history = useHistory();
-  const { courseName, className } = useParams();
+  const { courseId, classId } = useParams();
+  const classIdDecoded = decodeURIComponent(classId);
   const classes = useSelector((state) => state.classes.allClasses.data);
 
-  const queryParams = new URLSearchParams(location.search);
-  const queryClassId = queryParams.get('classId')?.replaceAll(' ', '+');
-  const classLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${queryClassId}/home`;
+  const classLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classIdDecoded}/home`;
 
   const [classInfo] = classes.filter(
-    (classElement) => classElement.classId === queryClassId,
+    (classElement) => classElement.classId === classIdDecoded,
   );
 
   const [isOpenEditModal, openEditModal, closeEditModal] = useToggle(false);
@@ -37,7 +35,7 @@ const Actions = ({ previousPage }) => {
   const addQueryParam = useInstitutionIdQueryParam();
 
   const handleManageButton = () => {
-    history.push(addQueryParam(`/manage-instructors/${courseName}/${className}?classId=${queryClassId}&previous=${previousPage}`));
+    history.push(addQueryParam(`/manage-instructors/${courseId}/${classId}?previous=${previousPage}`));
   };
 
   return (
@@ -51,7 +49,7 @@ const Actions = ({ previousPage }) => {
       </Button>
       <Button
         as="a"
-        onClick={() => setAssignStaffRole(classLink, queryClassId)}
+        onClick={() => setAssignStaffRole(classLink, classIdDecoded)}
         className="text-decoration-none text-white button-view-class mr-3"
       >
         <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />
@@ -93,7 +91,7 @@ const Actions = ({ previousPage }) => {
         isEditing
         isDetailClassPage
       />
-      <EnrollStudent isOpen={isEnrollModalOpen} onClose={handleEnrollStudentModal} queryClassId={queryClassId} />
+      <EnrollStudent isOpen={isEnrollModalOpen} onClose={handleEnrollStudentModal} />
     </>
   );
 };

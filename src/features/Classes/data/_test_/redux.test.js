@@ -29,11 +29,12 @@ describe('Classes redux tests', () => {
   });
 
   test('successful fetch classes data', async () => {
-    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_name=`;
+    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_id=`;
     const mockResponse = {
       results: [
         {
           masterCourseName: 'Demo MasterCourse 1',
+          masterCourseId: 'course-v1:XXX+YYY+2023',
           className: 'Demo Class 1',
           startDate: '09/21/24',
           endDate: null,
@@ -91,10 +92,11 @@ describe('Classes redux tests', () => {
   });
 
   test('successful fetch all classes data', async () => {
-    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_name=`;
+    const classesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/?course_id=`;
     const mockResponse = [
       {
         masterCourseName: 'Demo MasterCourse 1',
+        masterCourseId: 'course-v1:XXX+YYY+2023',
         className: 'Demo Class 1',
         startDate: '09/21/24',
         endDate: null,

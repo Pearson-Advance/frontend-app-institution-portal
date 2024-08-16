@@ -6,10 +6,8 @@ import InstructorCard from 'features/Classes/InstructorCard';
 
 jest.mock('react-router-dom', () => ({
   useParams: jest.fn(() => ({
-    courseName: 'Demo course',
-    className: 'demo class',
+    classId: 'ccx-v1',
   })),
-  useLocation: jest.fn().mockReturnValue({ search: '?classId=demo+class' }),
 }));
 
 jest.mock('@edx/frontend-platform/logging', () => ({
@@ -32,7 +30,9 @@ const stateMock = {
     allClasses: {
       data: [{
         startDate: '2024-02-13T17:42:22Z',
-        classId: 'demo+class',
+        classId: 'ccx-v1',
+        className: 'demo class',
+        masterCourseName: 'Demo course',
         instructors: ['Sam Sepiol'],
         numberOfStudents: 2,
         numberOfPendingStudents: 1,

@@ -8,8 +8,7 @@ import EnrollStudent from 'features/Classes/EnrollStudent';
 import * as api from 'features/Students/data/api';
 
 jest.mock('react-router-dom', () => ({
-  useParams: jest.fn(() => ({ courseName: 'Demo course', className: 'demo class' })),
-  useLocation: jest.fn().mockReturnValue({ search: '?classId=demo class' }),
+  useParams: jest.fn(() => ({ courseId: 'Demo course', classId: 'ccx-v1' })),
 }));
 
 jest.mock('features/Students/data/api', () => ({
@@ -21,6 +20,19 @@ jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
 }));
 
+const mockStore = {
+  classes: {
+    allClasses: {
+      data: [
+        {
+          classId: 'ccx-v1',
+          className: 'demo class',
+        },
+      ],
+    },
+  },
+};
+
 describe('EnrollStudent', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -28,8 +40,8 @@ describe('EnrollStudent', () => {
 
   test('Should render with correct elements', () => {
     const { getByText, getByPlaceholderText } = renderWithProviders(
-      <EnrollStudent isOpen onClose={() => {}} queryClassId="ccx1" />,
-      { preloadedState: {} },
+      <EnrollStudent isOpen onClose={() => {}} />,
+      { preloadedState: mockStore },
     );
 
     expect(getByText('Invite student to enroll')).toBeInTheDocument();
@@ -42,8 +54,8 @@ describe('EnrollStudent', () => {
     const onCloseMock = jest.fn();
 
     const { getByPlaceholderText, getByText, getByTestId } = renderWithProviders(
-      <EnrollStudent isOpen onClose={onCloseMock} queryClassId="ccx1" />,
-      { preloadedState: {} },
+      <EnrollStudent isOpen onClose={onCloseMock} />,
+      { preloadedState: mockStore },
     );
 
     const handleEnrollmentsMock = jest.spyOn(api, 'handleEnrollments').mockResolvedValue({
@@ -78,8 +90,8 @@ describe('EnrollStudent', () => {
     });
 
     const { getByPlaceholderText, getByText } = renderWithProviders(
-      <EnrollStudent isOpen onClose={onCloseMock} queryClassId="ccx1" />,
-      { preloadedState: {} },
+      <EnrollStudent isOpen onClose={onCloseMock} />,
+      { preloadedState: mockStore },
     );
 
     const emailInput = getByPlaceholderText('Enter email of the student to enroll');
@@ -101,8 +113,8 @@ describe('EnrollStudent', () => {
     const onCloseMock = jest.fn();
 
     const { getByPlaceholderText, getByText, getByTestId } = renderWithProviders(
-      <EnrollStudent isOpen onClose={onCloseMock} queryClassId="ccx1" />,
-      { preloadedState: {} },
+      <EnrollStudent isOpen onClose={onCloseMock} />,
+      { preloadedState: mockStore },
     );
 
     const handleEnrollmentsMock = jest.spyOn(api, 'handleEnrollments').mockResolvedValue({

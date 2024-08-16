@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import {
@@ -15,14 +15,13 @@ import { assignInstructors, fetchInstructorsOptionsData } from 'features/Instruc
 import { RequestStatus, initialPage } from 'features/constants';
 
 const ListInstructors = ({ instructors, isLoadingInstructors }) => {
-  const location = useLocation();
   const dispatch = useDispatch();
 
   const institution = useSelector((state) => state.main.selectedInstitution);
   const statusAssignRequest = useSelector((state) => state.instructors.assignInstructors.status);
 
-  const queryParams = new URLSearchParams(location.search);
-  const classId = queryParams.get('classId')?.replaceAll(' ', '+');
+  const { classId } = useParams();
+  const classIdDecoded = decodeURIComponent(classId);
 
   const [isOpenModal, openModal, closeModal] = useToggle(false);
   const [instructorName, setInstructorName] = useState('');
@@ -44,11 +43,11 @@ const ListInstructors = ({ instructors, isLoadingInstructors }) => {
         unique_student_identifier: instructorUsername,
         rolename: 'staff',
         action: 'revoke',
-        class_id: classId,
+        class_id: classIdDecoded,
       };
 
       await dispatch(assignInstructors(instructorData));
-      dispatch(fetchInstructorsOptionsData(institution.id, initialPage, { limit: false, class_id: classId }));
+      dispatch(fetchInstructorsOptionsData(institution.id, initialPage, { limit: false, class_id: classIdDecoded }));
     } catch (error) {
       logError(error);
       setShowToast(true);

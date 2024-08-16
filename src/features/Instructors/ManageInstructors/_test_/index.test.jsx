@@ -67,8 +67,8 @@ const mockStore = {
 describe('Manage instructors page', () => {
   test('render page', async () => {
     const { getByText, getAllByRole, getByTestId } = renderWithProviders(
-      <MemoryRouter initialEntries={['/manageInstructors/Demo%20Course%201/demo%20class%20cxx1?classId=ccx1']}>
-        <Route path="/manageInstructors/:courseName/:className">
+      <MemoryRouter initialEntries={[`/manageInstructors/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111')}`]}>
+        <Route path="/manageInstructors/:courseId/:classId">
           <ManageInstructors />
         </Route>
       </MemoryRouter>,
@@ -93,8 +93,9 @@ describe('Manage instructors page', () => {
 
   test('Delete instructor', async () => {
     const { getByText, getAllByTestId } = renderWithProviders(
-      <MemoryRouter initialEntries={['/manageInstructors/Demo%20Course%201/demo%20class%20cxx1?classId=ccx1']}>
-        <Route path="/manageInstructors/:courseName/:className">
+      <MemoryRouter initialEntries={[`/manageInstructors/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111')}`]}>
+        `/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`
+        <Route path="/manageInstructors/:courseId/:classId">
           <ManageInstructors />
         </Route>
       </MemoryRouter>,

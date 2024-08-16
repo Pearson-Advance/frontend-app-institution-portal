@@ -14,7 +14,7 @@ const ClassCard = ({ data }) => {
   const addQueryParam = useInstitutionIdQueryParam();
 
   const handleManageButton = () => {
-    history.push(addQueryParam(`/manage-instructors/${encodeURIComponent(data?.masterCourseName)}/${encodeURIComponent(data?.className)}?classId=${data?.classId}&previous=dashboard`));
+    history.push(addQueryParam(`/manage-instructors/${encodeURIComponent(data?.masterCourseId)}/${encodeURIComponent(data?.classId)}?previous=dashboard`));
   };
 
   return (
@@ -35,6 +35,7 @@ ClassCard.propTypes = {
     classId: PropTypes.string,
     className: PropTypes.string,
     masterCourseName: PropTypes.string,
+    masterCourseId: PropTypes.string,
     startDate: PropTypes.string,
     endDate: PropTypes.string,
   }),
