@@ -46,9 +46,9 @@ const mockStore = {
       data: [
         {
           licenseName: 'License Demo',
-          purchasedSeats: 10,
-          numberOfStudents: 20,
-          numberOfPendingStudents: 10,
+          purchasedSeats: 20,
+          numberOfStudents: 10,
+          numberOfPendingStudents: 5,
         },
       ],
       count: 1,
