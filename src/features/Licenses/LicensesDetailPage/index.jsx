@@ -110,8 +110,8 @@ const LicensesDetailPage = () => {
               <div className="separator mx-4" />
               <div className="d-flex flex-column align-items-center">
                 <p className="title">Remaining</p>
-                <span className="value number-of-pending">
-                  {licenseInfo.numberOfPendingStudents}
+                <span className="value number-of-remaining">
+                  {licenseInfo.purchasedSeats - licenseInfo.numberOfStudents - licenseInfo.numberOfPendingStudents}
                 </span>
               </div>
             </>
