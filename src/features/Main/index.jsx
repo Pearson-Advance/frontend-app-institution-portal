@@ -29,6 +29,7 @@ import InstructorsDetailPage from 'features/Instructors/InstructorsDetailPage';
 import ActiveTabUpdater from 'features/Main//ActiveTabUpdater';
 import ManageInstructors from 'features/Instructors/ManageInstructors';
 import InstitutionSelector from 'features/Main/InstitutionSelector';
+import UnauthorizedPage from 'features/Main/UnauthorizedPage';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
 import { updateSelectedInstitution } from 'features/Main/data/slice';
@@ -81,29 +82,34 @@ const Main = () => {
       <Header />
       <div className="pageWrapper">
         <main className="d-flex">
-          <Sidebar />
-          <Container className="px-0 container-pages">
-            <Container size="xl" className="px-4">
-              {institutions.length > 1 && (<InstitutionSelector />)}
-            </Container>
-            <Switch>
-              <Route exact path="/">
-                <Redirect to={addQueryParam('/dashboard')} />
-              </Route>
-              {routes.map(({ path, exact, component: Component }) => (
-                <Route
-                  key={path}
-                  path={path}
-                  exact={exact}
-                  render={() => (
-                    <ActiveTabUpdater path={path}>
-                      <Component />
-                    </ActiveTabUpdater>
-                  )}
-                />
-              ))}
-            </Switch>
-          </Container>
+          {institutions.length < 1 && <UnauthorizedPage />}
+          {institutions.length > 0 && (
+            <>
+              <Sidebar />
+              <Container className="px-0 container-pages">
+                <Container size="xl" className="px-4">
+                  {institutions.length > 1 && (<InstitutionSelector />)}
+                </Container>
+                <Switch>
+                  <Route exact path="/">
+                    <Redirect to={addQueryParam('/dashboard')} />
+                  </Route>
+                  {routes.map(({ path, exact, component: Component }) => (
+                    <Route
+                      key={path}
+                      path={path}
+                      exact={exact}
+                      render={() => (
+                        <ActiveTabUpdater path={path}>
+                          <Component />
+                        </ActiveTabUpdater>
+                      )}
+                    />
+                  ))}
+                </Switch>
+              </Container>
+            </>
+          )}
         </main>
         <Footer />
       </div>
