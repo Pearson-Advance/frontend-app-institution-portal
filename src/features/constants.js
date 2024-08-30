@@ -76,3 +76,9 @@ export const INSTITUTION_QUERY_ID = 'institutionId';
  * @constant {string}
  */
 export const cookieText = 'This website uses cookies to ensure you get the best experience on our website. If you continue browsing this site, we understand that you accept the use of cookies.';
+
+/**
+ * Text for unauthorized user.
+ * @constant {string}
+ */
+export const unauthorizedText = 'You do not have access to CertPREP Manager. If you believe you should have access then please contact your sales rep.';
