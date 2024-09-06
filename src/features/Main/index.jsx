@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom';
 
 import { getConfig } from '@edx/frontend-platform';
-import { Container } from '@edx/paragon';
+import { Container, Spinner } from '@edx/paragon';
 
 import CookiePolicyBanner from '@pearsonedunext/frontend-component-cookie-policy-banner';
 
@@ -36,7 +36,7 @@ import { updateSelectedInstitution } from 'features/Main/data/slice';
 
 import { useInstitutionIdQueryParam } from 'hooks';
 
-import { cookieText, INSTITUTION_QUERY_ID } from 'features/constants';
+import { cookieText, INSTITUTION_QUERY_ID, RequestStatus } from 'features/constants';
 
 import './index.scss';
 
@@ -48,6 +48,9 @@ const Main = () => {
   const addQueryParam = useInstitutionIdQueryParam();
 
   const searchParams = new URLSearchParams(location.search);
+
+  const statusInstitutions = useSelector((state) => state.main.institution.status);
+  const isLoadingInstitutions = statusInstitutions === RequestStatus.LOADING;
 
   useEffect(() => {
     dispatch(fetchInstitutionData());
@@ -82,8 +85,17 @@ const Main = () => {
       <Header />
       <div className="pageWrapper">
         <main className="d-flex">
-          {institutions.length < 1 && <UnauthorizedPage />}
-          {institutions.length > 0 && (
+          {isLoadingInstitutions && (
+            <div className="w-100 h-100 d-flex justify-content-center align-items-center">
+              <Spinner
+                animation="border"
+                className="mie-3"
+                screenReaderText="loading"
+              />
+            </div>
+          )}
+          {!isLoadingInstitutions && institutions.length < 1 && <UnauthorizedPage />}
+          {!isLoadingInstitutions && institutions.length > 0 && (
             <>
               <Sidebar />
               <Container className="px-0 container-pages">
