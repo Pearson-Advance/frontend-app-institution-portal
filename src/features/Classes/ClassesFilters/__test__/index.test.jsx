@@ -18,6 +18,7 @@ jest.mock('react-router-dom', () => ({
 let axiosMock;
 
 const courseOption = {
+  masterCourseId: 1,
   masterCourseName: 'Demo Course 1',
   numberOfClasses: 1,
   missingClassesForInstructor: null,
