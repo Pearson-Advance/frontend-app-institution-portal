@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types, no-nested-ternary */
 import React from 'react';
 import { getConfig } from '@edx/frontend-platform';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Badge } from 'react-paragon-topaz';
 import {
@@ -10,6 +11,9 @@ import { MoreHoriz } from '@edx/paragon/icons';
 
 import AddClass from 'features/Courses/AddClass';
 import LinkWithQuery from 'features/Main/LinkWithQuery';
+import { updateCurrentPage as updateCoursesCurrentPage } from 'features/Courses/data/slice';
+import { fetchCoursesData } from 'features/Courses/data/thunks';
+import { initialPage } from 'features/constants';
 
 const columns = [
   {
@@ -44,8 +48,15 @@ const columns = [
     cellClassName: 'dropdownColumn',
     disableSortBy: true,
     Cell: ({ row }) => {
+      const dispatch = useDispatch();
+      const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
       const [isOpenModal, openModal, closeModal] = useToggle(false);
       const courseDetailsLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${row.original.masterCourseId}/home`;
+      const finalCall = () => {
+        dispatch(fetchCoursesData(selectedInstitution.id, initialPage));
+        dispatch(updateCoursesCurrentPage(initialPage));
+      };
+
       return (
         <Dropdown className="dropdowntpz">
           <Dropdown.Toggle
@@ -73,7 +84,7 @@ const columns = [
                 masterCourseName: row.original.masterCourseName,
                 masterCourseId: row.original.masterCourseId,
               }}
-              isCoursePage
+              finalCall={finalCall}
             />
           </Dropdown.Menu>
         </Dropdown>

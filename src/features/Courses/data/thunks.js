@@ -53,7 +53,7 @@ function addClass(classData, instructorData) {
         instructorData.append('class_id', response.data.class_id);
         await dispatch(assignInstructors(instructorData));
       }
-      dispatch(updateNotificationMsg(`${response.data.name} has been added successfullly!`));
+      dispatch(updateNotificationMsg(`${response.data.name} has been added successfully!`));
     } catch (error) {
       dispatch(newClassFailed());
       logError(error);

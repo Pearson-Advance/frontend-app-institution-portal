@@ -81,7 +81,7 @@ describe('columns', () => {
     };
 
     const {
-      getByText, getByTestId, getAllByRole, getAllByText,
+      getByText, getByTestId, getAllByRole,
     } = renderWithProviders(
       <MemoryRouter initialEntries={['/classes/']}>
         <Route path="/classes/">
@@ -93,10 +93,12 @@ describe('columns', () => {
 
     const button = getByTestId('droprown-action');
     fireEvent.click(button);
-    const editButton = getAllByRole('button')[1];
+    const editButton = getAllByRole('button')[2];
     expect(editButton).toBeInTheDocument();
     fireEvent.click(editButton);
-    expect(getAllByText('Edit Class')).toHaveLength(2);
-    expect(getByText('course example')).toBeInTheDocument();
+    expect(getByText('View class content')).toBeInTheDocument();
+    expect(getByText('Manage Instructors')).toBeInTheDocument();
+    expect(getByText('Edit Class')).toBeInTheDocument();
+    expect(getByText('Delete Class')).toBeInTheDocument();
   });
 });
