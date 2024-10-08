@@ -10,6 +10,7 @@ import {
 
 import { getConfig } from '@edx/frontend-platform';
 import { Container, Spinner } from '@edx/paragon';
+import { Banner } from 'react-paragon-topaz';
 
 import CookiePolicyBanner from '@pearsonedunext/frontend-component-cookie-policy-banner';
 
@@ -52,6 +53,8 @@ const Main = () => {
   const statusInstitutions = useSelector((state) => state.main.institution.status);
   const isLoadingInstitutions = statusInstitutions === RequestStatus.LOADING;
 
+  const bannerText = getConfig().MAINTENANCE_BANNER_TEXT || '';
+
   useEffect(() => {
     dispatch(fetchInstitutionData());
   }, [dispatch]);
@@ -83,6 +86,9 @@ const Main = () => {
     <BrowserRouter basename={getConfig().INSTITUTION_PORTAL_PATH}>
       <CookiePolicyBanner policyText={{ en: cookieText }} />
       <Header />
+      {bannerText && (
+        <Banner variant="warning" iconWarning text={bannerText} />
+      )}
       <div className="pageWrapper">
         <main className="d-flex">
           {isLoadingInstitutions && (
