@@ -24,6 +24,7 @@ import { RequestStatus, initialPage } from 'features/constants';
 
 import { deleteClass } from 'features/Courses/data/thunks';
 import { fetchClassesData } from 'features/Classes/data/thunks';
+import { updateCurrentPage as updateClassesCurrentPage } from 'features/Classes/data/slice';
 
 import { resetClassState } from 'features/Courses/data/slice';
 
@@ -165,6 +166,11 @@ const columns = [
         }
       };
 
+      const finalCall = () => {
+        dispatch(fetchClassesData(institution.id, initialPage, masterCourseId));
+        dispatch(updateClassesCurrentPage(initialPage));
+      };
+
       return (
         <>
           <Dropdown className="dropdowntpz">
@@ -217,8 +223,8 @@ const columns = [
                   minStudents: minStudentsAllowed,
                   maxStudents,
                 }}
-                isCoursePage
                 isEditing
+                finalCall={finalCall}
               />
               <DeleteModal
                 isLoading={deletionState === RequestStatus.LOADING}

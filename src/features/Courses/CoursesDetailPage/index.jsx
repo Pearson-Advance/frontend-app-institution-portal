@@ -13,7 +13,7 @@ import CourseDetailTable from 'features/Courses/CourseDetailTable';
 
 import { fetchClassesData } from 'features/Classes/data/thunks';
 import { fetchCoursesData } from 'features/Courses/data/thunks';
-import { fetchClassesDataSuccess } from 'features/Classes/data/slice';
+import { fetchClassesDataSuccess, updateCurrentPage as updateClassesCurrentPage } from 'features/Classes/data/slice';
 import { fetchCoursesDataSuccess, updateCurrentPage } from 'features/Courses/data/slice';
 
 import { initialPage } from 'features/constants';
@@ -93,6 +93,11 @@ const CoursesDetailPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution, history]);
 
+  const finalCall = () => {
+    dispatch(fetchClassesData(institution.id, initialPage, courseIdDecoded));
+    dispatch(updateClassesCurrentPage(initialPage));
+  };
+
   return (
     <Container size="xl" className="px-4 mt-3">
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
@@ -137,6 +142,7 @@ const CoursesDetailPage = () => {
           isOpen={isOpenModal}
           onClose={closeModal}
           courseInfo={nextCourseInfo}
+          finalCall={finalCall}
         />
       </div>
       <CourseDetailTable count={classes.count} data={classes.data} />

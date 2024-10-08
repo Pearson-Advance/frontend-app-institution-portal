@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import { getConfig } from '@edx/frontend-platform';
 
@@ -15,12 +15,16 @@ import { useInstitutionIdQueryParam } from 'hooks';
 
 import AddClass from 'features/Courses/AddClass';
 import EnrollStudent from 'features/Classes/EnrollStudent';
+import { fetchAllClassesData } from 'features/Classes/data/thunks';
 
 const Actions = ({ previousPage }) => {
+  const dispatch = useDispatch();
   const history = useHistory();
   const { courseId, classId } = useParams();
+  const courseIdDecoded = decodeURIComponent(courseId);
   const classIdDecoded = decodeURIComponent(classId);
   const classes = useSelector((state) => state.classes.allClasses.data);
+  const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
 
   const classLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classIdDecoded}/home`;
 
@@ -36,6 +40,10 @@ const Actions = ({ previousPage }) => {
 
   const handleManageButton = () => {
     history.push(addQueryParam(`/manage-instructors/${courseId}/${classId}?previous=${previousPage}`));
+  };
+
+  const finalCall = () => {
+    dispatch(fetchAllClassesData(selectedInstitution.id, courseIdDecoded));
   };
 
   return (
@@ -89,7 +97,7 @@ const Actions = ({ previousPage }) => {
           maxStudents: classInfo?.maxStudents,
         }}
         isEditing
-        isDetailClassPage
+        finalCall={finalCall}
       />
       <EnrollStudent isOpen={isEnrollModalOpen} onClose={handleEnrollStudentModal} />
     </>

@@ -8,11 +8,8 @@ import {
 import { Button, Select } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 
-import { addClass, fetchCoursesData, editClass } from 'features/Courses/data';
+import { addClass, editClass } from 'features/Courses/data';
 import { fetchInstructorsOptionsData } from 'features/Instructors/data/thunks';
-import { fetchClassesData, fetchAllClassesData } from 'features/Classes/data/thunks';
-import { updateCurrentPage as updateCoursesCurrentPage } from 'features/Courses/data/slice';
-import { updateCurrentPage as updateClassesCurrentPage } from 'features/Classes/data/slice';
 
 import { initialPage } from 'features/constants';
 import { formatUTCDate } from 'helpers';
@@ -20,7 +17,7 @@ import { formatUTCDate } from 'helpers';
 import 'features/Courses/AddClass/index.scss';
 
 const AddClass = ({
-  isOpen, onClose, courseInfo, isCoursePage, isEditing, isDetailClassPage,
+  isOpen, onClose, courseInfo, isEditing, finalCall,
 }) => {
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
@@ -56,12 +53,7 @@ const AddClass = ({
       } catch (error) {
         logError(error);
       } finally {
-        if (isDetailClassPage) {
-          dispatch(fetchAllClassesData(selectedInstitution.id, courseInfo.masterCourseId));
-        } else {
-          dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseInfo.masterCourseId));
-          dispatch(updateClassesCurrentPage(initialPage));
-        }
+        finalCall();
       }
     } else {
       try {
@@ -79,13 +71,7 @@ const AddClass = ({
       } catch (error) {
         logError(error);
       } finally {
-        if (isCoursePage) {
-          dispatch(fetchCoursesData(selectedInstitution.id, initialPage));
-          dispatch(updateCoursesCurrentPage(initialPage));
-        } else {
-          dispatch(fetchClassesData(selectedInstitution.id, initialPage, courseInfo.masterCourseId));
-          dispatch(updateClassesCurrentPage(initialPage));
-        }
+        finalCall();
       }
     }
 
@@ -269,15 +255,12 @@ AddClass.propTypes = {
     minStudents: PropTypes.number,
     maxStudents: PropTypes.number,
   }).isRequired,
-  isCoursePage: PropTypes.bool,
   isEditing: PropTypes.bool,
-  isDetailClassPage: PropTypes.bool,
+  finalCall: PropTypes.func.isRequired,
 };
 
 AddClass.defaultProps = {
-  isCoursePage: false,
   isEditing: false,
-  isDetailClassPage: false,
 };
 
 export default AddClass;
