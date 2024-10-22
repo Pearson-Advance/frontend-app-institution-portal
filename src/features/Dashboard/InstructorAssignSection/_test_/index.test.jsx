@@ -33,12 +33,12 @@ describe('Instructor Assign component', () => {
   );
 
   test('renders components', () => {
-    const { getByText } = component;
+    const { getByText, getAllByText } = component;
 
     expect(getByText('Instructor assignment')).toBeInTheDocument();
-    expect(getByText('ccx 1')).toBeInTheDocument();
-    expect(getByText('Demo Course 1')).toBeInTheDocument();
-    expect(getByText('Jan 23, 2024')).toBeInTheDocument();
+    expect(getAllByText('ccx 1')[0]).toBeInTheDocument();
+    expect(getAllByText('Demo Course 1')[0]).toBeInTheDocument();
+    expect(getAllByText('Jan 23, 2024')[0]).toBeInTheDocument();
     expect(getByText('Manage instructor')).toBeInTheDocument();
   });
 });

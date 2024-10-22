@@ -23,6 +23,10 @@
   min-height: 426px;
 }
 
+.responsive {
+  display: none;
+}
+
 .schedule-section {
   margin-bottom: 2rem;
 }
@@ -52,5 +56,13 @@
   }
   .instructor-assign-section {
     min-height: 200px;
+  }
+
+  .no-responsive {
+    display: none;
+  }
+
+  .responsive {
+    display: block;
   }
 }
