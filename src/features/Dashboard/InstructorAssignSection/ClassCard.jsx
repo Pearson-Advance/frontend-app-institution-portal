@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { Button } from 'react-paragon-topaz';
+import { Tooltip, OverlayTrigger } from '@edx/paragon';
 
 import { formatDateRange } from 'helpers';
 import { useInstitutionIdQueryParam } from 'hooks';
@@ -19,8 +20,30 @@ const ClassCard = ({ data }) => {
 
   return (
     <div className="class-card-container">
-      <h4>{data?.className}</h4>
-      <p className="course-name">{data?.masterCourseName}</p>
+      <OverlayTrigger
+        placement="top"
+        overlay={
+          (
+            <Tooltip>
+              {data?.className}
+            </Tooltip>
+          )
+        }
+      >
+        <h4 className="truncated-text">{data?.className}</h4>
+      </OverlayTrigger>
+      <OverlayTrigger
+        placement="bottom"
+        overlay={
+          (
+            <Tooltip>
+              {data?.masterCourseName}
+            </Tooltip>
+          )
+        }
+      >
+        <p className="course-name truncated-text">{data?.masterCourseName}</p>
+      </OverlayTrigger>
       <p className="date"><i className="fa-sharp fa-regular fa-calendar-day" />{formatDateRange(data.startDate, data?.endDate)}</p>
       <Button variant="outline-primary" size="sm" onClick={handleManageButton}>
         <i className="fa-regular fa-chalkboard-user" />
