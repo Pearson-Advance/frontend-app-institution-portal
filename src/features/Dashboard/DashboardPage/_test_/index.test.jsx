@@ -64,7 +64,7 @@ describe('DashboardPage component', () => {
   );
 
   test('renders components', () => {
-    const { getByText } = component;
+    const { getByText, getAllByText } = component;
 
     expect(getByText('This week')).toBeInTheDocument();
     expect(getByText('Last month')).toBeInTheDocument();
@@ -73,8 +73,8 @@ describe('DashboardPage component', () => {
     expect(getByText('Classes scheduled')).toBeInTheDocument();
     expect(getByText('License inventory')).toBeInTheDocument();
     expect(getByText('Instructor assignment')).toBeInTheDocument();
-    expect(getByText('ccx 1')).toBeInTheDocument();
-    expect(getByText('Demo Course 1')).toBeInTheDocument();
+    expect(getAllByText('ccx 1')[0]).toBeInTheDocument();
+    expect(getAllByText('Demo Course 1')[0]).toBeInTheDocument();
     expect(getByText('License Name 1')).toBeInTheDocument();
     expect(getByText('Class schedule')).toBeInTheDocument();
     expect(getByText('No classes scheduled at this time')).toBeInTheDocument();
