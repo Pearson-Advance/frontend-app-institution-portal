@@ -71,7 +71,7 @@ const columns = [
           <Dropdown.Menu>
             <Dropdown.Item href={courseDetailsLink} target="_blank" rel="noopener noreferrer">
               <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />
-              Course Details
+              Course content
             </Dropdown.Item>
             <Dropdown.Item onClick={openModal}>
               <i className="fa-solid fa-plus mr-2 mb-1" />

@@ -73,7 +73,7 @@ describe('columns', () => {
 
     const button = component.getByTestId('droprown-action');
     fireEvent.click(button);
-    expect(component.getByText('Course Details')).toBeInTheDocument();
+    expect(component.getByText('Course content')).toBeInTheDocument();
     expect(component.getByText('Add Class')).toBeInTheDocument();
   });
 });

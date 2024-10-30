@@ -133,7 +133,7 @@ const CoursesDetailPage = () => {
           className="text-decoration-none button-course-details mr-3"
         >
           <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />
-          Course details
+          Course content
         </Button>
         <Button onClick={openModal}>
           Add Class
