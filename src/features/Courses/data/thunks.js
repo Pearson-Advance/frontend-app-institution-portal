@@ -54,10 +54,11 @@ function addClass(classData, instructorData) {
         await dispatch(assignInstructors(instructorData));
       }
       dispatch(updateNotificationMsg(`${response.data.name} has been added successfully!`));
+      return response;
     } catch (error) {
       dispatch(newClassFailed());
       logError(error);
-      dispatch(updateNotificationMsg(error?.response?.data?.detail));
+      return dispatch(updateNotificationMsg(error?.response?.data?.detail));
     }
   };
 }
