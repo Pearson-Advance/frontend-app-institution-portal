@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import {
-  FormGroup, ModalDialog, Form, ModalCloseButton, Toast, Col,
+  FormGroup,
+  ModalDialog,
+  Form,
+  ModalCloseButton,
+  Toast,
+  Col,
 } from '@edx/paragon';
+
 import { Button, Select } from 'react-paragon-topaz';
+import { camelCaseObject } from '@edx/frontend-platform';
 import { logError } from '@edx/frontend-platform/logging';
 
 import { addClass, editClass } from 'features/Courses/data';
@@ -19,11 +27,13 @@ import 'features/Courses/AddClass/index.scss';
 const AddClass = ({
   isOpen, onClose, courseInfo, isEditing, finalCall,
 }) => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const instructorsList = useSelector((state) => state.instructors.selectOptions.data);
   const notificationMsg = useSelector((state) => state.courses.notificationMessage);
   const [showToast, setShowToast] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [instructorsOptions, setInstructorsOptions] = useState([]);
   const [instructorSelected, setInstructorSelected] = useState(null);
   const [className, setClassName] = useState('');
@@ -42,6 +52,12 @@ const AddClass = ({
 
     if (!classNameField || !startDate) {
       return onClose();
+    }
+
+    setIsLoading(true);
+
+    if (isLoading) {
+      return null;
     }
 
     if (isEditing) {
@@ -65,9 +81,16 @@ const AddClass = ({
           enrollmentDataInst.append('rolename', 'staff');
           enrollmentDataInst.append('action', 'allow');
         }
-        await dispatch(addClass(dataClass, enrollmentDataInst));
+
+        const response = await dispatch(addClass(dataClass, enrollmentDataInst));
+        const classInfo = camelCaseObject(response?.data);
+
         onClose();
         setShowToast(true);
+
+        if (classInfo.classId) {
+          history.push(`/courses/${encodeURIComponent(courseInfo.masterCourseId)}/${encodeURIComponent(classInfo?.classId)}?previous=classes`);
+        }
       } catch (error) {
         logError(error);
       } finally {
@@ -75,6 +98,7 @@ const AddClass = ({
       }
     }
 
+    setIsLoading(false);
     return null;
   };
 
@@ -122,13 +146,13 @@ const AddClass = ({
 
   useEffect(() => {
     if (isEditing && Object.keys(courseInfo).length > 2) {
-      const formatedStartDate = courseInfo?.startDate ? formatUTCDate(courseInfo?.startDate, 'yyyy-MM-dd') : '';
-      const formatedEndDate = courseInfo?.endDate ? formatUTCDate(courseInfo?.endDate, 'yyyy-MM-dd') : '';
+      const formattedStartDate = courseInfo?.startDate ? formatUTCDate(courseInfo?.startDate, 'yyyy-MM-dd') : '';
+      const formattedEndDate = courseInfo?.endDate ? formatUTCDate(courseInfo?.endDate, 'yyyy-MM-dd') : '';
       setClassName(courseInfo?.className);
       setMinStudents(courseInfo?.minStudents ? courseInfo?.minStudents : '');
       setMaxStudents(courseInfo?.maxStudents ? courseInfo?.maxStudents : '');
-      setStartDate(formatedStartDate);
-      setEndDate(formatedEndDate);
+      setStartDate(formattedStartDate);
+      setEndDate(formattedEndDate);
     }
   }, [courseInfo, isEditing]);
 
@@ -232,7 +256,7 @@ const AddClass = ({
             </Form.Row>
             <div className="d-flex justify-content-end">
               <ModalCloseButton className="btntpz btn-text btn-tertiary mr-2">Cancel</ModalCloseButton>
-              <Button type="submit">Submit</Button>
+              <Button type="submit" disabled={isLoading}>Submit</Button>
             </div>
           </Form>
         </ModalDialog.Body>
