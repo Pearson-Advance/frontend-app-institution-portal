@@ -61,12 +61,12 @@ const ClassPage = () => {
 
     document.title = classIdDecoded;
     // Leaves a gap time space to prevent being override by ActiveTabUpdater component
-    setTimeout(() => dispatch(updateActiveTab(previousPage)), 100);
+    setTimeout(() => dispatch(updateActiveTab('classes')), 100);
 
     return () => {
       document.title = initialTitle;
     };
-  }, [dispatch, classIdDecoded, previousPage]);
+  }, [dispatch, classIdDecoded]);
 
   useEffect(() => {
     if (institution.id) {
