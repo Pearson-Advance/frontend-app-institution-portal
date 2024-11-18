@@ -89,3 +89,12 @@ export const unauthorizedText = 'You do not have access to CertPREP Manager. If 
  * @number
  */
 export const textLength = 20;
+
+/**
+ * Texts for class delete modal.
+ * @constant {string}
+ */
+export const modalDeleteText = {
+  title: 'Delete this class',
+  body: 'This action will permanently delete this class and cannot be undone. Booked seat in this class will not be affected by this action.',
+};

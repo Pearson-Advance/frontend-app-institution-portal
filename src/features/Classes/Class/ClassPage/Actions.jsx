@@ -1,21 +1,34 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useParams, useHistory } from 'react-router-dom';
-import { getConfig } from '@edx/frontend-platform';
-
 import { Button } from 'react-paragon-topaz';
+import { getConfig } from '@edx/frontend-platform';
+import { useParams, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  Dropdown, IconButton, Icon, useToggle,
+  Icon,
+  Dropdown,
+  useToggle,
+  IconButton,
 } from '@edx/paragon';
 import { MoreVert } from '@edx/paragon/icons';
+import { logError } from '@edx/frontend-platform/logging';
 
 import { setAssignStaffRole } from 'helpers';
 import { useInstitutionIdQueryParam } from 'hooks';
+import { RequestStatus, modalDeleteText } from 'features/constants';
 
 import AddClass from 'features/Courses/AddClass';
+import DeleteModal from 'features/Common/DeleteModal';
 import EnrollStudent from 'features/Classes/EnrollStudent';
+
+import { resetClassState } from 'features/Courses/data/slice';
+import { deleteClass } from 'features/Courses/data/thunks';
 import { fetchAllClassesData } from 'features/Classes/data/thunks';
+
+const initialDeletionClassState = {
+  isModalOpen: false,
+  isRequestComplete: false,
+};
 
 const Actions = ({ previousPage }) => {
   const dispatch = useDispatch();
@@ -24,7 +37,10 @@ const Actions = ({ previousPage }) => {
   const courseIdDecoded = decodeURIComponent(courseId);
   const classIdDecoded = decodeURIComponent(classId);
   const classes = useSelector((state) => state.classes.allClasses.data);
+  const deletionState = useSelector((state) => state.courses.newClass.status);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
+
+  const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
 
   const classLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classIdDecoded}/home`;
 
@@ -42,6 +58,44 @@ const Actions = ({ previousPage }) => {
     history.push(addQueryParam(`/manage-instructors/${courseId}/${classId}?previous=${previousPage}`));
   };
 
+  let instructorText = 'Assign instructor';
+
+  if (classInfo?.instructors?.length > 1) {
+    instructorText = 'Manage instructors';
+  } else if (classInfo?.instructors?.length === 1) {
+    instructorText = 'Manage instructor';
+  }
+
+  const handleResetDeletion = () => {
+    setDeletionState(initialDeletionClassState);
+    dispatch(resetClassState());
+  };
+
+  const handleOpenDeleteModal = () => {
+    dispatch(resetClassState());
+    setDeletionState({ isModalOpen: true, isRequestComplete: false });
+  };
+
+  const handleDeleteClass = async () => {
+    try {
+      await dispatch(deleteClass(classIdDecoded));
+
+      setDeletionState({
+        isModalOpen: false,
+        isRequestComplete: true,
+      });
+
+      history.push('/classes');
+    } catch (error) {
+      logError(error);
+    } finally {
+      setDeletionState((prevState) => ({
+        ...prevState,
+        isRequestComplete: true,
+      }));
+    }
+  };
+
   const finalCall = () => {
     dispatch(fetchAllClassesData(selectedInstitution.id, courseIdDecoded));
   };
@@ -49,19 +103,10 @@ const Actions = ({ previousPage }) => {
   return (
     <>
       <Button
-        variant="outline-primary"
-        className="text-decoration-none text-primary bg-white mr-3"
-        onClick={handleManageButton}
-      >
-        Manage Instructors
-      </Button>
-      <Button
-        as="a"
-        onClick={() => setAssignStaffRole(classLink, classIdDecoded)}
+        onClick={handleEnrollStudentModal}
         className="text-decoration-none text-white button-view-class mr-3"
       >
-        <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />
-        View class content
+        Invite students to enroll
       </Button>
       <Dropdown className="dropdowntpz">
         <Dropdown.Toggle
@@ -74,13 +119,21 @@ const Actions = ({ previousPage }) => {
           alt="menu for actions"
         />
         <Dropdown.Menu>
+          <Dropdown.Item onClick={() => setAssignStaffRole(classLink, classIdDecoded)}>
+            <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />
+            Class content
+          </Dropdown.Item>
+          <Dropdown.Item onClick={handleManageButton}>
+            <i className="fa-regular fa-chalkboard-user mr-2 mb-1" />
+            { instructorText }
+          </Dropdown.Item>
           <Dropdown.Item onClick={openEditModal}>
             <i className="fa-regular fa-pencil mr-2 mb-1" />
-            Edit Class
+            Edit class
           </Dropdown.Item>
-          <Dropdown.Item onClick={handleEnrollStudentModal}>
-            <i className="fa-regular fa-user-plus mr-2 mb-1" />
-            Invite student to enroll
+          <Dropdown.Item onClick={handleOpenDeleteModal} className="text-danger">
+            <i className="fa-regular fa-trash mr-2 mb-1" />
+            Delete class
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
@@ -98,6 +151,14 @@ const Actions = ({ previousPage }) => {
         }}
         isEditing
         finalCall={finalCall}
+      />
+      <DeleteModal
+        isLoading={deletionState === RequestStatus.LOADING}
+        isOpen={deletionClassState.isModalOpen}
+        onClose={handleResetDeletion}
+        handleDelete={() => { handleDeleteClass(classId); }}
+        title={modalDeleteText.title}
+        textModal={modalDeleteText.body}
       />
       <EnrollStudent isOpen={isEnrollModalOpen} onClose={handleEnrollStudentModal} />
     </>
