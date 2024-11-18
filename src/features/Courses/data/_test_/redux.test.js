@@ -44,6 +44,7 @@ describe('Courses redux tests', () => {
       num_pages: 1,
       current_page: 1,
     };
+
     axiosMock.onGet(coursesApiUrl)
       .reply(200, mockResponse);
 

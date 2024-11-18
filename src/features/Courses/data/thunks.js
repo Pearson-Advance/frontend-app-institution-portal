@@ -1,5 +1,7 @@
 import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
+import { sortAlphabetically } from 'react-paragon-topaz';
+
 import {
   fetchCoursesDataRequest,
   fetchCoursesDataSuccess,
@@ -21,7 +23,14 @@ function fetchCoursesData(id, currentPage, filtersData) {
 
     try {
       const response = camelCaseObject(await getCoursesByInstitution(id, true, currentPage, filtersData));
-      dispatch(fetchCoursesDataSuccess(response.data));
+      const sortedCourses = sortAlphabetically(response.data.results);
+
+      const courses = {
+        ...response.data,
+        results: sortedCourses,
+      };
+
+      dispatch(fetchCoursesDataSuccess(courses));
     } catch (error) {
       dispatch(fetchCoursesDataFailed());
       logError(error);
@@ -35,7 +44,9 @@ function fetchCoursesOptionsData(institutionId, limit = false, page = initialPag
 
     try {
       const response = camelCaseObject(await getCoursesByInstitution(institutionId, limit, page, params));
-      dispatch(updateCoursesOptions(response.data));
+      const sortedResponse = sortAlphabetically(response.data);
+
+      dispatch(updateCoursesOptions(sortedResponse));
     } catch (error) {
       dispatch(fetchCoursesDataFailed());
       logError(error);
