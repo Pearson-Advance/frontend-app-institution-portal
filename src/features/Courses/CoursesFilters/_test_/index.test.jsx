@@ -1,17 +1,17 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { fireEvent, act } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import CoursesFilters from 'features/Courses/CoursesFilters';
 import '@testing-library/jest-dom/extend-expect';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
 import { renderWithProviders } from 'test-utils';
+import { allResultsOption } from 'features/constants';
 
 jest.mock('react-select', () => function reactSelect({ options, valueR, onChange }) {
   function handleChange(event) {
-    const option = options.find(
-      (optionR) => optionR.value === event.currentTarget.value,
-    );
-    onChange(option);
+    onChange({ id: event.currentTarget.value });
+
+    return event;
   }
 
   return (
@@ -69,15 +69,15 @@ describe('CoursesFilters Component', () => {
     });
   });
 
-  test('call service when apply filters', async () => {
-    const resetPagination = jest.fn();
+  test('should select a course', async () => {
     const { getByText, getByTestId } = renderWithProviders(
-      <CoursesFilters resetPagination={resetPagination} />,
+      <CoursesFilters />,
       { preloadedState: mockStore },
     );
 
     const courseSelect = getByTestId('select');
-    const buttonApplyFilters = getByText('Apply');
+
+    expect(getByText('Find a primary course')).toBeInTheDocument();
 
     expect(courseSelect).toBeInTheDocument();
     fireEvent.change(courseSelect, {
@@ -85,27 +85,21 @@ describe('CoursesFilters Component', () => {
     });
 
     expect(getByText('Demo Course 1')).toBeInTheDocument();
-    await act(async () => {
-      fireEvent.click(buttonApplyFilters);
-    });
   });
 
-  test('clear filters', async () => {
-    const resetPagination = jest.fn();
+  test('Should have option for all results ', async () => {
     const { getByText, getByTestId } = renderWithProviders(
-      <CoursesFilters resetPagination={resetPagination} />,
+      <CoursesFilters />,
     );
 
     const courseSelect = getByTestId('select');
-    const buttonClearFilters = getByText('Reset');
 
     expect(courseSelect).toBeInTheDocument();
     expect(courseSelect).toBeInTheDocument();
     fireEvent.change(courseSelect, {
-      target: { value: 'Demo Course 1' },
+      target: { value: allResultsOption.value },
     });
-    await act(async () => {
-      fireEvent.click(buttonClearFilters);
-    });
+
+    expect(getByText('Show all search results')).toBeInTheDocument();
   });
 });

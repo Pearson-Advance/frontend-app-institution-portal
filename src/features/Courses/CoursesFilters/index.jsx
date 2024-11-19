@@ -1,44 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import { Col, Form } from '@edx/paragon';
-import { Select, Button } from 'react-paragon-topaz';
-import { logError } from '@edx/frontend-platform/logging';
+import { Select } from 'react-paragon-topaz';
 
 import { updateFilters, updateCurrentPage } from 'features/Courses/data/slice';
 import { fetchCoursesData, fetchCoursesOptionsData } from 'features/Courses/data/thunks';
 
-import { initialPage } from 'features/constants';
+import { initialPage, styleFirstOption, allResultsOption } from 'features/constants';
 
-const CoursesFilters = ({ resetPagination }) => {
+const CoursesFilters = () => {
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const courses = useSelector((state) => state.courses.selectOptions);
   const [courseOptions, setCourseOptions] = useState([]);
   const [courseSelected, setCourseSelected] = useState(null);
+  const [inputCourse, setInputCourse] = useState('');
 
-  const isButtonDisabled = courseSelected === null;
-
-  const handleCoursesFilter = async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const formData = new FormData(form);
-    const formJson = Object.fromEntries(formData.entries());
-    dispatch(updateFilters(formJson));
-    try {
-      dispatch(updateCurrentPage(initialPage));
-      dispatch(fetchCoursesData(selectedInstitution.id, initialPage, formJson));
-    } catch (error) {
-      logError(error);
+  const filterOptions = (option, input) => {
+    if (input) {
+      return option.label.toLowerCase().includes(input) || option.value === allResultsOption.value;
     }
+    return true;
   };
 
-  const handleCleanFilters = () => {
-    dispatch(fetchCoursesData(selectedInstitution.id));
-    resetPagination();
-    setCourseSelected(null);
-    dispatch(updateFilters({}));
+  const handleInputChange = (value, { action }) => {
+    if (action === 'input-change') {
+      setInputCourse(value);
+    }
   };
 
   useEffect(() => {
@@ -57,46 +46,53 @@ const CoursesFilters = ({ resetPagination }) => {
       }))
       : [];
 
-    setCourseOptions(options);
+    setCourseOptions([allResultsOption, ...options]);
   }, [courses]);
+
+  useEffect(() => {
+    if (Object.keys(selectedInstitution).length > 0) {
+      const params = {};
+
+      if (courseSelected) {
+        params.course_name = courseSelected.value === allResultsOption.value
+          ? inputCourse : courseSelected.value;
+      }
+      dispatch(fetchCoursesData(selectedInstitution.id, initialPage, params));
+      setInputCourse('');
+      dispatch(updateFilters(params));
+      dispatch(updateCurrentPage(initialPage));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseSelected, selectedInstitution]);
 
   return (
     <div className="filter-container justify-content-center row">
       <div className="col-11 px-0">
-        <h3>Find  a course</h3>
-        <Form className="row justify-content-center" onSubmit={handleCoursesFilter}>
+        <h3 className="mb-3">Find  a primary course</h3>
+        <Form className="row justify-content-center">
           <Form.Row className="col-12">
-            <Form.Group as={Col}>
+            <Form.Group as={Col} className="px-0">
               <Select
-                placeholder="Course"
+                placeholder="Search by keyword, exam code or vendor"
                 name="course_name"
                 className="mr-2"
                 options={courseOptions}
                 onChange={option => setCourseSelected(option)}
                 value={courseSelected}
+                components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
+                isClearable
+                inputValue={inputCourse}
+                onInputChange={handleInputChange}
+                filterOption={filterOptions}
+                showSearchIcon
+                styles={styleFirstOption}
               />
             </Form.Group>
-            <div className="d-flex col-3 justify-content-end align-items-start">
-              <Button
-                onClick={handleCleanFilters}
-                variant="tertiary"
-                text
-                className="mr-2"
-                disabled={isButtonDisabled}
-              >
-                Reset
-              </Button>
-              <Button type="submit" disabled={isButtonDisabled}>Apply</Button>
-            </div>
           </Form.Row>
         </Form>
       </div>
     </div>
   );
-};
-
-CoursesFilters.propTypes = {
-  resetPagination: PropTypes.func.isRequired,
 };
 
 export default CoursesFilters;
