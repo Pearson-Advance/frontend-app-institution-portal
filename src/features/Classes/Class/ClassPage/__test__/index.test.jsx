@@ -46,7 +46,7 @@ const mockStore = {
 };
 
 describe('ClassesPage', () => {
-  test('renders classes data and pagination', async () => {
+  test('Should render classes data and pagination', async () => {
     const component = renderWithProviders(
       <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111')}`]}>
         <Route path="/courses/:courseId/:classId">
@@ -65,11 +65,10 @@ describe('ClassesPage', () => {
       expect(component.container).toHaveTextContent('Courseware Progress');
       expect(component.container).toHaveTextContent('Exam ready');
       expect(component.container).toHaveTextContent('Invite student to enroll');
-      expect(component.container).toHaveTextContent('Manage Instructors');
     });
   });
 
-  test('renders actions', async () => {
+  test('Should render actions', async () => {
     const { getByText, getByTestId } = renderWithProviders(
       <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111')}`]}>
         <Route path="/courses/:courseId/:classId">
@@ -80,12 +79,15 @@ describe('ClassesPage', () => {
     );
 
     waitFor(() => {
-      expect(getByText('Manage Instructors')).toBeInTheDocument();
-      expect(getByText('View class content')).toBeInTheDocument();
+      expect(getByText('Invite student to enroll')).toBeInTheDocument();
+
       const button = getByTestId('droprown-action');
       fireEvent.click(button);
+
+      expect(getByText('Class content')).toBeInTheDocument();
+      expect(getByText('Assign instructor')).toBeInTheDocument();
       expect(getByText('Edit Class')).toBeInTheDocument();
-      expect(getByText('Invite student to enroll')).toBeInTheDocument();
+      expect(getByText('Delete Class')).toBeInTheDocument();
     });
   });
 });

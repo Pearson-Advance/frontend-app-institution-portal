@@ -17,7 +17,7 @@ import AddClass from 'features/Courses/AddClass';
 import DeleteModal from 'features/Common/DeleteModal';
 import LinkWithQuery from 'features/Main/LinkWithQuery';
 
-import { RequestStatus, initialPage } from 'features/constants';
+import { RequestStatus, initialPage, modalDeleteText } from 'features/constants';
 
 import { deleteClass } from 'features/Courses/data/thunks';
 import { fetchClassesData } from 'features/Classes/data/thunks';
@@ -212,8 +212,8 @@ const columns = [
               isOpen={deletionClassState.isModalOpen}
               onClose={handleResetDeletion}
               handleDelete={() => { handleDeleteClass(classId); }}
-              title="Delete this class"
-              textModal="This action will permanently delete this class and cannot be undone. Booked seat in this class will not be affected by this action."
+              title={modalDeleteText.title}
+              textModal={modalDeleteText.body}
             />
           </Dropdown.Menu>
         </Dropdown>
