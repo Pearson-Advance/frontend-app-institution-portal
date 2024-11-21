@@ -171,4 +171,48 @@ describe('InstructorCard', () => {
 
     expect(getByText('Feb 13-20, 2024')).toBeInTheDocument();
   });
+
+  test('Should render enrollment info with 1 seat remaining', () => {
+    const { getByText } = renderWithProviders(
+      <InstructorCard isOpen onClose={() => { }} />,
+      {
+        preloadedState: {
+          classes: {
+            allClasses: {
+              data: [
+                {
+                  ...stateMock.classes.allClasses.data[0],
+                  purchasedSeats: 4,
+                },
+              ],
+            },
+          },
+        },
+      },
+    );
+
+    expect(getByText('3 enrolled, 1 seat remaining')).toBeInTheDocument();
+  });
+
+  test('Should render enrollment info with more than 1 seat remaining', () => {
+    const { getByText } = renderWithProviders(
+      <InstructorCard isOpen onClose={() => { }} />,
+      {
+        preloadedState: {
+          classes: {
+            allClasses: {
+              data: [
+                {
+                  ...stateMock.classes.allClasses.data[0],
+                  purchasedSeats: 10,
+                },
+              ],
+            },
+          },
+        },
+      },
+    );
+
+    expect(getByText('3 enrolled, 7 seats remaining')).toBeInTheDocument();
+  });
 });
