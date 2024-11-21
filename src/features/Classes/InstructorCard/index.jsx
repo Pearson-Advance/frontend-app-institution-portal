@@ -28,8 +28,12 @@ const InstructorCard = () => {
     (classElement) => classElement.classId === classIdDecoded,
   );
 
-  const totalEnrolled = (classInfo?.numberOfStudents || 0)
-    + (classInfo?.numberOfPendingStudents || 0);
+  const { purchasedSeats, numberOfStudents, numberOfPendingStudents } = classInfo || {};
+
+  const totalEnrolled = (numberOfStudents || 0)
+    + (numberOfPendingStudents || 0);
+
+  const remainingSeats = (purchasedSeats - numberOfStudents - numberOfPendingStudents) || 0;
 
   useEffect(() => {
     if (institution.id) {
@@ -66,10 +70,7 @@ const InstructorCard = () => {
             </div>
             <div className="text-color">
               <b className="mr-1">Enrollment:</b>
-              {classInfo?.minStudentsAllowed && (
-                <>minimum {classInfo.minStudentsAllowed}, </>
-              )}
-              enrolled {totalEnrolled}, maximum {classInfo?.maxStudents}
+              {totalEnrolled} enrolled, {remainingSeats} seat{remainingSeats > 1 && 's'} remaining
             </div>
           </>
         )}
