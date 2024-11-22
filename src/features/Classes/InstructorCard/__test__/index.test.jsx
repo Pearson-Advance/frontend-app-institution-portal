@@ -1,14 +1,10 @@
 import React from 'react';
-import { renderWithProviders } from 'test-utils';
 import '@testing-library/jest-dom/extend-expect';
+import { MemoryRouter, Route } from 'react-router-dom';
+
+import { renderWithProviders } from 'test-utils';
 
 import InstructorCard from 'features/Classes/InstructorCard';
-
-jest.mock('react-router-dom', () => ({
-  useParams: jest.fn(() => ({
-    classId: 'ccx-v1',
-  })),
-}));
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -45,7 +41,11 @@ const stateMock = {
 describe('InstructorCard', () => {
   test('Should render with correct elements', () => {
     const { getByText } = renderWithProviders(
-      <InstructorCard isOpen onClose={() => { }} />,
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1')}`]}>
+        <Route path="/courses/:courseId/:classId">
+          <InstructorCard isOpen onClose={() => { }} />
+        </Route>
+      </MemoryRouter>,
       { preloadedState: stateMock },
     );
 
@@ -57,7 +57,11 @@ describe('InstructorCard', () => {
 
   test('Should render multiple instructors', () => {
     const { getByText } = renderWithProviders(
-      <InstructorCard isOpen onClose={() => { }} />,
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1')}`]}>
+        <Route path="/courses/:courseId/:classId">
+          <InstructorCard isOpen onClose={() => { }} />
+        </Route>
+      </MemoryRouter>,
       {
         preloadedState: {
           instructors: {
@@ -101,11 +105,44 @@ describe('InstructorCard', () => {
     );
 
     expect(getByText(/more\.\.\./)).toBeInTheDocument();
+    expect(getByText(/Manage instructors/)).toBeInTheDocument();
+  });
+
+  test('Should render assign instructor button if the instructor is not present', () => {
+    const { getByText } = renderWithProviders(
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1')}`]}>
+        <Route path="/courses/:courseId/:classId">
+          <InstructorCard isOpen onClose={() => { }} />
+        </Route>
+      </MemoryRouter>,
+      {
+        preloadedState: {
+          classes: {
+            allClasses: {
+              data: [
+                {
+                  ...stateMock.classes.allClasses.data[0],
+                  startDate: '2024-02-13T17:42:22Z',
+                  endDate: '2025-02-13T17:42:22Z',
+                  instructors: [],
+                },
+              ],
+            },
+          },
+        },
+      },
+    );
+
+    expect(getByText('Assign instructor')).toBeInTheDocument();
   });
 
   test('Should render both dates when the duration is to long', () => {
     const { getByText } = renderWithProviders(
-      <InstructorCard isOpen onClose={() => { }} />,
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1')}`]}>
+        <Route path="/courses/:courseId/:classId">
+          <InstructorCard isOpen onClose={() => { }} />
+        </Route>
+      </MemoryRouter>,
       {
         preloadedState: {
           classes: {
@@ -128,7 +165,11 @@ describe('InstructorCard', () => {
 
   test('Should render the date when the course take couple months', () => {
     const { getByText } = renderWithProviders(
-      <InstructorCard isOpen onClose={() => { }} />,
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1')}`]}>
+        <Route path="/courses/:courseId/:classId">
+          <InstructorCard isOpen onClose={() => { }} />
+        </Route>
+      </MemoryRouter>,
       {
         preloadedState: {
           classes: {
@@ -151,7 +192,11 @@ describe('InstructorCard', () => {
 
   test('Should render the date when the course take one single month', () => {
     const { getByText } = renderWithProviders(
-      <InstructorCard isOpen onClose={() => { }} />,
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1')}`]}>
+        <Route path="/courses/:courseId/:classId">
+          <InstructorCard isOpen onClose={() => { }} />
+        </Route>
+      </MemoryRouter>,
       {
         preloadedState: {
           classes: {
@@ -174,7 +219,11 @@ describe('InstructorCard', () => {
 
   test('Should render enrollment info with 1 seat remaining', () => {
     const { getByText } = renderWithProviders(
-      <InstructorCard isOpen onClose={() => { }} />,
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1')}`]}>
+        <Route path="/courses/:courseId/:classId">
+          <InstructorCard isOpen onClose={() => { }} />
+        </Route>
+      </MemoryRouter>,
       {
         preloadedState: {
           classes: {
@@ -196,7 +245,11 @@ describe('InstructorCard', () => {
 
   test('Should render enrollment info with more than 1 seat remaining', () => {
     const { getByText } = renderWithProviders(
-      <InstructorCard isOpen onClose={() => { }} />,
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1')}`]}>
+        <Route path="/courses/:courseId/:classId">
+          <InstructorCard isOpen onClose={() => { }} />
+        </Route>
+      </MemoryRouter>,
       {
         preloadedState: {
           classes: {

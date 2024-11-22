@@ -51,13 +51,6 @@ const Actions = ({ previousPage }) => {
   const [isOpenEditModal, openEditModal, closeEditModal] = useToggle(false);
   const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
 
-  const handleEnrollStudentModal = () => setIsEnrollModalOpen(!isEnrollModalOpen);
-  const addQueryParam = useInstitutionIdQueryParam();
-
-  const handleManageButton = () => {
-    history.push(addQueryParam(`/manage-instructors/${courseId}/${classId}?previous=${previousPage}`));
-  };
-
   let instructorText = 'Assign instructor';
 
   if (classInfo?.instructors?.length > 1) {
@@ -65,6 +58,14 @@ const Actions = ({ previousPage }) => {
   } else if (classInfo?.instructors?.length === 1) {
     instructorText = 'Manage instructor';
   }
+
+  const addQueryParam = useInstitutionIdQueryParam();
+
+  const handleEnrollStudentModal = () => setIsEnrollModalOpen(!isEnrollModalOpen);
+
+  const handleManageButton = () => {
+    history.push(addQueryParam(`/manage-instructors/${courseId}/${classId}?previous=${previousPage}`));
+  };
 
   const handleResetDeletion = () => {
     setDeletionState(initialDeletionClassState);
