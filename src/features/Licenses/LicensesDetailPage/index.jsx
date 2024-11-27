@@ -48,14 +48,14 @@ const LicensesDetailPage = () => {
 
   useEffect(() => {
     if (institution.id) {
-      dispatch(fetchCoursesData(institution.id, initialPage, { license_id: licenseId }));
+      dispatch(fetchCoursesData(institution.id, currentPage, { license_id: licenseId }));
       dispatch(fetchLicensesData(institution.id, initialPage, licenseId));
     }
 
     return () => {
       dispatch(resetCoursesTable());
     };
-  }, [dispatch, institution.id, licenseId]);
+  }, [dispatch, institution.id, licenseId, currentPage]);
 
   useEffect(() => {
     if (institution.id !== undefined && institutionRef.current === undefined) {
