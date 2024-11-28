@@ -88,6 +88,7 @@ describe('ClassesPage', () => {
       expect(getByText('Assign instructor')).toBeInTheDocument();
       expect(getByText('Edit Class')).toBeInTheDocument();
       expect(getByText('Delete Class')).toBeInTheDocument();
+      expect(getByText('Gradebook')).toBeInTheDocument();
     });
   });
 });

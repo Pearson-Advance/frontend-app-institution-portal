@@ -39,6 +39,7 @@ const Actions = ({ previousPage }) => {
   const classes = useSelector((state) => state.classes.allClasses.data);
   const deletionState = useSelector((state) => state.courses.newClass.status);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
+  const gradebookUrl = getConfig().GRADEBOOK_MICROFRONTEND_URL || getConfig().LMS_BASE_URL;
 
   const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
 
@@ -65,6 +66,10 @@ const Actions = ({ previousPage }) => {
 
   const handleManageButton = () => {
     history.push(addQueryParam(`/manage-instructors/${courseId}/${classId}?previous=${previousPage}`));
+  };
+
+  const handleGradebookButton = () => {
+    window.open(`${gradebookUrl}/gradebook/${classIdDecoded}`, '_blank', 'noopener,noreferrer');
   };
 
   const handleResetDeletion = () => {
@@ -131,6 +136,10 @@ const Actions = ({ previousPage }) => {
           <Dropdown.Item onClick={openEditModal}>
             <i className="fa-regular fa-pencil mr-2 mb-1" />
             Edit class
+          </Dropdown.Item>
+          <Dropdown.Item onClick={handleGradebookButton}>
+            <i className="fa-regular fa-book mr-2 mb-1" />
+            Gradebook
           </Dropdown.Item>
           <Dropdown.Item onClick={handleOpenDeleteModal} className="text-danger">
             <i className="fa-regular fa-trash mr-2 mb-1" />
