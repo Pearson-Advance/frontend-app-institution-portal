@@ -16,10 +16,11 @@ const CoursesFilters = () => {
   const [courseOptions, setCourseOptions] = useState([]);
   const [courseSelected, setCourseSelected] = useState(null);
   const [inputCourse, setInputCourse] = useState('');
+  const [defaultOption, setDefaultOption] = useState(allResultsOption);
 
   const filterOptions = (option, input) => {
     if (input) {
-      return option.label.toLowerCase().includes(input) || option.value === allResultsOption.value;
+      return option.label.toLowerCase().includes(input) || option.value === defaultOption.value;
     }
     return true;
   };
@@ -27,6 +28,10 @@ const CoursesFilters = () => {
   const handleInputChange = (value, { action }) => {
     if (action === 'input-change') {
       setInputCourse(value);
+      setDefaultOption({
+        ...defaultOption,
+        label: `${allResultsOption.label} for ${value}`,
+      });
     }
   };
 
@@ -46,19 +51,20 @@ const CoursesFilters = () => {
       }))
       : [];
 
-    setCourseOptions([allResultsOption, ...options]);
-  }, [courses]);
+    setCourseOptions([defaultOption, ...options]);
+  }, [courses, defaultOption]);
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
       const params = {};
 
       if (courseSelected) {
-        params.course_name = courseSelected.value === allResultsOption.value
+        params.course_name = courseSelected.value === defaultOption.value
           ? inputCourse : courseSelected.value;
       }
       dispatch(fetchCoursesData(selectedInstitution.id, initialPage, params));
       setInputCourse('');
+      setDefaultOption(allResultsOption);
       dispatch(updateFilters(params));
       dispatch(updateCurrentPage(initialPage));
     }
