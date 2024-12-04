@@ -4,15 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Col, Form } from '@edx/paragon';
 import { Select } from 'react-paragon-topaz';
 
-import { updateFilters, updateCurrentPage } from 'features/Courses/data/slice';
+import { updateFilters, updateCurrentPage, updateShowAllCourses } from 'features/Courses/data/slice';
 import { fetchCoursesData, fetchCoursesOptionsData } from 'features/Courses/data/thunks';
 
-import { initialPage, styleFirstOption, allResultsOption } from 'features/constants';
+import {
+  initialPage, styleFirstOption, allResultsOption, RequestStatus,
+} from 'features/constants';
 
 const CoursesFilters = () => {
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const courses = useSelector((state) => state.courses.selectOptions);
+  const showAllCourses = useSelector((state) => state.courses.showAllCourses);
+  const coursesRequest = useSelector((state) => state.courses.table.status);
   const [courseOptions, setCourseOptions] = useState([]);
   const [courseSelected, setCourseSelected] = useState(null);
   const [inputCourse, setInputCourse] = useState('');
@@ -35,6 +39,8 @@ const CoursesFilters = () => {
     }
   };
 
+  const handleToggleChange = e => dispatch(updateShowAllCourses(e.target.checked));
+
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
       setCourseSelected(null);
@@ -56,7 +62,9 @@ const CoursesFilters = () => {
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      const params = {};
+      const params = {
+        has_classes: showAllCourses,
+      };
 
       if (courseSelected) {
         params.course_name = courseSelected.value === defaultOption.value
@@ -68,8 +76,11 @@ const CoursesFilters = () => {
       dispatch(updateFilters(params));
       dispatch(updateCurrentPage(initialPage));
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseSelected, selectedInstitution]);
+  }, [courseSelected, selectedInstitution, showAllCourses]);
+
+  const isLoading = coursesRequest === RequestStatus.LOADING;
 
   return (
     <div className="filter-container justify-content-center row">
@@ -94,6 +105,16 @@ const CoursesFilters = () => {
                 styles={styleFirstOption}
               />
             </Form.Group>
+          </Form.Row>
+          <Form.Row className="w-100 mt-2">
+            <Form.Switch
+              checked={showAllCourses}
+              onChange={handleToggleChange}
+              className="ml-3"
+              disabled={isLoading}
+            >
+              Show my courses
+            </Form.Switch>
           </Form.Row>
         </Form>
       </div>
