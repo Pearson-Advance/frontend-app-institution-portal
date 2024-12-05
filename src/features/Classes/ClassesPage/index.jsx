@@ -25,28 +25,18 @@ const ClassesPage = () => {
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
       if (queryNotInstructors === 'null' && !resetFiltersRef.current) {
-        dispatch(fetchClassesData(selectedInstitution.id, initialPage, '', instructorsNull));
+        dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', instructorsNull));
       } else if (queryNotInstructors === 'null' && resetFiltersRef.current) {
-        dispatch(fetchClassesData(selectedInstitution.id, initialPage, '', stateClasses.filters));
+        dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', stateClasses.filters));
       } else {
-        dispatch(fetchClassesData(selectedInstitution.id, initialPage, '', stateClasses.filters));
+        dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', stateClasses.filters));
       }
     }
 
     return () => {
       dispatch(resetClassesTable());
     };
-  }, [selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (queryNotInstructors === 'null' && !resetFiltersRef.current) {
-      dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', instructorsNull));
-    } else if (queryNotInstructors === 'null' && resetFiltersRef.current) {
-      dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', stateClasses.filters));
-    } else {
-      dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', stateClasses.filters));
-    }
-  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedInstitution, dispatch, currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
