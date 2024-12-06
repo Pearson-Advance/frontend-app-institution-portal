@@ -119,6 +119,7 @@ const columns = [
       const deletionState = useSelector((state) => state.courses.newClass.status);
       const [isOpenModal, openModal, closeModal] = useToggle(false);
       const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
+      const gradebookUrl = getConfig().GRADEBOOK_MICROFRONTEND_URL || getConfig().LMS_BASE_URL;
 
       const handleResetDeletion = () => {
         setDeletionState(initialDeletionClassState);
@@ -127,6 +128,10 @@ const columns = [
       const handleOpenDeleteModal = () => {
         dispatch(resetClassState());
         setDeletionState({ isModalOpen: true, isRequestComplete: false });
+      };
+
+      const handleGradebookButton = () => {
+        window.open(`${gradebookUrl}/gradebook/${classId}`, '_blank', 'noopener,noreferrer');
       };
 
       const handleDeleteClass = async (rowClassId) => {
@@ -186,6 +191,10 @@ const columns = [
             <Dropdown.Item onClick={openModal}>
               <i className="fa-solid fa-pencil mr-2 mb-1" />
               Edit Class
+            </Dropdown.Item>
+            <Dropdown.Item onClick={handleGradebookButton}>
+              <i className="fa-regular fa-book mr-2 mb-1" />
+              Gradebook
             </Dropdown.Item>
             <Dropdown.Item onClick={handleOpenDeleteModal} className="text-danger">
               <i className="fa-regular fa-trash mr-2 mb-1" />
