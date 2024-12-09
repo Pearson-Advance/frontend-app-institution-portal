@@ -99,6 +99,7 @@ describe('columns', () => {
     expect(getByText('View class content')).toBeInTheDocument();
     expect(getByText('Manage Instructors')).toBeInTheDocument();
     expect(getByText('Edit Class')).toBeInTheDocument();
+    expect(getByText('Gradebook')).toBeInTheDocument();
     expect(getByText('Delete Class')).toBeInTheDocument();
   });
 });
