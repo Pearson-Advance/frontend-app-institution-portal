@@ -12,7 +12,7 @@ import LinkWithQuery from 'features/Main/LinkWithQuery';
 import CourseDetailTable from 'features/Courses/CourseDetailTable';
 
 import { fetchClassesData } from 'features/Classes/data/thunks';
-import { fetchCoursesData } from 'features/Courses/data/thunks';
+import { fetchCoursesOptionsData } from 'features/Courses/data/thunks';
 import { fetchClassesDataSuccess, updateCurrentPage as updateClassesCurrentPage } from 'features/Classes/data/slice';
 import { fetchCoursesDataSuccess, updateCurrentPage } from 'features/Courses/data/slice';
 
@@ -38,22 +38,13 @@ const CoursesDetailPage = () => {
     numberOfPendingStudents: '-',
     masterCourseId: '-',
   }), []);
-
-  const courseInfo = useSelector((state) => state.courses.table.data)
-    .find((course) => course?.masterCourseId === courseIdDecoded) || defaultCourseInfo;
-  const lastCourseInfoRef = useRef(courseInfo);
-
-  useEffect(() => {
-    if (courseInfo !== defaultCourseInfo) {
-      lastCourseInfoRef.current = courseInfo;
-    }
-  }, [courseInfo, defaultCourseInfo]);
-
-  const nextCourseInfo = lastCourseInfoRef.current;
   const institution = useSelector((state) => state.main.selectedInstitution);
+  const courseInfo = useSelector((state) => state.courses.selectOptions)
+    .find((course) => course?.masterCourseId === courseIdDecoded) || defaultCourseInfo;
+
   const classes = useSelector((state) => state.classes.table);
-  const totalStudents = nextCourseInfo.numberOfStudents + nextCourseInfo.numberOfPendingStudents;
-  const courseDetailsLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${nextCourseInfo.masterCourseId}/home`;
+  const totalStudents = courseInfo.numberOfStudents + courseInfo.numberOfPendingStudents;
+  const courseDetailsLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${courseInfo.masterCourseId}/home`;
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -69,7 +60,7 @@ const CoursesDetailPage = () => {
 
     if (institution.id) {
       dispatch(fetchClassesData(institution.id, initialPage, courseIdDecoded));
-      dispatch(fetchCoursesData(institution.id, initialPage, null));
+      dispatch(fetchCoursesOptionsData(institution.id));
     }
 
     return () => {
@@ -79,7 +70,9 @@ const CoursesDetailPage = () => {
   }, [dispatch, institution.id, courseIdDecoded]);
 
   useEffect(() => {
-    dispatch(fetchClassesData(institution.id, currentPage, courseIdDecoded));
+    if (institution.id) {
+      dispatch(fetchClassesData(institution.id, currentPage, courseIdDecoded));
+    }
   }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -105,14 +98,14 @@ const CoursesDetailPage = () => {
           <LinkWithQuery to="/courses" className="mr-3 link">
             <i className="fa-solid fa-arrow-left" />
           </LinkWithQuery>
-          <h3 className="h2 mb-0 course-title">{nextCourseInfo.masterCourseName}</h3>
+          <h3 className="h2 mb-0 course-title">{courseInfo.masterCourseName}</h3>
         </div>
 
         <div className="card-container d-flex justify-content-around align-items-center">
           <div className="d-flex flex-column align-items-center">
             <p className="title">Students enrolled</p>
             <span className="value">
-              {nextCourseInfo.numberOfStudents}
+              {courseInfo.numberOfStudents}
               {' / '}
               {totalStudents}
             </span>
@@ -141,7 +134,7 @@ const CoursesDetailPage = () => {
         <AddClass
           isOpen={isOpenModal}
           onClose={closeModal}
-          courseInfo={nextCourseInfo}
+          courseInfo={courseInfo}
           finalCall={finalCall}
         />
       </div>
