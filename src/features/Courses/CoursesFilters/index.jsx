@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Col, Form } from '@edx/paragon';
 import { Select } from 'react-paragon-topaz';
+import { getConfig } from '@edx/frontend-platform';
 
 import { updateFilters, updateCurrentPage, updateShowAllCourses } from 'features/Courses/data/slice';
 import { fetchCoursesData, fetchCoursesOptionsData } from 'features/Courses/data/thunks';
@@ -21,6 +22,8 @@ const CoursesFilters = () => {
   const [courseSelected, setCourseSelected] = useState(null);
   const [inputCourse, setInputCourse] = useState('');
   const [defaultOption, setDefaultOption] = useState(allResultsOption);
+
+  const showCoursesToggle = getConfig().enable_toggle_courses || false;
 
   const filterOptions = (option, input) => {
     if (input) {
@@ -106,16 +109,20 @@ const CoursesFilters = () => {
               />
             </Form.Group>
           </Form.Row>
-          <Form.Row className="w-100 mt-2">
-            <Form.Switch
-              checked={showAllCourses}
-              onChange={handleToggleChange}
-              className="ml-3"
-              disabled={isLoading}
-            >
-              Show my courses
-            </Form.Switch>
-          </Form.Row>
+          {
+            showCoursesToggle && (
+              <Form.Row className="w-100 mt-2">
+                <Form.Switch
+                  checked={showAllCourses}
+                  onChange={handleToggleChange}
+                  className="ml-3"
+                  disabled={isLoading}
+                >
+                  Show my courses
+                </Form.Switch>
+              </Form.Row>
+            )
+          }
         </Form>
       </div>
     </div>
