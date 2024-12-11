@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Pagination, Container } from '@edx/paragon';
 
 import { initialPage } from 'features/constants';
-import { updateCurrentPage, resetLicensesTable } from 'features/Licenses/data/slice';
+import { updateCurrentPage, updateFilters, resetLicensesTable } from 'features/Licenses/data/slice';
 import { fetchLicensesData } from 'features/Licenses/data';
 import LicensesTable from 'features/Licenses/LicensesTable';
 import LicensesFilters from 'features/Licenses/LicensesFilters';
@@ -25,17 +25,14 @@ const LicensesPage = () => {
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      dispatch(fetchLicensesData(selectedInstitution?.id, initialPage));
+      dispatch(fetchLicensesData(selectedInstitution.id, currentPage));
     }
 
     return () => {
       dispatch(resetLicensesTable());
+      dispatch(updateFilters({}));
     };
-  }, [selectedInstitution, dispatch]);
-
-  useEffect(() => {
-    dispatch(fetchLicensesData(selectedInstitution?.id, currentPage, stateLicenses.filters));
-  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedInstitution, dispatch, currentPage]);
 
   return (
     <Container size="xl" className="px-4">

@@ -13,9 +13,14 @@ function getCoursesByInstitution(institutionId, limit, page, filters) {
 }
 
 function getLicensesByInstitution(institutionId, limit, page = 1, urlParamsFilters = '') {
+  const params = {
+    page,
+    ...urlParamsFilters,
+  };
   return getAuthenticatedHttpClient().get(
     `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/license-pool`
-    + `/?limit=${limit}&institution_id=${institutionId}&page=${page}&${urlParamsFilters}`,
+    + `/?limit=${limit}&institution_id=${institutionId}`,
+    { params },
   );
 }
 

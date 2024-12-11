@@ -34,14 +34,11 @@ const LicensesFilters = ({ resetPagination }) => {
     const form = e.target;
     const formData = new FormData(form);
     const formJson = Object.fromEntries(formData.entries());
-    const urlParamsFilters = Object.entries(formJson)
-      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-      .join('&');
 
     try {
       dispatch(updateFilters(formJson));
       dispatch(updateCurrentPage(initialPage));
-      dispatch(fetchLicensesData(institution.id, initialPage, urlParamsFilters));
+      dispatch(fetchLicensesData(institution.id, initialPage, formJson));
     } catch (error) {
       logError(error);
     }

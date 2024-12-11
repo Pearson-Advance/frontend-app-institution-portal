@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 import ClassesTable from 'features/Classes/ClassesTable';
 import ClassesFilters from 'features/Classes/ClassesFilters';
 
-import { updateCurrentPage, resetClassesTable } from 'features/Classes/data/slice';
+import { updateCurrentPage, updateFilters, resetClassesTable } from 'features/Classes/data/slice';
 import { fetchClassesData } from 'features/Classes/data/thunks';
 import { initialPage } from 'features/constants';
 
@@ -35,6 +35,7 @@ const ClassesPage = () => {
 
     return () => {
       dispatch(resetClassesTable());
+      dispatch(updateFilters({}));
     };
   }, [selectedInstitution, dispatch, currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -8,7 +8,7 @@ import InstructorsFilters from 'features/Instructors/InstructorsFilters';
 import AddInstructors from 'features/Instructors/AddInstructors';
 import { Button } from 'react-paragon-topaz';
 
-import { updateCurrentPage, resetInstructorsRequest } from 'features/Instructors/data/slice';
+import { updateCurrentPage, updateFilters, resetInstructorsRequest } from 'features/Instructors/data/slice';
 import { fetchInstructorsData } from 'features/Instructors/data/thunks';
 import { initialPage } from 'features/constants';
 
@@ -21,17 +21,14 @@ const InstructorsPage = () => {
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      dispatch(fetchInstructorsData(selectedInstitution.id, initialPage));
+      dispatch(fetchInstructorsData(selectedInstitution.id, currentPage));
     }
 
     return () => {
       dispatch(resetInstructorsRequest());
+      dispatch(updateFilters({}));
     };
-  }, [selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    dispatch(fetchInstructorsData(selectedInstitution.id, currentPage, stateInstructors.filters));
-  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedInstitution, dispatch, currentPage]);
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
