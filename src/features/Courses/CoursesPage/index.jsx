@@ -6,7 +6,7 @@ import { Pagination } from '@edx/paragon';
 import CoursesTable from 'features/Courses/CoursesTable';
 import CoursesFilters from 'features/Courses/CoursesFilters';
 
-import { updateCurrentPage, resetCoursesTable } from 'features/Courses/data/slice';
+import { updateCurrentPage, updateFilters, resetCoursesTable } from 'features/Courses/data/slice';
 import { fetchCoursesData } from 'features/Courses/data/thunks';
 import { initialPage } from 'features/constants';
 
@@ -18,19 +18,14 @@ const CoursesPage = () => {
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      dispatch(fetchCoursesData(selectedInstitution.id, initialPage));
+      dispatch(fetchCoursesData(selectedInstitution.id, currentPage));
     }
 
     return () => {
       dispatch(resetCoursesTable());
+      dispatch(updateFilters({}));
     };
-  }, [selectedInstitution, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (Object.keys(selectedInstitution).length > 0) {
-      dispatch(fetchCoursesData(selectedInstitution.id, currentPage, stateCourses.filters));
-    }
-  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedInstitution, dispatch, currentPage]);
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
