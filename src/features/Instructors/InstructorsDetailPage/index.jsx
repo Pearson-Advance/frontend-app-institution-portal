@@ -90,7 +90,10 @@ const InstructorsDetailPage = () => {
 
   useEffect(() => {
     if (instructorInfo.instructorId && showInstructorCalendar) {
-      dispatch(fetchEventsData({ ...rangeDates, instructor_id: instructorInfo.instructorId }));
+      dispatch(fetchEventsData({
+        ...rangeDates,
+        instructor_id: instructorInfo.instructorId,
+      }));
     }
 
     return () => {
