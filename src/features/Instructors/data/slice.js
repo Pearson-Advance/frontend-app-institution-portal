@@ -1,5 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
+import { startOfMonth, endOfMonth } from 'date-fns';
+
 import { RequestStatus } from 'features/constants';
 
 const initialState = {
@@ -28,6 +30,14 @@ const initialState = {
   selectOptions: {
     status: RequestStatus.LOADING,
     data: [],
+  },
+  events: {
+    data: [],
+    status: RequestStatus.INITIAL,
+    dates: {
+      start_date: startOfMonth(new Date()).toISOString(),
+      end_date: endOfMonth(new Date()).toISOString(),
+    },
   },
 };
 
@@ -100,11 +110,23 @@ export const instructorsSlice = createSlice({
       state.selectOptions.status = RequestStatus.LOADING;
       state.selectOptions.data = [];
     },
+    updateEvents: (state, { payload }) => {
+      state.events.data = payload;
+    },
+    resetEvents: (state) => {
+      state.events = initialState.events;
+    },
+    updateEventsRequestStatus: (state, { payload }) => {
+      state.events.status = payload;
+    },
   },
 });
 
 export const {
+  resetEvents,
+  updateEvents,
   updateCurrentPage,
+  updateEventsRequestStatus,
   fetchInstructorsDataRequest,
   fetchInstructorsDataSuccess,
   fetchInstructorsDataFailed,
