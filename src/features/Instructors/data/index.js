@@ -1,4 +1,5 @@
-export { reducer, resetEvents } from 'features/Instructors/data/slice';
+export { reducer, resetEvents, updateEvents } from 'features/Instructors/data/slice';
+
 export {
   fetchInstructorsData,
   assignInstructors,

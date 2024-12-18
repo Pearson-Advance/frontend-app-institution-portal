@@ -160,4 +160,23 @@ describe('InstructorsDetailPage', () => {
 
     expect(calendarTab).not.toBeInTheDocument();
   });
+
+  test('Should render event modal', () => {
+    const { getByText, getAllByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/instructors/instructor']}>
+        <Route path="/instructors/:instructorUsername">
+          <InstructorsDetailPage />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    const newEventBtn = getByText('New event');
+    fireEvent.click(newEventBtn);
+    expect(getAllByText('New event')).toHaveLength(2);
+
+    waitFor(() => {
+      expect(getByText('New Event')).toBeInTheDocument();
+    });
+  });
 });

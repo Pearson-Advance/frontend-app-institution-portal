@@ -31,8 +31,17 @@ function getEventsByInstructor(params) {
   );
 }
 
+function createInstructorEvent(eventData) {
+  const params = new URLSearchParams(eventData).toString();
+
+  return getAuthenticatedHttpClient().post(
+    `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/events/?${params}`,
+  );
+}
+
 export {
   handleInstructorsEnrollment,
   handleNewInstructor,
   getEventsByInstructor,
+  createInstructorEvent,
 };
