@@ -153,3 +153,31 @@ export const formatSelectOptions = (options) => {
     value: option.id,
   }));
 };
+
+/**
+ * Sets the time of a given date in UTC format. If no time is provided, the current time of the date is maintained.
+ *
+ * @param {Date | string} date - The date object or date string to modify.
+ * @param {string} [timeString] - Optional time in the format 'HH:MM'. If provided, it sets the hours and minutes.
+ * @returns {string} - The date in ISO string format with the time adjusted to UTC.
+ */
+export const setTimeInUTC = (date, timeString) => {
+  const newDate = new Date(date);
+
+  if (timeString) {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    newDate.setUTCHours(hours);
+    newDate.setUTCMinutes(minutes);
+    newDate.setSeconds(0);
+  }
+
+  return newDate?.toISOString();
+};
+
+/**
+ * Transform string to date type
+ *
+ * @param {string} date - The string with format 'YYYY-MM-DD' to transform
+ * @returns {Date} - The Date in format 'YYYY/MM/DD'
+ */
+export const stringToDateType = (date) => new Date(date.replace(/-/g, '/'));

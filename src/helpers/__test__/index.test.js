@@ -5,6 +5,8 @@ import {
   formatUTCDate,
   getInitials,
   setAssignStaffRole,
+  stringToDateType,
+  setTimeInUTC,
 } from 'helpers';
 
 import { assignStaffRole } from 'features/Main/data/api';
@@ -118,5 +120,49 @@ describe('setAssignStaffRole', () => {
     expect(assignStaffRole).toHaveBeenCalledWith(classId);
     expect(logError).toHaveBeenCalledWith(error);
     expect(window.open).toHaveBeenCalledWith(url, '_blank', 'noopener,noreferrer');
+  });
+});
+
+describe('stringToDateType', () => {
+  test('Should convert a string date in YYYY-MM-DD format to a Date object', () => {
+    const input = '2024-12-18';
+    const result = stringToDateType(input);
+
+    expect(result instanceof Date).toBe(true);
+
+    expect(result.getFullYear()).toBe(2024);
+    expect(result.getMonth()).toBe(11);
+    expect(result.getDate()).toBe(18);
+  });
+
+  test('Should handle invalid date strings gracefully', () => {
+    const input = 'invalid-date';
+    const result = stringToDateType(input);
+
+    expect(result.toString()).toBe('Invalid Date');
+  });
+});
+
+describe('setTimeInUTC', () => {
+  test('Should set time correctly with provided time string', () => {
+    const date = '2024-09-17T00:00:00Z';
+    const timeString = '15:37';
+    const result = setTimeInUTC(date, timeString);
+
+    expect(result).toBe('2024-09-17T15:37:00.000Z');
+  });
+
+  test('Should maintain original time if no time string is provided', () => {
+    const date = '2024-09-17T12:34:56Z';
+    const result = setTimeInUTC(date);
+    expect(result).toBe('2024-09-17T12:34:56.000Z');
+  });
+
+  test('Should handle edge case of date string input', () => {
+    const date = new Date('2024-09-17');
+    const timeString = '15:37';
+    const result = setTimeInUTC(date, timeString);
+
+    expect(result).toBe('2024-09-17T15:37:00.000Z');
   });
 });

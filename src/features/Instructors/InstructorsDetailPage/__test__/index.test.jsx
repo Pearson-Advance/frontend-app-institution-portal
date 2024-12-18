@@ -121,7 +121,7 @@ describe('InstructorsDetailPage', () => {
   test('Should render the calendar if the flag is provided', async () => {
     getConfig.mockImplementation(() => ({ enable_instructor_calendar: true }));
 
-    const { getByText } = renderWithProviders(
+    const { getByText, getAllByText } = renderWithProviders(
       <MemoryRouter initialEntries={['/instructors/instructor']}>
         <Route path="/instructors/:instructorUsername">
           <InstructorsDetailPage />
@@ -130,7 +130,7 @@ describe('InstructorsDetailPage', () => {
       { preloadedState: mockStore },
     );
 
-    fireEvent.click(getByText('Availability'));
+    fireEvent.click(getAllByText('Availability')[0]);
 
     await waitFor(() => {
       expect(getByText('Today')).toBeInTheDocument();
@@ -159,5 +159,26 @@ describe('InstructorsDetailPage', () => {
     const calendarTab = queryByText('Availability');
 
     expect(calendarTab).not.toBeInTheDocument();
+  });
+
+  test('Should render event modal', () => {
+    getConfig.mockImplementation(() => ({ enable_instructor_calendar: true }));
+
+    const { getByText, getAllByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/instructors/instructor']}>
+        <Route path="/instructors/:instructorUsername">
+          <InstructorsDetailPage />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    const newEventBtn = getByText('New event');
+    fireEvent.click(newEventBtn);
+    expect(getAllByText('New event')).toHaveLength(2);
+
+    waitFor(() => {
+      expect(getByText('New Event')).toBeInTheDocument();
+    });
   });
 });
