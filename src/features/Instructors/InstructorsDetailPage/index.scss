@@ -2,4 +2,9 @@
 
 .container-calendar {
   box-shadow: 0px 3px 12px 0px $gray-30;
+
+  .pgn__dropdown-item {
+    text-decoration: none;
+    color: $black-30;
+  }
 }

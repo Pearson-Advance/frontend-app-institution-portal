@@ -31,8 +31,26 @@ function getEventsByInstructor(params) {
   );
 }
 
+/**
+ * Delete event.
+ *
+ * @param {number} - Event id to be deleted
+ * @returns {Promise} - A promise that resolves with the response of the DELETE request.
+ */
+function deleteEvent(eventId, options = {}) {
+  const params = {
+    event_id: eventId,
+    ...options,
+  };
+  return getAuthenticatedHttpClient().delete(
+    `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/events/`,
+    { params },
+  );
+}
+
 export {
   handleInstructorsEnrollment,
   handleNewInstructor,
   getEventsByInstructor,
+  deleteEvent,
 };
