@@ -1,13 +1,18 @@
 import React from 'react';
-import { waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import { renderWithProviders } from 'test-utils';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
+import { getConfig } from '@edx/frontend-platform';
+import '@testing-library/jest-dom/extend-expect';
 
+import { renderWithProviders } from 'test-utils';
 import InstructorsDetailPage from 'features/Instructors/InstructorsDetailPage';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
+}));
+
+jest.mock('@edx/frontend-platform', () => ({
+  getConfig: jest.fn(),
 }));
 
 const mockStore = {
@@ -69,6 +74,20 @@ const mockStore = {
       num_pages: 1,
       current_page: 1,
     },
+    events: {
+      data: [
+        {
+          id: 1,
+          title: 'Not available',
+          start: '2024-09-04T00:00:00Z',
+          end: '2024-09-13T00:00:00Z',
+          type: 'virtual',
+        },
+      ],
+      count: 1,
+      num_pages: 1,
+      current_page: 1,
+    },
   },
 };
 
@@ -97,5 +116,48 @@ describe('InstructorsDetailPage', () => {
       expect(component.container).toHaveTextContent('complete');
       expect(component.container).toHaveTextContent('in progress');
     });
+  });
+
+  test('Should render the calendar if the flag is provided', async () => {
+    getConfig.mockImplementation(() => ({ enable_instructor_calendar: true }));
+
+    const { getByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/instructors/instructor']}>
+        <Route path="/instructors/:instructorUsername">
+          <InstructorsDetailPage />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    fireEvent.click(getByText('Availability'));
+
+    await waitFor(() => {
+      expect(getByText('Today')).toBeInTheDocument();
+      expect(getByText('Sunday')).toBeInTheDocument();
+      expect(getByText('Monday')).toBeInTheDocument();
+      expect(getByText('Tuesday')).toBeInTheDocument();
+      expect(getByText('Wednesday')).toBeInTheDocument();
+      expect(getByText('Thursday')).toBeInTheDocument();
+      expect(getByText('Friday')).toBeInTheDocument();
+      expect(getByText('Saturday')).toBeInTheDocument();
+    });
+  });
+
+  test('Should not render the calendar if the flag is false or is not provided', async () => {
+    getConfig.mockImplementation(() => ({ enable_instructor_calendar: false }));
+
+    const { queryByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/instructors/instructor']}>
+        <Route path="/instructors/:instructorUsername">
+          <InstructorsDetailPage />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    const calendarTab = queryByText('Availability');
+
+    expect(calendarTab).not.toBeInTheDocument();
   });
 });

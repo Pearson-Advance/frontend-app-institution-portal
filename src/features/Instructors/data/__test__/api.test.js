@@ -2,6 +2,7 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import {
   handleInstructorsEnrollment,
   handleNewInstructor,
+  getEventsByInstructor,
 } from 'features/Instructors/data/api';
 
 jest.mock('@edx/frontend-platform/auth', () => ({
@@ -64,6 +65,39 @@ describe('should call getAuthenticatedHttpClient with the correct parameters', (
     expect(httpClientMock.post).toHaveBeenCalledWith(
       'http://localhost:18000/pearson_course_operation/api/v2/instructors/'
       + '?institution_id=1&instructor_email=instructor%40example.com&first_name=Sam&last_name=F',
+    );
+  });
+
+  test('getEventsByInstructor', () => {
+    const httpClientMock = {
+      get: jest.fn(),
+    };
+
+    const eventRequestInfo = {
+      instructor_id: '3',
+      start_date: '2024-12-01T05:00:00.000Z',
+      end_date: '2025-01-01T04:59:59.999Z',
+      page: '1',
+    };
+
+    getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
+
+    getEventsByInstructor({ ...eventRequestInfo });
+
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
+
+    expect(httpClientMock.get).toHaveBeenCalledTimes(1);
+    expect(httpClientMock.get).toHaveBeenCalledWith(
+      'http://localhost:18000/pearson_course_operation/api/v2/events/',
+      {
+        params: {
+          instructor_id: '3',
+          start_date: '2024-12-01T05:00:00.000Z',
+          end_date: '2025-01-01T04:59:59.999Z',
+          page: '1',
+        },
+      },
     );
   });
 });
