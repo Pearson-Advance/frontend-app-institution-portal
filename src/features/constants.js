@@ -125,3 +125,13 @@ export const allResultsOption = {
   label: 'Show all search results',
   value: 'all_results',
 };
+
+/**
+ * Values for availability.
+ * @constant {Object}
+ */
+export const AVAILABILITY_VALUES = {
+  notAvailable: 'not_available',
+  available: 'available',
+  prepTime: 'prep_time',
+};
