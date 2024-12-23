@@ -15,6 +15,7 @@ import {
 import { getConfig } from '@edx/frontend-platform';
 import { CalendarExpanded } from 'react-paragon-topaz';
 import { startOfMonth, endOfMonth } from 'date-fns';
+import { logError } from '@edx/frontend-platform/logging';
 
 import Table from 'features/Main/Table';
 import { fetchClassesData } from 'features/Classes/data/thunks';
@@ -22,6 +23,8 @@ import { resetClassesTable, updateCurrentPage } from 'features/Classes/data/slic
 import { fetchInstructorsData, fetchEventsData, resetEvents } from 'features/Instructors/data';
 import { columns } from 'features/Instructors/InstructorDetailTable/columns';
 import { initialPage, RequestStatus } from 'features/constants';
+import { deleteEvent } from 'features/Instructors/data/api';
+import { updateEvents } from 'features/Instructors/data/slice';
 
 import { useInstitutionIdQueryParam } from 'hooks';
 
@@ -72,6 +75,32 @@ const InstructorsDetailPage = () => {
     dispatch(updateCurrentPage(targetPage));
   };
 
+  const handleDeleteEvent = async (event) => {
+    try {
+      const params = event?.recurrence ? {
+        delete_occurrence: true,
+        start_occurrence: event?.start,
+      } : {};
+
+      await deleteEvent(event.id, params);
+
+      const newEventsState = events.filter(currentEvent => currentEvent.elementId !== event.elementId);
+      dispatch(updateEvents(newEventsState));
+    } catch (error) {
+      logError(error);
+    }
+  };
+
+  const handleDeleteMultipleEvents = async (event) => {
+    try {
+      await deleteEvent(event.id);
+      const newEventsState = events.filter(currentEvent => currentEvent.id !== event.id);
+      dispatch(updateEvents(newEventsState));
+    } catch (error) {
+      logError(error);
+    }
+  };
+
   useEffect(() => {
     if (institution.id) {
       dispatch(fetchInstructorsData(institution.id, initialPage, { instructor: instructorUsername }));
@@ -90,7 +119,10 @@ const InstructorsDetailPage = () => {
 
   useEffect(() => {
     if (instructorInfo.instructorId && showInstructorCalendar) {
-      dispatch(fetchEventsData({ ...rangeDates, instructor_id: instructorInfo.instructorId }));
+      dispatch(fetchEventsData({
+        ...rangeDates,
+        instructor_id: instructorInfo.instructorId,
+      }));
     }
 
     return () => {
@@ -160,8 +192,8 @@ const InstructorsDetailPage = () => {
                 eventsList={eventsList}
                 onRangeChange={getRangeDate}
                 onEdit={() => {}}
-                onDelete={() => {}}
-                onDeleteMultiple={() => {}}
+                onDelete={handleDeleteEvent}
+                onDeleteMultiple={handleDeleteMultipleEvents}
                 onEditSinglRec={() => {}}
               />
             </div>
