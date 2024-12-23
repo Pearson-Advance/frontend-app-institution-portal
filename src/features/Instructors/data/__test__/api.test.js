@@ -3,7 +3,6 @@ import {
   handleInstructorsEnrollment,
   handleNewInstructor,
   getEventsByInstructor,
-  deleteEvent,
 } from 'features/Instructors/data/api';
 
 jest.mock('@edx/frontend-platform/auth', () => ({
@@ -99,27 +98,6 @@ describe('should call getAuthenticatedHttpClient with the correct parameters', (
           page: '1',
         },
       },
-    );
-  });
-
-  test('delete event', () => {
-    const httpClientMock = {
-      delete: jest.fn(),
-    };
-
-    const eventId = 1;
-
-    getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
-
-    deleteEvent(eventId);
-
-    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
-    expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
-
-    expect(httpClientMock.delete).toHaveBeenCalledTimes(1);
-    expect(httpClientMock.delete).toHaveBeenCalledWith(
-      'http://localhost:18000/pearson_course_operation/api/v2/events/',
-      { params: { event_id: eventId } },
     );
   });
 });
