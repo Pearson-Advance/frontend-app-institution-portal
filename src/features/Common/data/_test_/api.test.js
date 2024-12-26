@@ -6,6 +6,8 @@ import {
   getInstructorByInstitution,
 } from 'features/Common/data/api';
 
+import { MAX_TABLE_RECORDS } from 'features/constants';
+
 jest.mock('@edx/frontend-platform/auth', () => ({
   getAuthenticatedHttpClient: jest.fn(),
 }));
@@ -42,7 +44,7 @@ describe('Common api services', () => {
     expect(httpClientMock.get).toHaveBeenCalledTimes(1);
     expect(httpClientMock.get).toHaveBeenCalledWith(
       `${COURSE_OPERATIONS_API_V2}/courses/?limit=true&institution_id=1`,
-      { params: { page } },
+      { params: { page, page_size: MAX_TABLE_RECORDS } },
     );
   });
 
@@ -66,6 +68,7 @@ describe('Common api services', () => {
       {
         params: {
           page: 1,
+          page_size: MAX_TABLE_RECORDS,
         },
       },
     );
@@ -91,7 +94,7 @@ describe('Common api services', () => {
       `${COURSE_OPERATIONS_API_V2}/classes/?course_id=course-v1`,
       {
         params: {
-          institution_id: 1, limit: false, page: '',
+          institution_id: 1, limit: false, page: '', page_size: MAX_TABLE_RECORDS,
         },
       },
     );
@@ -115,7 +118,11 @@ describe('Common api services', () => {
     expect(httpClientMock.get).toHaveBeenCalledTimes(1);
     expect(httpClientMock.get).toHaveBeenCalledWith(
       'http://localhost:18000/pearson_course_operation/api/v2/instructors/',
-      { params: { page, institution_id: institutionId, limit: false } },
+      {
+        params: {
+          page, institution_id: institutionId, limit: false, page_size: MAX_TABLE_RECORDS,
+        },
+      },
     );
   });
 });
