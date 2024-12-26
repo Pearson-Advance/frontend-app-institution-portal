@@ -2,6 +2,7 @@ import {
   getStudentbyInstitutionAdmin, handleEnrollments,
 } from 'features/Students/data/api';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
+import { MAX_TABLE_RECORDS } from 'features/constants';
 
 jest.mock('@edx/frontend-platform/auth', () => ({
   getAuthenticatedHttpClient: jest.fn(),
@@ -33,7 +34,7 @@ describe('getStudentbyInstitutionAdmin', () => {
     expect(httpClientMock.get).toHaveBeenCalledTimes(1);
     expect(httpClientMock.get).toHaveBeenCalledWith(
       'http://localhost:18000/pearson_course_operation/api/v2/students/',
-      { params: { page, institution_id: institutionId } },
+      { params: { page, institution_id: institutionId, page_size: MAX_TABLE_RECORDS } },
     );
   });
 });

@@ -1,9 +1,12 @@
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { getConfig } from '@edx/frontend-platform';
 
+import { MAX_TABLE_RECORDS } from 'features/constants';
+
 function getCoursesByInstitution(institutionId, limit, page, filters) {
   const params = {
     page,
+    page_size: MAX_TABLE_RECORDS,
     ...filters,
   };
   return getAuthenticatedHttpClient().get(
@@ -15,6 +18,7 @@ function getCoursesByInstitution(institutionId, limit, page, filters) {
 function getLicensesByInstitution(institutionId, limit, page = 1, urlParamsFilters = '') {
   const params = {
     page,
+    page_size: MAX_TABLE_RECORDS,
     ...urlParamsFilters,
   };
   return getAuthenticatedHttpClient().get(
@@ -30,6 +34,7 @@ function getClassesByInstitution(institutionId, courseId, limit = false, page = 
     limit,
     institution_id: institutionId,
     page,
+    page_size: MAX_TABLE_RECORDS,
     ...urlParamsFilters,
   };
   return getAuthenticatedHttpClient().get(
@@ -43,6 +48,7 @@ function getInstructorByInstitution(institutionId, page, filters, limit = false)
   const params = {
     page,
     institution_id: institutionId,
+    page_size: MAX_TABLE_RECORDS,
     ...filters,
     limit,
   };

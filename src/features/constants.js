@@ -125,3 +125,10 @@ export const allResultsOption = {
   label: 'Show all search results',
   value: 'all_results',
 };
+
+/**
+ * Number for maximum records in tables.
+ * @readonly
+ * @number
+ */
+export const MAX_TABLE_RECORDS = 200;
