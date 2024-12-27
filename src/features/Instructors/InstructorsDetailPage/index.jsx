@@ -159,10 +159,8 @@ const InstructorsDetailPage = () => {
               <CalendarExpanded
                 eventsList={eventsList}
                 onRangeChange={getRangeDate}
-                onEdit={() => {}}
-                onDelete={() => {}}
-                onDeleteMultiple={() => {}}
-                onEditSinglRec={() => {}}
+                hideDeleteButtons
+                hideEditButtons
               />
             </div>
           </Tab>
