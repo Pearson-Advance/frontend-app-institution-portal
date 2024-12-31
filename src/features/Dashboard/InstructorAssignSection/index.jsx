@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { Row, Col } from '@edx/paragon';
+import { Row, Col, Spinner } from '@edx/paragon';
 import ClassCard from 'features/Dashboard/InstructorAssignSection/ClassCard';
 import { Button } from 'react-paragon-topaz';
 
@@ -10,6 +10,7 @@ import { fetchClassesData } from 'features/Dashboard/data';
 import { updateActiveTab } from 'features/Main/data/slice';
 
 import { useInstitutionIdQueryParam } from 'hooks';
+import { RequestStatus } from 'features/constants';
 
 import 'features/Dashboard/InstructorAssignSection/index.scss';
 
@@ -17,7 +18,9 @@ const InstructorAssignSection = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
-  const classesData = useSelector((state) => state.dashboard.classesNoInstructors.data);
+  const classesInfo = useSelector((state) => state.dashboard.classesNoInstructors);
+  const classesData = classesInfo.data;
+  const isLoadingClasses = classesInfo.status === RequestStatus.LOADING;
   const [classCards, setClassCards] = useState([]);
   const numberOfClasses = 2;
 
@@ -47,13 +50,22 @@ const InstructorAssignSection = () => {
     <Row>
       <Col xs="12">
         <h4 className="title-instr-assign">Instructor assignment</h4>
-        {classCards.map(classInfo => <ClassCard data={classInfo} key={classInfo?.classId} />)}
-        {classesData.length > numberOfClasses && (
+        {isLoadingClasses && (
+        <div className="w-100 h-100 d-flex justify-content-center align-items-center">
+          <Spinner
+            animation="border"
+            className="mie-3"
+            screenReaderText="loading"
+          />
+        </div>
+        )}
+        {!isLoadingClasses && classCards.map(classInfo => <ClassCard data={classInfo} key={classInfo?.classId} />)}
+        {!isLoadingClasses && classesData.length > numberOfClasses && (
           <div className="d-flex justify-content-center">
             <Button text className="view-all-btn" onClick={handleViewAllClasses}>View all</Button>
           </div>
         )}
-        {classesData.length === 0 && (
+        {!isLoadingClasses && classesData.length === 0 && (
           <div className="empty-content">No classes found</div>
         )}
       </Col>
