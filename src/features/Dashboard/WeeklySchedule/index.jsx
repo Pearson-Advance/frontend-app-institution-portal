@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { Spinner } from '@edx/paragon';
 import { Schedule } from 'react-paragon-topaz';
 import {
   startOfWeek,
@@ -12,11 +13,14 @@ import { fetchClassesData } from 'features/Dashboard/data';
 import LinkWithQuery from 'features/Main/LinkWithQuery';
 
 import { formatUTCDate } from 'helpers';
+import { RequestStatus } from 'features/constants';
 
 const WeeklySchedule = () => {
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
-  const classesData = useSelector((state) => state.dashboard.classes.data);
+  const classesInfo = useSelector((state) => state.dashboard.classes);
+  const classesData = classesInfo.data;
+  const isLoadingClasses = classesInfo.status === RequestStatus.LOADING;
   const [classList, setClassList] = useState([]);
   const startCurrentWeek = startOfWeek(new Date());
   const endCurrentWeek = endOfWeek(new Date());
@@ -71,7 +75,16 @@ const WeeklySchedule = () => {
       </div>
       <div className="content-schedule d-flex justify-content-between">
         <div className="container-class-schedule">
-          {classList.length > 0 ? (
+          {isLoadingClasses && (
+            <div className="w-100 h-100 d-flex justify-content-center align-items-center">
+              <Spinner
+                animation="border"
+                className="mie-3"
+                screenReaderText="loading"
+              />
+            </div>
+          )}
+          {classList.length > 0 && !isLoadingClasses && (
             classList.map(classInfo => {
               const date = formatUTCDate(classInfo?.startDate, 'PP');
               return (
@@ -91,7 +104,8 @@ const WeeklySchedule = () => {
                 </div>
               );
             })
-          ) : (
+          )}
+          {classList.length === 0 && !isLoadingClasses && (
             <div className="empty-classes">No classes scheduled at this time</div>
           )}
         </div>
