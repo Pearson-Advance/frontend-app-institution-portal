@@ -107,6 +107,7 @@ const columns = [
         endDate,
         minStudentsAllowed,
         maxStudents,
+        labSummaryUrl,
       } = row.original;
 
       const initialDeletionClassState = {
@@ -196,6 +197,16 @@ const columns = [
               <i className="fa-regular fa-book mr-2 mb-1" />
               Gradebook
             </Dropdown.Item>
+            {labSummaryUrl && (
+              <Dropdown.Item
+                target="_blank"
+                rel="noreferrer"
+                href={labSummaryUrl}
+              >
+                <i className="fa-regular fa-rectangle-list mr-2" />
+                Lab summary
+              </Dropdown.Item>
+            )}
             <Dropdown.Item onClick={handleOpenDeleteModal} className="text-danger">
               <i className="fa-regular fa-trash mr-2 mb-1" />
               Delete Class
