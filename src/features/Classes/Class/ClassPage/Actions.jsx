@@ -131,7 +131,7 @@ const Actions = ({ previousPage }) => {
           </Dropdown.Item>
           <Dropdown.Item onClick={handleManageButton}>
             <i className="fa-regular fa-chalkboard-user mr-2 mb-1" />
-            { instructorText }
+            {instructorText}
           </Dropdown.Item>
           <Dropdown.Item onClick={openEditModal}>
             <i className="fa-regular fa-pencil mr-2 mb-1" />
@@ -141,6 +141,16 @@ const Actions = ({ previousPage }) => {
             <i className="fa-regular fa-book mr-2 mb-1" />
             Gradebook
           </Dropdown.Item>
+          {classInfo?.labSummaryUrl && (
+            <Dropdown.Item
+              target="_blank"
+              rel="noreferrer"
+              href={classInfo.labSummaryUrl}
+            >
+              <i className="fa-regular fa-rectangle-list mr-2" />
+              Lab summary
+            </Dropdown.Item>
+          )}
           <Dropdown.Item onClick={handleOpenDeleteModal} className="text-danger">
             <i className="fa-regular fa-trash mr-2 mb-1" />
             Delete class
