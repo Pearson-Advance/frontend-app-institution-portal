@@ -7,6 +7,17 @@ import { columns } from 'features/Classes/ClassesTable/columns';
 import { renderWithProviders } from 'test-utils';
 
 describe('columns', () => {
+  const classDataMock = {
+    masterCourseName: 'course example',
+    masterCourseId: 'demo course',
+    classId: 'class 01',
+    className: 'class example',
+    startDate: '',
+    endDate: '',
+    minStudents: 10,
+    maxStudents: 100,
+  };
+
   test('returns an array of columns with correct properties', () => {
     expect(columns).toBeInstanceOf(Array);
     expect(columns).toHaveLength(9);
@@ -48,16 +59,6 @@ describe('columns', () => {
   });
 
   test('Show menu dropdown', async () => {
-    const classDataMock = {
-      masterCourseName: 'course example',
-      masterCourseId: 'demo course',
-      classId: 'class 01',
-      className: 'class example',
-      startDate: '',
-      endDate: '',
-      minStudents: 10,
-      maxStudents: 100,
-    };
     const ActionColumn = () => columns[8].Cell({
       row: {
         values: {
@@ -101,5 +102,47 @@ describe('columns', () => {
     expect(getByText('Edit Class')).toBeInTheDocument();
     expect(getByText('Gradebook')).toBeInTheDocument();
     expect(getByText('Delete Class')).toBeInTheDocument();
+  });
+
+  test('Show Lab summary option when link is sent', async () => {
+    const ActionColumn = () => columns[8].Cell({
+      row: {
+        values: {
+          masterCourseName: 'course example',
+        },
+        original: {
+          ...classDataMock,
+          labSummaryUrl: 'https: //',
+        },
+      },
+    });
+
+    const mockStore = {
+      classes: {
+        table: {
+          data: [
+            { ...classDataMock, labSummaryUrl: 'https: //' },
+          ],
+          count: 2,
+          num_pages: 1,
+          current_page: 1,
+        },
+      },
+    };
+
+    const {
+      getByText, getByTestId,
+    } = renderWithProviders(
+      <MemoryRouter initialEntries={['/classes/']}>
+        <Route path="/classes/">
+          <ActionColumn />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    const button = getByTestId('droprown-action');
+    fireEvent.click(button);
+    expect(getByText('Lab summary')).toBeInTheDocument();
   });
 });
