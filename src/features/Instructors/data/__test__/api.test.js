@@ -3,6 +3,7 @@ import {
   handleInstructorsEnrollment,
   handleNewInstructor,
   getEventsByInstructor,
+  getInstructorByEmail,
 } from 'features/Instructors/data/api';
 
 jest.mock('@edx/frontend-platform/auth', () => ({
@@ -96,6 +97,30 @@ describe('should call getAuthenticatedHttpClient with the correct parameters', (
           start_date: '2024-12-01T05:00:00.000Z',
           end_date: '2025-01-01T04:59:59.999Z',
           page: '1',
+        },
+      },
+    );
+  });
+
+  test('getInstructorByEmail', () => {
+    const httpClientMock = {
+      get: jest.fn(),
+    };
+
+    getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
+
+    getInstructorByEmail('edx@example.com');
+
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
+
+    expect(httpClientMock.get).toHaveBeenCalledTimes(1);
+    expect(httpClientMock.get).toHaveBeenCalledWith(
+      'http://localhost:18000/pearson_course_operation/api/v2/instructors/',
+      {
+        params: {
+          instructor_email: 'edx@example.com',
+          limit: false,
         },
       },
     );

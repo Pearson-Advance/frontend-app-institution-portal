@@ -31,8 +31,35 @@ function getEventsByInstructor(params) {
   );
 }
 
+/**
+ * Retrieves instructor information based on their email address.
+ *
+ * @param email - Takes an `email` parameter which is used to
+ *                search for an instructor by their email address.
+ * @param [options] - Is an object that can contain additional configuration settings.
+ *
+ * @returns {Promise} the result of a GET request made to the specified URL
+ */
+function getInstructorByEmail(email, options = {}) {
+  const defaultParams = {
+    limit: false,
+  };
+
+  const params = {
+    instructor_email: email,
+    ...defaultParams,
+    ...options,
+  };
+
+  return getAuthenticatedHttpClient().get(
+    `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/instructors/`,
+    { params },
+  );
+}
+
 export {
   handleInstructorsEnrollment,
   handleNewInstructor,
   getEventsByInstructor,
+  getInstructorByEmail,
 };

@@ -39,6 +39,13 @@ const initialState = {
       end_date: endOfMonth(new Date()).toISOString(),
     },
   },
+  instructorProfile: {
+    status: RequestStatus.LOADING,
+    instructorImage: '',
+    instructorName: '',
+    lastAccess: '',
+    created: '',
+  },
 };
 
 export const instructorsSlice = createSlice({
@@ -119,6 +126,15 @@ export const instructorsSlice = createSlice({
     updateEventsRequestStatus: (state, { payload }) => {
       state.events.status = payload;
     },
+    updateInstructorInfo: (state, { payload }) => {
+      state.instructorProfile = payload;
+    },
+    resetInstructorInfo: (state) => {
+      state.instructorProfile = initialState.instructorProfile;
+    },
+    updateInstructorInfoStatus: (state, { payload }) => {
+      state.instructorProfile.status = payload;
+    },
   },
 });
 
@@ -144,6 +160,9 @@ export const {
   fetchInstructorOptionsSuccess,
   fetchInstructorOptionsFailed,
   resetInstructorOptions,
+  updateInstructorInfo,
+  resetInstructorInfo,
+  updateInstructorInfoStatus,
 } = instructorsSlice.actions;
 
 export const { reducer } = instructorsSlice;

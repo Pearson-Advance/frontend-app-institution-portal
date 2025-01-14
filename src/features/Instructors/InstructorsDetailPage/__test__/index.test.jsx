@@ -88,10 +88,43 @@ const mockStore = {
       num_pages: 1,
       current_page: 1,
     },
+    instructorProfile: {
+      instructorId: 20,
+      instructorImage: '',
+      instructorUsername: 'instructor',
+      instructorName: 'Instructor 3 ',
+      instructorEmail: 'instructor2@example.com',
+      lastAccess: '2024-02-26T15:53:03Z',
+      created: '2024-02-26T15:53:02Z',
+      classes: 2,
+      status: 'success',
+    },
   },
 };
 
 describe('InstructorsDetailPage', () => {
+  test('Should render instructor profile', async () => {
+    const component = renderWithProviders(
+      <MemoryRouter initialEntries={['/instructors/instructor']}>
+        <Route path="/instructors/:instructorUsername">
+          <InstructorsDetailPage />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    waitFor(() => {
+      expect(component.container).toHaveTextContent('Profile');
+      expect(component.container).toHaveTextContent('Instructor 3');
+      expect(component.container).toHaveTextContent('instructor2@example.com');
+      expect(component.container).toHaveTextContent('Courses taught');
+      expect(component.container).toHaveTextContent('Instructor since');
+      expect(component.container).toHaveTextContent('02/26/24');
+      expect(component.container).toHaveTextContent('Last online');
+      expect(component.container).toHaveTextContent('02/26/24');
+    });
+  });
+
   test('renders classes data and pagination', async () => {
     const component = renderWithProviders(
       <MemoryRouter initialEntries={['/instructors/instructor']}>

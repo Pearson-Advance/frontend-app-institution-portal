@@ -1,7 +1,12 @@
 import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
-import { handleInstructorsEnrollment, handleNewInstructor, getEventsByInstructor } from 'features/Instructors/data/api';
 import { getInstructorByInstitution } from 'features/Common/data/api';
+import {
+  handleInstructorsEnrollment,
+  handleNewInstructor,
+  getEventsByInstructor,
+  getInstructorByEmail,
+} from 'features/Instructors/data/api';
 import {
   updateEvents,
   fetchInstructorsDataRequest,
@@ -9,6 +14,8 @@ import {
   fetchInstructorsDataFailed,
   assignInstructorsRequest,
   assignInstructorsSuccess,
+  updateInstructorInfoStatus,
+  updateInstructorInfo,
   assignInstructorsFailed,
   updateEventsRequestStatus,
   updateInstructorAdditionRequest,
@@ -140,10 +147,38 @@ function fetchEventsData(eventData, currentEvents = []) {
   };
 }
 
+/**
+ * The function fetches an instructor's profile information based on their email address and updates
+ * the store accordingly.
+ *
+ * @param email - The `email` parameter in the `fetchInstructorProfile` function is the email address
+ * of the instructor whose profile you want to fetch.
+ * @param [options] - The `options` parameter is an object that can contain additional configuration settings.
+ */
+function fetchInstructorProfile(email, options = {}) {
+  return async (dispatch) => {
+    dispatch(updateInstructorInfoStatus(RequestStatus.LOADING));
+
+    try {
+      const response = camelCaseObject(await getInstructorByEmail(email, options));
+      const instructorInfo = {
+        ...response?.data[0] || {},
+      };
+
+      dispatch(updateInstructorInfo(instructorInfo));
+      dispatch(updateInstructorInfoStatus(RequestStatus.SUCCESS));
+    } catch (error) {
+      logError(error);
+      dispatch(updateInstructorInfoStatus(RequestStatus.ERROR));
+    }
+  };
+}
+
 export {
   fetchInstructorsData,
   assignInstructors,
   addInstructor,
   fetchEventsData,
   fetchInstructorsOptionsData,
+  fetchInstructorProfile,
 };
