@@ -75,6 +75,7 @@ const AddClass = ({
       try {
         dataClass.append('course_id', courseInfo.masterCourseId);
         dataClass.append('institution_id', selectedInstitution.id);
+        dataClass.append('license_id', courseInfo?.licenseId);
         const enrollmentDataInst = new FormData();
         if (instructorSelected) {
           enrollmentDataInst.append('unique_student_identifier', instructorSelected.value);
@@ -278,6 +279,7 @@ AddClass.propTypes = {
     endDate: PropTypes.string,
     minStudents: PropTypes.number,
     maxStudents: PropTypes.number,
+    licenseId: PropTypes.number,
   }).isRequired,
   isEditing: PropTypes.bool,
   finalCall: PropTypes.func.isRequired,
