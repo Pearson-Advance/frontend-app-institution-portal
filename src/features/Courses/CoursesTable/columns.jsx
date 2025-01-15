@@ -83,6 +83,7 @@ const columns = [
               courseInfo={{
                 masterCourseName: row.original.masterCourseName,
                 masterCourseId: row.original.masterCourseId,
+                licenseId: row.original.licenseId,
               }}
               finalCall={finalCall}
             />
