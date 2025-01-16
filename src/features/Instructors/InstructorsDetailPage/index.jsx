@@ -13,13 +13,19 @@ import {
   Tab,
 } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
-import { CalendarExpanded } from 'react-paragon-topaz';
+import { CalendarExpanded, ProfileCard, formatUTCDate } from 'react-paragon-topaz';
 import { startOfMonth, endOfMonth } from 'date-fns';
 
 import Table from 'features/Main/Table';
 import { fetchClassesData } from 'features/Classes/data/thunks';
 import { resetClassesTable, updateCurrentPage } from 'features/Classes/data/slice';
-import { fetchInstructorsData, fetchEventsData, resetEvents } from 'features/Instructors/data';
+import {
+  fetchInstructorsData,
+  fetchEventsData,
+  fetchInstructorProfile,
+  resetEvents,
+  resetInstructorInfo,
+} from 'features/Instructors/data';
 import { columns } from 'features/Instructors/InstructorDetailTable/columns';
 import { initialPage, RequestStatus } from 'features/constants';
 
@@ -45,7 +51,15 @@ const InstructorsDetailPage = () => {
   const dispatch = useDispatch();
   const { instructorUsername } = useParams();
   const addQueryParam = useInstitutionIdQueryParam();
+
   const events = useSelector((state) => state.instructors.events.data);
+  const {
+    instructorImage,
+    instructorName,
+    lastAccess,
+    status: instructorProfileStatus,
+    created,
+  } = useSelector((state) => state.instructors.instructorProfile);
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -64,6 +78,7 @@ const InstructorsDetailPage = () => {
   const instructorInfo = useSelector((state) => state.instructors.table.data)
     ?.find((instructor) => instructor?.instructorUsername === instructorUsername) || defaultInstructorInfo;
 
+  const isInstructorInfoLoading = instructorProfileStatus === RequestStatus.LOADING;
   const isLoading = classes.status === RequestStatus.LOADING;
   const showInstructorCalendar = getConfig()?.enable_instructor_calendar || false;
 
@@ -71,6 +86,16 @@ const InstructorsDetailPage = () => {
     setCurrentPage(targetPage);
     dispatch(updateCurrentPage(targetPage));
   };
+
+  useEffect(() => {
+    if (instructorInfo.instructorEmail) {
+      dispatch(fetchInstructorProfile(instructorInfo.instructorEmail));
+    }
+
+    return () => {
+      dispatch(resetInstructorInfo());
+    };
+  }, [dispatch, instructorInfo.instructorEmail]);
 
   useEffect(() => {
     if (institution.id) {
@@ -131,7 +156,32 @@ const InstructorsDetailPage = () => {
         </div>
       </div>
 
-      <Tabs variant="tabs" defaultActiveKey="classes" id="uncontrolled-tab-example" className="mb-3 tabstpz">
+      <Tabs variant="tabs" defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3 tabstpz">
+        <Tab eventKey="profile" title="Profile" tabClassName="text-decoration-none">
+          <ProfileCard
+            profileImage={instructorImage}
+            email={instructorInfo.instructorEmail}
+            userRole="Instructor"
+            name={instructorName || ''}
+            lastAccessDate={formatUTCDate(lastAccess)}
+            isLoading={isInstructorInfoLoading}
+            createdDate={formatUTCDate(created)}
+          >
+            {classes.data.length > 0 && (
+              <>
+                <h3 className="text-uppercase">Courses taught</h3>
+                {classes.data?.map(({ classId, masterCourseName }) => (
+                  <p
+                    key={classId}
+                    className="text-truncate link mb-1"
+                  >
+                    {masterCourseName}
+                  </p>
+                ))}
+              </>
+            )}
+          </ProfileCard>
+        </Tab>
         <Tab eventKey="classes" title="Classes" tabClassName="text-decoration-none">
           <Table
             isLoading={isLoading}
