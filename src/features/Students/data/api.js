@@ -56,10 +56,30 @@ function getClassesMetrics(institutionId, days) {
   );
 }
 
+/**
+ * Retrieves student information based on their email address.
+ *
+ * @param {String} studentEmail - Email address of the student for whom you
+ *                                want to retrieve information.
+ * @param {Object} [options] - Extra options to pass to the API.:
+ */
+function getStudentsByEmail(studentEmail, options = {}) {
+  const params = {
+    learner_email: studentEmail,
+    ...options,
+  };
+
+  return getAuthenticatedHttpClient().get(
+    `${getConfig().COURSE_OPERATIONS_API_V2_BASE_URL}/students/`,
+    { params },
+  );
+}
+
 export {
   getStudentbyInstitutionAdmin,
   handleEnrollments,
   getStudentsMetrics,
   getClassesMetrics,
   getMessages,
+  getStudentsByEmail,
 };

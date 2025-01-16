@@ -44,6 +44,9 @@ describe('columns', () => {
         values: {
           learnerName: 'Test User',
         },
+        original: {
+          learnerEmail: 'testuser@example.com',
+        },
       },
     });
 

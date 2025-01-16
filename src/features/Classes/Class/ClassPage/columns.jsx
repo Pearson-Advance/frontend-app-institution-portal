@@ -2,6 +2,9 @@
 import React from 'react';
 import { ProgressBar } from '@edx/paragon';
 import { Badge } from 'react-paragon-topaz';
+import { Link } from 'react-router-dom';
+
+import { useInstitutionIdQueryParam } from 'hooks';
 
 const badgeVariants = {
   active: 'success',
@@ -19,7 +22,19 @@ const columns = [
   {
     Header: 'Student',
     accessor: 'learnerName',
-    Cell: ({ row }) => (<span className="text-capitalize">{row.values.learnerName}</span>),
+    Cell: ({ row }) => {
+      const addQueryParam = useInstitutionIdQueryParam();
+      const url = addQueryParam(`/students/${encodeURIComponent(row.original.learnerEmail)}`);
+
+      return (
+        <Link
+          to={url}
+          className="text-truncate link"
+        >
+          {row.values.learnerName}
+        </Link>
+      );
+    },
   },
   {
     Header: 'Email',

@@ -1,13 +1,29 @@
 /* eslint-disable react/prop-types */
 import { ProgressBar } from '@edx/paragon';
+import { Link } from 'react-router-dom';
+
 import LinkWithQuery from 'features/Main/LinkWithQuery';
 
 import { formatUTCDate } from 'helpers';
+import { useInstitutionIdQueryParam } from 'hooks';
 
 const columns = [
   {
     Header: 'Student',
     accessor: 'learnerName',
+    Cell: ({ row }) => {
+      const addQueryParam = useInstitutionIdQueryParam();
+      const url = addQueryParam(`/students/${encodeURIComponent(row.original.learnerEmail)}`);
+
+      return (
+        <Link
+          to={url}
+          className="text-truncate link"
+        >
+          {row.values.learnerName}
+        </Link>
+      );
+    },
   },
   {
     Header: 'Email',

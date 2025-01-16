@@ -22,6 +22,7 @@ import ClassesPage from 'features/Classes/ClassesPage';
 import CoursesPage from 'features/Courses/CoursesPage';
 import LicensesPage from 'features/Licenses/LicensesPage';
 import StudentsPage from 'features/Students/StudentsPage';
+import StudentDetailPage from 'features/Students/StudentDetailPage';
 import DashboardPage from 'features/Dashboard/DashboardPage';
 import CoursesDetailPage from 'features/Courses/CoursesDetailPage';
 import LicensesDetailPage from 'features/Licenses/LicensesDetailPage';
@@ -71,6 +72,7 @@ const Main = () => {
   const routes = [
     { path: '/dashboard', component: DashboardPage, exact: true },
     { path: '/students', component: StudentsPage, exact: true },
+    { path: '/students/:studentEmail', component: StudentDetailPage, exact: true },
     { path: '/instructors', component: InstructorsPage, exact: true },
     { path: '/instructors/:instructorUsername', component: InstructorsDetailPage, exact: true },
     { path: '/courses', component: CoursesPage, exact: true },
