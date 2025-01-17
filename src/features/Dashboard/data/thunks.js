@@ -1,5 +1,6 @@
 import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
+import { sortAlphabetically } from 'react-paragon-topaz';
 
 import { getLicensesByInstitution, getClassesByInstitution } from 'features/Common/data/api';
 import {
@@ -34,11 +35,15 @@ function fetchClassesData(id, hasInstructors = false) {
     try {
       if (hasInstructors) {
         const response = camelCaseObject(await getClassesByInstitution(id, '', false));
-        dispatch(fetchClassesDataSuccess(response.data));
+        const sortedData = sortAlphabetically(response.data, 'className');
+
+        dispatch(fetchClassesDataSuccess(sortedData));
       } else {
         const instructorsNull = { instructors: 'null' };
         const response = camelCaseObject(await getClassesByInstitution(id, '', false, '', instructorsNull));
-        dispatch(fetchClassesNoInstructorsDataSuccess(response.data));
+        const sortedData = sortAlphabetically(response.data, 'className');
+
+        dispatch(fetchClassesNoInstructorsDataSuccess(sortedData));
       }
     } catch (error) {
       // eslint-disable-next-line no-unused-expressions

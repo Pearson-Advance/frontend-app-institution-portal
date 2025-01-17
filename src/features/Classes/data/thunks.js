@@ -1,5 +1,7 @@
 import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
+import { sortAlphabetically } from 'react-paragon-topaz';
+
 import {
   fetchClassesDataRequest,
   fetchClassesDataSuccess,
@@ -21,7 +23,13 @@ function fetchClassesData(id, currentPage, courseId = '', urlParamsFilters = '',
       const response = camelCaseObject(
         await getClassesByInstitution(id, courseId, limit, currentPage, urlParamsFilters),
       );
-      dispatch(fetchClassesDataSuccess(response.data));
+      const sortedData = sortAlphabetically(response.data.results, 'className');
+      const classes = {
+        ...response.data,
+        results: sortedData,
+      };
+
+      dispatch(fetchClassesDataSuccess(classes));
     } catch (error) {
       dispatch(fetchClassesDataFailed());
       logError(error);
@@ -35,7 +43,9 @@ function fetchClassesOptionsData(id, courseId) {
 
     try {
       const response = camelCaseObject(await getClassesByInstitution(id, courseId, false));
-      dispatch(updateClassesOptions(response.data));
+      const sortedData = sortAlphabetically(response.data, 'className');
+
+      dispatch(updateClassesOptions(sortedData));
     } catch (error) {
       dispatch(fetchClassesDataFailed());
       logError(error);
@@ -51,7 +61,9 @@ function fetchAllClassesData(id, courseId = '', urlParamsFilters = '', limit = f
       const response = camelCaseObject(
         await getClassesByInstitution(id, courseId, limit, initialPage, urlParamsFilters),
       );
-      dispatch(fetchAllClassesDataSuccess(response.data));
+      const sortedData = sortAlphabetically(response.data, 'className');
+
+      dispatch(fetchAllClassesDataSuccess(sortedData));
     } catch (error) {
       dispatch(fetchAllClassesDataFailed());
       logError(error);

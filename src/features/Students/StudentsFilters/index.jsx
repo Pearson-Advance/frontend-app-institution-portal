@@ -59,7 +59,7 @@ const StudentsFilters = ({ resetPagination }) => {
       ? courses.map(course => ({
         ...course,
         label: course.masterCourseName,
-        value: course.masterCourseName,
+        value: course.masterCourseId,
       }))
       : [];
 
