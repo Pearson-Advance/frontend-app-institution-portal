@@ -1,6 +1,8 @@
 import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
 import {
+  updateStudentProfile,
+  updateStudentProfileStatus,
   fetchStudentsDataRequest,
   fetchStudentsDataSuccess,
   fetchStudentsDataFailed,
@@ -14,8 +16,10 @@ import {
 import {
   getClassesMetrics,
   getStudentsMetrics,
+  getStudentsByEmail,
   getStudentbyInstitutionAdmin,
 } from 'features/Students/data/api';
+import { RequestStatus } from 'features/constants';
 
 function fetchStudentsData(id, currentPage, filtersData) {
   return async (dispatch) => {
@@ -58,9 +62,42 @@ function fetchStudentsMetricsData(institutionId, days) {
     }
   };
 }
+/**
+ * The function fetches a student's profile using their email and updates the profile status
+ * accordingly.
+ *
+ * @param {String} studentEmail -The email of the student whose profile you want to fetch.
+ * @param {Object} [options] - Extra options to pass to the API.
+ */
+
+function fetchStudentProfile(studentEmail, options = {}) {
+  return async (dispatch) => {
+    dispatch(updateStudentProfileStatus(RequestStatus.LOADING));
+
+    try {
+      const response = camelCaseObject(await getStudentsByEmail(studentEmail, options));
+
+      // IF no results are returned, set the status to ERROR
+      if (response.data.results.length === 0) {
+        return dispatch(updateStudentProfileStatus(RequestStatus.ERROR));
+      }
+
+      const studentInfo = {
+        ...response.data.results[0] || {},
+      };
+
+      dispatch(updateStudentProfile(studentInfo));
+      return dispatch(updateStudentProfileStatus(RequestStatus.INITIAL));
+    } catch (error) {
+      logError(error);
+      return dispatch(updateStudentProfileStatus(RequestStatus.ERROR));
+    }
+  };
+}
 
 export {
   fetchStudentsData,
+  fetchStudentProfile,
   fetchClassesMetricsData,
   fetchStudentsMetricsData,
 };

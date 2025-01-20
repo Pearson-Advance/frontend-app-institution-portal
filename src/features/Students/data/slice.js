@@ -18,6 +18,7 @@ const initialState = {
     ...initialStateService,
   },
   filters: {},
+  studentProfile: {},
 };
 
 export const studentsSlice = createSlice({
@@ -66,6 +67,15 @@ export const studentsSlice = createSlice({
     fetchStudentsMetricsDataFailed: (state) => {
       state.studentsMetrics.status = RequestStatus.ERROR;
     },
+    updateStudentProfile: (state, { payload }) => {
+      state.studentProfile = payload;
+    },
+    updateStudentProfileStatus: (state, { payload }) => {
+      state.studentProfile.status = payload;
+    },
+    resetStudentProfile: (state) => {
+      state.studentProfile = initialState.studentProfile;
+    },
   },
 });
 
@@ -82,6 +92,9 @@ export const {
   fetchStudentsMetricsDataRequest,
   fetchStudentsMetricsDataSuccess,
   fetchStudentsMetricsDataFailed,
+  updateStudentProfile,
+  resetStudentProfile,
+  updateStudentProfileStatus,
 } = studentsSlice.actions;
 
 export const { reducer } = studentsSlice;
