@@ -21,7 +21,7 @@ describe('Header', () => {
     LMS_BASE_URL: 'http://localhost:18000',
   };
 
-  it('renders header correctly with "Institution Name"', async () => {
+  test('Should render header correctly with "Institution Name"', async () => {
     let getByText;
 
     await act(async () => {
@@ -36,21 +36,21 @@ describe('Header', () => {
     expect(getByText('User')).toBeInTheDocument();
   });
 
-  it('renders header correctly', () => {
+  test('Should render header correctly', () => {
     const { getByText } = render(
       <AppContext.Provider value={{ authenticatedUser, config }}>
         <Header />
       </AppContext.Provider>,
     );
 
-    const titleApp = getByText('CertPREP Manager');
+    const titleApp = getByText('Pearson Skilling Administrator');
     const userName = getByText('User');
 
     expect(userName).toBeInTheDocument();
     expect(titleApp).toBeInTheDocument();
   });
 
-  it('toggles account menu on button click', () => {
+  test('Should toggle account menu on button click', () => {
     const { getByRole, getByText } = render(
       <AppContext.Provider value={{ authenticatedUser, config }}>
         <Header />
@@ -67,7 +67,7 @@ describe('Header', () => {
     expect(logOutLink).toBeInTheDocument();
   });
 
-  it('should have correct href attributes for the links', () => {
+  test('Should have correct href attributes for the links', () => {
     const { getByText, getByRole } = render(
       <AppContext.Provider value={{ authenticatedUser, config }}>
         <Header />

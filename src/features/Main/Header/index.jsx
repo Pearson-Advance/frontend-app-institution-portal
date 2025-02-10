@@ -8,7 +8,7 @@ export const Header = () => {
   const { authenticatedUser } = useContext(AppContext);
   const userName = authenticatedUser.username;
   const questionsLink = () => `${getConfig().HEADER_QUESTIONS_LINK}`;
-  const platformName = getConfig().PLATFORM_NAME ? getConfig().PLATFORM_NAME : 'CertPREP Manager';
+  const platformName = getConfig().PLATFORM_NAME ? getConfig().PLATFORM_NAME : 'Pearson Skilling Administrator';
 
   return (
     <HeaderBase
