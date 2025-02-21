@@ -1,21 +1,45 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
-import CoursesFilters from 'features/Courses/CoursesFilters';
 import '@testing-library/jest-dom/extend-expect';
+import { getConfig } from '@edx/frontend-platform';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
+
 import { renderWithProviders } from 'test-utils';
+
+import CoursesFilters from 'features/Courses/CoursesFilters';
 import { allResultsOption } from 'features/constants';
 
-jest.mock('react-select', () => function reactSelect({ options, valueR, onChange }) {
-  function handleChange(event) {
-    onChange({ id: event.currentTarget.value });
+jest.mock('@edx/frontend-platform', () => ({
+  getConfig: jest.fn(() => ({
+    LMS_BASE_URL: 'http://localhost:18000',
+    COURSE_OPERATIONS_API_V2_BASE_URL: 'http://localhost:18000/pearson_course_operation/api/v2',
+    ACCOUNT_PROFILE_URL: 'https://example.com/profile',
+    enable_toggle_courses: true,
+  })),
+}));
+
+jest.mock('react-select', () => function reactSelect({
+  options, valueR, onChange, onInputChange,
+}) {
+  function handleInputChange(event) {
+    onInputChange(event.currentTarget.value, { action: 'set-value' });
 
     return event;
   }
 
+  function handleChange(event) {
+    onChange({ id: event.currentTarget.value });
+    handleInputChange(event);
+    return event;
+  }
+
   return (
-    <select data-testid="select" value={valueR} onChange={handleChange}>
+    <select
+      data-testid="select"
+      value={valueR}
+      onChange={handleChange}
+    >
       {options.map(({ label, value }) => (
         <option key={value} value={value}>
           {label}
@@ -69,7 +93,7 @@ describe('CoursesFilters Component', () => {
     });
   });
 
-  test('should select a course', async () => {
+  test('Should select a course', async () => {
     const { getByText, getByTestId } = renderWithProviders(
       <CoursesFilters />,
       { preloadedState: mockStore },
@@ -101,5 +125,40 @@ describe('CoursesFilters Component', () => {
     });
 
     expect(getByText('Show all search results')).toBeInTheDocument();
+  });
+
+  test('Should reset the toggle if a new value is selected from the selector', async () => {
+    const { getByRole, getByTestId } = renderWithProviders(
+      <CoursesFilters />,
+      { preloadedState: mockStore },
+    );
+
+    const courseSelect = getByTestId('select');
+    const toggle = getByRole('switch');
+
+    expect(toggle).toBeInTheDocument();
+    fireEvent.click(toggle);
+
+    expect(toggle).toHaveProperty('checked', true);
+
+    fireEvent.change(courseSelect, {
+      target: { value: 'Demo Course 1' },
+    });
+
+    await waitFor(() => {
+      expect(toggle).toHaveProperty('checked', false);
+    });
+  });
+
+  test('Should hide the toggle if the flag "enable_toggle_courses" is disabled', () => {
+    getConfig.mockImplementation(() => ({
+      enable_toggle_courses: false,
+    }));
+
+    const { queryByText } = renderWithProviders(
+      <CoursesFilters />,
+    );
+
+    expect(queryByText('Show my courses')).not.toBeInTheDocument();
   });
 });
