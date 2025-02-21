@@ -5,21 +5,24 @@ import { Col, Form } from '@edx/paragon';
 import { Select } from 'react-paragon-topaz';
 import { getConfig } from '@edx/frontend-platform';
 
-import { updateFilters, updateCurrentPage, updateShowAllCourses } from 'features/Courses/data/slice';
+import { updateFilters, updateCurrentPage } from 'features/Courses/data/slice';
 import { fetchCoursesData, fetchCoursesOptionsData } from 'features/Courses/data/thunks';
 
 import {
-  initialPage, styleFirstOption, allResultsOption, RequestStatus,
+  initialPage,
+  styleFirstOption,
+  allResultsOption,
+  RequestStatus,
 } from 'features/constants';
 
 const CoursesFilters = () => {
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const courses = useSelector((state) => state.courses.selectOptions);
-  const showAllCourses = useSelector((state) => state.courses.showAllCourses);
   const coursesRequest = useSelector((state) => state.courses.table.status);
   const [courseOptions, setCourseOptions] = useState([]);
   const [courseSelected, setCourseSelected] = useState(null);
+  const [filterMyCourses, setFilterMyCourses] = useState(false);
   const [inputCourse, setInputCourse] = useState('');
   const [defaultOption, setDefaultOption] = useState(allResultsOption);
 
@@ -40,9 +43,19 @@ const CoursesFilters = () => {
         label: `${allResultsOption.label} for ${value}`,
       });
     }
+
+    if (action === 'set-value' && filterMyCourses) {
+      setFilterMyCourses(false);
+    }
   };
 
-  const handleToggleChange = e => dispatch(updateShowAllCourses(e.target.checked));
+  const handleToggleChange = e => {
+    if (e.target.checked) {
+      setCourseSelected(null);
+    }
+
+    setFilterMyCourses(e.target.checked);
+  };
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
@@ -65,14 +78,13 @@ const CoursesFilters = () => {
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      const params = {
-        has_classes: showAllCourses,
-      };
+      const params = { has_classes: filterMyCourses };
 
       if (courseSelected) {
         params.course_name = courseSelected.value === defaultOption.value
           ? inputCourse : courseSelected.value;
       }
+
       dispatch(fetchCoursesData(selectedInstitution.id, initialPage, params));
       setInputCourse('');
       setDefaultOption(allResultsOption);
@@ -81,7 +93,7 @@ const CoursesFilters = () => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseSelected, selectedInstitution, showAllCourses]);
+  }, [courseSelected, selectedInstitution, filterMyCourses]);
 
   const isLoading = coursesRequest === RequestStatus.LOADING;
 
@@ -113,7 +125,7 @@ const CoursesFilters = () => {
             showCoursesToggle && (
               <Form.Row className="w-100 mt-2">
                 <Form.Switch
-                  checked={showAllCourses}
+                  checked={filterMyCourses}
                   onChange={handleToggleChange}
                   className="ml-3"
                   disabled={isLoading}
