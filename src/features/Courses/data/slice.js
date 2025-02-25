@@ -19,7 +19,6 @@ const initialState = {
     data: null,
   },
   notificationMessage: '',
-  showAllCourses: false,
 };
 
 export const coursesSlice = createSlice({
@@ -68,9 +67,6 @@ export const coursesSlice = createSlice({
     updateNotificationMsg: (state, { payload }) => {
       state.notificationMessage = payload;
     },
-    updateShowAllCourses: (state, { payload }) => {
-      state.showAllCourses = payload;
-    },
   },
 });
 
@@ -87,7 +83,6 @@ export const {
   newClassFailed,
   resetClassState,
   updateNotificationMsg,
-  updateShowAllCourses,
 } = coursesSlice.actions;
 
 export const { reducer } = coursesSlice;
