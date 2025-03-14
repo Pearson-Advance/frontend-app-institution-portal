@@ -115,7 +115,7 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
                   {inputFieldDisplay === 'email' && (
                     <Form.Group as={Col}>
                       <Form.Control
-                        type="email"
+                        type="text"
                         floatingLabel="Instructor Email"
                         name="instructor_email"
                         placeholder="Enter Instructor Email"
