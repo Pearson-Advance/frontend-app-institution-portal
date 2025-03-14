@@ -128,7 +128,7 @@ const StudentsFilters = ({ resetPagination }) => {
               {inputFieldDisplay === 'email' && (
                 <Form.Group as={Col}>
                   <Form.Control
-                    type="email"
+                    type="text"
                     floatingLabel="Student Email"
                     name="learner_email"
                     placeholder="Enter Student Email"
