@@ -6,7 +6,9 @@ import { Header as HeaderBase } from 'react-paragon-topaz';
 
 export const Header = () => {
   const { authenticatedUser } = useContext(AppContext);
-  const userName = authenticatedUser.name || authenticatedUser.username;
+  const userName = !authenticatedUser.name || authenticatedUser.name === 'nofullname'
+    ? authenticatedUser.username
+    : authenticatedUser.name;
   const questionsLink = () => `${getConfig().HEADER_QUESTIONS_LINK}`;
   const platformName = getConfig().PLATFORM_NAME ? getConfig().PLATFORM_NAME : 'Pearson Skilling Administrator';
 
