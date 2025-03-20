@@ -6,9 +6,7 @@ import { Header as HeaderBase } from 'react-paragon-topaz';
 
 export const Header = () => {
   const { authenticatedUser } = useContext(AppContext);
-  const userName = !authenticatedUser.name || authenticatedUser.name === 'nofullname'
-    ? authenticatedUser.username
-    : authenticatedUser.name;
+  const displayName = authenticatedUser?.name || authenticatedUser.username;
   const questionsLink = () => `${getConfig().HEADER_QUESTIONS_LINK}`;
   const platformName = getConfig().PLATFORM_NAME ? getConfig().PLATFORM_NAME : 'Pearson Skilling Administrator';
 
@@ -25,7 +23,7 @@ export const Header = () => {
         <Dropdown className="dropdown-user">
           <Dropdown.Toggle variant="success" id="dropdown-basic-1">
             <i className="fa-regular fa-user icon" />
-            {userName}
+            {displayName}
           </Dropdown.Toggle>
           <Dropdown.Menu>
             <Dropdown.Item
