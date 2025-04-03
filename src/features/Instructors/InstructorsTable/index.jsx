@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { getConfig } from '@edx/frontend-platform';
 
 import {
   Row,
@@ -8,7 +9,7 @@ import {
 } from '@edx/paragon';
 import DataTable from '@edx/paragon/dist/DataTable';
 
-import { columns } from 'features/Instructors/InstructorsTable/columns';
+import { getColumns } from 'features/Instructors/InstructorsTable/columns';
 import { RequestStatus } from 'features/constants';
 
 const InstructorsTable = ({
@@ -16,7 +17,8 @@ const InstructorsTable = ({
   count,
 }) => {
   const instructorsRequest = useSelector((state) => state.instructors.table.status);
-  const COLUMNS = useMemo(() => columns, []);
+  const showInstructorFeature = getConfig().SHOW_INSTRUCTOR_FEATURES || false;
+  const COLUMNS = useMemo(() => getColumns(showInstructorFeature), [showInstructorFeature]);
   const isLoading = instructorsRequest === RequestStatus.LOADING;
 
   return (
