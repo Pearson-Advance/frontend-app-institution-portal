@@ -5,7 +5,7 @@ import { MemoryRouter, Route } from 'react-router-dom';
 import { renderWithProviders } from 'test-utils';
 
 import InstructorsTable from 'features/Instructors/InstructorsTable';
-import { columns } from 'features/Instructors/InstructorsTable/columns';
+import { getColumns } from 'features/Instructors/InstructorsTable/columns';
 
 describe('Instructor Table', () => {
   test('renders InstructorsTable without data', () => {
@@ -37,7 +37,7 @@ describe('Instructor Table', () => {
     const component = renderWithProviders(
       <MemoryRouter initialEntries={['/instructors']}>
         <Route path="/instructors">
-          <InstructorsTable data={data} count={data.length} columns={columns} />
+          <InstructorsTable data={data} count={data.length} columns={getColumns()} />
         </Route>
       </MemoryRouter>,
     );

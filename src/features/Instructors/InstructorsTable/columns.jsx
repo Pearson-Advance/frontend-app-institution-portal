@@ -5,7 +5,7 @@ import { daysWeek, hoursDay } from 'features/constants';
 
 import LinkWithQuery from 'features/Main/LinkWithQuery';
 
-const columns = [
+const getColumns = (showInstructorFeature) => [
   {
     Header: 'Instructor',
     accessor: 'instructorName',
@@ -57,6 +57,13 @@ const columns = [
     Header: 'Courses Taught',
     accessor: 'classes',
   },
-];
+  showInstructorFeature && {
+    Header: 'Status',
+    accessor: 'active',
+    Cell: ({ row }) => (
+      <span>{row.original.active ? 'Active' : 'Inactive'}</span>
+    ),
+  },
+].filter(Boolean);
 
-export { columns };
+export { getColumns };
