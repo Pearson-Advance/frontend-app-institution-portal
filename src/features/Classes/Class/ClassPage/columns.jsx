@@ -1,8 +1,15 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { ProgressBar } from '@edx/paragon';
+import {
+  ProgressBar,
+  Dropdown,
+  IconButton,
+  Icon,
+} from '@edx/paragon';
 import { Badge } from 'react-paragon-topaz';
 import { Link } from 'react-router-dom';
+import { MoreHoriz } from '@edx/paragon/icons';
+import { getConfig } from '@edx/frontend-platform';
 
 import { useInstitutionIdQueryParam } from 'hooks';
 
@@ -68,6 +75,40 @@ const columns = [
     Header: 'Exam ready',
     accessor: 'examReady',
     Cell: ({ row }) => <span>{row.values.examReady ? 'Yes' : 'No'}</span>,
+  },
+  {
+    Header: '',
+    accessor: 'classId',
+    cellClassName: 'dropdownColumn',
+    disableSortBy: true,
+    Cell: ({ row }) => {
+      const { classId, userId } = row.original;
+      const progressPageLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/progress/${userId}`;
+      return (
+        <Dropdown className="dropdowntpz">
+          <Dropdown.Toggle
+            id="dropdown-toggle-with-iconbutton"
+            as={IconButton}
+            src={MoreHoriz}
+            iconAs={Icon}
+            variant="primary"
+            data-testid="droprown-action"
+            alt="menu for actions"
+          />
+          <Dropdown.Menu>
+            <Dropdown.Item
+              target="_blank"
+              rel="noreferrer"
+              href={progressPageLink}
+              className="text-truncate text-decoration-none custom-text-black"
+            >
+              <i className="fa-regular fa-bars-progress mr-2" />
+              View progress
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      );
+    },
   },
 ];
 
