@@ -10,7 +10,7 @@ import {
 
 import { getConfig } from '@edx/frontend-platform';
 import { Container, Spinner } from '@edx/paragon';
-import { Banner } from 'react-paragon-topaz';
+import { Banner, getUserRoles, USER_ROLES } from 'react-paragon-topaz';
 
 import CookiePolicyBanner from '@pearsonedunext/frontend-component-cookie-policy-banner';
 
@@ -48,6 +48,7 @@ const Main = () => {
   const dispatch = useDispatch();
   const institutions = useSelector((state) => state.main.institution.data);
   const addQueryParam = useInstitutionIdQueryParam();
+  const roles = getUserRoles();
 
   const searchParams = new URLSearchParams(location.search);
 
@@ -55,6 +56,9 @@ const Main = () => {
   const isLoadingInstitutions = statusInstitutions === RequestStatus.LOADING;
 
   const bannerText = getConfig().MAINTENANCE_BANNER_TEXT || '';
+
+  const requiredRoles = [USER_ROLES.GLOBAL_STAFF, USER_ROLES.INSTITUTION_ADMIN];
+  const isAuthorizedUser = requiredRoles.some(role => roles.includes(role));
 
   useEffect(() => {
     dispatch(fetchInstitutionData());
@@ -102,8 +106,8 @@ const Main = () => {
               />
             </div>
           )}
-          {!isLoadingInstitutions && institutions.length < 1 && <UnauthorizedPage />}
-          {!isLoadingInstitutions && institutions.length > 0 && (
+          {!isLoadingInstitutions && !isAuthorizedUser && <UnauthorizedPage />}
+          {!isLoadingInstitutions && isAuthorizedUser > 0 && (
             <>
               <Sidebar />
               <Container className="px-0 container-pages">
