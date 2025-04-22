@@ -3,6 +3,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { useDispatch, useSelector } from 'react-redux';
+import { getConfig } from '@edx/frontend-platform';
 
 import { RequestStatus } from 'features/constants';
 import { updateInstructorAdditionRequest } from 'features/Instructors/data/slice';
@@ -64,6 +65,8 @@ describe('Add instructor modal', () => {
   });
 
   test('Render add instructor modal', async () => {
+    getConfig.mockImplementation(() => ({ SHOW_INSTRUCTOR_FEATURES: true }));
+
     const { getByText } = renderWithProviders(
       <AddInstructors isOpen onClose={() => { }} />,
       { preloadedState: mockStore },
@@ -73,12 +76,15 @@ describe('Add instructor modal', () => {
     expect(getByText('Email *')).toBeInTheDocument();
     expect(getByText('First name')).toBeInTheDocument();
     expect(getByText('Last name')).toBeInTheDocument();
+    expect(getByText('Has enrollment permission')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
     expect(getByText('Add instructor')).toBeInTheDocument();
   });
 
   test('Should handle input changes correctly', () => {
-    const { getByPlaceholderText } = renderWithProviders(
+    getConfig.mockImplementation(() => ({ SHOW_INSTRUCTOR_FEATURES: true }));
+
+    const { getByPlaceholderText, getByLabelText } = renderWithProviders(
       <AddInstructors isOpen onClose={() => { }} />,
       { preloadedState: mockStore },
     );
@@ -86,14 +92,17 @@ describe('Add instructor modal', () => {
     const emailInput = getByPlaceholderText('Enter Email of the instructor');
     const firstNameInput = getByPlaceholderText('Enter the first name of the instructor');
     const lastNameInput = getByPlaceholderText('Enter the last name of the instructor');
+    const enrollmentSwitch = getByLabelText('Has enrollment permission');
 
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
     fireEvent.change(firstNameInput, { target: { value: 'John' } });
     fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
+    fireEvent.click(enrollmentSwitch);
 
     expect(emailInput.value).toBe('test@example.com');
     expect(firstNameInput.value).toBe('John');
     expect(lastNameInput.value).toBe('Doe');
+    expect(enrollmentSwitch.checked).toBe(true);
   });
 
   test('Should disable and enable the button submit depending if the email is filled', () => {
