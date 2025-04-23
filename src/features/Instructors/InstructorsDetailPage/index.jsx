@@ -12,7 +12,6 @@ import {
   Tabs,
   Tab,
 } from '@edx/paragon';
-import { getConfig } from '@edx/frontend-platform';
 import { CalendarExpanded, ProfileCard, formatUTCDate } from 'react-paragon-topaz';
 import { startOfMonth, endOfMonth } from 'date-fns';
 
@@ -80,7 +79,6 @@ const InstructorsDetailPage = () => {
 
   const isInstructorInfoLoading = instructorProfileStatus === RequestStatus.LOADING;
   const isLoading = classes.status === RequestStatus.LOADING;
-  const showInstructorCalendar = getConfig()?.enable_instructor_calendar || false;
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -114,14 +112,14 @@ const InstructorsDetailPage = () => {
   }, [dispatch, institution.id, currentPage, instructorUsername]);
 
   useEffect(() => {
-    if (instructorInfo.instructorId && showInstructorCalendar) {
+    if (instructorInfo.instructorId) {
       dispatch(fetchEventsData({ ...rangeDates, instructor_id: instructorInfo.instructorId }));
     }
 
     return () => {
       dispatch(resetEvents());
     };
-  }, [dispatch, instructorInfo.instructorId, rangeDates, showInstructorCalendar]);
+  }, [dispatch, instructorInfo.instructorId, rangeDates]);
 
   useEffect(() => {
     if (institution.id !== undefined && institutionRef.current === undefined) {
@@ -202,20 +200,16 @@ const InstructorsDetailPage = () => {
           />
           )}
         </Tab>
-        {
-        showInstructorCalendar && (
-          <Tab eventKey="availability" title="Availability" tabClassName="text-decoration-none">
-            <div className="p-3 bg-white mb-5 rounded-bottom container-calendar">
-              <CalendarExpanded
-                eventsList={eventsList}
-                onRangeChange={getRangeDate}
-                hideDeleteButtons
-                hideEditButtons
-              />
-            </div>
-          </Tab>
-        )
-        }
+        <Tab eventKey="availability" title="Availability" tabClassName="text-decoration-none">
+          <div className="p-3 bg-white mb-5 rounded-bottom container-calendar">
+            <CalendarExpanded
+              eventsList={eventsList}
+              onRangeChange={getRangeDate}
+              hideDeleteButtons
+              hideEditButtons
+            />
+          </div>
+        </Tab>
       </Tabs>
     </Container>
   );
