@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import { getConfig } from '@edx/frontend-platform';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
 
@@ -15,7 +14,6 @@ jest.mock('@edx/frontend-platform', () => ({
     LMS_BASE_URL: 'http://localhost:18000',
     COURSE_OPERATIONS_API_V2_BASE_URL: 'http://localhost:18000/pearson_course_operation/api/v2',
     ACCOUNT_PROFILE_URL: 'https://example.com/profile',
-    enable_toggle_courses: true,
   })),
 }));
 
@@ -148,17 +146,5 @@ describe('CoursesFilters Component', () => {
     await waitFor(() => {
       expect(toggle).toHaveProperty('checked', false);
     });
-  });
-
-  test('Should hide the toggle if the flag "enable_toggle_courses" is disabled', () => {
-    getConfig.mockImplementation(() => ({
-      enable_toggle_courses: false,
-    }));
-
-    const { queryByText } = renderWithProviders(
-      <CoursesFilters />,
-    );
-
-    expect(queryByText('Show my courses')).not.toBeInTheDocument();
   });
 });
