@@ -15,6 +15,7 @@ import {
 
 import { Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
+import { getConfig } from '@edx/frontend-platform';
 import { Info, Close, MailOutline } from '@edx/paragon/icons';
 
 import { RequestStatus } from 'features/constants';
@@ -31,18 +32,34 @@ const initialState = {
     email: '',
     firstName: '',
     lastName: '',
+    hasEnrollmentPrivilege: false,
   },
 };
 
 const AddInstructors = ({ isOpen, onClose }) => {
+  const enableEnrollmentToggle = getConfig()?.SHOW_INSTRUCTOR_FEATURES || false;
+
   const dispatch = useDispatch();
   const instructorRequest = useSelector((state) => state.instructors.addInstructor);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const [formState, setFormState] = useState(initialState);
 
-  const handleInputChange = ({ target }) => (
-    setFormState({ ...formState, instructor: { ...formState.instructor, [target.name]: target.value } })
-  );
+  const handleInputChange = (e) => {
+    const {
+      name,
+      type,
+      value,
+      checked,
+    } = e.target;
+
+    setFormState({
+      ...formState,
+      instructor: {
+        ...formState.instructor,
+        [name]: type === 'checkbox' ? checked : value,
+      },
+    });
+  };
 
   const handleCloseModal = () => {
     onClose();
@@ -62,6 +79,10 @@ const AddInstructors = ({ isOpen, onClose }) => {
       formData.append('instructor_email', formState.instructor.email);
       formData.append('first_name', formState.instructor.firstName);
       formData.append('last_name', formState.instructor.lastName);
+
+      if (formState.instructor.hasEnrollmentPrivilege) {
+        formData.append('has_enrollment_privilege', formState.instructor.hasEnrollmentPrivilege);
+      }
 
       await dispatch(addInstructor(selectedInstitution.id, formData));
       handleCloseModal();
@@ -145,6 +166,18 @@ const AddInstructors = ({ isOpen, onClose }) => {
                     onChange={handleInputChange}
                     value={formState.instructor.lastName}
                   />
+                  {
+                    enableEnrollmentToggle && (
+                      <Form.Switch
+                        className="mr-0"
+                        name="hasEnrollmentPrivilege"
+                        onChange={handleInputChange}
+                        checked={formState.instructor.hasEnrollmentPrivilege}
+                      >
+                        Has enrollment permission
+                      </Form.Switch>
+                    )
+                  }
                 </FormGroup>
                 {instructorRequest.status === RequestStatus.COMPLETE_WITH_ERRORS && (
                   <Alert
