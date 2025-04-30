@@ -1,7 +1,7 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks';
 
 import { renderWithProviders } from 'test-utils';
-import { useInstitutionIdQueryParam } from 'hooks';
+import { useInstitutionIdQueryParam, useToast } from 'hooks';
 import { INSTITUTION_QUERY_ID } from 'features/constants';
 
 describe('useInstitutionIdQueryParam', () => {
@@ -47,5 +47,40 @@ describe('useInstitutionIdQueryParam', () => {
     });
 
     expect(result.current('http://example.com?foo=bar')).toBe(`http://example.com?foo=bar&${INSTITUTION_QUERY_ID}=${institutionId}`);
+  });
+});
+
+describe('useToast', () => {
+  test('Should initialize with default toast state', () => {
+    const { result } = renderHook(() => useToast());
+
+    expect(result.current.isVisible).toBe(false);
+    expect(result.current.message).toBe('');
+  });
+
+  test('Should update toast state when showToast is called', () => {
+    const { result } = renderHook(() => useToast());
+
+    act(() => {
+      result.current.showToast('Test message');
+    });
+
+    expect(result.current.isVisible).toBe(true);
+    expect(result.current.message).toBe('Test message');
+  });
+
+  test('Should reset toast state when hideToast is called', () => {
+    const { result } = renderHook(() => useToast());
+
+    act(() => {
+      result.current.showToast('Test message');
+    });
+
+    act(() => {
+      result.current.hideToast();
+    });
+
+    expect(result.current.isVisible).toBe(false);
+    expect(result.current.message).toBe('');
   });
 });

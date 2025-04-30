@@ -7,12 +7,14 @@ import {
   IconButton,
   Icon,
   useToggle,
+  Toast,
 } from '@edx/paragon';
 import { Badge } from 'react-paragon-topaz';
 import { MoreHoriz } from '@edx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 import { logError } from '@edx/frontend-platform/logging';
 
+import { useToast } from 'hooks';
 import AddClass from 'features/Courses/AddClass';
 import DeleteModal from 'features/Common/DeleteModal';
 import LinkWithQuery from 'features/Main/LinkWithQuery';
@@ -20,7 +22,7 @@ import LinkWithQuery from 'features/Main/LinkWithQuery';
 import { RequestStatus, initialPage, modalDeleteText } from 'features/constants';
 
 import { deleteClass } from 'features/Courses/data/thunks';
-import { fetchClassesData } from 'features/Classes/data/thunks';
+import { fetchClassesData, fetchLabSummaryLink } from 'features/Classes/data/thunks';
 
 import { formatUTCDate, setAssignStaffRole } from 'helpers';
 import { resetClassState } from 'features/Courses/data/slice';
@@ -107,7 +109,7 @@ const columns = [
         endDate,
         minStudentsAllowed,
         maxStudents,
-        labSummaryUrl,
+        labSummaryTag,
       } = row.original;
 
       const initialDeletionClassState = {
@@ -121,6 +123,12 @@ const columns = [
       const [isOpenModal, openModal, closeModal] = useToggle(false);
       const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
       const gradebookUrl = getConfig().GRADEBOOK_MICROFRONTEND_URL || getConfig().LMS_BASE_URL;
+      const {
+        isVisible,
+        message,
+        showToast,
+        hideToast,
+      } = useToast();
 
       const handleResetDeletion = () => {
         setDeletionState(initialDeletionClassState);
@@ -155,12 +163,26 @@ const columns = [
         }
       };
 
+      const handleLabSummary = () => {
+        dispatch(fetchLabSummaryLink(classId, labSummaryTag, (dashboardMessage) => {
+          showToast(dashboardMessage);
+        }));
+      };
+
       const finalCall = () => {
         dispatch(fetchClassesData(institution.id, initialPage));
       };
 
       return (
         <Dropdown className="dropdowntpz">
+          <Toast
+            onClose={hideToast}
+            show={isVisible}
+            className="toast-message"
+            data-testid="toast-message"
+          >
+            {message}
+          </Toast>
           <Dropdown.Toggle
             id="dropdown-toggle-with-iconbutton"
             as={IconButton}
@@ -197,14 +219,10 @@ const columns = [
               <i className="fa-regular fa-book mr-2 mb-1" />
               Gradebook
             </Dropdown.Item>
-            {labSummaryUrl && (
-              <Dropdown.Item
-                target="_blank"
-                rel="noreferrer"
-                href={labSummaryUrl}
-              >
+            {labSummaryTag && (
+              <Dropdown.Item onClick={handleLabSummary}>
                 <i className="fa-regular fa-rectangle-list mr-2" />
-                Lab summary
+                Lab Dashboard
               </Dropdown.Item>
             )}
             <Dropdown.Item onClick={handleOpenDeleteModal} className="text-danger">

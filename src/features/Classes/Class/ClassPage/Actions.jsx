@@ -9,12 +9,13 @@ import {
   Dropdown,
   useToggle,
   IconButton,
+  Toast,
 } from '@edx/paragon';
 import { MoreVert } from '@edx/paragon/icons';
 import { logError } from '@edx/frontend-platform/logging';
 
 import { setAssignStaffRole } from 'helpers';
-import { useInstitutionIdQueryParam } from 'hooks';
+import { useInstitutionIdQueryParam, useToast } from 'hooks';
 import { RequestStatus, modalDeleteText } from 'features/constants';
 
 import AddClass from 'features/Courses/AddClass';
@@ -23,7 +24,7 @@ import EnrollStudent from 'features/Classes/EnrollStudent';
 
 import { resetClassState } from 'features/Courses/data/slice';
 import { deleteClass } from 'features/Courses/data/thunks';
-import { fetchAllClassesData } from 'features/Classes/data/thunks';
+import { fetchAllClassesData, fetchLabSummaryLink } from 'features/Classes/data/thunks';
 
 const initialDeletionClassState = {
   isModalOpen: false,
@@ -40,6 +41,12 @@ const Actions = ({ previousPage }) => {
   const deletionState = useSelector((state) => state.courses.newClass.status);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const gradebookUrl = getConfig().GRADEBOOK_MICROFRONTEND_URL || getConfig().LMS_BASE_URL;
+  const {
+    isVisible,
+    message,
+    showToast,
+    hideToast,
+  } = useToast();
 
   const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
 
@@ -102,12 +109,26 @@ const Actions = ({ previousPage }) => {
     }
   };
 
+  const handleLabSummary = () => {
+    dispatch(fetchLabSummaryLink(classIdDecoded, classInfo.labSummaryTag, (dashboardMessage) => {
+      showToast(dashboardMessage);
+    }));
+  };
+
   const finalCall = () => {
     dispatch(fetchAllClassesData(selectedInstitution.id, courseIdDecoded));
   };
 
   return (
     <>
+      <Toast
+        onClose={hideToast}
+        show={isVisible}
+        className="toast-message"
+        data-testid="toast-message"
+      >
+        {message}
+      </Toast>
       <Button
         onClick={handleEnrollStudentModal}
         className="text-decoration-none text-white button-view-class mr-3"
@@ -141,14 +162,10 @@ const Actions = ({ previousPage }) => {
             <i className="fa-regular fa-book mr-2 mb-1" />
             Gradebook
           </Dropdown.Item>
-          {classInfo?.labSummaryUrl && (
-            <Dropdown.Item
-              target="_blank"
-              rel="noreferrer"
-              href={classInfo.labSummaryUrl}
-            >
+          {classInfo?.labSummaryTag && (
+            <Dropdown.Item onClick={handleLabSummary}>
               <i className="fa-regular fa-rectangle-list mr-2" />
-              Lab summary
+              Lab Dashboard
             </Dropdown.Item>
           )}
           <Dropdown.Item onClick={handleOpenDeleteModal} className="text-danger">

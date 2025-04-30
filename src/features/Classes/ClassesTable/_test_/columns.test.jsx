@@ -104,7 +104,7 @@ describe('columns', () => {
     expect(getByText('Delete Class')).toBeInTheDocument();
   });
 
-  test('Show Lab summary option when link is sent', async () => {
+  test('Show Lab Dashboard option when link is sent', async () => {
     const ActionColumn = () => columns[8].Cell({
       row: {
         values: {
@@ -112,7 +112,7 @@ describe('columns', () => {
         },
         original: {
           ...classDataMock,
-          labSummaryUrl: 'https: //',
+          labSummaryTag: 'skillable-dashboard',
         },
       },
     });
@@ -121,7 +121,7 @@ describe('columns', () => {
       classes: {
         table: {
           data: [
-            { ...classDataMock, labSummaryUrl: 'https: //' },
+            { ...classDataMock, labSummaryTag: 'skillable-dashboard' },
           ],
           count: 2,
           num_pages: 1,
@@ -143,6 +143,6 @@ describe('columns', () => {
 
     const button = getByTestId('droprown-action');
     fireEvent.click(button);
-    expect(getByText('Lab summary')).toBeInTheDocument();
+    expect(getByText('Lab Dashboard')).toBeInTheDocument();
   });
 });
