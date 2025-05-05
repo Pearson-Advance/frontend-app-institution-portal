@@ -2,7 +2,11 @@ import MockAdapter from 'axios-mock-adapter';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
 import {
-  fetchInstructorsData, addInstructor, fetchInstructorsOptionsData, assignInstructors,
+  fetchInstructorsData,
+  addInstructor,
+  fetchInstructorsOptionsData,
+  assignInstructors,
+  editInstructor,
 } from 'features/Instructors/data/thunks';
 import {
   updateCurrentPage,
@@ -273,6 +277,26 @@ describe('Instructors redux tests', () => {
     await executeThunk(assignInstructors(instructorForm), store.dispatch, store.getState);
 
     expect(store.getState().instructors.assignInstructors.status)
+      .toEqual('success');
+  });
+
+  test('successful edit instructor', async () => {
+    const instructorsApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/instructors/`;
+
+    const instructorForm = new FormData();
+
+    instructorForm.append('institution_id', 1);
+    instructorForm.append('instructor_id', 1);
+
+    axiosMock.onPatch(instructorsApiUrl)
+      .reply(200);
+
+    expect(store.getState().instructors.addInstructor.status)
+      .toEqual('loading');
+
+    await executeThunk(editInstructor(instructorForm), store.dispatch, store.getState);
+
+    expect(store.getState().instructors.addInstructor.status)
       .toEqual('success');
   });
 });

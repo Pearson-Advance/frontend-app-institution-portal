@@ -3,7 +3,7 @@ import { getColumns } from 'features/Instructors/InstructorsTable/columns';
 describe('columns', () => {
   test('returns columns with correct properties', () => {
     const COLUMNS = getColumns(true);
-    expect(COLUMNS).toHaveLength(5);
+    expect(COLUMNS).toHaveLength(6);
 
     const [
       nameColumn,

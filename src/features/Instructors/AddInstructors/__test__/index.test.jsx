@@ -123,6 +123,25 @@ describe('Add instructor modal', () => {
     fireEvent.change(emailInput, { target: { value: '' } });
     expect(sendButton).toBeDisabled();
   });
+
+  test('Edit mode', () => {
+    const instructorMock = {
+      instructorId: 1,
+      hasEnrollmentPrivilege: true,
+      instructorName: 'instructor test',
+    };
+
+    const { getByText, getByLabelText } = renderWithProviders(
+      <AddInstructors isOpen onClose={() => { }} isEditing instructorInfo={instructorMock} />,
+      { preloadedState: mockStore },
+    );
+
+    expect(getByText('Edit instructor test')).toBeInTheDocument();
+    const enrollmentSwitch = getByLabelText('Has enrollment permission');
+
+    expect(enrollmentSwitch).toBeInTheDocument();
+    expect(enrollmentSwitch.checked).toBe(true);
+  });
 });
 
 describe('Instructor modal - Request', () => {
