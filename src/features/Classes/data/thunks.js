@@ -12,6 +12,7 @@ import {
   fetchAllClassesDataFailed,
 } from 'features/Classes/data/slice';
 
+import { handleSkillableDashboard, handleXtremeLabsDashboard } from 'features/Classes/data/api';
 import { getClassesByInstitution } from 'features/Common/data/api';
 import { initialPage } from 'features/constants';
 
@@ -71,8 +72,40 @@ function fetchAllClassesData(id, courseId = '', urlParamsFilters = '', limit = f
   };
 }
 
+function fetchLabSummaryLink(classId, labSummaryTag, showToast) {
+  return async () => {
+    try {
+      const labDashboardOptions = {
+        'skillable-dashboard': handleSkillableDashboard,
+        'xtreme-labs-dashboard': handleXtremeLabsDashboard,
+      };
+
+      const fetchDashboard = labDashboardOptions[labSummaryTag];
+
+      if (!fetchDashboard) {
+        throw new Error(`Unsupported lab summary tag: ${labSummaryTag}`);
+      }
+
+      const response = await fetchDashboard(classId);
+
+      const url = response?.data?.url || response?.data?.redirect_to;
+
+      if (url) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } else {
+        const errorMessage = response?.data?.message || response?.data?.error;
+        throw new Error(errorMessage);
+      }
+    } catch (error) {
+      showToast(error.message || 'An unexpected error occurred.');
+      logError(error);
+    }
+  };
+}
+
 export {
   fetchClassesData,
   fetchClassesOptionsData,
   fetchAllClassesData,
+  fetchLabSummaryLink,
 };
