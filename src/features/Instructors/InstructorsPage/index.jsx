@@ -5,7 +5,7 @@ import Container from '@edx/paragon/dist/Container';
 import { Pagination, useToggle } from '@edx/paragon';
 import InstructorsTable from 'features/Instructors/InstructorsTable';
 import InstructorsFilters from 'features/Instructors/InstructorsFilters';
-import AddInstructors from 'features/Instructors/AddInstructors';
+import InstructorForm from 'features/Instructors/InstructorForm';
 import { Button } from 'react-paragon-topaz';
 
 import { updateCurrentPage, updateFilters, resetInstructorsRequest } from 'features/Instructors/data/slice';
@@ -46,7 +46,7 @@ const InstructorsPage = () => {
         <Button onClick={openModal}>
           Add new instructor
         </Button>
-        <AddInstructors
+        <InstructorForm
           isOpen={isOpen}
           onClose={closeModal}
         />

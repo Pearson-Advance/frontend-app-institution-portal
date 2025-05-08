@@ -153,15 +153,15 @@ describe('Instructors redux tests', () => {
     axiosMock.onPost(instructorsApiUrl)
       .reply(200, mockResponse);
 
-    expect(store.getState().instructors.addInstructor.status)
+    expect(store.getState().instructors.instructorForm.status)
       .toEqual('loading');
 
     await executeThunk(addInstructor(institutionId, instructorForm), store.dispatch, store.getState);
 
-    expect(store.getState().instructors.addInstructor.data)
+    expect(store.getState().instructors.instructorForm.data)
       .toEqual(mockResponse);
 
-    expect(store.getState().instructors.addInstructor.status)
+    expect(store.getState().instructors.instructorForm.status)
       .toEqual('success');
   });
 
@@ -181,7 +181,7 @@ describe('Instructors redux tests', () => {
         },
       });
 
-    expect(store.getState().instructors.addInstructor.status)
+    expect(store.getState().instructors.instructorForm.status)
       .toEqual('loading');
 
     try {
@@ -190,10 +190,10 @@ describe('Instructors redux tests', () => {
       expect(error.response.status).toBe(500);
     }
 
-    expect(store.getState().instructors.addInstructor.data)
+    expect(store.getState().instructors.instructorForm.data)
       .toEqual(null);
 
-    expect(store.getState().instructors.addInstructor.status)
+    expect(store.getState().instructors.instructorForm.status)
       .toEqual('complete-with-errors');
   });
 
@@ -291,12 +291,12 @@ describe('Instructors redux tests', () => {
     axiosMock.onPatch(instructorsApiUrl)
       .reply(200);
 
-    expect(store.getState().instructors.addInstructor.status)
+    expect(store.getState().instructors.instructorForm.status)
       .toEqual('loading');
 
     await executeThunk(editInstructor(instructorForm), store.dispatch, store.getState);
 
-    expect(store.getState().instructors.addInstructor.status)
+    expect(store.getState().instructors.instructorForm.status)
       .toEqual('success');
   });
 });

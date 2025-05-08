@@ -19,7 +19,7 @@ import {
   updateInstructorInfo,
   assignInstructorsFailed,
   updateEventsRequestStatus,
-  updateInstructorAdditionRequest,
+  updateInstructorFormRequest,
   fetchInstructorOptionsRequest,
   fetchInstructorOptionsSuccess,
   fetchInstructorOptionsFailed,
@@ -78,10 +78,10 @@ function assignInstructors(data) {
  */
 function addInstructor(institutionId, instructorFormData) {
   return async (dispatch) => {
-    dispatch(updateInstructorAdditionRequest({ status: RequestStatus.LOADING }));
+    dispatch(updateInstructorFormRequest({ status: RequestStatus.LOADING }));
     try {
       const { data } = await handleNewInstructor(institutionId, instructorFormData);
-      dispatch(updateInstructorAdditionRequest({ status: RequestStatus.SUCCESS, data }));
+      dispatch(updateInstructorFormRequest({ status: RequestStatus.SUCCESS, data }));
     } catch (error) {
       let errors = '';
       const { customAttributes } = error || {};
@@ -94,7 +94,7 @@ function addInstructor(institutionId, instructorFormData) {
         errors = errorMessage;
       }
 
-      dispatch(updateInstructorAdditionRequest({ status: RequestStatus.COMPLETE_WITH_ERRORS, error: errors }));
+      dispatch(updateInstructorFormRequest({ status: RequestStatus.COMPLETE_WITH_ERRORS, error: errors }));
       throw error;
     } finally {
       dispatch(fetchInstructorsData(institutionId, initialPage));
@@ -194,15 +194,15 @@ function editInstructor(instructorInfo) {
       return;
     }
 
-    dispatch(updateInstructorAdditionRequest({ status: RequestStatus.LOADING }));
+    dispatch(updateInstructorFormRequest({ status: RequestStatus.LOADING }));
 
     try {
       await handleEditInstructor(instructorInfo);
-      dispatch(updateInstructorAdditionRequest({ status: RequestStatus.SUCCESS }));
+      dispatch(updateInstructorFormRequest({ status: RequestStatus.SUCCESS }));
     } catch (error) {
       logError(error);
 
-      dispatch(updateInstructorAdditionRequest({ status: RequestStatus.ERROR }));
+      dispatch(updateInstructorFormRequest({ status: RequestStatus.ERROR }));
     } finally {
       dispatch(fetchInstructorsData(institutionId, initialPage));
     }
