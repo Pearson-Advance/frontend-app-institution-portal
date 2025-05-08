@@ -22,7 +22,7 @@ const initialState = {
     error: null,
     data: null,
   },
-  addInstructor: {
+  instructorForm: {
     status: RequestStatus.LOADING,
     error: null,
     data: null,
@@ -93,15 +93,15 @@ export const instructorsSlice = createSlice({
     resetRowSelect: (state) => {
       state.rowsSelected = [];
     },
-    updateInstructorAdditionRequest: (state, { payload }) => {
-      state.addInstructor.status = payload.status;
-      state.addInstructor.data = payload?.data || null;
-      state.addInstructor.error = payload?.error || null;
+    updateInstructorFormRequest: (state, { payload }) => {
+      state.instructorForm.status = payload.status;
+      state.instructorForm.data = payload?.data || null;
+      state.instructorForm.error = payload?.error || null;
     },
-    resetInstructorAdditionRequest: (state) => {
-      state.addInstructor.status = RequestStatus.INITIAL;
-      state.addInstructor.data = null;
-      state.addInstructor.error = null;
+    resetInstructorFormRequest: (state) => {
+      state.instructorForm.status = RequestStatus.INITIAL;
+      state.instructorForm.data = null;
+      state.instructorForm.error = null;
     },
     fetchInstructorOptionsRequest: (state) => {
       state.selectOptions.status = RequestStatus.LOADING;
@@ -154,8 +154,8 @@ export const {
   addRowSelect,
   deleteRowSelect,
   resetRowSelect,
-  resetInstructorAdditionRequest,
-  updateInstructorAdditionRequest,
+  resetInstructorFormRequest,
+  updateInstructorFormRequest,
   fetchInstructorOptionsRequest,
   fetchInstructorOptionsSuccess,
   fetchInstructorOptionsFailed,

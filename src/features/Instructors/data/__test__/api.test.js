@@ -4,6 +4,7 @@ import {
   handleNewInstructor,
   getEventsByInstructor,
   getInstructorByEmail,
+  handleEditInstructor,
 } from 'features/Instructors/data/api';
 
 jest.mock('@edx/frontend-platform/auth', () => ({
@@ -123,6 +124,28 @@ describe('should call getAuthenticatedHttpClient with the correct parameters', (
           limit: false,
         },
       },
+    );
+  });
+
+  test('handleEditInstructor', () => {
+    const httpClientMock = {
+      patch: jest.fn(),
+    };
+    const data = new FormData();
+    data.append('institution_id', 1);
+    data.append('instructor_id', 1);
+
+    getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
+
+    handleEditInstructor(data);
+
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
+    expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();
+
+    expect(httpClientMock.patch).toHaveBeenCalledTimes(1);
+    expect(httpClientMock.patch).toHaveBeenCalledWith(
+      'http://localhost:18000/pearson_course_operation/api/v2/instructors/',
+      data,
     );
   });
 });

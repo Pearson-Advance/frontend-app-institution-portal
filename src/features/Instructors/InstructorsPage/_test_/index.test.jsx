@@ -40,7 +40,7 @@ const mockStore = {
     courses: {
       data: [],
     },
-    addInstructor: {
+    instructorForm: {
       status: RequestStatus.INITIAL,
     },
   },

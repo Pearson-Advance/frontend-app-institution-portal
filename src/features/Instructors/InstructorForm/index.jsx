@@ -19,8 +19,8 @@ import { getConfig } from '@edx/frontend-platform';
 import { Info, Close, MailOutline } from '@edx/paragon/icons';
 
 import { RequestStatus } from 'features/constants';
-import { addInstructor } from 'features/Instructors/data/thunks';
-import { updateInstructorAdditionRequest, resetInstructorAdditionRequest } from 'features/Instructors/data/slice';
+import { addInstructor, editInstructor } from 'features/Instructors/data/thunks';
+import { updateInstructorFormRequest, resetInstructorFormRequest } from 'features/Instructors/data/slice';
 
 import './index.scss';
 
@@ -36,11 +36,13 @@ const initialState = {
   },
 };
 
-const AddInstructors = ({ isOpen, onClose }) => {
+const InstructorForm = ({
+  isOpen, onClose, isEditing, instructorInfo,
+}) => {
   const enableEnrollmentToggle = getConfig()?.SHOW_INSTRUCTOR_FEATURES || false;
 
   const dispatch = useDispatch();
-  const instructorRequest = useSelector((state) => state.instructors.addInstructor);
+  const instructorRequest = useSelector((state) => state.instructors.instructorForm);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const [formState, setFormState] = useState(initialState);
 
@@ -64,7 +66,7 @@ const AddInstructors = ({ isOpen, onClose }) => {
   const handleCloseModal = () => {
     onClose();
     setFormState(initialState);
-    dispatch(resetInstructorAdditionRequest());
+    dispatch(resetInstructorFormRequest());
   };
 
   const handleAddInstructor = async (e) => {
@@ -87,7 +89,7 @@ const AddInstructors = ({ isOpen, onClose }) => {
       await dispatch(addInstructor(selectedInstitution.id, formData));
       handleCloseModal();
       setFormState({ ...initialState, showToast: true });
-      dispatch(updateInstructorAdditionRequest({ status: RequestStatus.INITIAL }));
+      dispatch(updateInstructorFormRequest({ status: RequestStatus.INITIAL }));
 
       setTimeout(() => {
         setFormState(initialState);
@@ -99,11 +101,47 @@ const AddInstructors = ({ isOpen, onClose }) => {
     return null;
   };
 
-  useEffect(() => {
-    dispatch(updateInstructorAdditionRequest({ status: RequestStatus.INITIAL }));
+  const handleEditInstructor = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append('enrollment_privilege', formState.instructor.hasEnrollmentPrivilege);
+      formData.append('institution_id', selectedInstitution.id);
+      formData.append('instructor_id', instructorInfo.instructorId);
 
-    return () => dispatch(resetInstructorAdditionRequest());
+      await dispatch(editInstructor(formData));
+      handleCloseModal();
+      dispatch(updateInstructorFormRequest({ status: RequestStatus.INITIAL }));
+    } catch (error) {
+      logError(error);
+    }
+  };
+
+  const isValidInstructorInfo = (info) => (
+    info
+    && typeof info.instructorEmail === 'string'
+    && info.instructorEmail.trim() !== ''
+    && typeof info.hasEnrollmentPrivilege === 'boolean'
+  );
+
+  useEffect(() => {
+    dispatch(updateInstructorFormRequest({ status: RequestStatus.INITIAL }));
+
+    return () => dispatch(resetInstructorFormRequest());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (isEditing && isValidInstructorInfo(instructorInfo)) {
+      setFormState(prev => ({
+        ...prev,
+        instructor: {
+          ...prev.instructor,
+          email: instructorInfo.instructorEmail,
+          hasEnrollmentPrivilege: instructorInfo?.hasEnrollmentPrivilege,
+        },
+      }));
+    }
+  }, [isEditing, instructorInfo]);
 
   return (
     <>
@@ -114,14 +152,14 @@ const AddInstructors = ({ isOpen, onClose }) => {
         {SUCCESS_MESSAGE}
       </Toast>
       <ModalDialog
-        title="Add Instructor"
+        title={isEditing ? 'Edit Instructor' : 'Add Instructor'}
         isOpen={isOpen}
         onClose={handleCloseModal}
         hasCloseButton
       >
         <ModalDialog.Header>
           <ModalDialog.Title>
-            Add new instructor
+            {isEditing ? `Edit ${instructorInfo.instructorName}` : 'Add new instructor'}
           </ModalDialog.Title>
         </ModalDialog.Header>
         <ModalDialog.Body>
@@ -137,35 +175,39 @@ const AddInstructors = ({ isOpen, onClose }) => {
             || instructorRequest.status === RequestStatus.COMPLETE_WITH_ERRORS) && (
               <Form>
                 <FormGroup controlId="formState">
-                  <Form.Control
-                    type="email"
-                    placeholder="Enter Email of the instructor"
-                    floatingLabel="Email *"
-                    className="my-4 mr-0"
-                    name="email"
-                    leadingElement={<Icon src={MailOutline} className="mt-2 icon" />}
-                    onChange={handleInputChange}
-                    value={formState.instructor.email}
-                    required
-                  />
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter the first name of the instructor"
-                    floatingLabel="First name"
-                    className="my-4 mr-0"
-                    name="firstName"
-                    onChange={handleInputChange}
-                    value={formState.instructor.firstName}
-                  />
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter the last name of the instructor"
-                    floatingLabel="Last name"
-                    className="my-4 mr-0"
-                    name="lastName"
-                    onChange={handleInputChange}
-                    value={formState.instructor.lastName}
-                  />
+                  {!isEditing && (
+                    <>
+                      <Form.Control
+                        type="email"
+                        placeholder="Enter Email of the instructor"
+                        floatingLabel="Email *"
+                        className="my-4 mr-0"
+                        name="email"
+                        leadingElement={<Icon src={MailOutline} className="mt-2 icon" />}
+                        onChange={handleInputChange}
+                        value={formState.instructor.email}
+                        required
+                      />
+                      <Form.Control
+                        type="text"
+                        placeholder="Enter the first name of the instructor"
+                        floatingLabel="First name"
+                        className="my-4 mr-0"
+                        name="firstName"
+                        onChange={handleInputChange}
+                        value={formState.instructor.firstName}
+                      />
+                      <Form.Control
+                        type="text"
+                        placeholder="Enter the last name of the instructor"
+                        floatingLabel="Last name"
+                        className="my-4 mr-0"
+                        name="lastName"
+                        onChange={handleInputChange}
+                        value={formState.instructor.lastName}
+                      />
+                    </>
+                  )}
                   {
                     enableEnrollmentToggle && (
                       <Form.Switch
@@ -184,7 +226,7 @@ const AddInstructors = ({ isOpen, onClose }) => {
                     variant="danger"
                     icon={Info}
                     actions={[
-                      <Button variant="outline-primary" onClick={() => dispatch(resetInstructorAdditionRequest())}>
+                      <Button variant="outline-primary" onClick={() => dispatch(resetInstructorFormRequest())}>
                         <Close />
                       </Button>,
                     ]}
@@ -197,7 +239,13 @@ const AddInstructors = ({ isOpen, onClose }) => {
                 )}
                 <div className="d-flex justify-content-end">
                   <ModalCloseButton className="btntpz btn-text btn-tertiary mr-2" onClose={handleCloseModal}>Cancel</ModalCloseButton>
-                  <Button type="submit" disabled={formState.instructor.email.length === 0} onClick={handleAddInstructor}>Add instructor</Button>
+                  <Button
+                    type="submit"
+                    disabled={!isEditing && formState.instructor.email.length === 0}
+                    onClick={isEditing ? handleEditInstructor : handleAddInstructor}
+                  >
+                    {isEditing ? 'Edit instructor' : 'Add instructor'}
+                  </Button>
                 </div>
               </Form>
           )}
@@ -208,9 +256,26 @@ const AddInstructors = ({ isOpen, onClose }) => {
   );
 };
 
-AddInstructors.propTypes = {
+InstructorForm.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  isEditing: PropTypes.bool,
+  instructorInfo: PropTypes.shape({
+    instructorName: PropTypes.string,
+    instructorId: PropTypes.number,
+    instructorEmail: PropTypes.string,
+    hasEnrollmentPrivilege: PropTypes.bool,
+  }),
 };
 
-export default AddInstructors;
+InstructorForm.defaultProps = {
+  isEditing: false,
+  instructorInfo: {
+    instructorName: '',
+    instructorEmail: '',
+    instructorId: 0,
+    hasEnrollmentPrivilege: false,
+  },
+};
+
+export default InstructorForm;
