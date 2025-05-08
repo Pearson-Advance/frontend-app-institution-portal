@@ -8,7 +8,7 @@ import {
 } from '@edx/paragon';
 import { MoreHoriz } from '@edx/paragon/icons';
 
-import AddInstructors from 'features/Instructors/AddInstructors';
+import InstructorForm from 'features/Instructors/InstructorForm';
 import { daysWeek, hoursDay } from 'features/constants';
 
 import LinkWithQuery from 'features/Main/LinkWithQuery';
@@ -109,7 +109,7 @@ const getColumns = (showInstructorFeature) => [
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-          <AddInstructors
+          <InstructorForm
             isOpen={isOpenModal}
             onClose={closeModal}
             isEditing
@@ -121,7 +121,6 @@ const getColumns = (showInstructorFeature) => [
             }}
           />
         </>
-
       );
     },
   },
