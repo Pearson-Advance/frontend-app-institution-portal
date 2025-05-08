@@ -78,10 +78,16 @@ export const INSTITUTION_QUERY_ID = 'institutionId';
 export const cookieText = 'This website uses cookies to ensure you get the best experience on our website. If you continue browsing this site, we understand that you accept the use of cookies.';
 
 /**
- * Text for unauthorized user.
+ * Help message shown to unauthorized users.
  * @constant {string}
  */
-export const unauthorizedText = 'You do not have access to CertPREP Manager. If you believe you should have access then please contact your sales rep.';
+export const UNAUTHORIZED_HELP_MESSAGE = 'Administrative access to the Pearson Skilling Suite is granted once a license order for Skilling Suite courses is fulfilled. If you believe you should have admin access to the Pearson Skilling Suite, please contact our support team at';
+
+/**
+ * Support email.
+ * @constant {string}
+ */
+export const SUPPORT_EMAIL = 'pearsonskillingsupport@pearson.com';
 
 /**
  * Constant for text length.

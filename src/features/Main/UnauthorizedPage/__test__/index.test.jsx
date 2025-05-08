@@ -1,14 +1,17 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
+
 import UnauthorizedPage from 'features/Main/UnauthorizedPage';
 
-import { unauthorizedText } from 'features/constants';
+describe('UnauthorizedPage', () => {
+  test('Should render unauthorized page message', () => {
+    render(<UnauthorizedPage />);
 
-describe('Unauthorized Component', () => {
-  test('should render message', async () => {
-    const { container } = render(<UnauthorizedPage />);
-
-    expect(container).toHaveTextContent(unauthorizedText);
+    expect(screen.getByText(/Administrative access to the Pearson Skilling Suite/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /pearsonskillingsupport@pearson.com/i })).toHaveAttribute(
+      'href',
+      'mailto:pearsonskillingsupport@pearson.com',
+    );
   });
 });
