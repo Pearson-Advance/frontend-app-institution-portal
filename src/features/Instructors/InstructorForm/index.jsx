@@ -11,12 +11,15 @@ import {
   FormGroup,
   ModalDialog,
   ModalCloseButton,
+  useToggle,
 } from '@edx/paragon';
 
 import { Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 import { getConfig } from '@edx/frontend-platform';
 import { Info, Close, MailOutline } from '@edx/paragon/icons';
+
+import ActivationModal from 'features/Instructors/ActivationModal';
 
 import { RequestStatus } from 'features/constants';
 import { addInstructor, editInstructor } from 'features/Instructors/data/thunks';
@@ -33,6 +36,7 @@ const initialState = {
     firstName: '',
     lastName: '',
     hasEnrollmentPrivilege: false,
+    isActive: true,
   },
 };
 
@@ -51,9 +55,10 @@ const InstructorForm = ({
   const instructorRequest = useSelector((state) => state.instructors.instructorForm);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const [formState, setFormState] = useState(initialState);
+  const [isOpenActivateModal, openActivateModal, closeActivateModal] = useToggle(false);
 
   const {
-    instructorId, instructorName, instructorEmail, hasEnrollmentPrivilege,
+    instructorId, instructorName, instructorEmail, hasEnrollmentPrivilege, active,
   } = instructorInfo;
 
   const handleInputChange = (e) => {
@@ -63,6 +68,11 @@ const InstructorForm = ({
       value,
       checked,
     } = e.target;
+
+    if (name === 'isActive' && !checked) {
+      openActivateModal();
+      return;
+    }
 
     setFormState({
       ...formState,
@@ -118,6 +128,7 @@ const InstructorForm = ({
       formData.append('enrollment_privilege', formState.instructor.hasEnrollmentPrivilege);
       formData.append('institution_id', selectedInstitution.id);
       formData.append('instructor_id', instructorId);
+      formData.append('active', formState.instructor.isActive);
 
       await dispatch(editInstructor(formData));
       handleCloseModal();
@@ -125,6 +136,29 @@ const InstructorForm = ({
     } catch (error) {
       logError(error);
     }
+  };
+
+  const handleDeactivateStatus = () => {
+    setFormState(prev => ({
+      ...prev,
+      instructor: {
+        ...prev.instructor,
+        isActive: false,
+      },
+    }));
+    closeActivateModal();
+  };
+
+  const handleCloseActivationMOdal = () => {
+    closeActivateModal();
+
+    setFormState(prev => ({
+      ...prev,
+      instructor: {
+        ...prev.instructor,
+        isActive: true,
+      },
+    }));
   };
 
   useEffect(() => {
@@ -141,10 +175,11 @@ const InstructorForm = ({
           ...prev.instructor,
           email: instructorEmail,
           hasEnrollmentPrivilege,
+          isActive: active,
         },
       }));
     }
-  }, [isEditing, instructorEmail, hasEnrollmentPrivilege]);
+  }, [isEditing, instructorEmail, hasEnrollmentPrivilege, active]);
 
   return (
     <>
@@ -223,6 +258,17 @@ const InstructorForm = ({
                       </Form.Switch>
                     )
                   }
+                  {isEditing && (
+                    <Form.Row className="m-0">
+                      <Form.Switch
+                        name="isActive"
+                        onChange={handleInputChange}
+                        checked={formState.instructor.isActive}
+                      >
+                        Instructor is active
+                      </Form.Switch>
+                    </Form.Row>
+                  )}
                 </FormGroup>
                 {instructorRequest.status === RequestStatus.COMPLETE_WITH_ERRORS && (
                   <Alert
@@ -254,6 +300,11 @@ const InstructorForm = ({
           )}
         </ModalDialog.Body>
       </ModalDialog>
+      <ActivationModal
+        isOpen={isOpenActivateModal}
+        onClose={handleCloseActivationMOdal}
+        handleDeactivateStatus={handleDeactivateStatus}
+      />
     </>
 
   );
@@ -268,6 +319,7 @@ InstructorForm.propTypes = {
     instructorId: PropTypes.number,
     instructorEmail: PropTypes.string,
     hasEnrollmentPrivilege: PropTypes.bool,
+    active: PropTypes.bool,
   }),
 };
 
@@ -278,6 +330,7 @@ InstructorForm.defaultProps = {
     instructorEmail: '',
     instructorId: 0,
     hasEnrollmentPrivilege: false,
+    active: true,
   },
 };
 
