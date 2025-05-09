@@ -83,6 +83,7 @@ const getColumns = (showInstructorFeature) => [
         instructorEmail,
         hasEnrollmentPrivilege,
         instructorId,
+        active,
       } = row.original;
 
       const [isOpenModal, openModal, closeModal] = useToggle(false);
@@ -118,6 +119,7 @@ const getColumns = (showInstructorFeature) => [
               instructorId,
               instructorEmail,
               hasEnrollmentPrivilege,
+              active,
             }}
           />
         </>
