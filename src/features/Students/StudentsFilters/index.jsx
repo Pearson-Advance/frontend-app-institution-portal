@@ -142,7 +142,7 @@ const StudentsFilters = ({ resetPagination }) => {
               <Form.Group as={Col}>
                 <Select
                   placeholder="Course"
-                  name="course_name"
+                  name="course_id"
                   className="mr-2"
                   options={courseOptions}
                   onChange={option => setCourseSelected(option)}
