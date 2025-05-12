@@ -49,28 +49,6 @@ input {
   }
 }
 
-header.vertical-nav {
-  nav {
-    display: block;
-  }
-
-  align-items: flex-start;
-  flex-direction: column;
-  justify-content: flex-start;
-
-  .logo {
-    margin-left: 14px;
-
-    img {
-      width: 110px;
-    }
-  }
-
-  .hamburger {
-    display: none;
-  }
-}
-
 .text-decoration-underline,
 a {
   color: $hyperlink-color;
@@ -97,12 +75,6 @@ li {
   .pageWrapper {
     display: grid;
     min-height: 100vh;
-  }
-
-  header.vertical-nav {
-    left: 0;
-    position: absolute;
-    width: 240px;
   }
 }
 

@@ -15,7 +15,7 @@ import { Banner, getUserRoles, USER_ROLES } from 'react-paragon-topaz';
 import CookiePolicyBanner from '@pearsonedunext/frontend-component-cookie-policy-banner';
 
 import { Sidebar } from 'features/Main/Sidebar';
-import { Header } from 'features/Main/Header';
+import Header from '@edx/frontend-component-header';
 import { Footer } from 'features/Main/Footer';
 import ClassPage from 'features/Classes/Class/ClassPage';
 import ClassesPage from 'features/Classes/ClassesPage';
@@ -91,7 +91,7 @@ const Main = () => {
   return (
     <BrowserRouter basename={getConfig().INSTITUTION_PORTAL_PATH}>
       <CookiePolicyBanner policyText={{ en: cookieText }} />
-      <Header />
+      <Header title="Pearson Skilling Administrator" />
       {bannerText && (
         <Banner variant="warning" iconWarning text={bannerText} />
       )}

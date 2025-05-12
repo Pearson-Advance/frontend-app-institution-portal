@@ -117,31 +117,30 @@ const InstructorForm = ({
     }
   };
 
-  const isValidInstructorInfo = (info) => (
-    info
-    && typeof info.instructorEmail === 'string'
-    && info.instructorEmail.trim() !== ''
-    && typeof info.hasEnrollmentPrivilege === 'boolean'
-  );
-
   useEffect(() => {
     dispatch(updateInstructorFormRequest({ status: RequestStatus.INITIAL }));
 
     return () => dispatch(resetInstructorFormRequest());
   }, [dispatch]);
 
+  const { instructorEmail, hasEnrollmentPrivilege } = instructorInfo;
+
   useEffect(() => {
-    if (isEditing && isValidInstructorInfo(instructorInfo)) {
+    console.log('AH SHIT');
+    const isValidEmail = typeof instructorEmail === 'string' && instructorEmail.trim() !== '';
+    const isValidPrivilege = typeof hasEnrollmentPrivilege === 'boolean';
+
+    if (isEditing && isValidEmail && isValidPrivilege) {
       setFormState(prev => ({
         ...prev,
         instructor: {
           ...prev.instructor,
-          email: instructorInfo.instructorEmail,
-          hasEnrollmentPrivilege: instructorInfo?.hasEnrollmentPrivilege,
+          email: instructorEmail,
+          hasEnrollmentPrivilege,
         },
       }));
     }
-  }, [isEditing, instructorInfo]);
+  }, [isEditing, instructorEmail, hasEnrollmentPrivilege]);
 
   return (
     <>
