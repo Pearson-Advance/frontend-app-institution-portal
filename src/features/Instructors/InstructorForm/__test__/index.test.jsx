@@ -6,9 +6,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getConfig } from '@edx/frontend-platform';
 
 import { RequestStatus } from 'features/constants';
-import { updateInstructorAdditionRequest } from 'features/Instructors/data/slice';
+import { updateInstructorFormRequest } from 'features/Instructors/data/slice';
 
-import AddInstructors from 'features/Instructors/AddInstructors';
+import InstructorForm from 'features/Instructors/InstructorForm';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -44,7 +44,7 @@ const mockStore = {
     },
     rowsSelected: [],
     classSelected: '',
-    addInstructor: {
+    instructorForm: {
       status: RequestStatus.INITIAL,
       error: null,
       data: [],
@@ -57,7 +57,7 @@ const mockStore = {
   },
 };
 
-describe('Add instructor modal', () => {
+describe('Instructor Form modal', () => {
   beforeEach(() => {
     const dispatch = jest.fn();
     useDispatch.mockReturnValue(dispatch);
@@ -68,7 +68,7 @@ describe('Add instructor modal', () => {
     getConfig.mockImplementation(() => ({ SHOW_INSTRUCTOR_FEATURES: true }));
 
     const { getByText } = renderWithProviders(
-      <AddInstructors isOpen onClose={() => { }} />,
+      <InstructorForm isOpen onClose={() => { }} />,
       { preloadedState: mockStore },
     );
 
@@ -85,7 +85,7 @@ describe('Add instructor modal', () => {
     getConfig.mockImplementation(() => ({ SHOW_INSTRUCTOR_FEATURES: true }));
 
     const { getByPlaceholderText, getByLabelText } = renderWithProviders(
-      <AddInstructors isOpen onClose={() => { }} />,
+      <InstructorForm isOpen onClose={() => { }} />,
       { preloadedState: mockStore },
     );
 
@@ -107,7 +107,7 @@ describe('Add instructor modal', () => {
 
   test('Should disable and enable the button submit depending if the email is filled', () => {
     const { getByText, getByPlaceholderText } = renderWithProviders(
-      <AddInstructors isOpen onClose={() => { }} />,
+      <InstructorForm isOpen onClose={() => { }} />,
       { preloadedState: mockStore },
     );
 
@@ -123,6 +123,26 @@ describe('Add instructor modal', () => {
     fireEvent.change(emailInput, { target: { value: '' } });
     expect(sendButton).toBeDisabled();
   });
+
+  test('Edit mode', () => {
+    const instructorMock = {
+      instructorId: 1,
+      hasEnrollmentPrivilege: true,
+      instructorName: 'instructor test',
+      instructorEmail: 'test@example.com',
+    };
+
+    const { getByText, getByLabelText } = renderWithProviders(
+      <InstructorForm isOpen onClose={() => { }} isEditing instructorInfo={instructorMock} />,
+      { preloadedState: mockStore },
+    );
+
+    expect(getByText('Edit instructor test')).toBeInTheDocument();
+    const enrollmentSwitch = getByLabelText('Has enrollment permission');
+
+    expect(enrollmentSwitch).toBeInTheDocument();
+    expect(enrollmentSwitch.checked).toBe(true);
+  });
 });
 
 describe('Instructor modal - Request', () => {
@@ -130,13 +150,13 @@ describe('Instructor modal - Request', () => {
     jest.clearAllMocks();
   });
 
-  test('Should dispatch updateInstructorAdditionRequest actions on form submission', async () => {
+  test('Should dispatch updateInstructorFormRequest actions on form submission', async () => {
     const dispatch = jest.fn();
     useDispatch.mockReturnValue(dispatch);
     useSelector.mockImplementation((selector) => selector(mockStore));
 
     const { getByText, getByPlaceholderText } = renderWithProviders(
-      <AddInstructors isOpen onClose={() => { }} />,
+      <InstructorForm isOpen onClose={() => { }} />,
       { preloadedState: mockStore },
     );
 
@@ -147,12 +167,12 @@ describe('Instructor modal - Request', () => {
     fireEvent.click(sendButton);
 
     expect(dispatch).toHaveBeenCalledWith({
-      type: 'instructors/updateInstructorAdditionRequest',
+      type: 'instructors/updateInstructorFormRequest',
       payload: { status: 'initial' },
     });
 
     await waitFor(() => (
-      expect(dispatch).toHaveBeenCalledWith(updateInstructorAdditionRequest({ status: RequestStatus.INITIAL }))
+      expect(dispatch).toHaveBeenCalledWith(updateInstructorFormRequest({ status: RequestStatus.INITIAL }))
     ));
   });
 });

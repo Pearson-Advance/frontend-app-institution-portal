@@ -6,6 +6,7 @@ import {
   handleNewInstructor,
   getEventsByInstructor,
   getInstructorByEmail,
+  handleEditInstructor,
 } from 'features/Instructors/data/api';
 import {
   updateEvents,
@@ -18,7 +19,7 @@ import {
   updateInstructorInfo,
   assignInstructorsFailed,
   updateEventsRequestStatus,
-  updateInstructorAdditionRequest,
+  updateInstructorFormRequest,
   fetchInstructorOptionsRequest,
   fetchInstructorOptionsSuccess,
   fetchInstructorOptionsFailed,
@@ -77,10 +78,10 @@ function assignInstructors(data) {
  */
 function addInstructor(institutionId, instructorFormData) {
   return async (dispatch) => {
-    dispatch(updateInstructorAdditionRequest({ status: RequestStatus.LOADING }));
+    dispatch(updateInstructorFormRequest({ status: RequestStatus.LOADING }));
     try {
       const { data } = await handleNewInstructor(institutionId, instructorFormData);
-      dispatch(updateInstructorAdditionRequest({ status: RequestStatus.SUCCESS, data }));
+      dispatch(updateInstructorFormRequest({ status: RequestStatus.SUCCESS, data }));
     } catch (error) {
       let errors = '';
       const { customAttributes } = error || {};
@@ -93,7 +94,7 @@ function addInstructor(institutionId, instructorFormData) {
         errors = errorMessage;
       }
 
-      dispatch(updateInstructorAdditionRequest({ status: RequestStatus.COMPLETE_WITH_ERRORS, error: errors }));
+      dispatch(updateInstructorFormRequest({ status: RequestStatus.COMPLETE_WITH_ERRORS, error: errors }));
       throw error;
     } finally {
       dispatch(fetchInstructorsData(institutionId, initialPage));
@@ -174,6 +175,40 @@ function fetchInstructorProfile(email, options = {}) {
   };
 }
 
+/**
+ * This function updates instructor information by dispatching a PATCH request
+ * @param {Object} instructorInfo - The updated instructor information.
+ * @param {number} instructorInfo.institution_id - The ID of the institution to which the instructor belongs.
+ * @param {number} instructorInfo.instructor_id - The ID of the instructor to be edited.
+ * @param {boolean} [instructorInfo.enrollment_privilege] - Whether the instructor has enrollment privileges.
+ *
+ * @returns {Function} A thunk function that dispatches async actions to update the instructor.
+ */
+
+function editInstructor(instructorInfo) {
+  return async (dispatch) => {
+    const institutionId = instructorInfo.get('institution_id');
+
+    if (!institutionId) {
+      logError(new Error('Missing institution'));
+      return;
+    }
+
+    dispatch(updateInstructorFormRequest({ status: RequestStatus.LOADING }));
+
+    try {
+      await handleEditInstructor(instructorInfo);
+      dispatch(updateInstructorFormRequest({ status: RequestStatus.SUCCESS }));
+    } catch (error) {
+      logError(error);
+
+      dispatch(updateInstructorFormRequest({ status: RequestStatus.ERROR }));
+    } finally {
+      dispatch(fetchInstructorsData(institutionId, initialPage));
+    }
+  };
+}
+
 export {
   fetchInstructorsData,
   assignInstructors,
@@ -181,4 +216,5 @@ export {
   fetchEventsData,
   fetchInstructorsOptionsData,
   fetchInstructorProfile,
+  editInstructor,
 };

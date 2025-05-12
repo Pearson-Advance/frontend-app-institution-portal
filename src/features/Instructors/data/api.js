@@ -57,9 +57,29 @@ function getInstructorByEmail(email, options = {}) {
   );
 }
 
+/**
+ * Sends a PATCH request to update an instructor's information.
+ * @param {Object} instructorData - The payload containing updated instructor details.
+ * @param {number} instructorInfo.institution_id - The ID of the institution to which the instructor belongs.
+ * @param {number} instructorInfo.instructor_id - The ID of the instructor to be edited.
+ * @param {boolean} [instructorInfo.enrollment_privilege] - Whether the instructor has enrollment privileges.
+ *
+ * @returns {Promise} A promise resolving to the response of the PATCH request.
+ */
+
+function handleEditInstructor(instructorData) {
+  const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
+
+  return getAuthenticatedHttpClient().patch(
+    `${apiV2BaseUrl}/instructors/`,
+    instructorData,
+  );
+}
+
 export {
   handleInstructorsEnrollment,
   handleNewInstructor,
   getEventsByInstructor,
   getInstructorByEmail,
+  handleEditInstructor,
 };
