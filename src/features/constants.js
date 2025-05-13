@@ -140,7 +140,7 @@ export const allResultsOption = {
 export const MAX_TABLE_RECORDS = 200;
 
 /**
- * Text for modal when an instructor is deactivated.
+ * Modal confirmation text, when an instructor is about to be deactivated.
  * @constant {string}
  */
 export const deactivationMessage = 'This action will unassign the instructor from any currently active or scheduled '

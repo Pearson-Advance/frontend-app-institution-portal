@@ -19,9 +19,9 @@ import { logError } from '@edx/frontend-platform/logging';
 import { getConfig } from '@edx/frontend-platform';
 import { Info, Close, MailOutline } from '@edx/paragon/icons';
 
-import ActivationModal from 'features/Instructors/ActivationModal';
+import ConfirmationModal from 'features/Common/ConfirmationModal';
 
-import { RequestStatus } from 'features/constants';
+import { RequestStatus, deactivationMessage } from 'features/constants';
 import { addInstructor, editInstructor } from 'features/Instructors/data/thunks';
 import { updateInstructorFormRequest, resetInstructorFormRequest } from 'features/Instructors/data/slice';
 
@@ -300,10 +300,14 @@ const InstructorForm = ({
           )}
         </ModalDialog.Body>
       </ModalDialog>
-      <ActivationModal
+      <ConfirmationModal
         isOpen={isOpenActivateModal}
         onClose={handleCloseActivationMOdal}
-        handleDeactivateStatus={handleDeactivateStatus}
+        onConfirm={handleDeactivateStatus}
+        title="Confirm Deactivation"
+        message={deactivationMessage}
+        confirmLabel="Accept"
+        cancelLabel="Cancel"
       />
     </>
 
