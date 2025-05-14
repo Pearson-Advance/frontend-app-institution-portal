@@ -12,8 +12,10 @@ import {
   Tabs,
   Tab,
 } from '@edx/paragon';
-import { CalendarExpanded, ProfileCard, formatUTCDate } from 'react-paragon-topaz';
-import { startOfMonth, endOfMonth } from 'date-fns';
+import {
+  CalendarExpanded, ProfileCard, formatUTCDate, parseUTCDateWithoutTZ,
+} from 'react-paragon-topaz';
+import { startOfMonth, endOfMonth, endOfDay } from 'date-fns';
 
 import Table from 'features/Main/Table';
 import { fetchClassesData } from 'features/Classes/data/thunks';
@@ -132,15 +134,26 @@ const InstructorsDetailPage = () => {
   }, [institution, history, addQueryParam]);
 
   useEffect(() => {
-    if (events.length > 0) {
-      const list = events?.map(event => ({
-        ...event,
-        start: new Date(event.start),
-        end: new Date(event.end),
-      }));
+    if (!Array.isArray(events) || events.length === 0) { return; }
 
-      setEventsList(list);
-    }
+    const list = events.map(event => {
+      const { start, end, isClass } = event;
+
+      if (isClass) {
+        return {
+          ...event,
+          start: parseUTCDateWithoutTZ(start),
+          end: endOfDay(parseUTCDateWithoutTZ(end)),
+        };
+      }
+
+      return {
+        ...event,
+        start: new Date(start),
+        end: new Date(end),
+      };
+    });
+    setEventsList(list);
   }, [events]);
 
   return (
