@@ -11,14 +11,15 @@ import {
   FormGroup,
   ModalDialog,
   ModalCloseButton,
+  useToggle,
 } from '@edx/paragon';
 
-import { Button } from 'react-paragon-topaz';
+import { Button, ConfirmationModal } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 import { getConfig } from '@edx/frontend-platform';
 import { Info, Close, MailOutline } from '@edx/paragon/icons';
 
-import { RequestStatus } from 'features/constants';
+import { RequestStatus, deactivationMessage } from 'features/constants';
 import { addInstructor, editInstructor } from 'features/Instructors/data/thunks';
 import { updateInstructorFormRequest, resetInstructorFormRequest } from 'features/Instructors/data/slice';
 
@@ -33,6 +34,7 @@ const initialState = {
     firstName: '',
     lastName: '',
     hasEnrollmentPrivilege: false,
+    isActive: true,
   },
 };
 
@@ -51,9 +53,10 @@ const InstructorForm = ({
   const instructorRequest = useSelector((state) => state.instructors.instructorForm);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const [formState, setFormState] = useState(initialState);
+  const [isOpenActivateModal, openActivateModal, closeActivateModal] = useToggle(false);
 
   const {
-    instructorId, instructorName, instructorEmail, hasEnrollmentPrivilege,
+    instructorId, instructorName, instructorEmail, hasEnrollmentPrivilege, active,
   } = instructorInfo;
 
   const handleInputChange = (e) => {
@@ -63,6 +66,13 @@ const InstructorForm = ({
       value,
       checked,
     } = e.target;
+
+    const isDeactivatingInstructor = name === 'isActive' && !checked;
+
+    if (isDeactivatingInstructor) {
+      openActivateModal();
+      return;
+    }
 
     setFormState({
       ...formState,
@@ -118,6 +128,7 @@ const InstructorForm = ({
       formData.append('enrollment_privilege', formState.instructor.hasEnrollmentPrivilege);
       formData.append('institution_id', selectedInstitution.id);
       formData.append('instructor_id', instructorId);
+      formData.append('active', formState.instructor.isActive);
 
       await dispatch(editInstructor(formData));
       handleCloseModal();
@@ -126,6 +137,20 @@ const InstructorForm = ({
       logError(error);
     }
   };
+
+  const updateInstructorStatus = (isActive) => {
+    setFormState(prev => ({
+      ...prev,
+      instructor: {
+        ...prev.instructor,
+        isActive,
+      },
+    }));
+    closeActivateModal();
+  };
+
+  const handleDeactivateStatus = () => updateInstructorStatus(false);
+  const handleCloseActivationModal = () => updateInstructorStatus(true);
 
   useEffect(() => {
     dispatch(updateInstructorFormRequest({ status: RequestStatus.INITIAL }));
@@ -141,10 +166,11 @@ const InstructorForm = ({
           ...prev.instructor,
           email: instructorEmail,
           hasEnrollmentPrivilege,
+          isActive: active,
         },
       }));
     }
-  }, [isEditing, instructorEmail, hasEnrollmentPrivilege]);
+  }, [isEditing, instructorEmail, hasEnrollmentPrivilege, active]);
 
   return (
     <>
@@ -223,6 +249,17 @@ const InstructorForm = ({
                       </Form.Switch>
                     )
                   }
+                  {isEditing && (
+                    <Form.Row className="m-0">
+                      <Form.Switch
+                        name="isActive"
+                        onChange={handleInputChange}
+                        checked={formState.instructor.isActive}
+                      >
+                        Instructor status: {formState.instructor.isActive ? 'Active' : 'Inactive'}
+                      </Form.Switch>
+                    </Form.Row>
+                  )}
                 </FormGroup>
                 {instructorRequest.status === RequestStatus.COMPLETE_WITH_ERRORS && (
                   <Alert
@@ -254,6 +291,15 @@ const InstructorForm = ({
           )}
         </ModalDialog.Body>
       </ModalDialog>
+      <ConfirmationModal
+        isOpen={isOpenActivateModal}
+        onClose={handleCloseActivationModal}
+        onConfirm={handleDeactivateStatus}
+        title="Confirm Deactivation"
+        message={deactivationMessage}
+        confirmLabel="Accept"
+        cancelLabel="Cancel"
+      />
     </>
 
   );
@@ -268,6 +314,7 @@ InstructorForm.propTypes = {
     instructorId: PropTypes.number,
     instructorEmail: PropTypes.string,
     hasEnrollmentPrivilege: PropTypes.bool,
+    active: PropTypes.bool,
   }),
 };
 
@@ -278,6 +325,7 @@ InstructorForm.defaultProps = {
     instructorEmail: '',
     instructorId: 0,
     hasEnrollmentPrivilege: false,
+    active: true,
   },
 };
 
