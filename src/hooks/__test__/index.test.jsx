@@ -1,7 +1,11 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 
 import { renderWithProviders } from 'test-utils';
-import { useInstitutionIdQueryParam, useToast } from 'hooks';
+import {
+  useInstitutionIdQueryParam,
+  useToast,
+  useFormInput,
+} from 'hooks';
 import { INSTITUTION_QUERY_ID } from 'features/constants';
 
 describe('useInstitutionIdQueryParam', () => {
@@ -82,5 +86,100 @@ describe('useToast', () => {
 
     expect(result.current.isVisible).toBe(false);
     expect(result.current.message).toBe('');
+  });
+});
+
+describe('useFormInput', () => {
+  const initialState = {
+    name: '',
+    email: '',
+    settings: {
+      newsletter: false,
+    },
+  };
+
+  test('should initialize with the given state', () => {
+    const { result } = renderHook(() => useFormInput(initialState));
+    expect(result.current.formState).toEqual(initialState);
+  });
+
+  test('should update simple field from event', () => {
+    const { result } = renderHook(() => useFormInput(initialState));
+
+    act(() => {
+      result.current.handleInputChange({
+        target: { name: 'name', value: 'Sam', type: 'text' },
+      });
+    });
+
+    expect(result.current.formState.name).toBe('Sam');
+  });
+
+  test('should update checkbox field from event', () => {
+    const { result } = renderHook(() => useFormInput(initialState));
+
+    act(() => {
+      result.current.handleInputChange({
+        target: { name: 'newsletter', checked: true, type: 'checkbox' },
+      }, 'settings');
+    });
+
+    expect(result.current.formState.settings.newsletter).toBe(true);
+  });
+
+  test('should update field from custom object', () => {
+    const { result } = renderHook(() => useFormInput(initialState));
+
+    act(() => {
+      result.current.handleInputChange({ name: 'email', value: 'test@example.com' });
+    });
+
+    expect(result.current.formState.email).toBe('test@example.com');
+  });
+
+  test('should reset form state', () => {
+    const { result } = renderHook(() => useFormInput(initialState));
+
+    act(() => {
+      result.current.handleInputChange({ name: 'name', value: 'Sam' });
+    });
+
+    act(() => {
+      result.current.resetFormState();
+    });
+
+    expect(result.current.formState).toEqual(initialState);
+  });
+
+  test('should not update state if event has no name', () => {
+    const { result } = renderHook(() => useFormInput(initialState));
+
+    act(() => {
+      result.current.handleInputChange({
+        target: { value: 'value', type: 'text' },
+      });
+    });
+
+    expect(result.current.formState).toEqual(initialState);
+  });
+
+  test('should not update state if custom object has no name', () => {
+    const { result } = renderHook(() => useFormInput(initialState));
+
+    act(() => {
+      result.current.handleInputChange({ value: 'value' });
+    });
+
+    expect(result.current.formState).toEqual(initialState);
+  });
+
+  test('should handle falsy or null event gracefully', () => {
+    const { result } = renderHook(() => useFormInput(initialState));
+
+    act(() => {
+      result.current.handleInputChange(null);
+    });
+
+    expect(result.current.formState).toEqual(initialState);
   });
 });
