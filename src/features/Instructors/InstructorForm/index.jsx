@@ -14,12 +14,10 @@ import {
   useToggle,
 } from '@edx/paragon';
 
-import { Button } from 'react-paragon-topaz';
+import { Button, ConfirmationModal } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 import { getConfig } from '@edx/frontend-platform';
 import { Info, Close, MailOutline } from '@edx/paragon/icons';
-
-import ConfirmationModal from 'features/Common/ConfirmationModal';
 
 import { RequestStatus, deactivationMessage } from 'features/constants';
 import { addInstructor, editInstructor } from 'features/Instructors/data/thunks';
@@ -69,7 +67,9 @@ const InstructorForm = ({
       checked,
     } = e.target;
 
-    if (name === 'isActive' && !checked) {
+    const isDeactivatingInstructor = name === 'isActive' && !checked;
+
+    if (isDeactivatingInstructor) {
       openActivateModal();
       return;
     }
@@ -138,28 +138,19 @@ const InstructorForm = ({
     }
   };
 
-  const handleDeactivateStatus = () => {
+  const updateInstructorStatus = (isActive) => {
     setFormState(prev => ({
       ...prev,
       instructor: {
         ...prev.instructor,
-        isActive: false,
+        isActive,
       },
     }));
     closeActivateModal();
   };
 
-  const handleCloseActivationMOdal = () => {
-    closeActivateModal();
-
-    setFormState(prev => ({
-      ...prev,
-      instructor: {
-        ...prev.instructor,
-        isActive: true,
-      },
-    }));
-  };
+  const handleDeactivateStatus = () => updateInstructorStatus(false);
+  const handleCloseActivationModal = () => updateInstructorStatus(true);
 
   useEffect(() => {
     dispatch(updateInstructorFormRequest({ status: RequestStatus.INITIAL }));
@@ -265,7 +256,7 @@ const InstructorForm = ({
                         onChange={handleInputChange}
                         checked={formState.instructor.isActive}
                       >
-                        Instructor is active
+                        Instructor status: {formState.instructor.isActive ? 'Active' : 'Inactive'}
                       </Form.Switch>
                     </Form.Row>
                   )}
@@ -302,7 +293,7 @@ const InstructorForm = ({
       </ModalDialog>
       <ConfirmationModal
         isOpen={isOpenActivateModal}
-        onClose={handleCloseActivationMOdal}
+        onClose={handleCloseActivationModal}
         onConfirm={handleDeactivateStatus}
         title="Confirm Deactivation"
         message={deactivationMessage}
