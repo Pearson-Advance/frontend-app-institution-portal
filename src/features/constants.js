@@ -143,5 +143,5 @@ export const MAX_TABLE_RECORDS = 200;
  * Modal confirmation text, when an instructor is about to be deactivated.
  * @constant {string}
  */
-export const deactivationMessage = 'This action will unassign the instructor from any currently active or scheduled '
-+ 'classes, and will remove their access to all class materials and student data. Would you like to proceed?';
+export const deactivationMessage = 'You’ve selected to deactivate this instructor. This action will unassign the instructor from any currently '
++ 'active or scheduled classes, and will remove their access to all class materials and student data. Would you like to proceed?';

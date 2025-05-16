@@ -140,7 +140,7 @@ describe('Instructor Form modal', () => {
 
     expect(getByText('Edit instructor test')).toBeInTheDocument();
     const enrollmentSwitch = getByLabelText('Has enrollment permission');
-    const activationSwitch = getByLabelText('Instructor is active');
+    const activationSwitch = getByLabelText('Instructor status: Active');
 
     expect(enrollmentSwitch).toBeInTheDocument();
     expect(activationSwitch).toBeInTheDocument();
@@ -158,15 +158,15 @@ describe('Instructor Form modal', () => {
       />,
     );
 
-    const activationSwitch = getByLabelText('Instructor is active');
+    const activationSwitch = getByLabelText('Instructor status: Active');
     fireEvent.click(activationSwitch);
 
-    expect(getByText('Confirm deactivation')).toBeInTheDocument();
+    const editButton = getByText('Edit instructor');
+    fireEvent.click(editButton);
+
+    expect(getByText('Confirm instructor deactivation')).toBeInTheDocument();
     const confirmButton = getByRole('button', { name: 'Accept' });
     fireEvent.click(confirmButton);
-
-    const updatedSwitch = getByLabelText('Instructor is active');
-    expect(updatedSwitch).not.toBeChecked();
   });
 });
 
