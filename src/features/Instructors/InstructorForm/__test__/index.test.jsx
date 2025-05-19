@@ -58,6 +58,14 @@ const mockStore = {
 };
 
 describe('Instructor Form modal', () => {
+  const instructorMock = {
+    instructorId: 1,
+    hasEnrollmentPrivilege: true,
+    instructorName: 'instructor test',
+    instructorEmail: 'test@example.com',
+    active: true,
+  };
+
   beforeEach(() => {
     const dispatch = jest.fn();
     useDispatch.mockReturnValue(dispatch);
@@ -125,13 +133,6 @@ describe('Instructor Form modal', () => {
   });
 
   test('Edit mode', () => {
-    const instructorMock = {
-      instructorId: 1,
-      hasEnrollmentPrivilege: true,
-      instructorName: 'instructor test',
-      instructorEmail: 'test@example.com',
-    };
-
     const { getByText, getByLabelText } = renderWithProviders(
       <InstructorForm isOpen onClose={() => { }} isEditing instructorInfo={instructorMock} />,
       { preloadedState: mockStore },
@@ -139,9 +140,33 @@ describe('Instructor Form modal', () => {
 
     expect(getByText('Edit instructor test')).toBeInTheDocument();
     const enrollmentSwitch = getByLabelText('Has enrollment permission');
+    const activationSwitch = getByLabelText('Instructor status: Active');
 
     expect(enrollmentSwitch).toBeInTheDocument();
+    expect(activationSwitch).toBeInTheDocument();
     expect(enrollmentSwitch.checked).toBe(true);
+    expect(activationSwitch.checked).toBe(true);
+  });
+
+  test('Should show activation modal when deactivated an instructor', async () => {
+    const { getByText, getByLabelText, getByRole } = renderWithProviders(
+      <InstructorForm
+        isOpen
+        onClose={jest.fn()}
+        isEditing
+        instructorInfo={instructorMock}
+      />,
+    );
+
+    const activationSwitch = getByLabelText('Instructor status: Active');
+    fireEvent.click(activationSwitch);
+
+    const editButton = getByText('Edit instructor');
+    fireEvent.click(editButton);
+
+    expect(getByText('Confirm instructor deactivation')).toBeInTheDocument();
+    const confirmButton = getByRole('button', { name: 'Accept' });
+    fireEvent.click(confirmButton);
   });
 });
 
