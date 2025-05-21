@@ -57,7 +57,14 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
   const config = inputConfig[formState.inputType] || {};
 
   const handleCleanFilters = () => {
-    dispatch(fetchInstructorsData(selectedInstitution?.id));
+    const requestPayload = isAssignSection ? { active: true } : undefined;
+
+    dispatch(fetchInstructorsData(
+      selectedInstitution?.id,
+      initialPage,
+      requestPayload,
+    ));
+
     resetPagination();
     dispatch(updateFilters({}));
     resetFields();
@@ -85,6 +92,7 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
     const requestPayload = {
       ...filters[inputType],
       course_name: courseSelected?.masterCourseName || '',
+      active: isAssignSection ? true : undefined,
     };
 
     dispatch(updateFilters(filters));
