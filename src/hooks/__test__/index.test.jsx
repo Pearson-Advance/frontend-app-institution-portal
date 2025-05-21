@@ -1,7 +1,10 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 
 import { renderWithProviders } from 'test-utils';
-import { useInstitutionIdQueryParam, useToast } from 'hooks';
+import {
+  useInstitutionIdQueryParam,
+  useToast,
+} from 'hooks';
 import { INSTITUTION_QUERY_ID } from 'features/constants';
 
 describe('useInstitutionIdQueryParam', () => {
