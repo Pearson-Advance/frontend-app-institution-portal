@@ -62,7 +62,10 @@ const AssignSection = forwardRef((props, ref) => {
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      const instructorFilters = stateInstructors.filters;
+      const instructorFilters = {
+        ...stateInstructors.filters,
+        active: true,
+      };
       dispatch(fetchInstructorsData(selectedInstitution.id, currentPage, instructorFilters));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
