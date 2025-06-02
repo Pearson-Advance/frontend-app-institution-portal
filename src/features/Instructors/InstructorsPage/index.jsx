@@ -21,7 +21,7 @@ const InstructorsPage = () => {
 
   useEffect(() => {
     if (Object.keys(selectedInstitution).length > 0) {
-      dispatch(fetchInstructorsData(selectedInstitution.id, currentPage));
+      dispatch(fetchInstructorsData(selectedInstitution.id, currentPage, { active: true }));
     }
 
     return () => {

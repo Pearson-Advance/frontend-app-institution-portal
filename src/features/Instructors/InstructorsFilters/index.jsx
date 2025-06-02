@@ -2,6 +2,7 @@ import React, {
   useState,
   useEffect,
   useRef,
+  useMemo,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -11,7 +12,9 @@ import {
 import { Search } from '@edx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 import { logError } from '@edx/frontend-platform/logging';
-import { Select, Button, useFormInput } from 'react-paragon-topaz';
+import {
+  Select, Button, useFormInput, usePreviousValueCompare,
+} from 'react-paragon-topaz';
 
 import { fetchInstructorsData } from 'features/Instructors/data/thunks';
 import { updateFilters, updateCurrentPage } from 'features/Instructors/data/slice';
@@ -24,13 +27,12 @@ const initialFilterState = {
   instructorEmail: '',
   courseSelected: null,
   inputType: 'name',
-  active: null,
+  active: true,
 };
 
 const switchLabels = {
   true: 'Active',
   false: 'Inactive',
-  null: 'All',
 };
 
 const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
@@ -42,12 +44,14 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
 
   const [courseOptions, setCourseOptions] = useState([]);
 
-  const { formState, handleInputChange, resetFormState } = useFormInput(initialFilterState);
+  const {
+    formState, handleInputChange, resetFormState, touchedFields,
+  } = useFormInput(initialFilterState);
 
-  const disableSubmitButtons = formState.active === null
-  && !formState.instructorEmail
-  && !formState.instructorName
-  && formState.courseSelected === null;
+  const disableSubmitButtons = !touchedFields?.active
+    && !formState.instructorEmail
+    && !formState.instructorName
+    && formState.courseSelected === null;
 
   const debounceTimeout = isAssignSection ? 250 : 500;
 
@@ -74,13 +78,47 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
 
   const config = inputConfig[formState.inputType] || {};
 
-  const handleCleanFilters = () => {
-    const requestPayload = isAssignSection ? { active: true } : undefined;
+  const requestPayload = useMemo(() => {
+    const filters = {
+      email: {
+        instructor_email: formState.instructorEmail,
+      },
+      name: {
+        instructor_name: formState.instructorName,
+      },
+    };
 
+    const payload = {
+      ...filters[formState.inputType],
+      course_name: formState.courseSelected?.masterCourseName || '',
+    };
+
+    if (SHOW_INSTRUCTOR_FEATURES) {
+      payload.active = formState.active;
+    }
+
+    if (isAssignSection) {
+      payload.active = true;
+    }
+
+    return payload;
+  }, [
+    formState.instructorEmail,
+    formState.instructorName,
+    formState.courseSelected,
+    formState.inputType,
+    formState.active,
+    SHOW_INSTRUCTOR_FEATURES,
+    isAssignSection,
+  ]);
+
+  const isSameFiltersData = usePreviousValueCompare(requestPayload);
+
+  const handleCleanFilters = () => {
     dispatch(fetchInstructorsData(
       selectedInstitution?.id,
       initialPage,
-      requestPayload,
+      { active: true },
     ));
 
     resetPagination();
@@ -97,36 +135,9 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
      * A manual debounce is implemented to avoid multiple requests.
      */
     debounceRef.current = setTimeout(() => {
-      const {
-        instructorName,
-        instructorEmail,
-        courseSelected,
-        inputType,
-      } = formState;
+      if (isSameFiltersData) { return; }
 
-      const filters = {
-        email: {
-          instructor_email: instructorEmail,
-        },
-        name: {
-          instructor_name: instructorName,
-        },
-      };
-
-      const requestPayload = {
-        ...filters[inputType],
-        course_name: courseSelected?.masterCourseName || '',
-      };
-
-      if (SHOW_INSTRUCTOR_FEATURES) {
-        requestPayload.active = formState.active;
-      }
-
-      if (isAssignSection) {
-        requestPayload.active = true;
-      }
-
-      dispatch(updateFilters(filters));
+      dispatch(updateFilters(requestPayload));
 
       try {
         dispatch(updateCurrentPage(initialPage));
@@ -175,18 +186,17 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
             >
               <div className={isAssignSection ? 'col-md-8 px-0' : 'col-12 px-0'}>
                 {
-                   (!isAssignSection && SHOW_INSTRUCTOR_FEATURES) && (
-                   <Form.Row className="mb-3">
-                     <Form.Switch
-                       name="active"
-                       checked={formState.active}
-                       onChange={handleInputChange}
-                       indeterminate={formState.active === null}
-                     >
-                       Instructor status: {switchLabels[formState.active]}
-                     </Form.Switch>
-                   </Form.Row>
-                   )
+                  (!isAssignSection && SHOW_INSTRUCTOR_FEATURES) && (
+                    <Form.Row className="mb-3">
+                      <Form.Switch
+                        name="active"
+                        checked={formState.active}
+                        onChange={handleInputChange}
+                      >
+                        Instructor status: {switchLabels[formState.active]}
+                      </Form.Switch>
+                    </Form.Row>
+                  )
                 }
                 <Form.Row className="col-12 px-0 pl-1">
                   <Form.Group>
