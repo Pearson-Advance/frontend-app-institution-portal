@@ -12,6 +12,7 @@ import { MoreHoriz } from '@edx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 
 import { useInstitutionIdQueryParam } from 'hooks';
+import DeleteEnrollment from 'features/Main/DeleteEnrollment';
 
 const columns = [
   {
@@ -75,7 +76,14 @@ const columns = [
     cellClassName: 'dropdownColumn',
     disableSortBy: true,
     Cell: ({ row }) => {
-      const { classId, userId } = row.original;
+      const {
+        status,
+        classId,
+        userId,
+        courseId,
+        learnerEmail,
+      } = row.original;
+
       const progressPageLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/progress/${userId}`;
       return (
         <Dropdown className="dropdowntpz">
@@ -98,6 +106,11 @@ const columns = [
               <i className="fa-regular fa-bars-progress mr-2" />
               View progress
             </Dropdown.Item>
+            {
+              status?.toLowerCase() !== 'expired' && (
+                <DeleteEnrollment studentEmail={learnerEmail} courseId={courseId} />
+              )
+            }
           </Dropdown.Menu>
         </Dropdown>
       );

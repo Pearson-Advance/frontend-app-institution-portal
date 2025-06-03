@@ -36,6 +36,8 @@ const ClassPage = () => {
   const courseIdDecoded = decodeURIComponent(courseId);
   const classIdDecoded = decodeURIComponent(classId);
 
+  const COLUMNS = useMemo(() => columns, []);
+
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const institution = useSelector((state) => state.main.selectedInstitution);
@@ -126,7 +128,7 @@ const ClassPage = () => {
           </div>
           <Table
             isLoading={isLoadingStudents}
-            columns={columns}
+            columns={COLUMNS}
             count={students.count}
             data={students.data}
             text="No students were found for this class."
