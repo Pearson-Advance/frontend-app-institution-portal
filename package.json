@@ -50,7 +50,7 @@
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "react-intl": "^5.25.1",
-    "react-paragon-topaz": "1.35.0",
+    "react-paragon-topaz": "1.36.0",
     "react-redux": "^7.2.9",
     "react-router": "5.2.1",
     "react-router-dom": "5.3.0",

@@ -8,6 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 import { MoreHoriz } from '@edx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
+import { Badge, STUDENT_STATUS_VARIANTS } from 'react-paragon-topaz';
 
 import LinkWithQuery from 'features/Main/LinkWithQuery';
 
@@ -42,6 +43,15 @@ const columns = [
       >
         {row.values.learnerEmail}
       </a>
+    ),
+  },
+  {
+    Header: 'Status',
+    accessor: 'status',
+    Cell: ({ row }) => (
+      <Badge variant={STUDENT_STATUS_VARIANTS[row.values.status?.toLowerCase()] || 'success'} light className="text-capitalize">
+        {row.values.status}
+      </Badge>
     ),
   },
   {
