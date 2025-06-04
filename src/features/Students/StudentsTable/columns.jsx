@@ -10,11 +10,12 @@ import { MoreHoriz } from '@edx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 
 import LinkWithQuery from 'features/Main/LinkWithQuery';
+import DeleteEnrollment from 'features/Main/DeleteEnrollment';
 
 import { formatUTCDate } from 'helpers';
 import { useInstitutionIdQueryParam } from 'hooks';
 
-const columns = [
+const getColumns = (showInstructorFeature) => [
   {
     Header: 'Student',
     accessor: 'learnerName',
@@ -81,8 +82,15 @@ const columns = [
     cellClassName: 'dropdownColumn',
     disableSortBy: true,
     Cell: ({ row }) => {
-      const { classId, userId } = row.original;
+      const {
+        classId,
+        userId,
+        courseId,
+        learnerEmail,
+      } = row.original;
+
       const progressPageLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/progress/${userId}`;
+
       return (
         <Dropdown className="dropdowntpz">
           <Dropdown.Toggle
@@ -104,6 +112,11 @@ const columns = [
               <i className="fa-regular fa-bars-progress mr-2" />
               View progress
             </Dropdown.Item>
+            {
+              showInstructorFeature && (
+                <DeleteEnrollment studentEmail={learnerEmail} courseId={courseId} />
+              )
+            }
           </Dropdown.Menu>
         </Dropdown>
       );
@@ -111,4 +124,4 @@ const columns = [
   },
 ];
 
-export { columns };
+export { getColumns };

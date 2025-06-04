@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import { MemoryRouter, Route } from 'react-router-dom';
 import { screen } from '@testing-library/react';
 import { StudentsTable } from 'features/Students/StudentsTable';
-import { columns } from 'features/Students/StudentsTable/columns';
+import { getColumns } from 'features/Students/StudentsTable/columns';
 import { renderWithProviders } from 'test-utils';
 
 describe('Student Table', () => {
@@ -44,7 +44,7 @@ describe('Student Table', () => {
     const component = renderWithProviders(
       <MemoryRouter initialEntries={['/students']}>
         <Route path="/students">
-          <StudentsTable data={data} count={data.length} columns={columns} />
+          <StudentsTable data={data} count={data.length} columns={getColumns()} />
         </Route>
       </MemoryRouter>,
     );

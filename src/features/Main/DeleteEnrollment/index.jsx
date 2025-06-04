@@ -8,7 +8,11 @@ import {
   useToggle,
 } from '@edx/paragon';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 
+import {
+  fetchStudentsDataSuccess,
+} from 'features/Students/data/slice';
 import { deleteEnrollment } from 'features/Main/data/api';
 
 const ERROR_MESSAGE = 'This student has reached a threshold of course activity that prevents unenrolled. If you wish to proceed, please contact support or your sales representative for assistance.';
@@ -24,6 +28,8 @@ const ERROR_MESSAGE = 'This student has reached a threshold of course activity t
 const DeleteEnrollment = ({ studentEmail, courseId }) => {
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch();
+  const students = useSelector((state) => state.students.table.data);
 
   const [isError, openError, closeError] = useToggle(false);
   const [isConfirmationOpen, openConfirmation, closeConfirmation] = useToggle(false);
@@ -47,6 +53,15 @@ const DeleteEnrollment = ({ studentEmail, courseId }) => {
         setMessage(ERROR_MESSAGE);
         openError();
       } else {
+        const updatedStudents = students.filter(
+          (student) => student.learnerEmail !== studentEmail,
+        );
+
+        dispatch(fetchStudentsDataSuccess({
+          results: updatedStudents,
+          count: updatedStudents.length,
+        }));
+
         setMessage('Enrollment deleted successfully.');
         closeConfirmation();
         openSuccessToast();
@@ -64,6 +79,7 @@ const DeleteEnrollment = ({ studentEmail, courseId }) => {
       <Dropdown.Item
         className="text-truncate text-decoration-none custom-text-black"
         onClick={openConfirmation}
+        data-testid="delete-enrollment"
       >
         Delete Enrollment
       </Dropdown.Item>
@@ -120,7 +136,7 @@ const DeleteEnrollment = ({ studentEmail, courseId }) => {
         <ModalDialog.Footer>
           <ActionRow>
             <Button onClick={resetModals}>
-              Accept
+              Dismiss
             </Button>
           </ActionRow>
         </ModalDialog.Footer>

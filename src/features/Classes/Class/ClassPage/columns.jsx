@@ -21,7 +21,7 @@ const badgeVariants = {
   pending: 'warning',
 };
 
-const columns = [
+const getColumns = (showInstructorFeature) => [
   {
     Header: 'No',
     accessor: 'index',
@@ -112,7 +112,11 @@ const columns = [
               <i className="fa-regular fa-bars-progress mr-2" />
               View progress
             </Dropdown.Item>
-            <DeleteEnrollment studentEmail={learnerEmail} courseId={courseId} />
+            {
+              showInstructorFeature && (
+                <DeleteEnrollment studentEmail={learnerEmail} courseId={courseId} />
+              )
+            }
           </Dropdown.Menu>
         </Dropdown>
       );
@@ -120,4 +124,4 @@ const columns = [
   },
 ];
 
-export { columns };
+export { getColumns };

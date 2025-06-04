@@ -27,7 +27,6 @@ function assignStaffRole(classId) {
 }
 
 function deleteEnrollment(studentEmail, courseId) {
-  // (http://{lms_base}/courses/{course_id}/instructor/api/students_update_enrollment)
   const formData = new FormData();
   formData.append('identifiers', studentEmail);
   formData.append('action', 'unenroll');
