@@ -7,6 +7,7 @@ import React, {
 import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { Container, Pagination } from '@edx/paragon';
 import { useDispatch, useSelector } from 'react-redux';
+import { getConfig } from '@edx/frontend-platform';
 
 import Table from 'features/Main/Table';
 import InstructorCard from 'features/Classes/InstructorCard';
@@ -14,7 +15,7 @@ import Actions from 'features/Classes/Class/ClassPage/Actions';
 import { Button } from 'react-paragon-topaz';
 
 import { updateActiveTab } from 'features/Main/data/slice';
-import { columns } from 'features/Classes/Class/ClassPage/columns';
+import { getColumns } from 'features/Classes/Class/ClassPage/columns';
 import { resetStudentsTable, updateCurrentPage } from 'features/Students/data/slice';
 import { fetchStudentsData } from 'features/Students/data';
 
@@ -35,6 +36,9 @@ const ClassPage = () => {
   const previousPage = queryParams.get('previous') || 'classes';
   const courseIdDecoded = decodeURIComponent(courseId);
   const classIdDecoded = decodeURIComponent(classId);
+
+  const showInstructorFeature = getConfig().SHOW_INSTRUCTOR_FEATURES || false;
+  const COLUMNS = useMemo(() => getColumns(showInstructorFeature), [showInstructorFeature]);
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -126,7 +130,7 @@ const ClassPage = () => {
           </div>
           <Table
             isLoading={isLoadingStudents}
-            columns={columns}
+            columns={COLUMNS}
             count={students.count}
             data={students.data}
             text="No students were found for this class."

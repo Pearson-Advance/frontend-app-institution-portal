@@ -6,8 +6,9 @@ import {
   Row,
   Col,
 } from '@edx/paragon';
+import { getConfig } from '@edx/frontend-platform';
 
-import { columns } from 'features/Students/StudentsTable/columns';
+import { getColumns } from 'features/Students/StudentsTable/columns';
 import { RequestStatus } from 'features/constants';
 
 const StudentsTable = ({
@@ -15,7 +16,8 @@ const StudentsTable = ({
   count,
 }) => {
   const studentsRequest = useSelector((state) => state.students.table.status);
-  const COLUMNS = useMemo(() => columns, []);
+  const showInstructorFeature = getConfig().SHOW_INSTRUCTOR_FEATURES || false;
+  const COLUMNS = useMemo(() => getColumns(showInstructorFeature), [showInstructorFeature]);
   const isLoading = studentsRequest === RequestStatus.LOADING;
 
   return (

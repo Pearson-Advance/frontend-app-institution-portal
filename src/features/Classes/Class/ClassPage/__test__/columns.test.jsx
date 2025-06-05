@@ -4,7 +4,7 @@ import { fireEvent } from '@testing-library/react';
 
 import { renderWithProviders } from 'test-utils';
 
-import { columns } from 'features/Classes/Class/ClassPage/columns';
+import { getColumns } from 'features/Classes/Class/ClassPage/columns';
 
 describe('columns', () => {
   const mockStore = {
@@ -42,8 +42,8 @@ describe('columns', () => {
   };
 
   test('Should return an array of columns with correct properties', () => {
-    expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(7);
+    expect(getColumns()).toBeInstanceOf(Array);
+    expect(getColumns()).toHaveLength(7);
 
     const [
       number,
@@ -52,7 +52,7 @@ describe('columns', () => {
       status,
       completePercentage,
       examReady,
-    ] = columns;
+    ] = getColumns();
 
     expect(number).toHaveProperty('Header', 'No');
     expect(number).toHaveProperty('accessor', 'index');
@@ -74,7 +74,7 @@ describe('columns', () => {
   });
 
   test('Show student info', async () => {
-    const StudentColumn = () => columns[1].Cell({
+    const StudentColumn = () => getColumns()[1].Cell({
       row: {
         values: {
           learnerName: 'Test User',
@@ -98,7 +98,7 @@ describe('columns', () => {
   });
 
   test('Show status info', async () => {
-    const StatusColumn = () => columns[3].Cell({
+    const StatusColumn = () => getColumns()[3].Cell({
       row: {
         values: {
           status: 'Active',
@@ -119,7 +119,7 @@ describe('columns', () => {
   });
 
   test('Show exam ready info', async () => {
-    const ExamColumn = () => columns[5].Cell({
+    const ExamColumn = () => getColumns()[5].Cell({
       row: {
         values: {
           examReady: false,
@@ -140,7 +140,7 @@ describe('columns', () => {
   });
 
   test('Show menu dropdown', async () => {
-    const ActionColumn = () => columns[6].Cell({
+    const ActionColumn = () => getColumns()[6].Cell({
       row: {
         values: {
           classId: 'CCX1',
