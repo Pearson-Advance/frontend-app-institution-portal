@@ -6,19 +6,12 @@ import {
   IconButton,
   Icon,
 } from '@edx/paragon';
-import { Badge } from 'react-paragon-topaz';
+import { Badge, STUDENT_STATUS_VARIANTS } from 'react-paragon-topaz';
 import { Link } from 'react-router-dom';
 import { MoreHoriz } from '@edx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 
 import { useInstitutionIdQueryParam } from 'hooks';
-
-const badgeVariants = {
-  active: 'success',
-  inactive: 'secondary',
-  expired: 'danger',
-  pending: 'warning',
-};
 
 const columns = [
   {
@@ -59,7 +52,7 @@ const columns = [
     Header: 'Status',
     accessor: 'status',
     Cell: ({ row }) => (
-      <Badge variant={badgeVariants[row.values.status?.toLowerCase()] || 'success'} light className="text-capitalize">
+      <Badge variant={STUDENT_STATUS_VARIANTS[row.values.status?.toLowerCase()] || 'success'} light className="text-capitalize">
         {row.values.status}
       </Badge>
     ),
