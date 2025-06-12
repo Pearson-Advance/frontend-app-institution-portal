@@ -9,6 +9,18 @@ const columns = [
     accessor: 'instructorName',
   },
   {
+    Header: 'Email',
+    accessor: 'instructorEmail',
+    Cell: ({ row }) => (
+      <a
+        href={`mailto:${row.values.instructorEmail}`}
+        className="link"
+      >
+        {row.values.instructorEmail}
+      </a>
+    ),
+  },
+  {
     Header: 'Last seen',
     accessor: 'lastAccess',
     Cell: ({ row }) => {
