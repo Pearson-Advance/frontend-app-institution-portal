@@ -11,6 +11,7 @@ import { getConfig } from '@edx/frontend-platform';
 import { Badge, STUDENT_STATUS_VARIANTS } from 'react-paragon-topaz';
 
 import LinkWithQuery from 'features/Main/LinkWithQuery';
+import DeleteEnrollment from 'features/Main/DeleteEnrollment';
 
 import { formatUTCDate } from 'helpers';
 import { useInstitutionIdQueryParam } from 'hooks';
@@ -91,8 +92,15 @@ const columns = [
     cellClassName: 'dropdownColumn',
     disableSortBy: true,
     Cell: ({ row }) => {
-      const { classId, userId } = row.original;
+      const {
+        classId,
+        userId,
+        courseId,
+        learnerEmail,
+      } = row.original;
+
       const progressPageLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/progress/${userId}`;
+
       return (
         <Dropdown className="dropdowntpz">
           <Dropdown.Toggle
@@ -114,6 +122,11 @@ const columns = [
               <i className="fa-regular fa-bars-progress mr-2" />
               View progress
             </Dropdown.Item>
+            {
+              row.values.status?.toLowerCase() !== 'expired' && (
+                <DeleteEnrollment studentEmail={learnerEmail} courseId={courseId} />
+              )
+            }
           </Dropdown.Menu>
         </Dropdown>
       );
