@@ -27,12 +27,7 @@ const initialFilterState = {
   instructorEmail: '',
   courseSelected: null,
   inputType: 'name',
-  active: true,
-};
-
-const switchLabels = {
-  true: 'Active',
-  false: 'Inactive',
+  active: false,
 };
 
 const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
@@ -94,7 +89,7 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
     };
 
     if (SHOW_INSTRUCTOR_FEATURES) {
-      payload.active = formState.active;
+      payload.active = !formState.active;
     }
 
     if (isAssignSection) {
@@ -193,7 +188,7 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
                         checked={formState.active}
                         onChange={handleInputChange}
                       >
-                        Instructor status: {switchLabels[formState.active]}
+                        Show inactive instructors
                       </Form.Switch>
                     </Form.Row>
                   )
