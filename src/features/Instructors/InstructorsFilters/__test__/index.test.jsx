@@ -109,13 +109,13 @@ describe('InstructorsFilters Component', () => {
     test('renders active filter switches', () => {
       const { getByText } = setup();
 
-      expect(getByText(/Instructor status:/)).toBeInTheDocument();
+      expect(getByText(/Show inactive instructors/)).toBeInTheDocument();
     });
 
     test('toggles active filter switches', () => {
       const { getByText } = setup();
 
-      const toggleLabel = getByText(/Instructor status:/);
+      const toggleLabel = getByText(/Show inactive instructors/);
       expect(toggleLabel).toBeInTheDocument();
     });
   });

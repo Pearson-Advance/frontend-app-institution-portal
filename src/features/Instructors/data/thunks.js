@@ -97,7 +97,7 @@ function addInstructor(institutionId, instructorFormData) {
       dispatch(updateInstructorFormRequest({ status: RequestStatus.COMPLETE_WITH_ERRORS, error: errors }));
       throw error;
     } finally {
-      dispatch(fetchInstructorsData(institutionId, initialPage));
+      dispatch(fetchInstructorsData(institutionId, initialPage, { active: true }));
     }
   };
 }
@@ -204,7 +204,7 @@ function editInstructor(instructorInfo) {
 
       dispatch(updateInstructorFormRequest({ status: RequestStatus.ERROR }));
     } finally {
-      dispatch(fetchInstructorsData(institutionId, initialPage));
+      dispatch(fetchInstructorsData(institutionId, initialPage, { active: true }));
     }
   };
 }
