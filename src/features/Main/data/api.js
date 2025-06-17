@@ -26,7 +26,7 @@ function assignStaffRole(classId) {
   );
 }
 
-function deleteEnrollment(studentEmail, courseId) {
+function deleteEnrollment(studentEmail, classId) {
   const BASE_URL = getConfig().LMS_BASE_URL;
 
   const formData = new FormData();
@@ -34,7 +34,7 @@ function deleteEnrollment(studentEmail, courseId) {
   formData.append('action', 'unenroll');
 
   return getAuthenticatedHttpClient().post(
-    `${BASE_URL}/courses/${courseId}/instructor/api/students_update_enrollment`,
+    `${BASE_URL}/courses/${classId}/instructor/api/students_update_enrollment`,
     formData,
   );
 }

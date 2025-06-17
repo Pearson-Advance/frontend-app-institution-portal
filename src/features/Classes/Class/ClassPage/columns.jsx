@@ -80,7 +80,6 @@ const columns = [
         status,
         classId,
         userId,
-        courseId,
         learnerEmail,
       } = row.original;
 
@@ -108,7 +107,7 @@ const columns = [
             </Dropdown.Item>
             {
               status?.toLowerCase() !== 'expired' && (
-                <DeleteEnrollment studentEmail={learnerEmail} courseId={courseId} />
+                <DeleteEnrollment studentEmail={learnerEmail} classId={classId} />
               )
             }
           </Dropdown.Menu>

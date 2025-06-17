@@ -24,9 +24,9 @@ import { deleteEnrollment } from 'features/Main/data/api';
  *
  * Props:
  * @param {string} studentEmail - The email of the student to unenroll.
- * @param {string} courseId - The ID of the course from which to unenroll the student.
+ * @param {string} classId - The ID of the class from which to unenroll the student.
  */
-const DeleteEnrollment = ({ studentEmail, courseId }) => {
+const DeleteEnrollment = ({ studentEmail, classId }) => {
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch();
@@ -47,7 +47,7 @@ const DeleteEnrollment = ({ studentEmail, courseId }) => {
   const handleDeleteEnrollment = async () => {
     setIsSubmitting(true);
     try {
-      const response = await deleteEnrollment(studentEmail, courseId);
+      const response = await deleteEnrollment(studentEmail, classId);
       const result = response?.data?.results?.[0];
 
       if (result?.error) {
@@ -129,7 +129,7 @@ const DeleteEnrollment = ({ studentEmail, courseId }) => {
 
 DeleteEnrollment.propTypes = {
   studentEmail: PropTypes.string.isRequired,
-  courseId: PropTypes.string.isRequired,
+  classId: PropTypes.string.isRequired,
 };
 
 export default DeleteEnrollment;
