@@ -54,7 +54,7 @@ const createMockStore = (studentEmail = 'testuser@example.com') => ({
 
 const defaultProps = {
   studentEmail: 'test@example.com',
-  courseId: 'course-v1:demo+demo1+2020',
+  classId: 'ccx:class-v1:demo+demo1+2020',
 };
 
 const renderDeleteEnrollment = (props = {}, storeOverrides = {}) => {
@@ -154,7 +154,7 @@ describe('DeleteEnrollment Component', () => {
 
       expect(mockDeleteEnrollment).toHaveBeenCalledWith(
         defaultProps.studentEmail,
-        defaultProps.courseId,
+        defaultProps.classId,
       );
     });
 
@@ -265,7 +265,7 @@ describe('DeleteEnrollment Component', () => {
 
       const customProps = {
         studentEmail: 'custom@test.com',
-        courseId: 'custom-course-id',
+        classId: 'custom-class-id',
       };
 
       renderDeleteEnrollment(customProps);
@@ -276,7 +276,7 @@ describe('DeleteEnrollment Component', () => {
       await waitFor(() => {
         expect(mockDeleteEnrollment).toHaveBeenCalledWith(
           customProps.studentEmail,
-          customProps.courseId,
+          customProps.classId,
         );
       });
     });
