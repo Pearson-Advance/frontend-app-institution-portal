@@ -1,5 +1,5 @@
 import { logError } from '@edx/frontend-platform/logging';
-import { camelCaseObject } from '@edx/frontend-platform';
+import { getConfig, camelCaseObject } from '@edx/frontend-platform';
 import { sortAlphabetically } from 'react-paragon-topaz';
 
 import {
@@ -15,6 +15,7 @@ import {
 import { handleSkillableDashboard, handleXtremeLabsDashboard } from 'features/Classes/data/api';
 import { getClassesByInstitution } from 'features/Common/data/api';
 import { initialPage } from 'features/constants';
+import { encode as risonEncode } from 'rison-node';
 
 function fetchClassesData(id, currentPage, courseId = '', urlParamsFilters = '', limit = true) {
   return async (dispatch) => {
@@ -103,9 +104,46 @@ function fetchLabSummaryLink(classId, labSummaryTag, showToast) {
   };
 }
 
+/**
+ * Builds a login URL that deep-links the user to the Superset “Classes”
+ * dashboard, filtered to a single class.
+*/
+function supersetUrlClassesDashboard(classId) {
+  const {
+    SUPERSET_HOST,
+    SUPERSET_DASHBOARD_SLUG,
+    SUPERSET_CLASS_FILTER_ID,
+  } = getConfig();
+
+  if (!SUPERSET_HOST || !SUPERSET_DASHBOARD_SLUG || !SUPERSET_CLASS_FILTER_ID) {
+    return null;
+  }
+
+  const nativeFilters = {
+    [SUPERSET_CLASS_FILTER_ID]: {
+      id: SUPERSET_CLASS_FILTER_ID,
+      filterState: { value: [classId], label: classId },
+      extraFormData: {
+        filters: [{ col: 'course_key', op: 'IN', val: [classId] }],
+      },
+      ownState: {},
+    },
+  };
+
+  const rison = risonEncode(nativeFilters);
+  const dashboardPath = `/superset/dashboard/${SUPERSET_DASHBOARD_SLUG}/`
+    + `?native_filters=${encodeURIComponent(rison)}&standalone=true`;
+
+  const loginUrl = new URL('/login/', SUPERSET_HOST);
+  loginUrl.searchParams.set('next', dashboardPath);
+
+  return loginUrl.toString();
+}
+
 export {
   fetchClassesData,
   fetchClassesOptionsData,
   fetchAllClassesData,
   fetchLabSummaryLink,
+  supersetUrlClassesDashboard,
 };

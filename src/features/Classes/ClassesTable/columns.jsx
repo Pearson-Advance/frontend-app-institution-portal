@@ -22,7 +22,7 @@ import LinkWithQuery from 'features/Main/LinkWithQuery';
 import { RequestStatus, initialPage, modalDeleteText } from 'features/constants';
 
 import { deleteClass } from 'features/Courses/data/thunks';
-import { fetchClassesData, fetchLabSummaryLink } from 'features/Classes/data/thunks';
+import { fetchClassesData, fetchLabSummaryLink, supersetUrlClassesDashboard } from 'features/Classes/data/thunks';
 
 import { formatUTCDate, setAssignStaffRole } from 'helpers';
 import { resetClassState } from 'features/Courses/data/slice';
@@ -123,6 +123,7 @@ const columns = [
       const [isOpenModal, openModal, closeModal] = useToggle(false);
       const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
       const gradebookUrl = getConfig().GRADEBOOK_MICROFRONTEND_URL || getConfig().LMS_BASE_URL;
+      const classesDashboardUrl = supersetUrlClassesDashboard(classId);
       const {
         isVisible,
         message,
@@ -219,6 +220,18 @@ const columns = [
               <i className="fa-regular fa-book mr-2 mb-1" />
               Gradebook
             </Dropdown.Item>
+            {classesDashboardUrl && (
+              <Dropdown.Item
+                as="a"
+                href={classesDashboardUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-truncate text-decoration-none custom-text-black"
+              >
+                <i className="fa-regular fa-chart-bar mr-2 mb-1" />
+                Classes Insights (Beta)
+              </Dropdown.Item>
+            )}
             {labSummaryTag && (
               <Dropdown.Item onClick={handleLabSummary}>
                 <i className="fa-regular fa-rectangle-list mr-2" />
