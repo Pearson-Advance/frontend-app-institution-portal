@@ -6,6 +6,8 @@ import { columns } from 'features/Classes/ClassesTable/columns';
 
 import { renderWithProviders } from 'test-utils';
 
+import * as classesThunks from 'features/Classes/data/thunks';
+
 describe('columns', () => {
   const classDataMock = {
     masterCourseName: 'course example',
@@ -144,5 +146,44 @@ describe('columns', () => {
     const button = getByTestId('droprown-action');
     fireEvent.click(button);
     expect(getByText('Lab Dashboard')).toBeInTheDocument();
+  });
+
+  test('shows “Classes Insights (Beta)” when a dashboard URL is available', () => {
+    jest
+      .spyOn(classesThunks, 'supersetUrlClassesDashboard')
+      .mockReturnValue('https://superset.example.com/dashboard/42');
+
+    const ActionColumn = () => columns[8].Cell({
+      row: {
+        values: { masterCourseName: 'course example' },
+        original: { ...classDataMock },
+      },
+    });
+
+    const mockStore = {
+      classes: {
+        table: {
+          data: [{ ...classDataMock }],
+          count: 1,
+          num_pages: 1,
+          current_page: 1,
+        },
+      },
+    };
+
+    const { getByTestId, getByText } = renderWithProviders(
+      <MemoryRouter initialEntries={['/classes/']}>
+        <Route path="/classes/">
+          <ActionColumn />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    fireEvent.click(getByTestId('droprown-action'));
+
+    expect(getByText('Classes Insights (Beta)')).toBeInTheDocument();
+
+    classesThunks.supersetUrlClassesDashboard.mockRestore();
   });
 });
