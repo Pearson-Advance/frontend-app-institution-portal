@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -123,13 +123,26 @@ const columns = [
       const [isOpenModal, openModal, closeModal] = useToggle(false);
       const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
       const gradebookUrl = getConfig().GRADEBOOK_MICROFRONTEND_URL || getConfig().LMS_BASE_URL;
-      const classesDashboardUrl = supersetUrlClassesDashboard(classId);
       const {
         isVisible,
         message,
         showToast,
         hideToast,
       } = useToast();
+
+      const [classesDashboardUrl, setClassesDashboardUrl] = useState(null);
+
+      useEffect(() => {
+        let cancelled = false;
+        supersetUrlClassesDashboard(classId)
+          .then((url) => {
+            if (!cancelled) {
+              setClassesDashboardUrl(url);
+            }
+          })
+          .catch((err) => logError(err));
+        return () => { cancelled = true; };
+      }, [classId]);
 
       const handleResetDeletion = () => {
         setDeletionState(initialDeletionClassState);
