@@ -148,10 +148,10 @@ describe('columns', () => {
     expect(getByText('Lab Dashboard')).toBeInTheDocument();
   });
 
-  test('shows “Classes Insights (Beta)” when a dashboard URL is available', () => {
+  test('shows “Classes Insights (Beta)” when a dashboard URL is available', async () => {
     jest
       .spyOn(classesThunks, 'supersetUrlClassesDashboard')
-      .mockReturnValue('https://superset.example.com/dashboard/42');
+      .mockResolvedValue('https://superset.example.com/dashboard/42');
 
     const ActionColumn = () => columns[8].Cell({
       row: {
@@ -171,7 +171,7 @@ describe('columns', () => {
       },
     };
 
-    const { getByTestId, getByText } = renderWithProviders(
+    const { getByTestId, findByText } = renderWithProviders(
       <MemoryRouter initialEntries={['/classes/']}>
         <Route path="/classes/">
           <ActionColumn />
@@ -182,7 +182,8 @@ describe('columns', () => {
 
     fireEvent.click(getByTestId('droprown-action'));
 
-    expect(getByText('Classes Insights (Beta)')).toBeInTheDocument();
+    // wait for the effect to resolve the promise and re-render
+    expect(await findByText('Classes Insights (Beta)')).toBeInTheDocument();
 
     classesThunks.supersetUrlClassesDashboard.mockRestore();
   });
