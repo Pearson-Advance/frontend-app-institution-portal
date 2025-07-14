@@ -12,6 +12,7 @@ import LinkWithQuery from 'features/Main/LinkWithQuery';
 import CourseDetailTable from 'features/Courses/CourseDetailTable';
 
 import { fetchClassesData } from 'features/Classes/data/thunks';
+import { fetchInstructorsOptionsData } from 'features/Instructors/data';
 import { fetchCoursesOptionsData } from 'features/Courses/data/thunks';
 import { fetchClassesDataSuccess, updateCurrentPage as updateClassesCurrentPage } from 'features/Classes/data/slice';
 import { fetchCoursesDataSuccess, updateCurrentPage } from 'features/Courses/data/slice';
@@ -60,6 +61,7 @@ const CoursesDetailPage = () => {
 
     if (institution.id) {
       dispatch(fetchClassesData(institution.id, initialPage, courseIdDecoded));
+      dispatch(fetchInstructorsOptionsData(institution.id, initialPage, { limit: false }));
       dispatch(fetchCoursesOptionsData(institution.id));
     }
 
