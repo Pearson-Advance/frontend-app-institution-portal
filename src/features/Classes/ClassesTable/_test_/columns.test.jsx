@@ -151,7 +151,7 @@ describe('columns', () => {
   test('shows “Classes Insights (Beta)” when a dashboard URL is available', async () => {
     jest
       .spyOn(classesThunks, 'supersetUrlClassesDashboard')
-      .mockResolvedValue('https://superset.example.com/dashboard/42');
+      .mockReturnValue('https://superset.example.com/dashboard/42');
 
     const ActionColumn = () => columns[8].Cell({
       row: {
@@ -182,7 +182,6 @@ describe('columns', () => {
 
     fireEvent.click(getByTestId('droprown-action'));
 
-    // wait for the effect to resolve the promise and re-render
     expect(await findByText('Classes Insights (Beta)')).toBeInTheDocument();
 
     classesThunks.supersetUrlClassesDashboard.mockRestore();

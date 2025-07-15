@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -130,19 +130,10 @@ const columns = [
         hideToast,
       } = useToast();
 
-      const [classesDashboardUrl, setClassesDashboardUrl] = useState(null);
-
-      useEffect(() => {
-        let cancelled = false;
-        supersetUrlClassesDashboard(classId)
-          .then((url) => {
-            if (!cancelled) {
-              setClassesDashboardUrl(url);
-            }
-          })
-          .catch((err) => logError(err));
-        return () => { cancelled = true; };
-      }, [classId]);
+      const classesDashboardUrl = useMemo(
+        () => supersetUrlClassesDashboard(classId),
+        [classId],
+      );
 
       const handleResetDeletion = () => {
         setDeletionState(initialDeletionClassState);
