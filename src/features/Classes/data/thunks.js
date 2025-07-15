@@ -105,10 +105,10 @@ function fetchLabSummaryLink(classId, labSummaryTag, showToast) {
 }
 
 /**
- * Builds a login URL that deep-links the user to the Superset “Classes”
- * dashboard, filtered to a single class.
-*/
-async function supersetUrlClassesDashboard(classId) {
+ * Builds a URL that deep-links the user to the Superset “Classes”
+ * dashboard, filtered to a single class redirect.
+ */
+function supersetUrlClassesDashboard(classId) {
   const {
     SUPERSET_HOST,
     SUPERSET_DASHBOARD_SLUG,
@@ -131,29 +131,12 @@ async function supersetUrlClassesDashboard(classId) {
   };
 
   const rison = risonEncode(nativeFilters);
+
   const dashboardPath = `/superset/dashboard/${SUPERSET_DASHBOARD_SLUG}/`
-    + `?native_filters=${encodeURIComponent(rison)}&standalone=true&expand_filters=0`;
+    + `?native_filters=${encodeURIComponent(rison)}`
+    + '&standalone=3&expand_filters=0';
 
-  let hasSession = false;
-
-  try {
-    const resp = await fetch(`${SUPERSET_HOST}/api/v1/me/`, {
-      credentials: 'include',
-      mode: 'cors',
-    });
-    hasSession = resp.ok;
-  } catch {
-    hasSession = false;
-  }
-
-  if (hasSession) {
-    return `${SUPERSET_HOST}${dashboardPath}`;
-  }
-
-  const loginUrl = new URL('/login/', SUPERSET_HOST);
-  loginUrl.searchParams.set('next', dashboardPath);
-
-  return loginUrl.toString();
+  return new URL(dashboardPath, SUPERSET_HOST).toString();
 }
 
 export {
