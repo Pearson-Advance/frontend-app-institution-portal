@@ -104,19 +104,4 @@ describe('InstructorsFilters Component', () => {
       expect(getByText('Apply')).not.toBeDisabled();
     });
   });
-
-  describe('Feature flag active filter', () => {
-    test('renders active filter switches', () => {
-      const { getByText } = setup();
-
-      expect(getByText(/Show inactive instructors/)).toBeInTheDocument();
-    });
-
-    test('toggles active filter switches', () => {
-      const { getByText } = setup();
-
-      const toggleLabel = getByText(/Show inactive instructors/);
-      expect(toggleLabel).toBeInTheDocument();
-    });
-  });
 });

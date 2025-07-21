@@ -145,3 +145,13 @@ export const MAX_TABLE_RECORDS = 200;
  */
 export const deactivationMessage = 'You’ve selected to deactivate this instructor. This action will unassign the instructor from any currently '
 + 'active or scheduled classes, and will remove their access to all class materials and student data. Would you like to proceed?';
+
+/**
+ * Instructors status to be used in filters.
+ * @constant {Object}
+ */
+export const INSTRUCTOR_STATUS_TABS = {
+  ALL: 'All',
+  ACTIVE: 'Active',
+  INACTIVE: 'Inactive',
+};
