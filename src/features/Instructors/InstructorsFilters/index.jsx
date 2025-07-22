@@ -10,7 +10,6 @@ import {
   Form, Col, Icon,
 } from '@edx/paragon';
 import { Search } from '@edx/paragon/icons';
-import { getConfig } from '@edx/frontend-platform';
 import { logError } from '@edx/frontend-platform/logging';
 import {
   Select, Button, useFormInput, usePreviousValueCompare,
@@ -27,24 +26,22 @@ const initialFilterState = {
   instructorEmail: '',
   courseSelected: null,
   inputType: 'name',
-  active: false,
 };
 
-const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
+const InstructorsFilters = ({ resetPagination, isAssignSection, onResetFilters }) => {
   const dispatch = useDispatch();
   const debounceRef = useRef(null);
-  const { SHOW_INSTRUCTOR_FEATURES = false } = getConfig() || {};
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
+  const globalFilters = useSelector((state) => state.instructors.filters);
   const courses = useSelector((state) => state.courses.selectOptions);
 
   const [courseOptions, setCourseOptions] = useState([]);
 
   const {
-    formState, handleInputChange, resetFormState, touchedFields,
+    formState, handleInputChange, resetFormState,
   } = useFormInput(initialFilterState);
 
-  const disableSubmitButtons = !touchedFields?.active
-    && !formState.instructorEmail
+  const disableSubmitButtons = !formState.instructorEmail
     && !formState.instructorName
     && formState.courseSelected === null;
 
@@ -84,13 +81,10 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
     };
 
     const payload = {
+      ...globalFilters,
       ...filters[formState.inputType],
       course_name: formState.courseSelected?.masterCourseName || '',
     };
-
-    if (SHOW_INSTRUCTOR_FEATURES) {
-      payload.active = !formState.active;
-    }
 
     if (isAssignSection) {
       payload.active = true;
@@ -102,9 +96,8 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
     formState.instructorName,
     formState.courseSelected,
     formState.inputType,
-    formState.active,
-    SHOW_INSTRUCTOR_FEATURES,
     isAssignSection,
+    globalFilters,
   ]);
 
   const isSameFiltersData = usePreviousValueCompare(requestPayload);
@@ -113,8 +106,11 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
     dispatch(fetchInstructorsData(
       selectedInstitution?.id,
       initialPage,
-      { active: true },
     ));
+
+    if (onResetFilters) {
+      onResetFilters();
+    }
 
     resetPagination();
     dispatch(updateFilters({}));
@@ -180,19 +176,6 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
               }
             >
               <div className={isAssignSection ? 'col-md-8 px-0' : 'col-12 px-0'}>
-                {
-                  (!isAssignSection && SHOW_INSTRUCTOR_FEATURES) && (
-                    <Form.Row className="mb-3">
-                      <Form.Switch
-                        name="active"
-                        checked={formState.active}
-                        onChange={handleInputChange}
-                      >
-                        Show inactive instructors
-                      </Form.Switch>
-                    </Form.Row>
-                  )
-                }
                 <Form.Row className="col-12 px-0 pl-1">
                   <Form.Group>
                     <Form.RadioSet
@@ -274,10 +257,12 @@ const InstructorsFilters = ({ resetPagination, isAssignSection }) => {
 InstructorsFilters.propTypes = {
   resetPagination: PropTypes.func.isRequired,
   isAssignSection: PropTypes.bool,
+  onResetFilters: PropTypes.func,
 };
 
 InstructorsFilters.defaultProps = {
   isAssignSection: false,
+  onResetFilters: null,
 };
 
 export default InstructorsFilters;
