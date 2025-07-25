@@ -217,8 +217,8 @@ describe('InstructorCard', () => {
     expect(getByText('Feb 13-20, 2024')).toBeInTheDocument();
   });
 
-  test('Should render enrollment info with 1 seat remaining', () => {
-    const { getByText } = renderWithProviders(
+  test('Should render enrollment info with valid values', () => {
+    const { container } = renderWithProviders(
       <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1')}`]}>
         <Route path="/courses/:courseId/:classId">
           <InstructorCard isOpen onClose={() => { }} />
@@ -240,11 +240,11 @@ describe('InstructorCard', () => {
       },
     );
 
-    expect(getByText('3 enrolled, 1 seat remaining')).toBeInTheDocument();
+    expect(container).toHaveTextContent('Enrollment:3 enrolled, 2 seats, 4 licenses');
   });
 
-  test('Should render enrollment info with more than 1 seat remaining', () => {
-    const { getByText } = renderWithProviders(
+  test('Should render no max and 0 when null values are provided', () => {
+    const { container } = renderWithProviders(
       <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1')}`]}>
         <Route path="/courses/:courseId/:classId">
           <InstructorCard isOpen onClose={() => { }} />
@@ -257,7 +257,10 @@ describe('InstructorCard', () => {
               data: [
                 {
                   ...stateMock.classes.allClasses.data[0],
-                  purchasedSeats: 10,
+                  numberOfStudents: null,
+                  numberOfPendingStudents: null,
+                  purchasedSeats: null,
+                  maxStudents: null,
                 },
               ],
             },
@@ -266,6 +269,6 @@ describe('InstructorCard', () => {
       },
     );
 
-    expect(getByText('3 enrolled, 7 seats remaining')).toBeInTheDocument();
+    expect(container).toHaveTextContent('Enrollment:0 enrolled, no max , 0 license remaining');
   });
 });
