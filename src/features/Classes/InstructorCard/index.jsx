@@ -38,12 +38,26 @@ const InstructorCard = ({ previousPage }) => {
     (classElement) => classElement.classId === classIdDecoded,
   );
 
-  const { purchasedSeats, numberOfStudents, numberOfPendingStudents } = classInfo || {};
+  const {
+    purchasedSeats,
+    numberOfStudents,
+    numberOfPendingStudents,
+    maxStudents,
+    totalEnrollments,
+    totalPendingEnrollments,
+  } = classInfo || {};
 
   const totalEnrolled = (numberOfStudents || 0)
     + (numberOfPendingStudents || 0);
 
-  const remainingSeats = (purchasedSeats - numberOfStudents - numberOfPendingStudents) || 0;
+  const seatsAvailable = maxStudents > 0
+    ? Math.max(0, maxStudents - totalEnrolled)
+    : 'no max';
+
+  const remainingLicenses = Math.max(
+    0,
+    (purchasedSeats || 0) - (totalEnrollments || 0) - (totalPendingEnrollments || 0),
+  );
 
   useEffect(() => {
     if (institution.id) {
@@ -80,7 +94,7 @@ const InstructorCard = ({ previousPage }) => {
             </div>
             <div className="text-color">
               <b className="mr-1">Enrollment:</b>
-              {totalEnrolled} enrolled, {remainingSeats} seat{remainingSeats > 1 && 's'} remaining
+              {totalEnrolled} enrolled, {seatsAvailable} {seatsAvailable > 0 && 'seat'}{seatsAvailable > 1 && 's'}, {remainingLicenses} license{remainingLicenses > 1 && 's'} remaining
             </div>
           </>
         )}
