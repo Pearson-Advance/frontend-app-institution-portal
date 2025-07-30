@@ -21,7 +21,12 @@ import { initialPage } from 'features/constants';
 
 import 'features/Classes/EnrollStudent/index.scss';
 
-const EnrollStudent = ({ isOpen, onClose }) => {
+const EnrollStudent = ({
+  isOpen,
+  onClose,
+  customClassId,
+  classNameDisplay,
+}) => {
   const dispatch = useDispatch();
 
   const { courseId, classId } = useParams();
@@ -55,7 +60,7 @@ const EnrollStudent = ({ isOpen, onClose }) => {
 
     try {
       setLoading(true);
-      const response = await handleEnrollments(formData, classIdDecoded);
+      const response = await handleEnrollments(formData, customClassId || classIdDecoded);
       const validationEmailList = response?.data?.results;
       const messages = await getMessages();
       const validEmails = [];
@@ -93,7 +98,7 @@ const EnrollStudent = ({ isOpen, onClose }) => {
 
       const params = {
         course_id: courseIdDecoded,
-        class_id: classIdDecoded,
+        class_id: customClassId || classIdDecoded,
         limit: true,
       };
 
@@ -132,7 +137,7 @@ const EnrollStudent = ({ isOpen, onClose }) => {
         </ModalDialog.Header>
         <ModalDialog.Body className="body-container h-100">
           <p className="text-uppercase font-weight-bold sub-title">
-            Class: {classInfo.className}
+            Class: {classInfo.className || classNameDisplay}
           </p>
           {isLoading && (
             <div className="w-100 h-100 d-flex justify-content-center align-items-center">
@@ -173,6 +178,12 @@ const EnrollStudent = ({ isOpen, onClose }) => {
 EnrollStudent.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  customClassId: PropTypes.string,
+  classNameDisplay: PropTypes.string,
 };
 
+EnrollStudent.defaultProps = {
+  customClassId: '',
+  classNameDisplay: '',
+};
 export default EnrollStudent;

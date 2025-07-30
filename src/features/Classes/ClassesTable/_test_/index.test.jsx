@@ -52,6 +52,30 @@ describe('Classes Table', () => {
           num_pages: 1,
           current_page: 1,
         },
+        allClasses: {
+          data: [
+            {
+              masterCourseName: 'Demo MasterCourse 1',
+              className: 'Demo Class 1',
+              startDate: '2024-09-21',
+              endDate: null,
+              minStudentsAllowed: 50,
+              numberOfStudents: 1,
+              maxStudents: 100,
+              instructors: ['instructor_1'],
+            },
+            {
+              masterCourseName: 'Demo MasterCourse 2',
+              className: 'Demo Class 2',
+              startDate: '2025-09-21',
+              endDate: null,
+              minStudentsAllowed: 200,
+              numberOfStudents: 2,
+              maxStudents: 10,
+              instructors: ['instructor_2', 'instructor_3'],
+            },
+          ],
+        },
       },
     };
 
