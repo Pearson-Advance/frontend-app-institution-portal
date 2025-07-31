@@ -240,7 +240,7 @@ describe('InstructorCard', () => {
       },
     );
 
-    expect(container).toHaveTextContent('Enrollment:3 enrolled, 2 seats, 4 licenses');
+    expect(container).toHaveTextContent('Enrollment:3 enrolled, 2 seats available, 4 licenses');
   });
 
   test('Should render no max and 0 when null values are provided', () => {
