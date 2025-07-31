@@ -94,7 +94,7 @@ const InstructorCard = ({ previousPage }) => {
             </div>
             <div className="text-color">
               <b className="mr-1">Enrollment:</b>
-              {totalEnrolled} enrolled, {seatsAvailable} {seatsAvailable > 0 && 'seat'}{seatsAvailable > 1 && 's'}, {remainingLicenses} license{remainingLicenses > 1 && 's'} remaining
+              {totalEnrolled} enrolled, {seatsAvailable} {seatsAvailable > 0 && 'seat'}{seatsAvailable > 1 && 's'} {seatsAvailable > 0 && 'available'}, {remainingLicenses} license{remainingLicenses > 1 && 's'} remaining
             </div>
           </>
         )}
