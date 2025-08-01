@@ -292,7 +292,10 @@ const columns = [
           </Dropdown.Menu>
           <EnrollStudent
             isOpen={isOpenEnrollModal}
-            onClose={closeEnrollModal}
+            onClose={() => {
+              closeEnrollModal();
+              finalCall();
+            }}
             customClassId={classId}
             classNameDisplay={className}
           />
