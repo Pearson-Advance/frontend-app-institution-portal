@@ -18,6 +18,7 @@ import { useToast } from 'hooks';
 import AddClass from 'features/Courses/AddClass';
 import DeleteModal from 'features/Common/DeleteModal';
 import LinkWithQuery from 'features/Main/LinkWithQuery';
+import EnrollStudent from 'features/Classes/EnrollStudent';
 
 import { RequestStatus, initialPage, modalDeleteText } from 'features/constants';
 
@@ -134,6 +135,7 @@ const columns = [
       const institution = useSelector((state) => state.main.selectedInstitution);
       const deletionState = useSelector((state) => state.courses.newClass.status);
       const [isOpenModal, openModal, closeModal] = useToggle(false);
+      const [isOpenEnrollModal, openEnrollModal, closeEnrollModal] = useToggle(false);
       const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
       const gradebookUrl = getConfig().GRADEBOOK_MICROFRONTEND_URL || getConfig().LMS_BASE_URL;
       const {
@@ -233,6 +235,10 @@ const columns = [
               <i className="fa-solid fa-pencil mr-2 mb-1" />
               Edit Class
             </Dropdown.Item>
+            <Dropdown.Item onClick={openEnrollModal}>
+              <i className="fa-solid fa-user-plus mr-2" />
+              Enroll student
+            </Dropdown.Item>
             <Dropdown.Item onClick={handleGradebookButton}>
               <i className="fa-regular fa-book mr-2 mb-1" />
               Gradebook
@@ -284,6 +290,15 @@ const columns = [
               textModal={modalDeleteText.body}
             />
           </Dropdown.Menu>
+          <EnrollStudent
+            isOpen={isOpenEnrollModal}
+            onClose={() => {
+              closeEnrollModal();
+              finalCall();
+            }}
+            customClassId={classId}
+            classNameDisplay={className}
+          />
         </Dropdown>
       );
     },

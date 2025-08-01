@@ -80,6 +80,11 @@ describe('columns', () => {
           num_pages: 1,
           current_page: 1,
         },
+        allClasses: {
+          data: [
+            { ...classDataMock },
+          ],
+        },
       },
     };
 
@@ -103,6 +108,7 @@ describe('columns', () => {
     expect(getByText('Manage Instructors')).toBeInTheDocument();
     expect(getByText('Edit Class')).toBeInTheDocument();
     expect(getByText('Gradebook')).toBeInTheDocument();
+    expect(getByText('Enroll student')).toBeInTheDocument();
     expect(getByText('Delete Class')).toBeInTheDocument();
   });
 
@@ -128,6 +134,11 @@ describe('columns', () => {
           count: 2,
           num_pages: 1,
           current_page: 1,
+        },
+        allClasses: {
+          data: [
+            { ...classDataMock },
+          ],
         },
       },
     };
@@ -167,6 +178,9 @@ describe('columns', () => {
           count: 1,
           num_pages: 1,
           current_page: 1,
+        },
+        allClasses: {
+          data: [{ ...classDataMock }],
         },
       },
     };
