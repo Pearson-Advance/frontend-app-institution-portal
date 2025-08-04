@@ -11,32 +11,40 @@ jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
 }));
 
+const classesResponse = [
+  {
+    masterCourseName: 'Demo MasterCourse 1',
+    className: 'Demo Class 1',
+    startDate: '2024-09-21',
+    endDate: null,
+    numberOfStudents: 1,
+    maxStudents: 100,
+    instructors: ['instructor_1'],
+  },
+  {
+    masterCourseName: 'Demo MasterCourse 2',
+    className: 'Demo Class 2',
+    startDate: '2025-09-21',
+    endDate: null,
+    numberOfStudents: 2,
+    maxStudents: 200,
+    instructors: ['instructor_2'],
+  },
+];
+
 const mockStore = {
   classes: {
     table: {
-      data: [
-        {
-          masterCourseName: 'Demo MasterCourse 1',
-          className: 'Demo Class 1',
-          startDate: '2024-09-21',
-          endDate: null,
-          numberOfStudents: 1,
-          maxStudents: 100,
-          instructors: ['instructor_1'],
-        },
-        {
-          masterCourseName: 'Demo MasterCourse 2',
-          className: 'Demo Class 2',
-          startDate: '2025-09-21',
-          endDate: null,
-          numberOfStudents: 2,
-          maxStudents: 200,
-          instructors: ['instructor_2'],
-        },
-      ],
+      data: classesResponse,
       count: 2,
       num_pages: 1,
       current_page: 1,
+    },
+    allClasses: {
+      data: classesResponse,
+      count: 2,
+      status: 'SUCCESS',
+      error: null,
     },
   },
 };

@@ -19,6 +19,7 @@ import { formatUTCDate, setAssignStaffRole } from 'helpers';
 import AddClass from 'features/Courses/AddClass';
 import DeleteModal from 'features/Common/DeleteModal';
 import LinkWithQuery from 'features/Main/LinkWithQuery';
+import EnrollStudent from 'features/Classes/EnrollStudent';
 
 import { RequestStatus, initialPage } from 'features/constants';
 
@@ -147,6 +148,7 @@ const columns = [
       const toastMessage = useSelector((state) => state.courses.notificationMessage);
 
       const [isOpenEditModal, openModal, closeModal] = useToggle(false);
+      const [isOpenEnrollModal, openEnrollModal, closeEnrollModal] = useToggle(false);
       const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
 
       const handleResetDeletion = () => {
@@ -215,6 +217,10 @@ const columns = [
                   Manage Instructors
                 </LinkWithQuery>
               </Dropdown.Item>
+              <Dropdown.Item onClick={openEnrollModal}>
+                <i className="fa-solid fa-user-plus mr-2" />
+                Enroll student
+              </Dropdown.Item>
               <Dropdown.Item onClick={openModal}>
                 <i className="fa-solid fa-pencil mr-2 mb-1" />
                 Edit Class
@@ -248,6 +254,16 @@ const columns = [
                 textModal="This action will permanently delete this class and cannot be undone. Booked seat in this class will not be affected by this action."
               />
             </Dropdown.Menu>
+            <EnrollStudent
+              isOpen={isOpenEnrollModal}
+              onClose={() => {
+                closeEnrollModal();
+                finalCall();
+              }}
+              courseId={masterCourseId}
+              customClassId={classId}
+              classNameDisplay={className}
+            />
           </Dropdown>
           <Toast
             onClose={handleResetDeletion}

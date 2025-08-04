@@ -275,6 +275,20 @@ describe('columns', () => {
           num_pages: 1,
           current_page: 1,
         },
+        allClasses: {
+          data: [
+            {
+              masterCourseName: 'Demo MasterCourse 1',
+              classId: 'cxx-demo-id',
+              className: 'Demo Class 1',
+              startDate: '09/21/24',
+              endDate: null,
+              numberOfStudents: 1,
+              maxStudents: 100,
+              instructors: ['Sam Sepiol'],
+            },
+          ],
+        },
       },
     };
 
