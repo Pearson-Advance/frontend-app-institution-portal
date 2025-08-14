@@ -3,7 +3,6 @@ import { fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import { columns } from 'features/Classes/ClassesTable/columns';
-
 import { renderWithProviders } from 'test-utils';
 
 import * as classesThunks from 'features/Classes/data/thunks';
@@ -19,6 +18,14 @@ describe('columns', () => {
     minStudents: 10,
     maxStudents: 100,
   };
+
+  beforeEach(() => {
+    jest.spyOn(classesThunks, 'supersetUrlClassesDashboard').mockResolvedValue(null);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   test('returns an array of columns with correct properties', () => {
     expect(columns).toBeInstanceOf(Array);
@@ -160,9 +167,9 @@ describe('columns', () => {
   });
 
   test('shows “Classes Insights (Beta)” when a dashboard URL is available', async () => {
-    jest
-      .spyOn(classesThunks, 'supersetUrlClassesDashboard')
-      .mockReturnValue('https://superset.example.com/dashboard/42');
+    classesThunks.supersetUrlClassesDashboard.mockResolvedValue(
+      'https://superset.example.com/dashboard/42',
+    );
 
     const ActionColumn = () => columns[8].Cell({
       row: {
@@ -197,7 +204,5 @@ describe('columns', () => {
     fireEvent.click(getByTestId('droprown-action'));
 
     expect(await findByText('Classes Insights (Beta)')).toBeInTheDocument();
-
-    classesThunks.supersetUrlClassesDashboard.mockRestore();
   });
 });

@@ -59,9 +59,42 @@ function getInstructorByInstitution(institutionId, page, filters, limit = false)
   );
 }
 
+/**
+ * Checks whether a specific feature flag is enabled for the current user.
+ *
+ * This function fetches the list of enabled feature flags from the backend
+ * on its first call and caches them in a `Set` to avoid repeated requests.
+ * Subsequent calls check the cached list for the given `flagName`.
+ *
+ * @async
+ * @param {Object} params - Function parameters.
+ * @param {string} params.flagName - The name of the feature flag to check.
+ * @returns {Promise<boolean|null>} - Returns `true` if the flag is enabled,
+ *   `false` if disabled, or `null` if the check could not be performed.
+ */
+async function isFeatureEnabled({ flagName }) {
+  try {
+    if (!isFeatureEnabled.enabledFlagsSet) {
+      const url = `${getConfig().LMS_BASE_URL}/pearson-core/feature-flags/enabled-flags/`;
+      const { data } = await getAuthenticatedHttpClient().get(url, { withCredentials: true });
+
+      if (!Array.isArray(data?.enabled_flags)) {
+        return null;
+      }
+
+      isFeatureEnabled.enabledFlagsSet = new Set(data.enabled_flags);
+    }
+
+    return isFeatureEnabled.enabledFlagsSet.has(flagName);
+  } catch {
+    return null;
+  }
+}
+
 export {
   getCoursesByInstitution,
   getLicensesByInstitution,
   getClassesByInstitution,
   getInstructorByInstitution,
+  isFeatureEnabled,
 };
