@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useMemo, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -145,11 +145,6 @@ const columns = [
         hideToast,
       } = useToast();
 
-      const classesDashboardUrl = useMemo(
-        () => supersetUrlClassesDashboard(classId),
-        [classId],
-      );
-
       const handleResetDeletion = () => {
         setDeletionState(initialDeletionClassState);
         dispatch(resetClassState());
@@ -182,6 +177,28 @@ const columns = [
           }));
         }
       };
+
+      const [classesDashboardUrl, setClassesDashboardUrl] = useState(null);
+
+      useEffect(() => {
+        let isMounted = true;
+
+        async function fetchSupersetDashboardUrl() {
+          const url = await supersetUrlClassesDashboard(
+            classId,
+            getConfig().CLASSES_INSIGHTS_FLAG,
+          );
+          if (isMounted) {
+            setClassesDashboardUrl(url);
+          }
+        }
+
+        fetchSupersetDashboardUrl();
+
+        return () => {
+          isMounted = false;
+        };
+      }, [classId]);
 
       const handleLabSummary = () => {
         dispatch(fetchLabSummaryLink(classId, labSummaryTag, (dashboardMessage) => {

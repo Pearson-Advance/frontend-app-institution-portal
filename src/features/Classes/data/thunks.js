@@ -13,7 +13,7 @@ import {
 } from 'features/Classes/data/slice';
 
 import { handleSkillableDashboard, handleXtremeLabsDashboard } from 'features/Classes/data/api';
-import { getClassesByInstitution } from 'features/Common/data/api';
+import { getClassesByInstitution, isFeatureEnabled } from 'features/Common/data/api';
 import { initialPage } from 'features/constants';
 import { encode as risonEncode } from 'rison-node';
 
@@ -105,10 +105,17 @@ function fetchLabSummaryLink(classId, labSummaryTag, showToast) {
 }
 
 /**
- * Builds a URL that deep-links the user to the Superset “Classes”
- * dashboard, filtered to a single class redirect.
+ * Builds the Superset “Classes” dashboard URL if the feature is enabled.
+ *
+ * @param {string} classId
+ * @param {number|string} institutionId
+ * @param {string} flagName
+ * @returns {Promise<string|null>}
  */
-function supersetUrlClassesDashboard(classId) {
+async function supersetUrlClassesDashboard(classId, flagName) {
+  const isEnabled = await isFeatureEnabled({ flagName });
+  if (!isEnabled) { return null; }
+
   const {
     SUPERSET_HOST,
     SUPERSET_DASHBOARD_SLUG,
