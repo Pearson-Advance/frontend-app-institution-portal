@@ -43,7 +43,29 @@ function handleDeleteClass(classId) {
   );
 }
 
+/**
+ * Assigns a voucher to a learner for a specific course.
+ *
+ * Makes a POST request to the voucher assignment endpoint with the provided data.
+ * This function requires authentication and will include the user's credentials
+ * in the request automatically through the authenticated HTTP client.
+ *
+ * @param {Object} data - The voucher assignment data
+ * @param {string} data.institution_uuid - The UUID of the institution
+ * @param {string} data.course_id - The ID of the course to assign the voucher for
+ * @param {string} data.email - The email address of the learner receiving the voucher
+ *
+ * @returns {Promise<AxiosResponse>} A promise that resolves to the HTTP response object
+ */
+function assignVoucher(data) {
+  return getAuthenticatedHttpClient().post(
+    `${getConfig().WEBNG_PLUGIN_API_BASE_URL}/vouchers/assign/`,
+    data,
+  );
+}
+
 export {
+  assignVoucher,
   handleNewClass,
   handleEditClass,
   handleDeleteClass,
