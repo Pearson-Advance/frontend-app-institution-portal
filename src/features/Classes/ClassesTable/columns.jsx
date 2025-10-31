@@ -44,9 +44,9 @@ const columns = [
     Header: 'Course Title',
     accessor: 'masterCourseName',
     Cell: ({ row }) => (
-      <p className="text-truncate">
+      <span className="text-truncate">
         {row.original.masterCourseName}
-      </p>
+      </span>
     ),
   },
   {
