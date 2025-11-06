@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import {
-  ProgressBar,
   Dropdown,
   IconButton,
   Icon,
@@ -77,9 +76,13 @@ const columns = [
     },
   },
   {
-    Header: 'Progress',
+    Header: 'Current Grade',
     accessor: 'completePercentage',
-    Cell: ({ row }) => (<ProgressBar now={row.values.completePercentage} variant="primary" />),
+    Cell: ({ row }) => (
+      <span className="course-progress">
+        {row.values.completePercentage}%
+      </span>
+    ),
   },
   {
     Header: 'Exam Ready',
