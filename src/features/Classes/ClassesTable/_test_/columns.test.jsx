@@ -33,11 +33,11 @@ describe('columns', () => {
 
     const [
       classNameColumn,
+      courseTitle,
       instructor,
-      enrollmentStatus,
       minStudentsAllowed,
-      studentsEnrolled,
       maxStudents,
+      studentsEnrolled,
       startDate,
       endDate,
     ] = columns;
@@ -51,8 +51,8 @@ describe('columns', () => {
     expect(minStudentsAllowed).toHaveProperty('Header', 'Min');
     expect(minStudentsAllowed).toHaveProperty('accessor', 'minStudentsAllowed');
 
-    expect(enrollmentStatus).toHaveProperty('Header', 'Enrollment status');
-    expect(enrollmentStatus).toHaveProperty('accessor', 'numberOfPendingStudents');
+    expect(courseTitle).toHaveProperty('Header', 'Course Title');
+    expect(courseTitle).toHaveProperty('accessor', 'masterCourseName');
 
     expect(studentsEnrolled).toHaveProperty('Header', 'Students Enrolled');
     expect(studentsEnrolled).toHaveProperty('accessor', 'numberOfStudents');
