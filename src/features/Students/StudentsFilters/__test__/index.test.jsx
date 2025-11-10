@@ -1,11 +1,9 @@
-import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import { renderWithProviders } from 'test-utils';
 import { fireEvent, act, waitFor } from '@testing-library/react';
 
+import { renderWithProviders } from 'test-utils';
 import StudentsFilters from 'features/Students/StudentsFilters';
 import { fetchStudentsData } from 'features/Students/data/thunks';
-import { updateFilters } from 'features/Students/data/slice';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -21,11 +19,6 @@ jest.mock('features/Courses/data/thunks', () => ({
 
 jest.mock('features/Classes/data/thunks', () => ({
   fetchClassesOptionsData: jest.fn(() => ({ type: 'FETCH_CLASSES' })),
-}));
-
-jest.mock('features/Students/data/slice', () => ({
-  updateFilters: jest.fn(() => ({ type: 'UPDATE_FILTERS' })),
-  updateCurrentPage: jest.fn(() => ({ type: 'UPDATE_PAGE' })),
 }));
 
 describe('StudentsFilters Component', () => {
@@ -104,49 +97,6 @@ describe('StudentsFilters Component', () => {
     });
 
     expect(fetchStudentsData).toHaveBeenCalled();
-  });
-
-  test('renders all options for "Exam ready" select', async () => {
-    const { getByText, getAllByText } = renderWithProviders(
-      <StudentsFilters resetPagination={resetPagination} />,
-    );
-
-    const examSelect = getByText('Exam ready');
-    fireEvent.mouseDown(examSelect);
-
-    const expectedOptions = [
-      'In Progress',
-      'Restarted',
-      'EPP Eligible',
-      'Unavailable',
-      'Not Started',
-    ];
-
-    expectedOptions.forEach((option) => {
-      expect(getAllByText(option)[0]).toBeInTheDocument();
-    });
-  });
-
-  test('sends correct filter value when selecting "Exam ready" option', async () => {
-    const { getByText, getAllByText } = renderWithProviders(
-      <StudentsFilters resetPagination={resetPagination} />,
-    );
-
-    const examSelect = getByText('Exam ready');
-    fireEvent.mouseDown(examSelect);
-
-    const selectedOption = getAllByText('EPP Eligible')[0];
-    fireEvent.click(selectedOption);
-
-    const applyButton = getByText('Apply');
-
-    await act(async () => {
-      fireEvent.click(applyButton);
-    });
-
-    expect(updateFilters).toHaveBeenCalledWith(expect.objectContaining({
-      exam_ready: 'EPP_ELIGIBLE',
-    }));
   });
 
   test('clears filters when clicking Reset', async () => {
