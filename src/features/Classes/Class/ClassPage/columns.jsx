@@ -5,12 +5,14 @@ import {
   Dropdown,
   IconButton,
   Icon,
+  Overlay,
 } from '@edx/paragon';
-import { Badge, STUDENT_STATUS_VARIANTS } from 'react-paragon-topaz';
+import { Badge, STUDENT_STATUS_VARIANTS, ProgressSteps } from 'react-paragon-topaz';
 import { Link } from 'react-router-dom';
 import { MoreHoriz } from '@edx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 
+import { formatUTCDate } from 'helpers';
 import { useInstitutionIdQueryParam } from 'hooks';
 import DeleteEnrollment from 'features/Main/DeleteEnrollment';
 import AssignVoucher from 'features/Main/AssignVoucher';
@@ -67,9 +69,67 @@ const columns = [
     ),
   },
   {
-    Header: 'Exam ready',
+    Header: 'Exam Ready',
     accessor: 'examReady',
-    Cell: ({ row }) => <span>{row.values.examReady ? 'Yes' : 'No'}</span>,
+    Cell: ({ row }) => (<ProgressSteps status={row.values.examReady.status.toLowerCase()} />),
+  },
+  {
+    Header: 'Last exam date',
+    accessor: 'examReady.lastExamDate',
+    Cell: ({ row }) => {
+      const lastExamDate = row.values.examReady.lastExamDate
+        ? formatUTCDate(row.values.examReady.lastExamDate, 'MM/dd/yy')
+        : '--';
+      return <span>{lastExamDate}</span>;
+    },
+  },
+  {
+    Header: () => {
+      const [show, setShow] = React.useState(false);
+      const target = React.useRef(null);
+
+      return (
+        <>
+          <span
+            ref={target}
+            className="epp-header"
+            onMouseEnter={() => setShow(true)}
+            onMouseLeave={() => setShow(false)}
+          >
+            Epp days left
+            <i className="fa-regular fa-circle-info ml-1" />
+          </span>
+
+          <Overlay target={() => target.current} show={show} placement="right">
+            {({
+              placement, arrowProps, show: _show, popper, ...props
+            }) => (
+              <div
+                {...props}
+                className="epp-overlay"
+                onMouseEnter={() => setShow(true)}
+                onMouseLeave={() => setShow(false)}
+              >
+                Number of days left to achieve the next stage of Exam Pass Qualification.{' '}
+                <a
+                  href="https://www.mindhubpro.com/exam-pass-pledge#:~:text=To%20make%20an%20Exam%20Pass,where%20the%20exam%20was%20taken."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="epp-link"
+                >
+                  More info
+                </a>
+              </div>
+            )}
+          </Overlay>
+        </>
+      );
+    },
+    accessor: 'examReady.eppDaysLeft',
+    Cell: ({ row }) => {
+      const { eppDaysLeft = null } = row.values.examReady;
+      return <span>{eppDaysLeft !== null ? eppDaysLeft : '--'}</span>;
+    },
   },
   {
     Header: '',
