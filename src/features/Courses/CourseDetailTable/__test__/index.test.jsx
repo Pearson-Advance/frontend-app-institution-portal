@@ -94,8 +94,8 @@ describe('Course Details Table', () => {
     );
 
     expect(component.container).toHaveTextContent('Class');
+    expect(component.container).toHaveTextContent('Course Title');
     expect(component.container).toHaveTextContent('Instructor');
-    expect(component.container).toHaveTextContent('Enrollment status');
     expect(component.container).toHaveTextContent('Min');
     expect(component.container).toHaveTextContent('Students Enrolled');
     expect(component.container).toHaveTextContent('Max');

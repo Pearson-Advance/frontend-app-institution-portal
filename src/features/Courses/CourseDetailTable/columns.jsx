@@ -9,7 +9,6 @@ import {
   Icon,
   Toast,
 } from '@edx/paragon';
-import { Badge } from 'react-paragon-topaz';
 import { MoreHoriz } from '@edx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 import { logError } from '@edx/frontend-platform/logging';
@@ -49,6 +48,15 @@ const columns = [
     },
   },
   {
+    Header: 'Course Title',
+    accessor: 'masterCourseName',
+    Cell: ({ row }) => (
+      <span className="text-truncate">
+        {row.original.masterCourseName}
+      </span>
+    ),
+  },
+  {
     Header: 'Instructor',
     accessor: 'instructors',
     Cell: ({ row }) => {
@@ -81,21 +89,12 @@ const columns = [
     },
   },
   {
-    Header: 'Enrollment status',
-    accessor: 'numberOfPendingStudents',
-    Cell: ({ row }) => {
-      const isEnrollmentComplete = row.values.numberOfPendingStudents === 0;
-
-      return isEnrollmentComplete ? (
-        <Badge variant="success" light>Complete</Badge>
-      ) : (
-        <Badge variant="warning" light>Pending ({row.values.numberOfPendingStudents})</Badge>
-      );
-    },
-  },
-  {
     Header: 'Min',
     accessor: 'minStudentsAllowed',
+  },
+  {
+    Header: 'Max',
+    accessor: 'maxStudents',
   },
   {
     Header: 'Students Enrolled',
@@ -105,10 +104,6 @@ const columns = [
         {row.values.numberOfStudents}
       </span>
     ),
-  },
-  {
-    Header: 'Max',
-    accessor: 'maxStudents',
   },
   {
     Header: 'Start date',
