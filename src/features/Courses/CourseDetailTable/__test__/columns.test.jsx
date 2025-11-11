@@ -20,11 +20,11 @@ describe('columns', () => {
 
     const [
       className,
+      courseTitle,
       instructor,
-      enrollmentStatus,
       minStudentsAllowed,
-      studentsEnrolled,
       maxStudents,
+      studentsEnrolled,
       startDate,
       endDate,
     ] = columns;
@@ -32,20 +32,20 @@ describe('columns', () => {
     expect(className).toHaveProperty('Header', 'Class');
     expect(className).toHaveProperty('accessor', 'className');
 
+    expect(courseTitle).toHaveProperty('Header', 'Course Title');
+    expect(courseTitle).toHaveProperty('accessor', 'masterCourseName');
+
     expect(instructor).toHaveProperty('Header', 'Instructor');
     expect(instructor).toHaveProperty('accessor', 'instructors');
 
     expect(minStudentsAllowed).toHaveProperty('Header', 'Min');
     expect(minStudentsAllowed).toHaveProperty('accessor', 'minStudentsAllowed');
 
-    expect(enrollmentStatus).toHaveProperty('Header', 'Enrollment status');
-    expect(enrollmentStatus).toHaveProperty('accessor', 'numberOfPendingStudents');
+    expect(maxStudents).toHaveProperty('Header', 'Max');
+    expect(maxStudents).toHaveProperty('accessor', 'maxStudents');
 
     expect(studentsEnrolled).toHaveProperty('Header', 'Students Enrolled');
     expect(studentsEnrolled).toHaveProperty('accessor', 'numberOfStudents');
-
-    expect(maxStudents).toHaveProperty('Header', 'Max');
-    expect(maxStudents).toHaveProperty('accessor', 'maxStudents');
 
     expect(startDate).toHaveProperty('Header', 'Start date');
     expect(startDate).toHaveProperty('accessor', 'startDate');
@@ -98,26 +98,10 @@ describe('columns', () => {
     expect(nullDate2).toBe('-');
   });
 
-  test('Should render the enrollment status', () => {
-    const pendingStudents = { row: { values: { numberOfStudents: 3, numberOfPendingStudents: 1 } } };
-
-    const enrollmentStatus = columns[2].Cell(pendingStudents);
-    expect(enrollmentStatus.props).toEqual({
-      children: ['Pending (', 1, ')'], light: true, variant: 'warning', className: '', small: false,
-    });
-
-    const completeStudents = { row: { values: { numberOfStudents: 3, numberOfPendingStudents: 0 } } };
-
-    const enrollmentStatusComplete = columns[2].Cell(completeStudents);
-    expect(enrollmentStatusComplete.props).toEqual({
-      children: 'Complete', light: true, variant: 'success', className: '', small: false,
-    });
-  });
-
   test('Should render the students enrolled', () => {
     const values = { row: { values: { numberOfStudents: 3, numberOfPendingStudents: 1 } } };
 
-    const studentsEnrolled = columns[4].Cell(values);
+    const studentsEnrolled = columns[5].Cell(values);
     expect(studentsEnrolled).toHaveProperty('type', 'span');
     expect(studentsEnrolled.props).toEqual({ children: 3 });
   });
@@ -132,7 +116,7 @@ describe('columns', () => {
       },
     };
 
-    const Component = () => columns[1].Cell(values);
+    const Component = () => columns[2].Cell(values);
     const mockStore = {
       courses: {
         newClass: {
@@ -190,7 +174,7 @@ describe('columns', () => {
       },
     };
 
-    const ComponentNoInstructor = () => columns[1].Cell(values);
+    const ComponentNoInstructor = () => columns[2].Cell(values);
 
     const mockStore = {
       courses: {
