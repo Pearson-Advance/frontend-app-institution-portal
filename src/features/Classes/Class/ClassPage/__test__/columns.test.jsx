@@ -66,7 +66,7 @@ describe('columns', () => {
     expect(status).toHaveProperty('Header', 'Status');
     expect(status).toHaveProperty('accessor', 'status');
 
-    expect(completePercentage).toHaveProperty('Header', 'Courseware Progress');
+    expect(completePercentage).toHaveProperty('Header', 'Current Grade');
     expect(completePercentage).toHaveProperty('accessor', 'completePercentage');
 
     expect(examReady).toHaveProperty('Header', 'Exam ready');

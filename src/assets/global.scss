@@ -13,12 +13,8 @@
   }
 }
 
-[role=table] {
-  [role=cell] {
-    .custom-progress {
-      @extend %progress-styles !optional;
-    }
-  }
+.course-progress {
+  color: $gray-70;
 }
 
 .pagination-table .pagination {

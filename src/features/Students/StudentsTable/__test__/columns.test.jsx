@@ -70,7 +70,7 @@ describe('getColumns', () => {
     expect(dateColumn).toHaveProperty('Header', 'Start - End Date');
     expect(dateColumn).toHaveProperty('accessor', 'startDate');
 
-    expect(progressColumn).toHaveProperty('Header', 'Progress');
+    expect(progressColumn).toHaveProperty('Header', 'Current Grade');
     expect(progressColumn).toHaveProperty('accessor', 'completePercentage');
 
     expect(examReadyColumn).toHaveProperty('Header', 'Exam Ready');
