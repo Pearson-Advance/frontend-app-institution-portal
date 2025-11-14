@@ -6,6 +6,12 @@ import { renderWithProviders } from 'test-utils';
 
 import { getColumns } from '../columns';
 
+jest.mock('@edx/frontend-platform', () => ({
+  getConfig: jest.fn(() => ({
+    PSS_ENABLE_ASSIGN_VOUCHER: true,
+  })),
+}));
+
 describe('getColumns', () => {
   const mockStore = {
     main: {
