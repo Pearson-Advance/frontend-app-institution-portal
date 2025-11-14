@@ -14,7 +14,7 @@ import { useInstitutionIdQueryParam } from 'hooks';
 import DeleteEnrollment from 'features/Main/DeleteEnrollment';
 import AssignVoucher from 'features/Main/AssignVoucher';
 
-const columns = [
+const getColumns = (allowAssigningVoucher) => ([
   {
     Header: 'No',
     accessor: 'index',
@@ -109,7 +109,7 @@ const columns = [
               <i className="fa-regular fa-bars-progress mr-2" />
               View progress
             </Dropdown.Item>
-            <AssignVoucher courseId={courseId} learnerEmail={learnerEmail} />
+            {allowAssigningVoucher && <AssignVoucher courseId={courseId} learnerEmail={learnerEmail} />}
             {
               status?.toLowerCase() !== 'expired' && (
                 <DeleteEnrollment studentEmail={learnerEmail} classId={classId} />
@@ -120,6 +120,6 @@ const columns = [
       );
     },
   },
-];
+]);
 
-export { columns };
+export { getColumns };

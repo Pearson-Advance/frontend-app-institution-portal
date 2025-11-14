@@ -4,9 +4,15 @@ import { fireEvent } from '@testing-library/react';
 
 import { renderWithProviders } from 'test-utils';
 
-import { columns } from 'features/Classes/Class/ClassPage/columns';
+import { getColumns } from '../columns';
 
-describe('columns', () => {
+jest.mock('@edx/frontend-platform', () => ({
+  getConfig: jest.fn(() => ({
+    PSS_ENABLE_ASSIGN_VOUCHER: true,
+  })),
+}));
+
+describe('getColumns', () => {
   const mockStore = {
     main: {
       selectedInstitution: {
@@ -42,6 +48,7 @@ describe('columns', () => {
   };
 
   test('Should return an array of columns with correct properties', () => {
+    const columns = getColumns(false);
     expect(columns).toBeInstanceOf(Array);
     expect(columns).toHaveLength(7);
 
@@ -74,6 +81,7 @@ describe('columns', () => {
   });
 
   test('Show student info', async () => {
+    const columns = getColumns(false);
     const StudentColumn = () => columns[1].Cell({
       row: {
         values: {
@@ -98,6 +106,7 @@ describe('columns', () => {
   });
 
   test('Show status info', async () => {
+    const columns = getColumns(false);
     const StatusColumn = () => columns[3].Cell({
       row: {
         values: {
@@ -119,6 +128,7 @@ describe('columns', () => {
   });
 
   test('Show exam ready info', async () => {
+    const columns = getColumns(false);
     const ExamColumn = () => columns[5].Cell({
       row: {
         values: {
@@ -140,6 +150,7 @@ describe('columns', () => {
   });
 
   test('Show menu dropdown', async () => {
+    const columns = getColumns(false);
     const ActionColumn = () => columns[6].Cell({
       row: {
         values: {
@@ -164,5 +175,71 @@ describe('columns', () => {
     const button = component.getByTestId('droprown-action');
     fireEvent.click(button);
     expect(component.getByText('View progress')).toBeInTheDocument();
+  });
+
+  test('Show menu dropdown with Assign Voucher when allowAssigningVoucher is true', async () => {
+    const columns = getColumns(true);
+    const ActionColumn = () => columns[6].Cell({
+      row: {
+        values: {
+          classId: 'CCX1',
+        },
+        original: {
+          classId: 'CCX1',
+          courseId: 'course-v1:demo+demo1+2020',
+          learnerEmail: 'testuser@example.com',
+          userId: '1',
+          status: 'Active',
+        },
+      },
+    });
+
+    const component = renderWithProviders(
+      <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
+        <Route path="/courses/:courseName/:className">
+          <ActionColumn />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    const button = component.getByTestId('droprown-action');
+    fireEvent.click(button);
+
+    expect(component.getByText('View progress')).toBeInTheDocument();
+    expect(component.getByText('Assign a voucher')).toBeInTheDocument();
+  });
+
+  test('Show menu dropdown without Assign Voucher when allowAssigningVoucher is false', async () => {
+    const columns = getColumns(false);
+    const ActionColumn = () => columns[6].Cell({
+      row: {
+        values: {
+          classId: 'CCX1',
+        },
+        original: {
+          classId: 'CCX1',
+          courseId: 'course-v1:demo+demo1+2020',
+          learnerEmail: 'testuser@example.com',
+          userId: '1',
+          status: 'Active',
+        },
+      },
+    });
+
+    const component = renderWithProviders(
+      <MemoryRouter initialEntries={['/courses/Demo%20Course%201/test%20ccx1?classId=ccx-v1:demo+demo1+2020+ccx@3']}>
+        <Route path="/courses/:courseName/:className">
+          <ActionColumn />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    const button = component.getByTestId('droprown-action');
+    fireEvent.click(button);
+
+    expect(component.getByText('View progress')).toBeInTheDocument();
+    expect(component.queryByText('Assign a voucher')).not.toBeInTheDocument();
   });
 });
