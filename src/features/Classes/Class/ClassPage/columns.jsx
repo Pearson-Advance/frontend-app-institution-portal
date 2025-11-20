@@ -61,11 +61,21 @@ const columns = [
   {
     Header: 'Current Grade',
     accessor: 'completePercentage',
-    Cell: ({ row }) => (
-      <span className="course-progress">
-        {row.values.completePercentage}%
-      </span>
-    ),
+    Cell: ({ row }) => {
+      const raw = row?.values?.completePercentage;
+
+      const safeNumber = Number(raw);
+
+      const value = Number.isFinite(safeNumber)
+        ? Math.min(100, Math.max(0, Math.floor(safeNumber)))
+        : 0;
+
+      return (
+        <span className="course-progress">
+          {value}%
+        </span>
+      );
+    },
   },
   {
     Header: 'Exam ready',
