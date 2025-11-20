@@ -12,7 +12,7 @@ import { getConfig } from '@edx/frontend-platform';
 
 import { useInstitutionIdQueryParam } from 'hooks';
 import DeleteEnrollment from 'features/Main/DeleteEnrollment';
-import AssignVoucher from 'features/Main/AssignVoucher';
+import VoucherOptions from 'features/Main/VoucherOptions';
 
 const columns = [
   {
@@ -109,7 +109,7 @@ const columns = [
               <i className="fa-regular fa-bars-progress mr-2" />
               View progress
             </Dropdown.Item>
-            <AssignVoucher courseId={courseId} learnerEmail={learnerEmail} />
+            <VoucherOptions courseId={courseId} learnerEmail={learnerEmail} />
             {
               status?.toLowerCase() !== 'expired' && (
                 <DeleteEnrollment studentEmail={learnerEmail} classId={classId} />

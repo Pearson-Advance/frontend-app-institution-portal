@@ -155,3 +155,61 @@ export const INSTRUCTOR_STATUS_TABS = {
   ACTIVE: 'Active',
   INACTIVE: 'Inactive',
 };
+
+/**
+ * Action types for voucher state transitions.
+ * @readonly
+ * @enum {string}
+ */
+export const VOUCHER_ACTIONS = {
+  ASSIGN_START: 'ASSIGN_START',
+  ASSIGN_END: 'ASSIGN_END',
+  REVOKE_START: 'REVOKE_START',
+  REVOKE_END: 'REVOKE_END',
+  SET_MESSAGE: 'SET_MESSAGE',
+};
+
+/**
+ * HTTP status codes used for API responses.
+ * @readonly
+ * @enum {number}
+ */
+export const HTTP_STATUS = {
+  SUCCESS: 200,
+  NOT_FOUND: 404,
+  UNPROCESSABLE: 422,
+};
+
+/**
+ * Success messages displayed after voucher actions.
+ * @readonly
+ * @enum {string}
+ */
+export const VOUCHER_SUCCESS_MESSAGES = {
+  ASSIGN: 'Voucher assigned successfully.',
+  REVOKE: 'Voucher revoked successfully.',
+};
+
+/**
+ * Error messages displayed after voucher actions fail.
+ * @readonly
+ * @enum {string}
+ */
+export const VOUCHER_ERROR_MESSAGES = {
+  ASSIGN: 'An unexpected error occurred while assigning the voucher.',
+  REVOKE: 'An unexpected error occurred while revoking the voucher.',
+  NOT_FOUND: 'No voucher or assignee found for this request.',
+  UNPROCESSABLE: 'No exam series code found for this request.',
+};
+
+/**
+ * UI labels used in voucher-related elements.
+ * @readonly
+ * @enum {string}
+ */
+export const VOUCHER_UI_LABELS = {
+  ASSIGN: 'Assign a voucher',
+  ASSIGNING: 'Assigning...',
+  REVOKE: 'Revoke voucher',
+  REVOKING: 'Revoking...',
+};
