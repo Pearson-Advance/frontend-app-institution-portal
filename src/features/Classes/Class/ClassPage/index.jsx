@@ -14,7 +14,7 @@ import Actions from 'features/Classes/Class/ClassPage/Actions';
 import { Button } from 'react-paragon-topaz';
 
 import { updateActiveTab } from 'features/Main/data/slice';
-import { columns } from 'features/Classes/Class/ClassPage/columns';
+import { getColumns } from 'features/Classes/Class/ClassPage/columns';
 import { resetStudentsTable, updateCurrentPage } from 'features/Students/data/slice';
 import { fetchStudentsData } from 'features/Students/data';
 
@@ -36,8 +36,6 @@ const ClassPage = () => {
   const courseIdDecoded = decodeURIComponent(courseId);
   const classIdDecoded = decodeURIComponent(classId);
 
-  const COLUMNS = useMemo(() => columns, []);
-
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const institution = useSelector((state) => state.main.selectedInstitution);
@@ -57,6 +55,12 @@ const ClassPage = () => {
 
   const classInfo = useSelector((state) => state.classes.allClasses.data)
     .find((classElement) => classElement?.classId === classIdDecoded) || defaultClassInfo;
+
+  const displayVoucherOptions = classInfo.examSeriesCode;
+
+  const COLUMNS = useMemo(() => (
+    getColumns(displayVoucherOptions)
+  ), [displayVoucherOptions]);
 
   useEffect(() => {
     const initialTitle = document.title;

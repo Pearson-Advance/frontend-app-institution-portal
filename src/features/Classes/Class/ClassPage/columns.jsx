@@ -14,7 +14,7 @@ import { useInstitutionIdQueryParam } from 'hooks';
 import DeleteEnrollment from 'features/Main/DeleteEnrollment';
 import VoucherOptions from 'features/Main/VoucherOptions';
 
-const columns = [
+const getColumns = (displayVoucherOptions) => ([
   {
     Header: 'No',
     accessor: 'index',
@@ -119,7 +119,7 @@ const columns = [
               <i className="fa-regular fa-bars-progress mr-2" />
               View progress
             </Dropdown.Item>
-            <VoucherOptions courseId={courseId} learnerEmail={learnerEmail} />
+            {displayVoucherOptions && <VoucherOptions courseId={courseId} learnerEmail={learnerEmail} />}
             {
               status?.toLowerCase() !== 'expired' && (
                 <DeleteEnrollment studentEmail={learnerEmail} classId={classId} />
@@ -130,6 +130,6 @@ const columns = [
       );
     },
   },
-];
+]);
 
-export { columns };
+export { getColumns };
