@@ -25,7 +25,7 @@ jest.mock('features/Courses/data/api', () => ({
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(() => ({ uuid: 'inst-123' })),
+  useSelector: jest.fn(() => ({ id: 'inst-123' })),
 }));
 
 describe('VoucherOptions', () => {
@@ -65,7 +65,7 @@ describe('VoucherOptions', () => {
 
     await waitFor(() => {
       expect(assignVoucher).toHaveBeenCalledWith({
-        institution_uuid: 'inst-123',
+        institution_id: 'inst-123',
         course_id: 'course-123',
         email: 'student@example.com',
       });
@@ -122,7 +122,7 @@ describe('VoucherOptions', () => {
 
     await waitFor(() => {
       expect(revokeVoucher).toHaveBeenCalledWith({
-        institution_uuid: 'inst-123',
+        institution_id: 'inst-123',
         course_id: 'course-123',
         email: 'student@example.com',
       });
