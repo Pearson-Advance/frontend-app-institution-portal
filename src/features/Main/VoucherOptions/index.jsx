@@ -46,15 +46,15 @@ const VoucherOptions = ({ courseId, learnerEmail }) => {
   const { assignLoading, revokeLoading, message } = state;
 
   const invalidInputs = useMemo(
-    () => !courseId || !learnerEmail || !institution?.uuid,
-    [courseId, learnerEmail, institution.uuid],
+    () => !courseId || !learnerEmail || !institution?.id,
+    [courseId, learnerEmail, institution.id],
   );
 
   const makePayload = useCallback(() => ({
-    institution_uuid: institution.uuid,
+    institution_id: institution.id,
     course_id: courseId,
     email: learnerEmail,
-  }), [institution?.uuid, courseId, learnerEmail]);
+  }), [institution?.id, courseId, learnerEmail]);
 
   const showMessage = useCallback(
     (msg) => {
