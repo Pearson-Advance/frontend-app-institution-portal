@@ -47,6 +47,27 @@
   }
 }
 
+.epp-header {
+  cursor: pointer;
+}
+
+.epp-overlay {
+  background-color: $overlay-bg;
+  color: $overlay-text;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  max-width: 320px;
+  box-shadow: 0 4px 12px $overlay-shadow;
+  z-index: 9999;
+  line-height: 1.4;
+}
+
+a.epp-link {
+  color: $blue-50;
+  text-decoration: underline;
+}
+
 @media screen and (max-width: 880px) {
   .title-page {
     padding-left: 20px;

@@ -166,8 +166,11 @@ const StudentsFilters = ({ resetPagination }) => {
                   name="exam_ready"
                   className="mr-2"
                   options={[
-                    { value: true, label: 'Yes' },
-                    { value: false, label: 'No' },
+                    { value: 'IN_PROGRESS', label: 'In Progress' },
+                    { value: 'RESTARTED', label: 'Restarted' },
+                    { value: 'EPP_ELIGIBLE', label: 'EPP Eligible' },
+                    { value: 'UNAVAILABLE', label: 'Unavailable' },
+                    { value: 'NOT_STARTED', label: 'Not Started' },
                   ]}
                   onChange={option => setExamSelected(option)}
                   value={examSelected}
