@@ -55,7 +55,7 @@ const VoucherOptions = ({ courseId, learnerEmail }) => {
     institution_uuid: institution.uuid,
     course_id: courseId,
     email: learnerEmail,
-  }), [institution?.id, institution.uuid, courseId, learnerEmail]);
+  }), [institution.id, institution.uuid, courseId, learnerEmail]);
 
   const showMessage = useCallback(
     (msg) => {
