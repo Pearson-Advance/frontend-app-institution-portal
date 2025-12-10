@@ -75,6 +75,13 @@ function getStudentsByEmail(studentEmail, options = {}) {
   );
 }
 
+function getInstitutionVouchers(params) {
+  return getAuthenticatedHttpClient().get(
+    `${getConfig().WEBNG_PLUGIN_API_BASE_URL}/vouchers/institution-vouchers/`,
+    { params },
+  );
+}
+
 export {
   getStudentbyInstitutionAdmin,
   handleEnrollments,
@@ -82,4 +89,5 @@ export {
   getClassesMetrics,
   getMessages,
   getStudentsByEmail,
+  getInstitutionVouchers,
 };

@@ -75,11 +75,11 @@ const ClassPage = () => {
   }, [dispatch, classIdDecoded]);
 
   useEffect(() => {
-    if (institution.id) {
+    if (institution.id && displayVoucherOptions) {
       const params = {
         course_id: courseIdDecoded,
         class_id: classIdDecoded,
-        limit: true,
+        exam_series_code: displayVoucherOptions,
       };
 
       dispatch(fetchStudentsData(institution.id, currentPage, params));
@@ -89,7 +89,7 @@ const ClassPage = () => {
       dispatch(resetStudentsTable());
       dispatch(updateCurrentPage(initialPage));
     };
-  }, [dispatch, institution.id, courseIdDecoded, classIdDecoded, currentPage]);
+  }, [dispatch, institution.id, courseIdDecoded, classIdDecoded, currentPage, displayVoucherOptions]);
 
   useEffect(() => {
     if (institution.id) {

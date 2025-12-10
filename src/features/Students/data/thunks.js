@@ -18,6 +18,7 @@ import {
   getStudentsMetrics,
   getStudentsByEmail,
   getStudentbyInstitutionAdmin,
+  getInstitutionVouchers,
 } from 'features/Students/data/api';
 import { RequestStatus } from 'features/constants';
 
@@ -25,9 +26,30 @@ function fetchStudentsData(id, currentPage, filtersData) {
   return async (dispatch) => {
     dispatch(fetchStudentsDataRequest());
 
+    const studentFilters = {
+      course_id: filtersData.course_id,
+      class_id: filtersData.class_id,
+      limit: true,
+    };
+
+    const voucherFilters = {
+      course_id: filtersData.course_id,
+      exam_series_code: filtersData.exam_series_code,
+      status: 'Available',
+    };
+
     try {
-      const response = camelCaseObject(await getStudentbyInstitutionAdmin(id, currentPage, filtersData));
-      dispatch(fetchStudentsDataSuccess(response.data));
+      const [vouchers, students] = await Promise.all([
+        getInstitutionVouchers(voucherFilters).then(camelCaseObject),
+        getStudentbyInstitutionAdmin(id, currentPage, studentFilters).then(camelCaseObject),
+      ]);
+
+      const results = students.data.results.map((student) => ({
+        ...student,
+        isVoucherAvailable: vouchers.data.results.some((voucher) => voucher.user === student.learnerEmail),
+      }));
+
+      dispatch(fetchStudentsDataSuccess({ ...students.data, results }));
     } catch (error) {
       dispatch(fetchStudentsDataFailed());
       logError(error);

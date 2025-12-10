@@ -154,6 +154,7 @@ const getColumns = (displayVoucherOptions) => ([
         courseId,
         userId,
         learnerEmail,
+        isVoucherAvailable,
       } = row.original;
 
       const progressPageLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/progress/${userId}`;
@@ -179,7 +180,13 @@ const getColumns = (displayVoucherOptions) => ([
               <i className="fa-regular fa-bars-progress mr-2" />
               View progress
             </Dropdown.Item>
-            {displayVoucherOptions && <VoucherOptions courseId={courseId} learnerEmail={learnerEmail} />}
+            {displayVoucherOptions && (
+            <VoucherOptions
+              courseId={courseId}
+              learnerEmail={learnerEmail}
+              isVoucherAvailable={isVoucherAvailable}
+            />
+            )}
             {
               status?.toLowerCase() !== 'expired' && (
                 <DeleteEnrollment studentEmail={learnerEmail} classId={classId} />

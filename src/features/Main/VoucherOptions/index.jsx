@@ -36,7 +36,7 @@ function reducer(state, action) {
   }
 }
 
-const VoucherOptions = ({ courseId, learnerEmail }) => {
+const VoucherOptions = ({ courseId, learnerEmail, isVoucherAvailable }) => {
   const enableOption = getConfig().PSS_ENABLE_ASSIGN_VOUCHER || false;
   const institution = useSelector((state) => state.main.selectedInstitution);
 
@@ -51,10 +51,11 @@ const VoucherOptions = ({ courseId, learnerEmail }) => {
   );
 
   const makePayload = useCallback(() => ({
+    institution_uuid: institution.uuid,
     institution_id: institution.id,
     course_id: courseId,
     email: learnerEmail,
-  }), [institution?.id, courseId, learnerEmail]);
+  }), [institution?.uuid, institution?.id, courseId, learnerEmail]);
 
   const showMessage = useCallback(
     (msg) => {
@@ -118,23 +119,25 @@ const VoucherOptions = ({ courseId, learnerEmail }) => {
 
   return (
     <>
-      <Dropdown.Item
-        className={`text-truncate text-decoration-none custom-text-black ${assignLoading ? 'opacity-50' : ''}`}
-        onClick={handleAssignVoucher}
-        disabled={assignLoading}
-      >
-        <i className="fa-solid fa-ticket mr-2" />
-        {assignLoading ? VOUCHER_UI_LABELS.ASSIGNING : VOUCHER_UI_LABELS.ASSIGN}
-      </Dropdown.Item>
-
-      <Dropdown.Item
-        className={`text-truncate text-decoration-none text-danger ${revokeLoading ? 'opacity-50' : ''}`}
-        onClick={handleRevokeVoucher}
-        disabled={revokeLoading}
-      >
-        <i className="fa-solid fa-trash mr-2" />
-        {revokeLoading ? VOUCHER_UI_LABELS.REVOKING : VOUCHER_UI_LABELS.REVOKE}
-      </Dropdown.Item>
+      {isVoucherAvailable ? (
+        <Dropdown.Item
+          className={`text-truncate text-decoration-none text-danger ${revokeLoading ? 'opacity-50' : ''}`}
+          onClick={handleRevokeVoucher}
+          disabled={revokeLoading}
+        >
+          <i className="fa-solid fa-trash mr-2" />
+          {revokeLoading ? VOUCHER_UI_LABELS.REVOKING : VOUCHER_UI_LABELS.REVOKE}
+        </Dropdown.Item>
+      ) : (
+        <Dropdown.Item
+          className={`text-truncate text-decoration-none custom-text-black ${assignLoading ? 'opacity-50' : ''}`}
+          onClick={handleAssignVoucher}
+          disabled={assignLoading}
+        >
+          <i className="fa-solid fa-ticket mr-2" />
+          {assignLoading ? VOUCHER_UI_LABELS.ASSIGNING : VOUCHER_UI_LABELS.ASSIGN}
+        </Dropdown.Item>
+      )}
 
       <Toast
         onClose={closeToast}
@@ -151,6 +154,11 @@ const VoucherOptions = ({ courseId, learnerEmail }) => {
 VoucherOptions.propTypes = {
   courseId: PropTypes.string.isRequired,
   learnerEmail: PropTypes.string.isRequired,
+  isVoucherAvailable: PropTypes.bool,
+};
+
+VoucherOptions.defaultProps = {
+  isVoucherAvailable: false,
 };
 
 export default VoucherOptions;
