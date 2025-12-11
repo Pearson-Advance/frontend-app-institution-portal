@@ -12,12 +12,16 @@ import {
   fetchStudentsMetricsDataRequest,
   fetchStudentsMetricsDataSuccess,
   fetchStudentsMetricsDataFailed,
+  updateStudentVouchers,
+  setStudentsRequestStatus,
 } from 'features/Students/data/slice';
+
 import {
   getClassesMetrics,
   getStudentsMetrics,
   getStudentsByEmail,
   getStudentbyInstitutionAdmin,
+  getInstitutionVouchersByExamSeriesCode,
 } from 'features/Students/data/api';
 import { RequestStatus } from 'features/constants';
 
@@ -30,6 +34,21 @@ function fetchStudentsData(id, currentPage, filtersData) {
       dispatch(fetchStudentsDataSuccess(response.data));
     } catch (error) {
       dispatch(fetchStudentsDataFailed());
+      logError(error);
+    }
+  };
+}
+
+function fetchStudentsVouchers(examSeriesCode) {
+  return async (dispatch) => {
+    dispatch(setStudentsRequestStatus(RequestStatus.LOADING));
+
+    try {
+      const response = camelCaseObject(await getInstitutionVouchersByExamSeriesCode(examSeriesCode));
+      dispatch(updateStudentVouchers(response.data));
+      dispatch(setStudentsRequestStatus(RequestStatus.SUCCESS));
+    } catch (error) {
+      dispatch(setStudentsRequestStatus(RequestStatus.ERROR));
       logError(error);
     }
   };
@@ -100,4 +119,5 @@ export {
   fetchStudentProfile,
   fetchClassesMetricsData,
   fetchStudentsMetricsData,
+  fetchStudentsVouchers,
 };

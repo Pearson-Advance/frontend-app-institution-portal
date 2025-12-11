@@ -213,3 +213,108 @@ export const VOUCHER_UI_LABELS = {
   REVOKE: 'Revoke voucher',
   REVOKING: 'Revoking...',
 };
+
+/**
+ * Voucher status values used in the voucher management system.
+ * @readonly
+ * @enum {string}
+ */
+export const VOUCHER_STATUS = {
+  AVAILABLE: 'AVAILABLE',
+  REVOKED: 'REVOKED',
+};
+
+/**
+ * Rule types for determining voucher assignment behavior.
+ * Defines the different scenarios when matching students with vouchers.
+ * @readonly
+ * @enum {string}
+ */
+export const VOUCHER_RULE_TYPES = {
+  /** Student has no vouchers assigned */
+  NO_VOUCHER: 'NO_VOUCHER',
+  /** Student has an available voucher from a different institution */
+  OTHER_AVAILABLE: 'OTHER_AVAILABLE',
+  /** Student has a revoked voucher from a different institution */
+  OTHER_REVOKED: 'OTHER_REVOKED',
+  /** Student has an available voucher from the same institution */
+  SAME_AVAILABLE: 'SAME_AVAILABLE',
+  /** Student has a revoked voucher from the same institution */
+  SAME_REVOKED: 'SAME_REVOKED',
+  /** Default fallback rule when no specific condition matches */
+  DEFAULT: 'DEFAULT',
+};
+
+/**
+ * Computed status values displayed in the UI for voucher states.
+ * @readonly
+ * @enum {string}
+ */
+export const VOUCHER_COMPUTED_STATUS = {
+  /** Status not applicable or no voucher */
+  NOT_APPLICABLE: 'N/A',
+  /** Voucher is currently assigned to the student */
+  AVAILABLE: 'assigned',
+  /** Voucher was revoked from the student */
+  REVOKED: 'revoked',
+};
+
+/**
+ * UI badged styles variants used in voucher-related elements.
+ * @readonly
+ * @enum {string}
+ */
+export const VOUCHER_BADGE_VARIANTS = {
+  [VOUCHER_COMPUTED_STATUS.AVAILABLE]: 'success',
+  [VOUCHER_COMPUTED_STATUS.REVOKED]: 'danger',
+};
+
+/**
+ * Configuration object mapping rule types to their corresponding UI behavior and status.
+ * Each rule defines the computed status and which action buttons should be visible.
+ *
+ * @typedef {Object} VoucherRuleConfig
+ * @property {string} computedStatus - The status to display in the UI
+ * @property {boolean} showAssign - Whether to show the assign voucher button
+ * @property {boolean} showRevoke - Whether to show the revoke voucher button
+ * @readonly
+ * @type {Object.<string, VoucherRuleConfig>}
+ */
+export const VOUCHER_RULES = {
+  /** No voucher exists for this student */
+  [VOUCHER_RULE_TYPES.NO_VOUCHER]: {
+    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_APPLICABLE,
+    showAssign: false,
+    showRevoke: false,
+  },
+  /** Student has an available voucher from another institution */
+  [VOUCHER_RULE_TYPES.OTHER_AVAILABLE]: {
+    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_APPLICABLE,
+    showAssign: false,
+    showRevoke: false,
+  },
+  /** Student has a revoked voucher from another institution - can assign new */
+  [VOUCHER_RULE_TYPES.OTHER_REVOKED]: {
+    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_APPLICABLE,
+    showAssign: true,
+    showRevoke: false,
+  },
+  /** Student has an active voucher from the same institution - can revoke */
+  [VOUCHER_RULE_TYPES.SAME_AVAILABLE]: {
+    computedStatus: VOUCHER_COMPUTED_STATUS.AVAILABLE,
+    showAssign: false,
+    showRevoke: true,
+  },
+  /** Student has a revoked voucher from the same institution - can reassign */
+  [VOUCHER_RULE_TYPES.SAME_REVOKED]: {
+    computedStatus: VOUCHER_COMPUTED_STATUS.REVOKED,
+    showAssign: true,
+    showRevoke: false,
+  },
+  /** Default fallback rule when no specific condition is met */
+  [VOUCHER_RULE_TYPES.DEFAULT]: {
+    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_APPLICABLE,
+    showAssign: false,
+    showRevoke: false,
+  },
+};

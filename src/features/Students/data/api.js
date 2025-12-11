@@ -75,6 +75,27 @@ function getStudentsByEmail(studentEmail, options = {}) {
   );
 }
 
+/**
+ * Retrieves institution vouchers filtered by exam series code.
+ *
+ * Sends a GET request to the institution vouchers endpoint, including the
+ * provided exam series code as a query parameter.
+ *
+ * @param {string} examSeriesCode - The exam series code used to filter vouchers.
+ *
+ * @returns {Promise<AxiosResponse>} A promise resolving to the HTTP response object.
+ */
+function getInstitutionVouchersByExamSeriesCode(examSeriesCode) {
+  const params = {
+    exam_series_code: examSeriesCode,
+  };
+
+  return getAuthenticatedHttpClient().get(
+    `${getConfig().WEBNG_PLUGIN_API_BASE_URL}/vouchers/institution-vouchers/`,
+    { params },
+  );
+}
+
 export {
   getStudentbyInstitutionAdmin,
   handleEnrollments,
@@ -82,4 +103,5 @@ export {
   getClassesMetrics,
   getMessages,
   getStudentsByEmail,
+  getInstitutionVouchersByExamSeriesCode,
 };

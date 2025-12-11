@@ -16,7 +16,9 @@ import { useInstitutionIdQueryParam } from 'hooks';
 import DeleteEnrollment from 'features/Main/DeleteEnrollment';
 import VoucherOptions from 'features/Main/VoucherOptions';
 
-const getColumns = (displayVoucherOptions) => ([
+import { VOUCHER_BADGE_VARIANTS } from 'features/constants';
+
+const getColumns = ({ displayVoucherOptions = false, enableVoucherColumn = false } = {}) => ([
   {
     Header: 'No',
     accessor: 'index',
@@ -57,6 +59,19 @@ const getColumns = (displayVoucherOptions) => ([
     Cell: ({ row }) => (
       <Badge variant={STUDENT_STATUS_VARIANTS[row.values.status?.toLowerCase()] || 'success'} light className="text-capitalize">
         {row.values.status}
+      </Badge>
+    ),
+  },
+  enableVoucherColumn && {
+    Header: 'Voucher Status',
+    accessor: 'voucherInfo',
+    Cell: ({ row }) => (
+      <Badge
+        variant={VOUCHER_BADGE_VARIANTS[row.values?.voucherInfo?.computedStatus] || 'light'}
+        light
+        className="text-capitalize"
+      >
+        {row.values?.voucherInfo?.computedStatus || 'N/A'}
       </Badge>
     ),
   },
@@ -190,6 +205,6 @@ const getColumns = (displayVoucherOptions) => ([
       );
     },
   },
-]);
+].filter(Boolean));
 
 export { getColumns };
