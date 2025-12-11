@@ -7,6 +7,7 @@ import React, {
 import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { Container, Pagination } from '@edx/paragon';
 import { useDispatch, useSelector } from 'react-redux';
+import { getConfig } from '@edx/frontend-platform';
 
 import Table from 'features/Main/Table';
 import InstructorCard from 'features/Classes/InstructorCard';
@@ -16,7 +17,7 @@ import { Button } from 'react-paragon-topaz';
 import { updateActiveTab } from 'features/Main/data/slice';
 import { getColumns } from 'features/Classes/Class/ClassPage/columns';
 import { resetStudentsTable, updateCurrentPage } from 'features/Students/data/slice';
-import { fetchStudentsData } from 'features/Students/data';
+import { fetchStudentsData, fetchStudentsVouchers } from 'features/Students/data';
 
 import { initialPage, RequestStatus } from 'features/constants';
 import { resetClassesTable, resetClasses } from 'features/Classes/data/slice';
@@ -40,9 +41,12 @@ const ClassPage = () => {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const institution = useSelector((state) => state.main.selectedInstitution);
   const students = useSelector((state) => state.students.table);
+  const vouchers = useSelector((state) => state.students.vouchers?.results || []);
   const addQueryParam = useInstitutionIdQueryParam();
 
   const isLoadingStudents = students.status === RequestStatus.LOADING;
+
+  const enableVoucherColumn = getConfig().PSS_ENABLE_ASSIGN_VOUCHER || false;
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -58,9 +62,24 @@ const ClassPage = () => {
 
   const displayVoucherOptions = classInfo.examSeriesCode;
 
+  const mergeStudentsWithVouchers = () => {
+    if (students?.data?.length > 0 && vouchers?.length > 0) {
+      const vouchersByUser = new Map(vouchers.map(v => [v.user, v]));
+
+      const studentsWithVoucherInfo = students.data.map(student => ({
+        ...student,
+        voucherInfo: vouchersByUser.get(student.userId) ?? null,
+      }));
+
+      return studentsWithVoucherInfo;
+    }
+
+    return students.data;
+  };
+
   const COLUMNS = useMemo(() => (
-    getColumns(displayVoucherOptions)
-  ), [displayVoucherOptions]);
+    getColumns({ displayVoucherOptions, enableVoucherColumn })
+  ), [displayVoucherOptions, enableVoucherColumn]);
 
   useEffect(() => {
     const initialTitle = document.title;
@@ -83,6 +102,7 @@ const ClassPage = () => {
       };
 
       dispatch(fetchStudentsData(institution.id, currentPage, params));
+      dispatch(fetchStudentsVouchers(courseIdDecoded));
     }
 
     return () => {
@@ -134,7 +154,7 @@ const ClassPage = () => {
             isLoading={isLoadingStudents}
             columns={COLUMNS}
             count={students.count}
-            data={students.data}
+            data={mergeStudentsWithVouchers()}
             text="No students were found for this class."
           />
           {students.numPages > 1 && (

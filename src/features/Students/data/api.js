@@ -75,6 +75,28 @@ function getStudentsByEmail(studentEmail, options = {}) {
   );
 }
 
+/**
+ * Retrieves voucher information filtered by master course ID.
+ *
+ * Sends a GET request to the institution vouchers endpoint, including the
+ * provided master course ID as a query parameter.
+ *
+ * @param {string} materCourseId - The master course ID to filter vouchers
+ *
+ * @returns {Promise<AxiosResponse>} A promise resolving to the HTTP response object
+ */
+function getInstitutionVouchersByCourse(materCourseId) {
+  const params = {
+    master_course_id: materCourseId,
+    status: 'Available',
+  };
+
+  return getAuthenticatedHttpClient().get(
+    `${getConfig().WEBNG_PLUGIN_API_BASE_URL}/vouchers/institution-vouchers/`,
+    { params },
+  );
+}
+
 export {
   getStudentbyInstitutionAdmin,
   handleEnrollments,
@@ -82,4 +104,5 @@ export {
   getClassesMetrics,
   getMessages,
   getStudentsByEmail,
+  getInstitutionVouchersByCourse,
 };

@@ -21,6 +21,7 @@ describe('getColumns', () => {
       table: {
         results: [
           {
+            user_id: 1,
             learnerName: 'Test User',
             learnerEmail: 'testuser@example.com',
             courseId: 'course-v1:demo+demo1+2020',
@@ -37,20 +38,36 @@ describe('getColumns', () => {
           },
         ],
       },
+      vouchers: {
+        results: [
+          {
+            id: 1,
+            created: '2025-11-11T13:28:27.376964Z',
+            modified: '2025-11-11T17:42:13.680764Z',
+            discount_code: '',
+            institution_uuid: '1b00977b-38c9-4250-a1d8-fb75c6564192',
+            master_course_id: 'course-v1:VUE+9780138261375+2025',
+            exam_series_code: 'CODE-TEST',
+            status: 'Available',
+            user: 1,
+          },
+        ],
+      },
     },
   };
 
   test('Should return an array of columns with correct properties', () => {
-    const columns = getColumns(false);
+    const columns = getColumns({ enableVoucherColumn: true });
 
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(9);
+    expect(columns).toHaveLength(10);
 
     const [
       number,
       student,
       learnerEmail,
       status,
+      voucherStatus,
       completePercentage,
       examReady,
       lastExam,
@@ -62,6 +79,7 @@ describe('getColumns', () => {
     expect(student).toHaveProperty('Header', 'Student');
     expect(learnerEmail).toHaveProperty('Header', 'Email');
     expect(status).toHaveProperty('Header', 'Status');
+    expect(voucherStatus).toHaveProperty('Header', 'Voucher Status');
     expect(completePercentage).toHaveProperty('Header', 'Current Grade');
     expect(examReady).toHaveProperty('Header', 'Exam Ready');
     expect(lastExam).toHaveProperty('Header', 'Last exam date');
@@ -70,7 +88,7 @@ describe('getColumns', () => {
   });
 
   test('renders Student cell with link', () => {
-    const columns = getColumns(false);
+    const columns = getColumns();
 
     const StudentColumn = () => columns[1].Cell({
       row: {
@@ -94,7 +112,7 @@ describe('getColumns', () => {
   });
 
   test('renders Status badge', () => {
-    const columns = getColumns(false);
+    const columns = getColumns();
 
     const StatusColumn = () => columns[3].Cell({
       row: { values: { status: 'Active' } },
@@ -111,7 +129,7 @@ describe('getColumns', () => {
   });
 
   test('renders Current Grade with safe value', () => {
-    const columns = getColumns(false);
+    const columns = getColumns();
 
     const GradeColumn = () => columns[4].Cell({
       row: { values: { completePercentage: 25.8 } },
@@ -126,7 +144,7 @@ describe('getColumns', () => {
   });
 
   test('renders Exam Ready ProgressSteps', () => {
-    const columns = getColumns(false);
+    const columns = getColumns();
 
     const ExamColumn = () => columns[5].Cell({
       row: {
@@ -145,7 +163,7 @@ describe('getColumns', () => {
   });
 
   test('renders Last exam date as -- when null', () => {
-    const columns = getColumns(false);
+    const columns = getColumns();
 
     const LastExamColumn = () => columns[6].Cell({
       row: {
@@ -164,7 +182,7 @@ describe('getColumns', () => {
   });
 
   test('renders Epp Days Left when value exists', () => {
-    const columns = getColumns(false);
+    const columns = getColumns();
 
     const EppDaysColumn = () => columns[7].Cell({
       row: { values: { examReady: { eppDaysLeft: 3 } } },
@@ -179,7 +197,7 @@ describe('getColumns', () => {
   });
 
   test('renders Epp Days Left as -- when null', () => {
-    const columns = getColumns(false);
+    const columns = getColumns();
 
     const EppDaysColumn = () => columns[7].Cell({
       row: { values: { examReady: { eppDaysLeft: null } } },
@@ -194,7 +212,7 @@ describe('getColumns', () => {
   });
 
   test('renders Actions dropdown', () => {
-    const columns = getColumns(false);
+    const columns = getColumns();
 
     const ActionColumn = () => columns[8].Cell({
       row: {
@@ -220,8 +238,8 @@ describe('getColumns', () => {
     expect(component.getByText('View progress')).toBeInTheDocument();
   });
 
-  test('renders Voucher option only when allowAssigningVoucher = true', () => {
-    const columns = getColumns(true);
+  test('renders Voucher option only when displayVoucherOptions = true', () => {
+    const columns = getColumns({ displayVoucherOptions: true });
 
     const ActionColumn = () => columns[8].Cell({
       row: {
@@ -246,8 +264,8 @@ describe('getColumns', () => {
     expect(component.getByText('Assign a voucher')).toBeInTheDocument();
   });
 
-  test('does NOT render Voucher option when allowAssigningVoucher = false', () => {
-    const columns = getColumns(false);
+  test('does NOT render Voucher option when displayVoucherOptions = false', () => {
+    const columns = getColumns();
 
     const ActionColumn = () => columns[8].Cell({
       row: {
@@ -270,5 +288,83 @@ describe('getColumns', () => {
     fireEvent.click(component.getByTestId('droprown-action'));
 
     expect(component.queryByText('Assign a voucher')).not.toBeInTheDocument();
+  });
+});
+
+describe('Voucher Status column', () => {
+  const getVoucherCell = () => {
+    const columns = getColumns({ enableVoucherColumn: true });
+    const col = columns.find(c => c.accessor === 'voucherInfo');
+    return col?.Cell;
+  };
+
+  test('displays "Available" with "success" variant when status is "available"', () => {
+    const row = {
+      values: {
+        voucherInfo: { status: 'Available' },
+      },
+    };
+
+    const Cell = getVoucherCell();
+    const rendered = Cell({ row });
+
+    expect(rendered.props.variant).toBe('success');
+    expect(rendered.props.children).toBe('Available');
+  });
+
+  test('displays "Revoked" with "danger" variant when status is "revoked"', () => {
+    const row = {
+      values: {
+        voucherInfo: { status: 'Revoked' },
+      },
+    };
+
+    const Cell = getVoucherCell();
+    const rendered = Cell({ row });
+
+    expect(rendered.props.variant).toBe('danger');
+    expect(rendered.props.children).toBe('Revoked');
+  });
+
+  test('displays "N/A" and "light" variant when voucherInfo is null', () => {
+    const row = {
+      values: {
+        voucherInfo: null,
+      },
+    };
+
+    const Cell = getVoucherCell();
+    const rendered = Cell({ row });
+
+    expect(rendered.props.variant).toBe('light');
+    expect(rendered.props.children).toBe('N/A');
+  });
+
+  test('displays "N/A" and "light" variant when voucherInfo has no status', () => {
+    const row = {
+      values: {
+        voucherInfo: {},
+      },
+    };
+
+    const Cell = getVoucherCell();
+    const rendered = Cell({ row });
+
+    expect(rendered.props.variant).toBe('light');
+    expect(rendered.props.children).toBe('N/A');
+  });
+
+  test('falls back to "light" variant when status does not match existing ones', () => {
+    const row = {
+      values: {
+        voucherInfo: { status: 'Unknown' },
+      },
+    };
+
+    const Cell = getVoucherCell();
+    const rendered = Cell({ row });
+
+    expect(rendered.props.variant).toBe('light');
+    expect(rendered.props.children).toBe('Unknown');
   });
 });
