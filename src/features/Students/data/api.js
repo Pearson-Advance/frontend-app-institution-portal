@@ -81,14 +81,13 @@ function getStudentsByEmail(studentEmail, options = {}) {
  * Sends a GET request to the institution vouchers endpoint, including the
  * provided master course ID as a query parameter.
  *
- * @param {string} materCourseId - The master course ID to filter vouchers
+ * @param {string} examSeriesCode - The exam series code to filter vouchers by.
  *
  * @returns {Promise<AxiosResponse>} A promise resolving to the HTTP response object
  */
-function getInstitutionVouchersByCourse(materCourseId) {
+function getInstitutionVouchersByCourse(examSeriesCode) {
   const params = {
-    master_course_id: materCourseId,
-    status: 'Available',
+    exam_series_code: examSeriesCode,
   };
 
   return getAuthenticatedHttpClient().get(

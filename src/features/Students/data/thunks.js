@@ -39,12 +39,12 @@ function fetchStudentsData(id, currentPage, filtersData) {
   };
 }
 
-function fetchStudentsVouchers(masterCourseId) {
+function fetchStudentsVouchers(examSeriesCode) {
   return async (dispatch) => {
     dispatch(setStudentsRequestStatus(RequestStatus.LOADING));
 
     try {
-      const response = camelCaseObject(await getInstitutionVouchersByCourse(masterCourseId));
+      const response = camelCaseObject(await getInstitutionVouchersByCourse(examSeriesCode));
       dispatch(updateStudentVouchers(response.data));
       dispatch(setStudentsRequestStatus(RequestStatus.SUCCESS));
     } catch (error) {

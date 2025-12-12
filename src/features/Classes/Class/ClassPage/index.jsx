@@ -102,14 +102,17 @@ const ClassPage = () => {
       };
 
       dispatch(fetchStudentsData(institution.id, currentPage, params));
-      dispatch(fetchStudentsVouchers(courseIdDecoded));
+
+      if (displayVoucherOptions) {
+        dispatch(fetchStudentsVouchers(displayVoucherOptions));
+      }
     }
 
     return () => {
       dispatch(resetStudentsTable());
       dispatch(updateCurrentPage(initialPage));
     };
-  }, [dispatch, institution.id, courseIdDecoded, classIdDecoded, currentPage]);
+  }, [dispatch, institution.id, courseIdDecoded, classIdDecoded, currentPage, displayVoucherOptions]);
 
   useEffect(() => {
     if (institution.id) {
