@@ -16,7 +16,9 @@ import { useInstitutionIdQueryParam } from 'hooks';
 import DeleteEnrollment from 'features/Main/DeleteEnrollment';
 import VoucherOptions from 'features/Main/VoucherOptions';
 
-const getColumns = (displayVoucherOptions) => ([
+import { VOUCHER_BADGE_VARIANTS } from 'features/constants';
+
+const getColumns = ({ displayVoucherOptions = false, enableVoucherColumn = false } = {}) => ([
   {
     Header: 'No',
     accessor: 'index',
@@ -57,6 +59,15 @@ const getColumns = (displayVoucherOptions) => ([
     Cell: ({ row }) => (
       <Badge variant={STUDENT_STATUS_VARIANTS[row.values.status?.toLowerCase()] || 'success'} light className="text-capitalize">
         {row.values.status}
+      </Badge>
+    ),
+  },
+  enableVoucherColumn && {
+    Header: 'Voucher Status',
+    accessor: 'voucherInfo',
+    Cell: ({ row }) => (
+      <Badge variant={VOUCHER_BADGE_VARIANTS[row.values?.voucherInfo?.status?.toLowerCase()] || 'light'} light className="text-capitalize">
+        {row.values?.voucherInfo?.status || 'N/A'}
       </Badge>
     ),
   },
@@ -154,9 +165,12 @@ const getColumns = (displayVoucherOptions) => ([
         courseId,
         userId,
         learnerEmail,
+        voucherInfo = null,
       } = row.original;
 
       const progressPageLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/progress/${userId}`;
+
+      const isAssignAvailable = !voucherInfo;
 
       return (
         <Dropdown className="dropdowntpz">
@@ -179,7 +193,9 @@ const getColumns = (displayVoucherOptions) => ([
               <i className="fa-regular fa-bars-progress mr-2" />
               View progress
             </Dropdown.Item>
-            {displayVoucherOptions && <VoucherOptions courseId={courseId} learnerEmail={learnerEmail} />}
+            {displayVoucherOptions && (
+              <VoucherOptions courseId={courseId} learnerEmail={learnerEmail} isAssignAvailable={isAssignAvailable} />
+            )}
             {
               status?.toLowerCase() !== 'expired' && (
                 <DeleteEnrollment studentEmail={learnerEmail} classId={classId} />
@@ -190,6 +206,6 @@ const getColumns = (displayVoucherOptions) => ([
       );
     },
   },
-]);
+].filter(Boolean));
 
 export { getColumns };

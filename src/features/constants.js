@@ -213,3 +213,13 @@ export const VOUCHER_UI_LABELS = {
   REVOKE: 'Revoke voucher',
   REVOKING: 'Revoking...',
 };
+
+/**
+ * UI badged styles variants used in voucher-related elements.
+ * @readonly
+ * @enum {string}
+ */
+export const VOUCHER_BADGE_VARIANTS = {
+  available: 'success',
+  revoked: 'danger',
+};
