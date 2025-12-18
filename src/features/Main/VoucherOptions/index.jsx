@@ -36,7 +36,9 @@ function reducer(state, action) {
   }
 }
 
-const VoucherOptions = ({ courseId, learnerEmail }) => {
+const VoucherOptions = ({
+  courseId, learnerEmail, showAssign, showRevoke,
+}) => {
   const enableOption = getConfig().PSS_ENABLE_ASSIGN_VOUCHER || false;
   const institution = useSelector((state) => state.main.selectedInstitution);
 
@@ -119,6 +121,7 @@ const VoucherOptions = ({ courseId, learnerEmail }) => {
 
   return (
     <>
+      {showAssign && (
       <Dropdown.Item
         className={`text-truncate text-decoration-none custom-text-black ${assignLoading ? 'opacity-50' : ''}`}
         onClick={handleAssignVoucher}
@@ -127,7 +130,9 @@ const VoucherOptions = ({ courseId, learnerEmail }) => {
         <i className="fa-solid fa-ticket mr-2" />
         {assignLoading ? VOUCHER_UI_LABELS.ASSIGNING : VOUCHER_UI_LABELS.ASSIGN}
       </Dropdown.Item>
+      )}
 
+      {showRevoke && (
       <Dropdown.Item
         className={`text-truncate text-decoration-none text-danger ${revokeLoading ? 'opacity-50' : ''}`}
         onClick={handleRevokeVoucher}
@@ -136,6 +141,7 @@ const VoucherOptions = ({ courseId, learnerEmail }) => {
         <i className="fa-solid fa-trash mr-2" />
         {revokeLoading ? VOUCHER_UI_LABELS.REVOKING : VOUCHER_UI_LABELS.REVOKE}
       </Dropdown.Item>
+      )}
 
       <Toast
         onClose={closeToast}
@@ -152,6 +158,8 @@ const VoucherOptions = ({ courseId, learnerEmail }) => {
 VoucherOptions.propTypes = {
   courseId: PropTypes.string.isRequired,
   learnerEmail: PropTypes.string.isRequired,
+  showAssign: PropTypes.bool.isRequired,
+  showRevoke: PropTypes.bool.isRequired,
 };
 
 export default VoucherOptions;
