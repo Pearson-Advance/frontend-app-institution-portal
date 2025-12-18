@@ -74,70 +74,99 @@ const ClassPage = () => {
     will need to be updated to support multiple vouchers with the same exam_series_code
     across different institutions.
   */
-  const mergeStudentsWithVouchers = () => {
-    if (!students?.data?.length || !vouchers?.length) {
-      return students?.data || [];
+  const groupUserVouchersByInstitution = (apiVouchers, userId, currentInstitutionUuid) => {
+    const userVouchers = apiVouchers.filter(v => v.user === userId);
+
+    const sameInstitution = userVouchers.find(
+      v => v.institutionUuid === currentInstitutionUuid,
+    );
+
+    const otherInstitution = userVouchers.find(
+      v => v.institutionUuid !== currentInstitutionUuid,
+    );
+
+    return { sameInstitution, otherInstitution };
+  };
+
+  const determineVoucherRule = (sameInstitution, otherInstitution) => {
+    if (!sameInstitution && !otherInstitution) {
+      return VOUCHER_RULE_TYPES.NO_VOUCHER;
     }
 
-    const getVoucherRule = (sameInstitution, otherInstitution) => {
-      if (!sameInstitution && !otherInstitution) { return VOUCHER_RULE_TYPES.NO_VOUCHER; }
+    if (sameInstitution) {
+      if (sameInstitution.status === VOUCHER_STATUS.AVAILABLE) {
+        return VOUCHER_RULE_TYPES.SAME_AVAILABLE;
+      }
+      if (sameInstitution.status === VOUCHER_STATUS.REVOKED) {
+        return VOUCHER_RULE_TYPES.SAME_REVOKED;
+      }
+    }
 
-      if (!sameInstitution && otherInstitution?.status === VOUCHER_STATUS.AVAILABLE) {
+    if (otherInstitution) {
+      if (otherInstitution.status === VOUCHER_STATUS.AVAILABLE) {
         return VOUCHER_RULE_TYPES.OTHER_AVAILABLE;
       }
-
-      if (!sameInstitution && otherInstitution?.status === VOUCHER_STATUS.REVOKED) {
+      if (otherInstitution.status === VOUCHER_STATUS.REVOKED) {
         return VOUCHER_RULE_TYPES.OTHER_REVOKED;
       }
+    }
 
-      if (sameInstitution?.status === VOUCHER_STATUS.AVAILABLE) { return VOUCHER_RULE_TYPES.SAME_AVAILABLE; }
+    return VOUCHER_RULE_TYPES.DEFAULT;
+  };
 
-      if (sameInstitution?.status === VOUCHER_STATUS.REVOKED) { return VOUCHER_RULE_TYPES.SAME_REVOKED; }
+  const selectVoucherForDisplay = (sameInstitution, otherInstitution, ruleKey) => {
+    if (ruleKey === VOUCHER_RULE_TYPES.SAME_AVAILABLE
+      || ruleKey === VOUCHER_RULE_TYPES.SAME_REVOKED) {
+      return sameInstitution;
+    }
 
-      return VOUCHER_RULE_TYPES.DEFAULT;
+    return sameInstitution || otherInstitution || null;
+  };
+
+  const createVoucherInfo = (selectedVoucher, ruleKey) => {
+    const ruleConfig = VOUCHER_RULES[ruleKey];
+
+    return {
+      ...selectedVoucher,
+      ...ruleConfig,
     };
+  };
 
-    const getSelectedVoucher = (sameInstitution, otherInstitution, ruleKey) => {
-      if (ruleKey === VOUCHER_RULE_TYPES.SAME_AVAILABLE || ruleKey === VOUCHER_RULE_TYPES.SAME_REVOKED) {
-        return sameInstitution;
-      }
+  const mergeStudentsWithVouchers = () => {
+    if (!students?.data?.length) {
+      return [];
+    }
 
-      return sameInstitution ?? otherInstitution ?? null;
-    };
+    if (!vouchers?.length) {
+      return students.data.map(student => ({
+        ...student,
+        voucherInfo: createVoucherInfo(null, VOUCHER_RULE_TYPES.NO_VOUCHER),
+      }));
+    }
 
-    const mergedData = students.data.map(student => {
-      const userVouchers = vouchers.filter(v => v.user === student.userId);
+    if (!institution?.uuid) {
+      return students.data.map(student => ({
+        ...student,
+        voucherInfo: createVoucherInfo(null, VOUCHER_RULE_TYPES.DEFAULT),
+      }));
+    }
 
-      if (userVouchers.length === 0) {
-        return {
-          ...student,
-          voucherInfo: {
-            ...VOUCHER_RULES[VOUCHER_RULE_TYPES.NO_VOUCHER],
-          },
-        };
-      }
-
-      const voucherSameInstitution = userVouchers.find(
-        v => v.institutionUuid === institution?.uuid,
+    return students.data.map(student => {
+      const { sameInstitution, otherInstitution } = groupUserVouchersByInstitution(
+        vouchers,
+        student.userId,
+        institution.uuid,
       );
 
-      const voucherOtherInstitution = userVouchers.find(
-        v => v.institutionUuid !== institution?.uuid,
-      );
-
-      const ruleKey = getVoucherRule(voucherSameInstitution, voucherOtherInstitution);
-      const selectedVoucher = getSelectedVoucher(voucherSameInstitution, voucherOtherInstitution, ruleKey);
+      const ruleKey = determineVoucherRule(sameInstitution, otherInstitution);
+      const selectedVoucher = selectVoucherForDisplay(sameInstitution, otherInstitution, ruleKey);
+      const voucherInfo = createVoucherInfo(selectedVoucher, ruleKey);
 
       return {
         ...student,
-        voucherInfo: {
-          ...selectedVoucher,
-          ...VOUCHER_RULES[ruleKey],
-        },
+        voucherInfo,
       };
     });
-
-    return mergedData;
   };
 
   const COLUMNS = useMemo(() => (
