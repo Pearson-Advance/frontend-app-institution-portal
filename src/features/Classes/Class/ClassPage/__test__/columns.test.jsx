@@ -251,6 +251,10 @@ describe('getColumns', () => {
           learnerEmail: 'testuser@example.com',
           courseId: 'course-v1:demo+demo1+2020',
           status: 'Active',
+          voucherInfo: {
+            computedStatus: 'assigned',
+            showAssign: true,
+          },
         },
       },
     });
