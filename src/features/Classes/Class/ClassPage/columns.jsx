@@ -171,7 +171,6 @@ const getColumns = ({ displayVoucherOptions = false, enableVoucherColumn = false
         learnerEmail,
         voucherInfo,
       } = row.original;
-      console.log(voucherInfo);
 
       const progressPageLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/progress/${userId}`;
 
