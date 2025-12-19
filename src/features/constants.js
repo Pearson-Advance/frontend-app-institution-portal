@@ -266,7 +266,7 @@ export const VOUCHER_BADGE_VARIANTS = {
 export const VOUCHER_RULES = {
   [VOUCHER_RULE_TYPES.NO_VOUCHER]: {
     computedStatus: VOUCHER_COMPUTED_STATUS.NOT_APPLICABLE,
-    showAssign: false,
+    showAssign: true,
     showRevoke: false,
   },
   [VOUCHER_RULE_TYPES.OTHER_AVAILABLE]: {
