@@ -213,3 +213,85 @@ export const VOUCHER_UI_LABELS = {
   REVOKE: 'Revoke voucher',
   REVOKING: 'Revoking...',
 };
+
+/**
+ * Voucher status values used in the voucher management system.
+ * @readonly
+ * @enum {string}
+ */
+export const VOUCHER_STATUS = {
+  AVAILABLE: 'Available',
+  REVOKED: 'Revoked',
+};
+
+/**
+ * Rule types for determining voucher assignment behavior.
+ * @readonly
+ * @enum {string}
+ */
+export const VOUCHER_RULE_TYPES = {
+  NO_VOUCHER: 'NO_VOUCHER',
+  OTHER_AVAILABLE: 'OTHER_AVAILABLE',
+  OTHER_REVOKED: 'OTHER_REVOKED',
+  SAME_AVAILABLE: 'SAME_AVAILABLE',
+  SAME_REVOKED: 'SAME_REVOKED',
+  DEFAULT: 'DEFAULT',
+};
+
+/**
+ * Computed status values displayed in the UI.
+ * @readonly
+ * @enum {string}
+ */
+export const VOUCHER_COMPUTED_STATUS = {
+  NOT_APPLICABLE: 'N/A',
+  AVAILABLE: 'assigned',
+  REVOKED: 'revoked',
+};
+
+/**
+ * UI badge style variants.
+ * @readonly
+ * @enum {string}
+ */
+export const VOUCHER_BADGE_VARIANTS = {
+  [VOUCHER_COMPUTED_STATUS.AVAILABLE]: 'success',
+  [VOUCHER_COMPUTED_STATUS.REVOKED]: 'danger',
+};
+
+/**
+ * Configuration mapping rule types to UI behavior.
+ * @readonly
+ */
+export const VOUCHER_RULES = {
+  [VOUCHER_RULE_TYPES.NO_VOUCHER]: {
+    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_APPLICABLE,
+    showAssign: false,
+    showRevoke: false,
+  },
+  [VOUCHER_RULE_TYPES.OTHER_AVAILABLE]: {
+    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_APPLICABLE,
+    showAssign: false,
+    showRevoke: false,
+  },
+  [VOUCHER_RULE_TYPES.OTHER_REVOKED]: {
+    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_APPLICABLE,
+    showAssign: true,
+    showRevoke: false,
+  },
+  [VOUCHER_RULE_TYPES.SAME_AVAILABLE]: {
+    computedStatus: VOUCHER_COMPUTED_STATUS.AVAILABLE,
+    showAssign: false,
+    showRevoke: true,
+  },
+  [VOUCHER_RULE_TYPES.SAME_REVOKED]: {
+    computedStatus: VOUCHER_COMPUTED_STATUS.REVOKED,
+    showAssign: true,
+    showRevoke: false,
+  },
+  [VOUCHER_RULE_TYPES.DEFAULT]: {
+    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_APPLICABLE,
+    showAssign: false,
+    showRevoke: false,
+  },
+};

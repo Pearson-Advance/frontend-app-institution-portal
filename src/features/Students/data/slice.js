@@ -19,6 +19,7 @@ const initialState = {
   },
   filters: {},
   studentProfile: {},
+  vouchers: [],
 };
 
 export const studentsSlice = createSlice({
@@ -33,6 +34,9 @@ export const studentsSlice = createSlice({
     },
     fetchStudentsDataRequest: (state) => {
       state.table.status = RequestStatus.LOADING;
+    },
+    setStudentsRequestStatus: (state, { payload }) => {
+      state.table.status = payload;
     },
     fetchStudentsDataSuccess: (state, { payload }) => {
       const { results, count, numPages } = payload;
@@ -76,6 +80,9 @@ export const studentsSlice = createSlice({
     resetStudentProfile: (state) => {
       state.studentProfile = initialState.studentProfile;
     },
+    updateStudentVouchers: (state, { payload }) => {
+      state.vouchers = payload;
+    },
   },
 });
 
@@ -95,6 +102,8 @@ export const {
   updateStudentProfile,
   resetStudentProfile,
   updateStudentProfileStatus,
+  updateStudentVouchers,
+  setStudentsRequestStatus,
 } = studentsSlice.actions;
 
 export const { reducer } = studentsSlice;
