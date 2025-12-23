@@ -32,6 +32,8 @@ describe('VoucherOptions', () => {
   const baseProps = {
     courseId: 'course-123',
     learnerEmail: 'student@example.com',
+    showAssign: true,
+    showRevoke: true,
   };
 
   beforeEach(() => {
@@ -41,18 +43,50 @@ describe('VoucherOptions', () => {
   test('should not render when PSS_ENABLE_ASSIGN_VOUCHER is false', () => {
     getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: false });
 
-    const { queryByText } = renderWithProviders(<VoucherOptions {...baseProps} />);
-    expect(queryByText(VOUCHER_UI_LABELS.ASSIGN)).toBeNull();
-    expect(queryByText(VOUCHER_UI_LABELS.REVOKE)).toBeNull();
+    const { container } = renderWithProviders(<VoucherOptions {...baseProps} />);
+    expect(container.firstChild).toBeNull();
   });
 
-  test('should render both options when enabled', () => {
+  test('should render both options when enabled and both props are true', () => {
     getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: true });
 
     renderWithProviders(<VoucherOptions {...baseProps} />);
 
     expect(screen.getByText(VOUCHER_UI_LABELS.ASSIGN)).toBeInTheDocument();
     expect(screen.getByText(VOUCHER_UI_LABELS.REVOKE)).toBeInTheDocument();
+  });
+
+  test('should only render assign option when showAssign is true and showRevoke is false', () => {
+    getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: true });
+
+    renderWithProviders(
+      <VoucherOptions {...baseProps} showAssign showRevoke={false} />,
+    );
+
+    expect(screen.getByText(VOUCHER_UI_LABELS.ASSIGN)).toBeInTheDocument();
+    expect(screen.queryByText(VOUCHER_UI_LABELS.REVOKE)).not.toBeInTheDocument();
+  });
+
+  test('should only render revoke option when showRevoke is true and showAssign is false', () => {
+    getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: true });
+
+    renderWithProviders(
+      <VoucherOptions {...baseProps} showAssign={false} showRevoke />,
+    );
+
+    expect(screen.queryByText(VOUCHER_UI_LABELS.ASSIGN)).not.toBeInTheDocument();
+    expect(screen.getByText(VOUCHER_UI_LABELS.REVOKE)).toBeInTheDocument();
+  });
+
+  test('should not render any options when both showAssign and showRevoke are false', () => {
+    getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: true });
+
+    renderWithProviders(
+      <VoucherOptions {...baseProps} showAssign={false} showRevoke={false} />,
+    );
+
+    expect(screen.queryByText(VOUCHER_UI_LABELS.ASSIGN)).not.toBeInTheDocument();
+    expect(screen.queryByText(VOUCHER_UI_LABELS.REVOKE)).not.toBeInTheDocument();
   });
 
   test('should show success message when voucher is assigned successfully', async () => {
