@@ -335,7 +335,7 @@ describe('Voucher Status column', () => {
     expect(getText(rendered)).toBe('revoked');
   });
 
-  test('displays "N/A" and "light" variant when voucherInfo is null', () => {
+  test('displays "not assigned" and "light" variant when voucherInfo is null', () => {
     const row = {
       values: {
         voucherInfo: null,
@@ -346,10 +346,10 @@ describe('Voucher Status column', () => {
     const rendered = Cell({ row });
 
     expect(rendered.props.variant).toBe('light');
-    expect(getText(rendered)).toBe('N/A');
+    expect(getText(rendered)).toBe('not assigned');
   });
 
-  test('displays "N/A" and "light" variant when voucherInfo has no computedStatus', () => {
+  test('displays "not assigned" and "light" variant when voucherInfo has no computedStatus', () => {
     const row = {
       values: {
         voucherInfo: {},
@@ -360,7 +360,7 @@ describe('Voucher Status column', () => {
     const rendered = Cell({ row });
 
     expect(rendered.props.variant).toBe('light');
-    expect(getText(rendered)).toBe('N/A');
+    expect(getText(rendered)).toBe('not assigned');
   });
 
   test('falls back to "light" variant when computedStatus does not match existing ones', () => {

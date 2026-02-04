@@ -71,7 +71,7 @@ const getColumns = ({ displayVoucherOptions = false, enableVoucherColumn = false
         light
         className="text-capitalize"
       >
-        {row.values?.voucherInfo?.computedStatus || 'N/A'}
+        {row.values?.voucherInfo?.computedStatus || 'not assigned'}
       </Badge>
     ),
   },
