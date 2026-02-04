@@ -176,6 +176,7 @@ export const VOUCHER_ACTIONS = {
  */
 export const HTTP_STATUS = {
   SUCCESS: 200,
+  CREATED: 201,
   NOT_FOUND: 404,
   UNPROCESSABLE: 422,
 };
@@ -186,7 +187,7 @@ export const HTTP_STATUS = {
  * @enum {string}
  */
 export const VOUCHER_SUCCESS_MESSAGES = {
-  ASSIGN: 'Voucher assigned successfully.',
+  ASSIGN: 'Assign Complete, Please Refresh.',
   REVOKE: 'Voucher revoked successfully.',
 };
 

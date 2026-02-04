@@ -75,7 +75,7 @@ const VoucherOptions = ({
     try {
       const response = await assignVoucher(makePayload());
 
-      if (response?.status === HTTP_STATUS.SUCCESS) {
+      if (response?.status === HTTP_STATUS.CREATED) {
         showMessage(VOUCHER_SUCCESS_MESSAGES.ASSIGN);
       }
     } catch {
