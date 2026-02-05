@@ -244,7 +244,7 @@ export const VOUCHER_RULE_TYPES = {
  * @enum {string}
  */
 export const VOUCHER_COMPUTED_STATUS = {
-  NOT_APPLICABLE: 'N/A',
+  NOT_ASSIGNED: 'not assigned',
   AVAILABLE: 'assigned',
   REVOKED: 'revoked',
 };
@@ -265,17 +265,17 @@ export const VOUCHER_BADGE_VARIANTS = {
  */
 export const VOUCHER_RULES = {
   [VOUCHER_RULE_TYPES.NO_VOUCHER]: {
-    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_APPLICABLE,
+    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_ASSIGNED,
     showAssign: true,
     showRevoke: false,
   },
   [VOUCHER_RULE_TYPES.OTHER_AVAILABLE]: {
-    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_APPLICABLE,
+    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_ASSIGNED,
     showAssign: false,
     showRevoke: false,
   },
   [VOUCHER_RULE_TYPES.OTHER_REVOKED]: {
-    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_APPLICABLE,
+    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_ASSIGNED,
     showAssign: true,
     showRevoke: false,
   },
@@ -290,7 +290,7 @@ export const VOUCHER_RULES = {
     showRevoke: false,
   },
   [VOUCHER_RULE_TYPES.DEFAULT]: {
-    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_APPLICABLE,
+    computedStatus: VOUCHER_COMPUTED_STATUS.NOT_ASSIGNED,
     showAssign: false,
     showRevoke: false,
   },
