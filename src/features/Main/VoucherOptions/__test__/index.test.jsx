@@ -91,7 +91,7 @@ describe('VoucherOptions', () => {
 
   test('should show success message when voucher is assigned successfully', async () => {
     getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: true });
-    assignVoucher.mockResolvedValueOnce({ status: HTTP_STATUS.SUCCESS });
+    assignVoucher.mockResolvedValueOnce({ status: HTTP_STATUS.CREATED });
 
     renderWithProviders(<VoucherOptions {...baseProps} />);
 
@@ -131,7 +131,7 @@ describe('VoucherOptions', () => {
 
     assignVoucher.mockImplementation(
       () => new Promise((resolve) => {
-        setTimeout(() => resolve({ status: HTTP_STATUS.SUCCESS }), 150);
+        setTimeout(() => resolve({ status: HTTP_STATUS.CREATED }), 150);
       }),
     );
 
