@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Spinner } from '@edx/paragon';
 import { Button } from 'react-paragon-topaz';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { formatDateRange } from 'helpers';
 import { useInstitutionIdQueryParam } from 'hooks';
@@ -20,7 +20,7 @@ const INSTRUCTORS_NUMBER = 3;
 const InstructorCard = ({ previousPage }) => {
   const dispatch = useDispatch();
   const { classId, courseId } = useParams();
-  const history = useHistory();
+  const navigate = useNavigate();
   const institution = useSelector((state) => state.main.selectedInstitution);
   const instructors = useSelector((state) => state.instructors.selectOptions.data);
   const classes = useSelector((state) => state.classes.allClasses);
@@ -29,7 +29,7 @@ const InstructorCard = ({ previousPage }) => {
   const addQueryParam = useInstitutionIdQueryParam();
 
   const handleManageInstructorButton = () => {
-    history.push(addQueryParam(`/manage-instructors/${courseId}/${classId}?previous=${previousPage}`));
+    navigate(addQueryParam(`/manage-instructors/${courseId}/${classId}?previous=${previousPage}`));
   };
 
   const isLoadingClasses = classes.status === RequestStatus.LOADING;

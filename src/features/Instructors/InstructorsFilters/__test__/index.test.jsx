@@ -1,6 +1,5 @@
 import React from 'react';
 import { fireEvent, act } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
 
 import InstructorsFilters from 'features/Instructors/InstructorsFilters';

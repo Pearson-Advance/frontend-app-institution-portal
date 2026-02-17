@@ -1,7 +1,4 @@
-import React from 'react';
-import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
-import { MemoryRouter } from 'react-router-dom';
 
 import WeeklySchedule from 'features/Dashboard/WeeklySchedule';
 
@@ -61,12 +58,9 @@ describe('WeeklySchedule component', () => {
       },
     },
   };
-  const component = renderWithProviders(
-    <MemoryRouter>
-      <WeeklySchedule />
-    </MemoryRouter>,
-    { preloadedState: mockStore },
-  );
+  const component = renderWithProviders(<WeeklySchedule />, {
+      preloadedState: mockStore,
+    });
 
   test('renders components', () => {
     const { getByText, getAllByText } = component;

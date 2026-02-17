@@ -1,5 +1,4 @@
-import { MemoryRouter, Route } from 'react-router-dom';
-import '@testing-library/jest-dom/extend-expect';
+import { Route } from 'react-router-dom';
 import { fireEvent } from '@testing-library/react';
 
 import { renderWithProviders } from 'test-utils';
@@ -99,12 +98,12 @@ describe('getColumns', () => {
     });
 
     const { getByText } = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses/Demo/test']}>
-        <Route path="/courses/:courseName/:className">
-          <StudentColumn />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+        <Route path="/courses/:courseName/:className"
+        element={<StudentColumn />}
+        />,
+      { preloadedState: mockStore,
+        initialEntries: ['/courses/Demo/test']
+       },
     );
 
     const link = getByText('Test User');
@@ -120,9 +119,7 @@ describe('getColumns', () => {
     });
 
     const { getByText } = renderWithProviders(
-      <MemoryRouter>
-        <StatusColumn />
-      </MemoryRouter>,
+        <StatusColumn />,
       { preloadedState: mockStore },
     );
 
@@ -137,7 +134,7 @@ describe('getColumns', () => {
     });
 
     const { getByText } = renderWithProviders(
-      <MemoryRouter><GradeColumn /></MemoryRouter>,
+      <GradeColumn />,
       { preloadedState: mockStore },
     );
 
@@ -156,7 +153,7 @@ describe('getColumns', () => {
     });
 
     const { container } = renderWithProviders(
-      <MemoryRouter><ExamColumn /></MemoryRouter>,
+      <ExamColumn />,
       { preloadedState: mockStore },
     );
 
@@ -175,7 +172,7 @@ describe('getColumns', () => {
     });
 
     const { getByText } = renderWithProviders(
-      <MemoryRouter><LastExamColumn /></MemoryRouter>,
+      <LastExamColumn />,
       { preloadedState: mockStore },
     );
 
@@ -190,7 +187,7 @@ describe('getColumns', () => {
     });
 
     const { getByText } = renderWithProviders(
-      <MemoryRouter><EppDaysColumn /></MemoryRouter>,
+      <EppDaysColumn />,
       { preloadedState: mockStore },
     );
 
@@ -205,7 +202,7 @@ describe('getColumns', () => {
     });
 
     const { getByText } = renderWithProviders(
-      <MemoryRouter><EppDaysColumn /></MemoryRouter>,
+      <EppDaysColumn />,
       { preloadedState: mockStore },
     );
 
@@ -229,7 +226,7 @@ describe('getColumns', () => {
     });
 
     const component = renderWithProviders(
-      <MemoryRouter><ActionColumn /></MemoryRouter>,
+      <ActionColumn />,
       { preloadedState: mockStore },
     );
 
@@ -260,7 +257,7 @@ describe('getColumns', () => {
     });
 
     const component = renderWithProviders(
-      <MemoryRouter><ActionColumn /></MemoryRouter>,
+      <ActionColumn />,
       { preloadedState: mockStore },
     );
 
@@ -286,7 +283,7 @@ describe('getColumns', () => {
     });
 
     const component = renderWithProviders(
-      <MemoryRouter><ActionColumn /></MemoryRouter>,
+      <ActionColumn />,
       { preloadedState: mockStore },
     );
 

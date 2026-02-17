@@ -1,5 +1,4 @@
 import React from 'react';
-import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { useDispatch, useSelector } from 'react-redux';

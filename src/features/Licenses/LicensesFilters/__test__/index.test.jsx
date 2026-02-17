@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import MockAdapter from 'axios-mock-adapter';
-import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, act } from '@testing-library/react';
 
 import { initializeMockApp } from '@edx/frontend-platform/testing';

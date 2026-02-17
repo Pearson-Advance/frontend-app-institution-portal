@@ -1,6 +1,5 @@
-import { MemoryRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { columns } from 'features/Courses/CoursesTable/columns';
 import { renderWithProviders } from 'test-utils';
 
@@ -63,12 +62,11 @@ describe('columns', () => {
     };
 
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses/']}>
-        <Route path="/courses/">
-          <ActionColumn />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+      <Route path="/courses" element={<ActionColumn />} />,
+      {
+        preloadedState: mockStore,
+        initialEntries: ['/courses'],
+      }
     );
 
     const button = component.getByTestId('droprown-action');

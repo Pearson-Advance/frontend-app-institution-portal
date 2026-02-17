@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom/extend-expect';
-
 import { columns } from 'features/Instructors/ManageInstructors/columns';
 
 describe('columns', () => {

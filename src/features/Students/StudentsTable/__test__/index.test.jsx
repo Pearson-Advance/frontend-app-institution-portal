@@ -1,5 +1,4 @@
 import React from 'react';
-import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
 import { fireEvent, act, waitFor } from '@testing-library/react';
 

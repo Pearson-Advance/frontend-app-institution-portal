@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, usenavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-paragon-topaz';
 import { Container, Pagination, Spinner } from '@edx/paragon';
@@ -18,7 +18,7 @@ import { useInstitutionIdQueryParam } from 'hooks';
 import 'features/Licenses/LicensesDetailPage/index.scss';
 
 const LicensesDetailPage = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { licenseId } = useParams();
   const addQueryParam = useInstitutionIdQueryParam();
@@ -63,10 +63,10 @@ const LicensesDetailPage = () => {
     }
 
     if (institution.id !== institutionRef.current) {
-      history.push(addQueryParam('/licenses'));
+      navigate(addQueryParam('/licenses'));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [institution, history]);
+  }, [institution, navigate]);
 
   return (
     <Container size="xl" className="px-4">

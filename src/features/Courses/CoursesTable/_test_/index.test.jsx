@@ -1,6 +1,4 @@
-import React from 'react';
-import '@testing-library/jest-dom';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from 'test-utils';
 
@@ -33,11 +31,14 @@ describe('Courses Table', () => {
     ];
 
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses']}>
-        <Route path="/courses">
-          <CoursesTable data={data} count={data.length} columns={columns} />
-        </Route>
-      </MemoryRouter>,
+      <CoursesTable
+        data={data}
+        count={data.length}
+        columns={columns}
+      />,
+      {
+        initialEntries: ['/courses'],
+      }
     );
 
     // Check if the table rows are present

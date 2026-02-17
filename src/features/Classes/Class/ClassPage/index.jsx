@@ -4,7 +4,7 @@ import React, {
   useRef,
   useMemo,
 } from 'react';
-import { useParams, useHistory, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Container, Pagination } from '@edx/paragon';
 import { useDispatch, useSelector } from 'react-redux';
 import { getConfig } from '@edx/frontend-platform';
@@ -35,7 +35,7 @@ import 'features/Classes/Class/ClassPage/index.scss';
 
 const ClassPage = () => {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { courseId, classId } = useParams();
   const queryParams = new URLSearchParams(location.search);
@@ -223,16 +223,16 @@ const ClassPage = () => {
     }
 
     if (institution.id !== institutionRef.current) {
-      history.push(addQueryParam('/courses'));
+      navigate(addQueryParam('/courses'));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [institution, history]);
+  }, [institution, navigate]);
 
   return (
     <Container size="xl" className="px-4 mt-3">
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="d-flex align-items-center mb-3">
-          <Button onClick={() => history.goBack()} className="mr-3 link back-arrow" variant="tertiary">
+          <Button onClick={() => navigate(-1)} className="mr-3 link back-arrow" variant="tertiary">
             <i className="fa-solid fa-arrow-left" />
           </Button>
           <h3 className="h2 mb-0 course-title">Class details: {classInfo.className}</h3>

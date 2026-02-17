@@ -1,7 +1,5 @@
-import React from 'react';
 import { waitFor, fireEvent } from '@testing-library/react';
-import { MemoryRouter, Route } from 'react-router-dom';
-import '@testing-library/jest-dom/extend-expect';
+import { Route } from 'react-router-dom';
 
 import { renderWithProviders } from 'test-utils';
 
@@ -46,14 +44,16 @@ const mockStore = {
 };
 
 describe('ClassesPage', () => {
+  const routePath = "/courses/:courseId/:classId";
+  const routeUrl = `/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111')}`;
+
   test('Should render classes data and pagination', async () => {
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111')}`]}>
-        <Route path="/courses/:courseId/:classId">
-          <ClassPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+      <Route path={routePath} element={<ClassPage />} />,
+      {
+        preloadedState: mockStore,
+        initialEntries: [routeUrl],
+      }
     );
 
     waitFor(() => {
@@ -70,12 +70,11 @@ describe('ClassesPage', () => {
 
   test('Should render actions', async () => {
     const { getByText, getByTestId } = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111')}`]}>
-        <Route path="/courses/:courseId/:classId">
-          <ClassPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+      <Route path={routePath} element={<ClassPage />} />,
+      {
+        preloadedState: mockStore,
+        initialEntries: [routeUrl],
+      }
     );
 
     waitFor(() => {

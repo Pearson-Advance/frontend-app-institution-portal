@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getConfig } from '@edx/frontend-platform';
 
 import { Container, Col, Row } from '@edx/paragon';
@@ -18,7 +18,7 @@ import { useInstitutionIdQueryParam } from 'hooks';
 import 'features/Dashboard/DashboardPage/index.scss';
 
 const DashboardPage = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const stateInstitution = useSelector((state) => state.main.institution.data);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
@@ -29,7 +29,7 @@ const DashboardPage = () => {
   const addQueryParam = useInstitutionIdQueryParam();
 
   const handleViewAllLicenses = () => {
-    history.push(addQueryParam('/licenses'));
+    navigate(addQueryParam('/licenses'));
     dispatch(updateActiveTab('licenses'));
   };
 

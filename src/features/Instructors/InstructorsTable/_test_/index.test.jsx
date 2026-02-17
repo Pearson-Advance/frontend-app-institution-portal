@@ -1,8 +1,7 @@
 import React from 'react';
-import '@testing-library/jest-dom';
 import { getConfig } from '@edx/frontend-platform';
 import { screen, waitFor, fireEvent } from '@testing-library/react';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { renderWithProviders } from 'test-utils';
 
 import InstructorsTable from 'features/Instructors/InstructorsTable';
@@ -47,11 +46,10 @@ describe('Instructor Table', () => {
   test('renders InstructorsTable  with data', () => {
     getConfig.mockImplementation(() => ({ SHOW_INSTRUCTOR_FEATURES: true }));
     const { container, getByTestId, getByText } = renderWithProviders(
-      <MemoryRouter initialEntries={['/instructors']}>
-        <Route path="/instructors">
-          <InstructorsTable data={mockData} count={mockData.length} columns={getColumns()} />
-        </Route>
-      </MemoryRouter>,
+        <Route path="/instructors"
+          element={<InstructorsTable data={mockData} count={mockData.length} columns={getColumns()} />}
+        />,
+      {initialEntries: ['/instructors']},
     );
 
     // Check if the table rows are present
@@ -76,11 +74,10 @@ describe('Instructor Table', () => {
     getConfig.mockImplementation(() => ({ SHOW_INSTRUCTOR_FEATURES: false }));
 
     const { queryByText, queryByTestId } = renderWithProviders(
-      <MemoryRouter initialEntries={['/instructors']}>
-        <Route path="/instructors">
-          <InstructorsTable data={mockData} count={mockData.length} columns={getColumns()} />
-        </Route>
-      </MemoryRouter>,
+        <Route path="/instructors"
+          element={<InstructorsTable data={mockData} count={mockData.length} columns={getColumns()} />}
+        />,
+      {initialEntries: ['/instructors']},
     );
 
     expect(queryByText('Active')).not.toBeInTheDocument();

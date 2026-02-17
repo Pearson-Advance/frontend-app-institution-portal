@@ -1,7 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { Sidebar } from 'features/Main/Sidebar';
-import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
 import * as paragonTopaz from 'react-paragon-topaz';
 

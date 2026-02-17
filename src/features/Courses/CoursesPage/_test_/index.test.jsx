@@ -1,7 +1,5 @@
-import React from 'react';
 import { waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 import { renderWithProviders } from 'test-utils';
 import CoursesPage from 'features/Courses/CoursesPage';
@@ -59,12 +57,14 @@ const mockStore = {
 describe('CoursesPage', () => {
   it('renders courses data and pagination', async () => {
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
-        <Route path="/courses/:courseId">
-          <CoursesPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+      <Route
+        path="/courses/:courseId"
+        element={<CoursesPage />}
+      />,
+      {
+        preloadedState: mockStore,
+        initialEntries: ['/courses/course-v1:XXX+YYY+2023'],
+      }
     );
 
     waitFor(() => {

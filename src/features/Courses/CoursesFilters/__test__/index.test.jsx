@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
 

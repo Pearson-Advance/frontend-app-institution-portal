@@ -1,7 +1,6 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
 import { fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 
 import InstitutionSelector from 'features/Main/InstitutionSelector';
 import { renderWithProviders } from 'test-utils';

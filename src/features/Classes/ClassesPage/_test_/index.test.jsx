@@ -1,8 +1,6 @@
-import React from 'react';
 import { waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 import ClassesPage from 'features/Classes/ClassesPage';
 import { columns } from 'features/Classes/ClassesTable/columns';
@@ -52,15 +50,14 @@ const mockStore = {
 describe('ClassesPage', () => {
   it('renders classes data and pagination', async () => {
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/classes']}>
-        <Route path="/classes">
+        <Route path="/classes"
+          element={
           <ClassesPage
             data={mockStore.classes.table.data}
             count={mockStore.classes.table.data.length}
             columns={columns}
-          />
-        </Route>
-      </MemoryRouter>,
+          />}
+        />,
       { preloadedState: mockStore },
     );
 

@@ -3,7 +3,6 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { AppContext } from '@edx/frontend-platform/react';
 import Main from 'features/Main';
-import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
 
 jest.mock('features/Students/StudentsPage');
