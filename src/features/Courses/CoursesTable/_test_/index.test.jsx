@@ -1,4 +1,3 @@
-import { Route } from 'react-router-dom';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from 'test-utils';
 
@@ -38,7 +37,7 @@ describe('Courses Table', () => {
       />,
       {
         initialEntries: ['/courses'],
-      }
+      },
     );
 
     // Check if the table rows are present

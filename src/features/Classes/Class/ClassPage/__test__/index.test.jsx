@@ -44,7 +44,7 @@ const mockStore = {
 };
 
 describe('ClassesPage', () => {
-  const routePath = "/courses/:courseId/:classId";
+  const routePath = '/courses/:courseId/:classId';
   const routeUrl = `/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111')}`;
 
   test('Should render classes data and pagination', async () => {
@@ -53,7 +53,7 @@ describe('ClassesPage', () => {
       {
         preloadedState: mockStore,
         initialEntries: [routeUrl],
-      }
+      },
     );
 
     waitFor(() => {
@@ -74,7 +74,7 @@ describe('ClassesPage', () => {
       {
         preloadedState: mockStore,
         initialEntries: [routeUrl],
-      }
+      },
     );
 
     waitFor(() => {

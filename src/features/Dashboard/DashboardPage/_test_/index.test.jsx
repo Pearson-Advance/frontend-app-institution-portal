@@ -54,12 +54,12 @@ describe('DashboardPage component', () => {
   };
 
   const component = renderWithProviders(
-      <Route path="/dashboard" element={<DashboardPage />} />,
-      {
-        preloadedState: mockStore,
-        initialEntries: ['/dashboard'],
-      }
-    );
+    <Route path="/dashboard" element={<DashboardPage />} />,
+    {
+      preloadedState: mockStore,
+      initialEntries: ['/dashboard'],
+    },
+  );
 
   test('renders components', () => {
     const { getByText, getAllByText } = component;

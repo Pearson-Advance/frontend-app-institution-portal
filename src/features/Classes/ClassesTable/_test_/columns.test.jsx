@@ -93,11 +93,10 @@ describe('columns', () => {
       },
     };
 
-    const { getByText, getByTestId, getAllByRole } =
-      renderWithProviders(<ActionColumn />, {
-        preloadedState: mockStore,
-        initialEntries: ['/classes/'],
-      });
+    const { getByText, getByTestId, getAllByRole } = renderWithProviders(<ActionColumn />, {
+      preloadedState: mockStore,
+      initialEntries: ['/classes/'],
+    });
 
     const button = getByTestId('droprown-action');
     fireEvent.click(button);
@@ -143,11 +142,10 @@ describe('columns', () => {
       },
     };
 
-    const { getByText, getByTestId } =
-      renderWithProviders(<ActionColumn />, {
-        preloadedState: mockStore,
-        initialEntries: ['/classes/'],
-      });
+    const { getByText, getByTestId } = renderWithProviders(<ActionColumn />, {
+      preloadedState: mockStore,
+      initialEntries: ['/classes/'],
+    });
 
     const button = getByTestId('droprown-action');
     fireEvent.click(button);
@@ -180,11 +178,10 @@ describe('columns', () => {
       },
     };
 
-    const { getByTestId, findByText } =
-      renderWithProviders(<ActionColumn />, {
-        preloadedState: mockStore,
-        initialEntries: ['/classes/'],
-      });
+    const { getByTestId, findByText } = renderWithProviders(<ActionColumn />, {
+      preloadedState: mockStore,
+      initialEntries: ['/classes/'],
+    });
 
     fireEvent.click(getByTestId('droprown-action'));
 

@@ -66,7 +66,7 @@ describe('columns', () => {
       {
         preloadedState: mockStore,
         initialEntries: ['/courses'],
-      }
+      },
     );
 
     const button = component.getByTestId('droprown-action');

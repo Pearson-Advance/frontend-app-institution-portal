@@ -34,10 +34,10 @@
     "url": "https://github.com/Pearson-Advance/frontend-app-institution-portal/issues"
   },
   "overrides": {
-  "react-paragon-topaz": {
-    "@openedx/paragon": "23.19.1"
-  }
-},
+    "react-paragon-topaz": {
+      "@openedx/paragon": "23.19.1"
+    }
+  },
   "dependencies": {
     "@edx/brand": "npm:@edx/brand-openedx@1.2.0",
     "@edx/frontend-component-footer": "^14.6.0",

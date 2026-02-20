@@ -67,7 +67,7 @@ const classId = encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111');
 
 describe('Manage instructors page', () => {
   test('render page', async () => {
-    const { getByText, getAllByRole, getByTestId } = rrenderWithProviders(
+    const { getByText, getAllByRole, getByTestId } = renderWithProviders(
       <Route
         path="/manageInstructors/:courseId/:classId"
         element={<ManageInstructors />}

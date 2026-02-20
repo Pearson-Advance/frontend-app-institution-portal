@@ -46,10 +46,11 @@ describe('Instructor Table', () => {
   test('renders InstructorsTable  with data', () => {
     getConfig.mockImplementation(() => ({ SHOW_INSTRUCTOR_FEATURES: true }));
     const { container, getByTestId, getByText } = renderWithProviders(
-        <Route path="/instructors"
-          element={<InstructorsTable data={mockData} count={mockData.length} columns={getColumns()} />}
-        />,
-      {initialEntries: ['/instructors']},
+      <Route
+        path="/instructors"
+        element={<InstructorsTable data={mockData} count={mockData.length} columns={getColumns()} />}
+      />,
+      { initialEntries: ['/instructors'] },
     );
 
     // Check if the table rows are present
@@ -74,10 +75,11 @@ describe('Instructor Table', () => {
     getConfig.mockImplementation(() => ({ SHOW_INSTRUCTOR_FEATURES: false }));
 
     const { queryByText, queryByTestId } = renderWithProviders(
-        <Route path="/instructors"
-          element={<InstructorsTable data={mockData} count={mockData.length} columns={getColumns()} />}
-        />,
-      {initialEntries: ['/instructors']},
+      <Route
+        path="/instructors"
+        element={<InstructorsTable data={mockData} count={mockData.length} columns={getColumns()} />}
+      />,
+      { initialEntries: ['/instructors'] },
     );
 
     expect(queryByText('Active')).not.toBeInTheDocument();

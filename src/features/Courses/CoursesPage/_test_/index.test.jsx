@@ -64,7 +64,7 @@ describe('CoursesPage', () => {
       {
         preloadedState: mockStore,
         initialEntries: ['/courses/course-v1:XXX+YYY+2023'],
-      }
+      },
     );
 
     waitFor(() => {

@@ -100,17 +100,16 @@ const mockStore = {
 };
 
 describe('InstructorsDetailPage', () => {
-  const renderPage = () =>
-    renderWithProviders(
-      <Route
-        path="/instructors/:instructorUsername"
-        element={<InstructorsDetailPage />}
-      />,
-      {
-        preloadedState: mockStore,
-        initialEntries: ['/instructors/instructor'],
-      },
-    );
+  const renderPage = () => renderWithProviders(
+    <Route
+      path="/instructors/:instructorUsername"
+      element={<InstructorsDetailPage />}
+    />,
+    {
+      preloadedState: mockStore,
+      initialEntries: ['/instructors/instructor'],
+    },
+  );
 
   test('Should render instructor profile', async () => {
     const component = renderPage();

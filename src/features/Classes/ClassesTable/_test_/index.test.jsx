@@ -85,7 +85,7 @@ describe('Classes Table', () => {
       {
         preloadedState: mockStore,
         initialEntries: ['/classes'],
-      }
+      },
     );
 
     expect(component.container).toHaveTextContent('Demo Class 1');

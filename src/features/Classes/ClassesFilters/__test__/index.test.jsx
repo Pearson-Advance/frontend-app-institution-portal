@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import MockAdapter from 'axios-mock-adapter';
 import { fireEvent, act } from '@testing-library/react';
 
@@ -75,7 +76,9 @@ const mockStore = {
 };
 
 jest.mock('react-paragon-topaz', () => ({
-  Select: ({ options = [], value, onChange, name }) => (
+  Select: ({
+    options = [], value, onChange, name,
+  }) => (
     <select
       data-testid="select"
       name={name}
@@ -86,15 +89,15 @@ jest.mock('react-paragon-topaz', () => ({
       }}
     >
       <option value="">--</option>
-      {options.map(({ label, value }) => (
-        <option key={value} value={value}>
+      {options.map(({ label, valueSelect }) => (
+        <option key={valueSelect} value={valueSelect}>
           {label}
         </option>
       ))}
     </select>
   ),
   Button: ({ children, ...props }) => (
-    <button {...props}>
+    <button {...props} type="button">
       {children}
     </button>
   ),

@@ -30,7 +30,7 @@ function fetchLicensesData(id) {
 
 function fetchClassesData(id, hasInstructors = false) {
   return async (dispatch) => {
-    // eslint-disable-next-line no-unused-expressions
+    // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
     hasInstructors ? dispatch(fetchClassesDataRequest()) : dispatch(fetchClassesNoInstructorsDataRequest());
     try {
       if (hasInstructors) {
@@ -46,7 +46,7 @@ function fetchClassesData(id, hasInstructors = false) {
         dispatch(fetchClassesNoInstructorsDataSuccess(sortedData));
       }
     } catch (error) {
-      // eslint-disable-next-line no-unused-expressions
+      // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
       hasInstructors ? dispatch(fetchClassesDataFailed()) : dispatch(fetchClassesNoInstructorsDataFailed());
       logError(error);
     }

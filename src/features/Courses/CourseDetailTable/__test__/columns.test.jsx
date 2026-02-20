@@ -13,7 +13,7 @@ jest.mock('@edx/frontend-platform/logging', () => ({
 }));
 
 const basePath = `/courses/${encodeURIComponent(
-  'course-v1:XXX+YYY+2023'
+  'course-v1:XXX+YYY+2023',
 )}`;
 
 describe('columns', () => {
@@ -77,7 +77,7 @@ describe('columns', () => {
       {
         initialEntries: [basePath],
         preloadedState: {},
-      }
+      },
     );
 
     const linkElement = screen.getByText('Class example');
@@ -165,7 +165,7 @@ describe('columns', () => {
       {
         initialEntries: [basePath],
         preloadedState: mockStore,
-      }
+      },
     );
 
     expect(getByText('Sam Sepiol')).toBeInTheDocument();
@@ -226,7 +226,7 @@ describe('columns', () => {
       {
         initialEntries: [basePath],
         preloadedState: mockStore,
-      }
+      },
     );
 
     const title = getByText('Unassigned');
@@ -293,7 +293,7 @@ describe('columns', () => {
       {
         initialEntries: [basePath],
         preloadedState: mockStore,
-      }
+      },
     );
 
     const buttonTrigger = getByTestId('droprown-action');

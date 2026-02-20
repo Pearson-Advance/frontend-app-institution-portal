@@ -46,7 +46,7 @@ push_translations:
 ifeq ($(OPENEDX_ATLAS_PULL),)
 # Pulls translations from Transifex.
 pull_translations:
-	tx pull -t -f --mode reviewed --languages=$(transifex_langs)
+	@echo "Skipping pull_translations for instructors portal (no tx in Tutor MFE image)."
 else
 # Pulls translations using atlas.
 pull_translations:

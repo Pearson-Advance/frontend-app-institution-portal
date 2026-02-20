@@ -6,14 +6,9 @@ import * as paragonTopaz from 'react-paragon-topaz';
 
 const mockHistoryPush = jest.fn();
 
-jest.mock('react-router', () => ({
-  ...jest.requireActual('react-router'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-    location: {
-      pathname: '/',
-    },
-  }),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockHistoryPush,
 }));
 
 jest.mock('@edx/frontend-platform', () => ({
