@@ -1,7 +1,6 @@
 import React from 'react';
 import { waitFor } from '@testing-library/react';
-import { MemoryRouter, Route } from 'react-router-dom';
-import '@testing-library/jest-dom/extend-expect';
+import { Route } from 'react-router-dom';
 
 import { renderWithProviders } from 'test-utils';
 import LicensesDetailPage from 'features/Licenses/LicensesDetailPage';
@@ -61,12 +60,14 @@ const mockStore = {
 describe('LicensesDetailPage', () => {
   test('Should render the table and the course info', async () => {
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/licenses/1']}>
-        <Route path="/licenses/:licenseId">
-          <LicensesDetailPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+      <Route
+        path="/licenses/:licenseId"
+        element={<LicensesDetailPage />}
+      />,
+      {
+        preloadedState: mockStore,
+        initialEntries: ['/licenses/1'],
+      },
     );
 
     waitFor(() => {

@@ -1,7 +1,3 @@
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import '@testing-library/jest-dom/extend-expect';
-
 import { renderWithProviders } from 'test-utils';
 import LinkWithQuery from 'features/Main/LinkWithQuery';
 
@@ -16,9 +12,7 @@ describe('LinkWithQuery', () => {
     };
 
     const { getByText } = renderWithProviders(
-      <BrowserRouter>
-        <LinkWithQuery to="/courses">Test Link</LinkWithQuery>
-      </BrowserRouter>,
+      <LinkWithQuery to="/courses">Test Link</LinkWithQuery>,
       { preloadedState },
     );
 
@@ -35,9 +29,7 @@ describe('LinkWithQuery', () => {
     };
 
     const { getByText } = renderWithProviders(
-      <BrowserRouter>
-        <LinkWithQuery to="/courses">Test Link</LinkWithQuery>
-      </BrowserRouter>,
+      <LinkWithQuery to="/courses">Test Link</LinkWithQuery>,
       { preloadedState },
     );
 
@@ -54,9 +46,7 @@ describe('LinkWithQuery', () => {
     };
 
     const { getByText } = renderWithProviders(
-      <BrowserRouter>
-        <LinkWithQuery to="/courses?foo=bar">Test Link</LinkWithQuery>
-      </BrowserRouter>,
+      <LinkWithQuery to="/courses?foo=bar">Test Link</LinkWithQuery>,
       { preloadedState },
     );
 

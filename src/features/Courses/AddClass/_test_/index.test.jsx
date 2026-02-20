@@ -1,8 +1,6 @@
-import React from 'react';
 import { waitFor, fireEvent } from '@testing-library/react';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import AddClass from 'features/Courses/AddClass';
-import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
@@ -30,16 +28,30 @@ const courseInfoMocked = {
   masterCourseName: 'Demo Course 1',
 };
 
+const basePath = `/courses/${encodeURIComponent(
+  'course-v1:XXX+YYY+2023',
+)}`;
+
 describe('Add class modal', () => {
+  const renderComponent = () => renderWithProviders(
+    <Route
+      path="/courses/:courseId"
+      element={(
+        <AddClass
+          isOpen
+          onClose={() => {}}
+          courseInfo={courseInfoMocked}
+        />
+        )}
+    />,
+    {
+      preloadedState: mockStore,
+      initialEntries: [basePath],
+    },
+  );
+
   test('render add class modal', () => {
-    const { getByText, getByPlaceholderText } = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
-        <Route path="/courses/:courseId">
-          <AddClass isOpen onClose={() => { }} courseInfo={courseInfoMocked} />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
+    const { getByText, getByPlaceholderText } = renderComponent();
 
     waitFor(() => {
       const cancelButton = getByText('Cancel');
@@ -66,14 +78,7 @@ describe('Add class modal', () => {
   });
 
   test('cancel button in add classmodal', () => {
-    const { getByText, getByPlaceholderText } = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
-        <Route path="/courses/:courseId">
-          <AddClass isOpen onClose={() => { }} courseInfo={courseInfoMocked} />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
+    const { getByText, getByPlaceholderText } = renderComponent();
 
     waitFor(() => {
       const cancelButton = getByText('Cancel');

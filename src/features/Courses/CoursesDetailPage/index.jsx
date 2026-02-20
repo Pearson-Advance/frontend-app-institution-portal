@@ -1,7 +1,7 @@
 import React, {
   useState, useEffect, useRef, useMemo,
 } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getConfig } from '@edx/frontend-platform';
 import { Container, Pagination, useToggle } from '@edx/paragon';
@@ -23,7 +23,7 @@ import { useInstitutionIdQueryParam } from 'hooks';
 import 'features/Courses/CoursesDetailPage/index.scss';
 
 const CoursesDetailPage = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { courseId } = useParams();
 
@@ -83,10 +83,10 @@ const CoursesDetailPage = () => {
     }
 
     if (institution.id !== institutionRef.current) {
-      history.push(addQueryParam('/courses'));
+      navigate(addQueryParam('/courses'));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [institution, history]);
+  }, [institution, navigate]);
 
   const finalCall = () => {
     dispatch(fetchClassesData(institution.id, initialPage, courseIdDecoded));

@@ -1,5 +1,4 @@
 import React from 'react';
-import '@testing-library/jest-dom';
 import { getConfig } from '@edx/frontend-platform';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 

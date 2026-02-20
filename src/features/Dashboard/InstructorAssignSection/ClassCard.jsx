@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { Button } from 'react-paragon-topaz';
@@ -13,11 +13,11 @@ import { textLength } from 'features/constants';
 import 'features/Dashboard/InstructorAssignSection/index.scss';
 
 const ClassCard = ({ data }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const addQueryParam = useInstitutionIdQueryParam();
 
   const handleManageButton = () => {
-    history.push(addQueryParam(`/manage-instructors/${encodeURIComponent(data?.masterCourseId)}/${encodeURIComponent(data?.classId)}?previous=dashboard`));
+    navigate(addQueryParam(`/manage-instructors/${encodeURIComponent(data?.masterCourseId)}/${encodeURIComponent(data?.classId)}?previous=dashboard`));
   };
 
   return (

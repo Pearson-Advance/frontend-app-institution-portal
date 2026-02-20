@@ -4,7 +4,7 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Container,
@@ -48,7 +48,7 @@ const defaultInstructorInfo = {
 };
 
 const InstructorsDetailPage = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { instructorUsername } = useParams();
   const addQueryParam = useInstitutionIdQueryParam();
@@ -129,9 +129,9 @@ const InstructorsDetailPage = () => {
     }
 
     if (institution.id !== institutionRef.current) {
-      history.push(addQueryParam('/instructors'));
+      navigate(addQueryParam('/instructors'));
     }
-  }, [institution, history, addQueryParam]);
+  }, [institution, navigate, addQueryParam]);
 
   useEffect(() => {
     if (!Array.isArray(events) || events.length === 0) { return; }

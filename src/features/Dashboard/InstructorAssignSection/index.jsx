@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { Row, Col, Spinner } from '@edx/paragon';
 import ClassCard from 'features/Dashboard/InstructorAssignSection/ClassCard';
@@ -15,7 +15,7 @@ import { RequestStatus } from 'features/constants';
 import 'features/Dashboard/InstructorAssignSection/index.scss';
 
 const InstructorAssignSection = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const classesInfo = useSelector((state) => state.dashboard.classesNoInstructors);
@@ -27,7 +27,7 @@ const InstructorAssignSection = () => {
   const addQueryParam = useInstitutionIdQueryParam();
 
   const handleViewAllClasses = () => {
-    history.push(addQueryParam('/classes?instructors=null'));
+    navigate(addQueryParam('/classes?instructors=null'));
     dispatch(updateActiveTab('classes'));
   };
 

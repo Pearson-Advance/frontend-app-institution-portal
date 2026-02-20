@@ -1,7 +1,5 @@
-import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { MemoryRouter, Route } from 'react-router-dom';
-import '@testing-library/jest-dom/extend-expect';
+import { Route } from 'react-router-dom';
 
 import { renderWithProviders } from 'test-utils';
 import InstructorsDetailPage from 'features/Instructors/InstructorsDetailPage';
@@ -102,15 +100,19 @@ const mockStore = {
 };
 
 describe('InstructorsDetailPage', () => {
+  const renderPage = () => renderWithProviders(
+    <Route
+      path="/instructors/:instructorUsername"
+      element={<InstructorsDetailPage />}
+    />,
+    {
+      preloadedState: mockStore,
+      initialEntries: ['/instructors/instructor'],
+    },
+  );
+
   test('Should render instructor profile', async () => {
-    const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/instructors/instructor']}>
-        <Route path="/instructors/:instructorUsername">
-          <InstructorsDetailPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
+    const component = renderPage();
 
     waitFor(() => {
       expect(component.container).toHaveTextContent('Profile');
@@ -125,14 +127,7 @@ describe('InstructorsDetailPage', () => {
   });
 
   test('renders classes data and pagination', async () => {
-    const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/instructors/instructor']}>
-        <Route path="/instructors/:instructorUsername">
-          <InstructorsDetailPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
+    const component = renderPage();
 
     waitFor(() => {
       expect(component.container).toHaveTextContent('Demo Class 1');
@@ -151,14 +146,7 @@ describe('InstructorsDetailPage', () => {
   });
 
   test('Should render the calendar', async () => {
-    const { getByText } = renderWithProviders(
-      <MemoryRouter initialEntries={['/instructors/instructor']}>
-        <Route path="/instructors/:instructorUsername">
-          <InstructorsDetailPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
+    const { getByText } = renderPage();
 
     fireEvent.click(getByText('Availability'));
 

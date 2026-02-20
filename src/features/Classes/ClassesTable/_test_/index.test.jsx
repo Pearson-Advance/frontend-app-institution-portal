@@ -1,8 +1,5 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
-import { MemoryRouter, Route } from 'react-router-dom';
 
 import ClassesTable from 'features/Classes/ClassesTable';
 import { columns } from 'features/Classes/ClassesTable/columns';
@@ -80,16 +77,15 @@ describe('Classes Table', () => {
     };
 
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/classes']}>
-        <Route path="/classes">
-          <ClassesTable
-            data={mockStore.classes.table.data}
-            count={mockStore.classes.table.data.length}
-            columns={columns}
-          />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+      <ClassesTable
+        data={mockStore.classes.table.data}
+        count={mockStore.classes.table.data.length}
+        columns={columns}
+      />,
+      {
+        preloadedState: mockStore,
+        initialEntries: ['/classes'],
+      },
     );
 
     expect(component.container).toHaveTextContent('Demo Class 1');

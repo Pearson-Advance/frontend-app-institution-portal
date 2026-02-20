@@ -2,7 +2,6 @@ import React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
 import { AppContext } from '@edx/frontend-platform/react';
 import { Header } from 'features/Main/Header';
-import '@testing-library/jest-dom/extend-expect';
 
 jest.mock('@edx/frontend-platform', () => ({
   getConfig: jest.fn(() => ({

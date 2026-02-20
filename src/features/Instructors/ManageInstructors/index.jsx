@@ -5,7 +5,7 @@ import React, {
   useMemo,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useLocation, useHistory } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 
 import { Container, Toast } from '@edx/paragon';
 import { logError } from '@edx/frontend-platform/logging';
@@ -24,7 +24,7 @@ import 'features/Instructors/ManageInstructors/index.scss';
 
 const ManageInstructors = () => {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const cancelButtonRef = useRef(null);
 
@@ -119,7 +119,7 @@ const ManageInstructors = () => {
       <Container size="xl" className="px-4 mt-3 manage-instructors-page">
         <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
           <div className="d-flex align-items-center mb-3">
-            <Button onClick={() => history.goBack()} className="mr-3 link back-arrow" variant="tertiary">
+            <Button onClick={() => navigate(-1)} className="mr-3 link back-arrow" variant="tertiary">
               <i className="fa-solid fa-arrow-left" />
             </Button>
             <h3 className="h2 mb-0 course-title">Manage Instructors</h3>

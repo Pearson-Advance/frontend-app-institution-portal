@@ -1,7 +1,4 @@
-import React from 'react';
-import '@testing-library/jest-dom';
 import { screen } from '@testing-library/react';
-import { MemoryRouter, Route } from 'react-router-dom';
 
 import LicensesTable from 'features/Licenses/LicensesTable';
 import { columns } from 'features/Licenses/LicensesTable/columns';
@@ -41,11 +38,11 @@ describe('Licenses Table', () => {
     ];
 
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/licenses']}>
-        <Route path="/licenses">
-          <LicensesTable data={data} count={data.length} columns={columns} />
-        </Route>
-      </MemoryRouter>,
+      <LicensesTable
+        data={data}
+        count={data.length}
+        columns={columns}
+      />,
       { preloadedState: mockStore },
     );
 

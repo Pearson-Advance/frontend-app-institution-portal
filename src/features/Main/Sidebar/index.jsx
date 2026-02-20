@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getConfig } from '@edx/frontend-platform';
 
 import {
@@ -52,7 +52,7 @@ const baseItems = [
 ];
 
 export const Sidebar = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const roles = getUserRoles();
   const activeTab = useSelector((state) => state.main.activeTab);
@@ -73,7 +73,7 @@ export const Sidebar = () => {
 
   const handleTabClick = (tabName) => {
     dispatch(updateActiveTab(tabName));
-    history.push(`/${tabName}`);
+    navigate(`/${tabName}`);
   };
 
   const addQueryParam = useInstitutionIdQueryParam();

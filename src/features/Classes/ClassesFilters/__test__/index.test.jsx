@@ -1,6 +1,5 @@
-import React from 'react';
+/* eslint-disable react/prop-types */
 import MockAdapter from 'axios-mock-adapter';
-import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, act } from '@testing-library/react';
 
 import { initializeMockApp } from '@edx/frontend-platform/testing';
@@ -11,8 +10,9 @@ import { renderWithProviders } from 'test-utils';
 import ClassesFilters from 'features/Classes/ClassesFilters';
 
 jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(() => ({})),
-  useLocation: jest.fn().mockReturnValue({}),
+  useLocation: jest.fn(() => ({})),
 }));
 
 let axiosMock;
@@ -75,24 +75,33 @@ const mockStore = {
   },
 };
 
-jest.mock('react-select', () => function reactSelect({ options, currentValue, onChange }) {
-  function handleChange(event) {
-    const currentOption = options.find(
-      (option) => option.value === event.currentTarget.value,
-    );
-    onChange(currentOption);
-  }
-
-  return (
-    <select data-testid="select" value={currentValue} onChange={handleChange}>
-      {options.map(({ label, value }) => (
-        <option key={value} value={value}>
+jest.mock('react-paragon-topaz', () => ({
+  Select: ({
+    options = [], value, onChange, name,
+  }) => (
+    <select
+      data-testid="select"
+      name={name}
+      value={value?.value || ''}
+      onChange={(e) => {
+        const selected = options.find(opt => String(opt.value) === e.target.value);
+        onChange(selected);
+      }}
+    >
+      <option value="">--</option>
+      {options.map(({ label, valueSelect }) => (
+        <option key={valueSelect} value={valueSelect}>
           {label}
         </option>
       ))}
     </select>
-  );
-});
+  ),
+  Button: ({ children, ...props }) => (
+    <button {...props} type="button">
+      {children}
+    </button>
+  ),
+}));
 
 describe('ClassesFilters Component', () => {
   const mockSetFilters = jest.fn();

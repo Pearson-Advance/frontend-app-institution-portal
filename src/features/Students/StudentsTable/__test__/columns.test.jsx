@@ -1,6 +1,5 @@
 import { fireEvent } from '@testing-library/react';
-import { MemoryRouter, Route } from 'react-router-dom';
-import '@testing-library/jest-dom';
+import { Route } from 'react-router-dom';
 
 import { renderWithProviders } from 'test-utils';
 import { columns } from 'features/Students/StudentsTable/columns';
@@ -107,12 +106,11 @@ describe('StudentsTable Columns', () => {
     });
 
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/students/']}>
-        <Route path="/students/">
-          <ActionColumn />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+      <Route path="/students" element={<ActionColumn />} />,
+      {
+        preloadedState: mockStore,
+        initialEntries: ['/students'],
+      },
     );
 
     const button = component.getByTestId('droprown-action');
@@ -123,7 +121,7 @@ describe('StudentsTable Columns', () => {
 
   test('renders EPP Days Left cell with correct value', () => {
     const EppDaysColumn = columns[8];
-    const cell = EppDaysColumn.Cell({
+    const CellComponent = () => EppDaysColumn.Cell({
       row: {
         values: {
           examReady: { eppDaysLeft: 3 },
@@ -132,9 +130,7 @@ describe('StudentsTable Columns', () => {
     });
 
     const { getByText } = renderWithProviders(
-      <MemoryRouter>
-        {cell}
-      </MemoryRouter>,
+      <Route path="/" element={<CellComponent />} />,
       { preloadedState: mockStore },
     );
 
@@ -143,7 +139,7 @@ describe('StudentsTable Columns', () => {
 
   test('renders EPP Days Left cell as "--" when null', () => {
     const EppDaysColumn = columns[8];
-    const cell = EppDaysColumn.Cell({
+    const CellComponent = () => EppDaysColumn.Cell({
       row: {
         values: {
           examReady: { eppDaysLeft: null },
@@ -152,9 +148,7 @@ describe('StudentsTable Columns', () => {
     });
 
     const { getByText } = renderWithProviders(
-      <MemoryRouter>
-        {cell}
-      </MemoryRouter>,
+      <Route path="/" element={<CellComponent />} />,
       { preloadedState: mockStore },
     );
 
