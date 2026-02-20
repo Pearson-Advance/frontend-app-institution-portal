@@ -9,9 +9,8 @@ jest.mock('@edx/frontend-platform/logging', () => ({
 }));
 
 const basePath = `/courses/${encodeURIComponent(
-  'course-v1:XXX+YYY+2023'
+  'course-v1:XXX+YYY+2023',
 )}/${encodeURIComponent('ccx-v1')}`;
-
 
 const stateMock = {
   instructors: {
@@ -42,17 +41,16 @@ const stateMock = {
 };
 
 describe('InstructorCard', () => {
-  const renderComponent = (customState = stateMock) =>
-    renderWithProviders(
-      <Route
-        path="/courses/:courseId/:classId"
-        element={<InstructorCard isOpen onClose={() => {}} />}
-      />,
-      {
-        preloadedState: customState,
-        initialEntries: [basePath],
-      }
-    );
+  const renderComponent = (customState = stateMock) => renderWithProviders(
+    <Route
+      path="/courses/:courseId/:classId"
+      element={<InstructorCard isOpen onClose={() => {}} />}
+    />,
+    {
+      preloadedState: customState,
+      initialEntries: [basePath],
+    },
+  );
 
   test('Should render with correct elements', () => {
     const { getByText } = renderComponent();
@@ -115,7 +113,7 @@ describe('InstructorCard', () => {
   });
 
   test('Should render both dates when the duration is to long', () => {
-     const { getByText } = renderComponent({
+    const { getByText } = renderComponent({
       classes: {
         allClasses: {
           data: [

@@ -46,7 +46,7 @@ const mockStore = {
 };
 
 describe('LicensesPage component', () => {
-  test('renders licenses data components',async() => {
+  test('renders licenses data components', async () => {
     const component = renderWithProviders(
       <Route path="/licenses" element={<LicensesPage />} />,
       {

@@ -29,27 +29,26 @@ const courseInfoMocked = {
 };
 
 const basePath = `/courses/${encodeURIComponent(
-  'course-v1:XXX+YYY+2023'
+  'course-v1:XXX+YYY+2023',
 )}`;
 
 describe('Add class modal', () => {
-  const renderComponent = () =>
-    renderWithProviders(
-      <Route
-        path="/courses/:courseId"
-        element={
-          <AddClass
-            isOpen
-            onClose={() => {}}
-            courseInfo={courseInfoMocked}
-          />
-        }
-      />,
-      {
-        preloadedState: mockStore,
-        initialEntries: [basePath],
-      }
-    );
+  const renderComponent = () => renderWithProviders(
+    <Route
+      path="/courses/:courseId"
+      element={(
+        <AddClass
+          isOpen
+          onClose={() => {}}
+          courseInfo={courseInfoMocked}
+        />
+        )}
+    />,
+    {
+      preloadedState: mockStore,
+      initialEntries: [basePath],
+    },
+  );
 
   test('render add class modal', () => {
     const { getByText, getByPlaceholderText } = renderComponent();

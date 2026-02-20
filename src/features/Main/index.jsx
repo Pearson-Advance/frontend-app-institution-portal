@@ -4,7 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
-  useLocation, 
+  useLocation,
   useNavigate,
 } from 'react-router-dom';
 
@@ -74,14 +74,14 @@ const Main = () => {
   }, [institutions, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const routes = [
-    { path: '/dashboard', component: DashboardPage},
-    { path: '/students', component: StudentsPage},
-    { path: '/students/:studentEmail', component: StudentDetailPage},
+    { path: '/dashboard', component: DashboardPage },
+    { path: '/students', component: StudentsPage },
+    { path: '/students/:studentEmail', component: StudentDetailPage },
     { path: '/instructors', component: InstructorsPage },
-    { path: '/instructors/:instructorUsername', component: InstructorsDetailPage},
-    { path: '/courses', component: CoursesPage},
-    { path: '/courses/:courseId', component: CoursesDetailPage},
-    { path: '/courses/:courseId/:classId', component: ClassPage},
+    { path: '/instructors/:instructorUsername', component: InstructorsDetailPage },
+    { path: '/courses', component: CoursesPage },
+    { path: '/courses/:courseId', component: CoursesDetailPage },
+    { path: '/courses/:courseId/:classId', component: ClassPage },
     { path: '/licenses', component: LicensesPage },
     { path: '/licenses/:licenseId', component: LicensesDetailPage },
     { path: '/classes', component: ClassesPage },
@@ -119,15 +119,15 @@ const Main = () => {
                     path="/"
                     element={<Navigate to={addQueryParam('/dashboard')} replace />}
                   />
-                  {routes.map(({ path, exact, component: Component }) => (
+                  {routes.map(({ path, component: Component }) => (
                     <Route
                       key={path}
                       path={path}
-                      element={
+                      element={(
                         <ActiveTabUpdater path={path}>
                           <Component />
                         </ActiveTabUpdater>
-                      }
+                      )}
                     />
                   ))}
                 </Routes>

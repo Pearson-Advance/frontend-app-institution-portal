@@ -1,5 +1,3 @@
-import React from 'react';
-import { Router } from 'react-router-dom';
 import { fireEvent } from '@testing-library/react';
 
 import InstitutionSelector from 'features/Main/InstitutionSelector';
@@ -23,37 +21,33 @@ jest.mock('react-select', () => function reactSelect({ options, currentValue, on
   );
 });
 
-describe('InstitutionSelector', () => {
-  let history;
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
+describe('InstitutionSelector', () => {
   beforeEach(() => {
-    history = {
-      location: { search: '' },
-      push: jest.fn(),
-      replace: jest.fn(),
-      listen: jest.fn(),
-      createHref: jest.fn(),
-    };
+    mockNavigate.mockClear();
   });
 
-  test('Should render the select options and handle selection', () => {
-    const preloadedState = {
-      main: {
-        institution: {
-          data: [
-            { id: 1, name: 'Institution 1' },
-            { id: 2, name: 'Institution 2' },
-          ],
-        },
-        selectedInstitution: null,
+  const preloadedState = {
+    main: {
+      institution: {
+        data: [
+          { id: 1, name: 'Institution 1' },
+          { id: 2, name: 'Institution 2' },
+        ],
       },
-    };
+      selectedInstitution: null,
+    },
+  };
 
+  test('Should render the select options and handle selection', () => {
     const { getByText, getByTestId } = renderWithProviders(
-      <Router history={history}>
-        <InstitutionSelector />
-      </Router>,
-      { preloadedState },
+      <InstitutionSelector />,
+      { preloadedState, initialEntries: ['/'] },
     );
 
     expect(getByText('Select an institution')).toBeInTheDocument();

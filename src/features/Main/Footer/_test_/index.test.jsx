@@ -1,23 +1,18 @@
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { Footer } from 'features/Main/Footer';
 
 describe('Footer Component', () => {
-  it('should render without crashing', async () => {
+  it('should render without crashing', () => {
     render(<Footer />);
 
-    await waitFor(() => {
-      const footerElement = screen.getByRole('contentinfo');
-      expect(footerElement).toBeInTheDocument();
-    });
+    const footerElement = screen.getByRole('contentinfo');
+    expect(footerElement).toBeInTheDocument();
   });
 
-  it('should render two footer links', async () => {
+  it('should render two footer links', () => {
     render(<Footer />);
 
-    await waitFor(() => {
-      const linkElements = screen.getAllByRole('link');
-      expect(linkElements).toHaveLength(2);
-    });
+    const linkElements = screen.getAllByRole('link');
+    expect(linkElements).toHaveLength(2);
   });
 });

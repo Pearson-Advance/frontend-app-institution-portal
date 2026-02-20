@@ -98,12 +98,14 @@ describe('getColumns', () => {
     });
 
     const { getByText } = renderWithProviders(
-        <Route path="/courses/:courseName/:className"
+      <Route
+        path="/courses/:courseName/:className"
         element={<StudentColumn />}
-        />,
-      { preloadedState: mockStore,
-        initialEntries: ['/courses/Demo/test']
-       },
+      />,
+      {
+        preloadedState: mockStore,
+        initialEntries: ['/courses/Demo/test'],
+      },
     );
 
     const link = getByText('Test User');
@@ -119,7 +121,7 @@ describe('getColumns', () => {
     });
 
     const { getByText } = renderWithProviders(
-        <StatusColumn />,
+      <StatusColumn />,
       { preloadedState: mockStore },
     );
 

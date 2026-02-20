@@ -23,7 +23,9 @@ const mockStore = {
           firstAccess: 'Fri, 25 Aug 2023 19:01:23 GMT',
           lastAccess: 'Fri, 25 Aug 2023 20:20:22 GMT',
           status: 'Active',
-          examReady: true,
+          examReady: {
+            status: 'READY',
+          },
         },
         {
           learnerName: 'Student 2',
@@ -37,7 +39,9 @@ const mockStore = {
           firstAccess: 'Sat, 26 Aug 2023 19:01:24 GMT',
           lastAccess: 'Sat, 26 Aug 2023 21:22:22 GMT',
           status: 'Pending',
-          examReady: null,
+          examReady: {
+            status: 'PENDING',
+          },
         },
       ],
       count: 2,

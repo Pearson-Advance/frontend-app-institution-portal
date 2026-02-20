@@ -50,14 +50,16 @@ const mockStore = {
 describe('ClassesPage', () => {
   it('renders classes data and pagination', async () => {
     const component = renderWithProviders(
-        <Route path="/classes"
-          element={
+      <Route
+        path="/classes"
+        element={(
           <ClassesPage
             data={mockStore.classes.table.data}
             count={mockStore.classes.table.data.length}
             columns={columns}
-          />}
-        />,
+          />
+        )}
+      />,
       { preloadedState: mockStore },
     );
 

@@ -59,8 +59,8 @@ describe('WeeklySchedule component', () => {
     },
   };
   const component = renderWithProviders(<WeeklySchedule />, {
-      preloadedState: mockStore,
-    });
+    preloadedState: mockStore,
+  });
 
   test('renders components', () => {
     const { getByText, getAllByText } = component;

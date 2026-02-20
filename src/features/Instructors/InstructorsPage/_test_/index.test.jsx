@@ -88,14 +88,14 @@ const baseStore = {
 
 describe('InstructorPage', () => {
   const renderComponent = () => renderWithProviders(
-      <Route path="/instructors" element={<InstructorsPage />} />,
-      {
-        preloadedState: baseStore,
-        initialEntries: ['/instructors'],
-      },
-    );
+    <Route path="/instructors" element={<InstructorsPage />} />,
+    {
+      preloadedState: baseStore,
+      initialEntries: ['/instructors'],
+    },
+  );
   test('render instructor page', () => {
-    const component = renderComponent()
+    const component = renderComponent();
 
     waitFor(() => {
       expect(component.container).toHaveTextContent('Instructor1');
@@ -108,7 +108,7 @@ describe('InstructorPage', () => {
   });
 
   test('shows only active instructors when "Active" tab is clicked', () => {
-    renderComponent()
+    renderComponent();
 
     fireEvent.click(screen.getByRole('tab', { name: INSTRUCTOR_STATUS_TABS.ACTIVE }));
 
@@ -116,7 +116,7 @@ describe('InstructorPage', () => {
   });
 
   test('shows only inactive instructors when "Inactive" tab is clicked', () => {
-    renderComponent()
+    renderComponent();
 
     fireEvent.click(screen.getByRole('tab', { name: INSTRUCTOR_STATUS_TABS.INACTIVE }));
 
