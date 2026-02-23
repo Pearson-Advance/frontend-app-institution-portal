@@ -1,20 +1,14 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { Sidebar } from 'features/Main/Sidebar';
-import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
 import * as paragonTopaz from 'react-paragon-topaz';
 
 const mockHistoryPush = jest.fn();
 
-jest.mock('react-router', () => ({
-  ...jest.requireActual('react-router'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-    location: {
-      pathname: '/',
-    },
-  }),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockHistoryPush,
 }));
 
 jest.mock('@edx/frontend-platform', () => ({

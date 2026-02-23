@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'react-paragon-topaz';
 import { getConfig } from '@edx/frontend-platform';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Icon,
@@ -33,7 +33,7 @@ const initialDeletionClassState = {
 
 const Actions = ({ previousPage }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { courseId, classId } = useParams();
   const courseIdDecoded = decodeURIComponent(courseId);
   const classIdDecoded = decodeURIComponent(classId);
@@ -72,7 +72,7 @@ const Actions = ({ previousPage }) => {
   const handleEnrollStudentModal = () => setIsEnrollModalOpen(!isEnrollModalOpen);
 
   const handleManageButton = () => {
-    history.push(addQueryParam(`/manage-instructors/${courseId}/${classId}?previous=${previousPage}`));
+    navigate(addQueryParam(`/manage-instructors/${courseId}/${classId}?previous=${previousPage}`));
   };
 
   const handleGradebookButton = () => {
@@ -98,7 +98,7 @@ const Actions = ({ previousPage }) => {
         isRequestComplete: true,
       });
 
-      history.push('/classes');
+      navigate('/classes');
     } catch (error) {
       logError(error);
     } finally {

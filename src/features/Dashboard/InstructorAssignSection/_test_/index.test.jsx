@@ -1,6 +1,5 @@
 import React from 'react';
 import InstructorAssignSection from 'features/Dashboard/InstructorAssignSection';
-import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
 
 jest.mock('@edx/frontend-platform/logging', () => ({

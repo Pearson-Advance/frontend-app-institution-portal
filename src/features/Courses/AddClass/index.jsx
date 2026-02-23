@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import {
@@ -27,7 +27,7 @@ import 'features/Courses/AddClass/index.scss';
 const AddClass = ({
   isOpen, onClose, courseInfo, isEditing, finalCall,
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const instructorsList = useSelector((state) => state.instructors.selectOptions.data);
@@ -90,7 +90,7 @@ const AddClass = ({
         setShowToast(true);
 
         if (classInfo.classId) {
-          history.push(`/courses/${encodeURIComponent(courseInfo.masterCourseId)}/${encodeURIComponent(classInfo?.classId)}?previous=classes`);
+          navigate(`/courses/${encodeURIComponent(courseInfo.masterCourseId)}/${encodeURIComponent(classInfo?.classId)}?previous=classes`);
         }
       } catch (error) {
         logError(error);

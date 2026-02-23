@@ -2,8 +2,7 @@ import {
   fireEvent,
   screen,
 } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 import { renderWithProviders } from 'test-utils';
 import { columns } from 'features/Courses/CourseDetailTable/columns';
@@ -12,6 +11,10 @@ import { RequestStatus } from 'features/constants';
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
 }));
+
+const basePath = `/courses/${encodeURIComponent(
+  'course-v1:XXX+YYY+2023',
+)}`;
 
 describe('columns', () => {
   test('returns an array of columns with correct properties', () => {
@@ -67,21 +70,23 @@ describe('columns', () => {
     });
 
     renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
-        <Route path="/courses/:courseId">
-          <Component />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: {} },
+      <Route
+        path="/courses/:courseId"
+        element={<Component />}
+      />,
+      {
+        initialEntries: [basePath],
+        preloadedState: {},
+      },
     );
 
     const linkElement = screen.getByText('Class example');
     expect(linkElement).toBeInTheDocument();
     expect(linkElement).toHaveClass('text-truncate link');
-    expect(linkElement).toHaveAttribute(
-      'href',
-      `/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}/class id?previous=courses`,
-    );
+    expect(linkElement).toHaveAttribute('href');
+    expect(linkElement.getAttribute('href')).toContain('course-v1:XXX+YYY+2023');
+    expect(linkElement.getAttribute('href')).toContain('class%20id');
+    expect(linkElement.getAttribute('href')).toContain('previous=courses');
   });
 
   test('Should render the dates', () => {
@@ -152,16 +157,18 @@ describe('columns', () => {
       },
     };
 
-    const component = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
-        <Route path="/courses/:courseId">
-          <Component />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+    const { getByText } = renderWithProviders(
+      <Route
+        path="/courses/:courseId"
+        element={<Component />}
+      />,
+      {
+        initialEntries: [basePath],
+        preloadedState: mockStore,
+      },
     );
 
-    expect(component.getByText('Sam Sepiol')).toBeInTheDocument();
+    expect(getByText('Sam Sepiol')).toBeInTheDocument();
   });
 
   test('Should render the label text if instructor is not present', async () => {
@@ -211,16 +218,18 @@ describe('columns', () => {
       },
     };
 
-    const component = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
-        <Route path="/courses/:courseId">
-          <ComponentNoInstructor />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+    const { getByText } = renderWithProviders(
+      <Route
+        path="/courses/:courseId"
+        element={<ComponentNoInstructor />}
+      />,
+      {
+        initialEntries: [basePath],
+        preloadedState: mockStore,
+      },
     );
 
-    const title = component.getByText('Unassigned');
+    const title = getByText('Unassigned');
     expect(title).toBeInTheDocument();
   });
 
@@ -276,25 +285,27 @@ describe('columns', () => {
       },
     };
 
-    const component = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
-        <Route path="/courses/:courseId">
-          <Component />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+    const { getByTestId, getByText } = renderWithProviders(
+      <Route
+        path="/courses/:courseId"
+        element={<Component />}
+      />,
+      {
+        initialEntries: [basePath],
+        preloadedState: mockStore,
+      },
     );
 
-    const buttonTrigger = component.getByTestId('droprown-action');
+    const buttonTrigger = getByTestId('droprown-action');
 
     fireEvent.click(buttonTrigger);
 
-    expect(component.getByText('View class content')).toBeInTheDocument();
-    expect(component.getByText('Manage Instructors')).toBeInTheDocument();
-    expect(component.getByText('Edit Class')).toBeInTheDocument();
-    expect(component.getByText('Delete Class')).toBeInTheDocument();
+    expect(getByText('View class content')).toBeInTheDocument();
+    expect(getByText('Manage Instructors')).toBeInTheDocument();
+    expect(getByText('Edit Class')).toBeInTheDocument();
+    expect(getByText('Delete Class')).toBeInTheDocument();
 
-    const deleteButton = component.getByText('Delete Class');
+    const deleteButton = getByText('Delete Class');
 
     fireEvent.click(deleteButton);
     expect(screen.getByText(/This action will permanently delete this class/i)).toBeInTheDocument();

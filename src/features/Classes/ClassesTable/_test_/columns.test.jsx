@@ -1,6 +1,4 @@
-import { MemoryRouter, Route } from 'react-router-dom';
 import { fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
 
 import { columns } from 'features/Classes/ClassesTable/columns';
 import { renderWithProviders } from 'test-utils';
@@ -95,16 +93,10 @@ describe('columns', () => {
       },
     };
 
-    const {
-      getByText, getByTestId, getAllByRole,
-    } = renderWithProviders(
-      <MemoryRouter initialEntries={['/classes/']}>
-        <Route path="/classes/">
-          <ActionColumn />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
+    const { getByText, getByTestId, getAllByRole } = renderWithProviders(<ActionColumn />, {
+      preloadedState: mockStore,
+      initialEntries: ['/classes/'],
+    });
 
     const button = getByTestId('droprown-action');
     fireEvent.click(button);
@@ -150,16 +142,10 @@ describe('columns', () => {
       },
     };
 
-    const {
-      getByText, getByTestId,
-    } = renderWithProviders(
-      <MemoryRouter initialEntries={['/classes/']}>
-        <Route path="/classes/">
-          <ActionColumn />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
+    const { getByText, getByTestId } = renderWithProviders(<ActionColumn />, {
+      preloadedState: mockStore,
+      initialEntries: ['/classes/'],
+    });
 
     const button = getByTestId('droprown-action');
     fireEvent.click(button);
@@ -192,14 +178,10 @@ describe('columns', () => {
       },
     };
 
-    const { getByTestId, findByText } = renderWithProviders(
-      <MemoryRouter initialEntries={['/classes/']}>
-        <Route path="/classes/">
-          <ActionColumn />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
+    const { getByTestId, findByText } = renderWithProviders(<ActionColumn />, {
+      preloadedState: mockStore,
+      initialEntries: ['/classes/'],
+    });
 
     fireEvent.click(getByTestId('droprown-action'));
 

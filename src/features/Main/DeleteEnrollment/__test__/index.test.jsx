@@ -6,7 +6,6 @@ import {
   waitFor,
 } from '@testing-library/react';
 import { Dropdown } from '@edx/paragon';
-import '@testing-library/jest-dom/extend-expect';
 
 import { renderWithProviders } from 'test-utils';
 import { deleteEnrollment } from 'features/Main/data/api';

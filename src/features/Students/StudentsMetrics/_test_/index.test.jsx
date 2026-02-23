@@ -1,6 +1,5 @@
 import React from 'react';
 import StudentsMetrics from 'features/Students/StudentsMetrics';
-import '@testing-library/jest-dom/extend-expect';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProviders } from 'test-utils';
 

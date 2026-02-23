@@ -1,9 +1,7 @@
-import React from 'react';
 import { waitFor } from '@testing-library/react';
 import LicensesPage from 'features/Licenses/LicensesPage';
-import '@testing-library/jest-dom/extend-expect';
 import { renderWithProviders } from 'test-utils';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -48,17 +46,16 @@ const mockStore = {
 };
 
 describe('LicensesPage component', () => {
-  test('renders licenses data components', () => {
+  test('renders licenses data components', async () => {
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/licenses']}>
-        <Route path="/licenses">
-          <LicensesPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+      <Route path="/licenses" element={<LicensesPage />} />,
+      {
+        preloadedState: mockStore,
+        initialEntries: ['/licenses'],
+      },
     );
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(component.container).toHaveTextContent('License Pool');
       expect(component.container).toHaveTextContent('License Name 1');
       expect(component.container).toHaveTextContent('License Name 2');

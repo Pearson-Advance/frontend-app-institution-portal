@@ -1,6 +1,3 @@
-import React from 'react';
-import '@testing-library/jest-dom';
-import { MemoryRouter, Route } from 'react-router-dom';
 import { screen } from '@testing-library/react';
 
 import { renderWithProviders } from 'test-utils';
@@ -81,16 +78,15 @@ describe('Course Details Table', () => {
     };
 
     const component = renderWithProviders(
-      <MemoryRouter initialEntries={['/courses']}>
-        <Route path="/courses">
-          <CourseDetailTable
-            data={mockStore.classes.table.data}
-            count={mockStore.classes.table.data.length}
-            columns={columns}
-          />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+      <CourseDetailTable
+        data={mockStore.classes.table.data}
+        count={mockStore.classes.table.data.length}
+        columns={columns}
+      />,
+      {
+        preloadedState: mockStore,
+        initialEntries: ['/courses'],
+      },
     );
 
     expect(component.container).toHaveTextContent('Class');

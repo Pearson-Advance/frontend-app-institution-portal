@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  BrowserRouter,
-  Switch,
+  Routes,
   Route,
-  Redirect,
-  useLocation, useHistory,
+  Navigate,
+  useLocation,
+  useNavigate,
 } from 'react-router-dom';
 
 import { getConfig } from '@edx/frontend-platform';
@@ -43,7 +43,7 @@ import { cookieText, INSTITUTION_QUERY_ID, RequestStatus } from 'features/consta
 import './index.scss';
 
 const Main = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
   const institutions = useSelector((state) => state.main.institution.data);
@@ -67,29 +67,29 @@ const Main = () => {
   useEffect(() => {
     if (institutions.length === 1) {
       searchParams.set(INSTITUTION_QUERY_ID, institutions[0].id);
-      history.push({ search: searchParams.toString() });
+      navigate({ search: searchParams.toString() });
 
       dispatch(updateSelectedInstitution(institutions[0]));
     }
   }, [institutions, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const routes = [
-    { path: '/dashboard', component: DashboardPage, exact: true },
-    { path: '/students', component: StudentsPage, exact: true },
-    { path: '/students/:studentEmail', component: StudentDetailPage, exact: true },
-    { path: '/instructors', component: InstructorsPage, exact: true },
-    { path: '/instructors/:instructorUsername', component: InstructorsDetailPage, exact: true },
-    { path: '/courses', component: CoursesPage, exact: true },
-    { path: '/courses/:courseId', component: CoursesDetailPage, exact: true },
-    { path: '/courses/:courseId/:classId', component: ClassPage, exact: true },
-    { path: '/licenses', component: LicensesPage, exact: true },
-    { path: '/licenses/:licenseId', component: LicensesDetailPage, exact: true },
-    { path: '/classes', component: ClassesPage, exact: true },
-    { path: '/manage-instructors/:courseId/:classId', component: ManageInstructors, exact: true },
+    { path: '/dashboard', component: DashboardPage },
+    { path: '/students', component: StudentsPage },
+    { path: '/students/:studentEmail', component: StudentDetailPage },
+    { path: '/instructors', component: InstructorsPage },
+    { path: '/instructors/:instructorUsername', component: InstructorsDetailPage },
+    { path: '/courses', component: CoursesPage },
+    { path: '/courses/:courseId', component: CoursesDetailPage },
+    { path: '/courses/:courseId/:classId', component: ClassPage },
+    { path: '/licenses', component: LicensesPage },
+    { path: '/licenses/:licenseId', component: LicensesDetailPage },
+    { path: '/classes', component: ClassesPage },
+    { path: '/manage-instructors/:courseId/:classId', component: ManageInstructors },
   ];
 
   return (
-    <BrowserRouter basename={getConfig().INSTITUTION_PORTAL_PATH}>
+    <>
       <CookiePolicyBanner policyText={{ en: cookieText }} />
       <Header />
       {bannerText && (
@@ -114,30 +114,30 @@ const Main = () => {
                 <Container size="xl" className="px-4">
                   {institutions.length > 1 && (<InstitutionSelector />)}
                 </Container>
-                <Switch>
-                  <Route exact path="/">
-                    <Redirect to={addQueryParam('/dashboard')} />
-                  </Route>
-                  {routes.map(({ path, exact, component: Component }) => (
+                <Routes>
+                  <Route
+                    path="/"
+                    element={<Navigate to={addQueryParam('/dashboard')} replace />}
+                  />
+                  {routes.map(({ path, component: Component }) => (
                     <Route
                       key={path}
                       path={path}
-                      exact={exact}
-                      render={() => (
+                      element={(
                         <ActiveTabUpdater path={path}>
                           <Component />
                         </ActiveTabUpdater>
                       )}
                     />
                   ))}
-                </Switch>
+                </Routes>
               </Container>
             </>
           )}
         </main>
         <Footer />
       </div>
-    </BrowserRouter>
+    </>
   );
 };
 

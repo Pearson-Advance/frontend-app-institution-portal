@@ -1,7 +1,5 @@
-import React from 'react';
 import { waitFor, fireEvent } from '@testing-library/react';
-import { MemoryRouter, Route } from 'react-router-dom';
-import '@testing-library/jest-dom/extend-expect';
+import { Route } from 'react-router-dom';
 
 import { renderWithProviders } from 'test-utils';
 import { RequestStatus } from 'features/constants';
@@ -64,15 +62,20 @@ const mockStore = {
   },
 };
 
+const courseId = encodeURIComponent('course-v1:XXX+YYY+2023');
+const classId = encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111');
+
 describe('Manage instructors page', () => {
   test('render page', async () => {
     const { getByText, getAllByRole, getByTestId } = renderWithProviders(
-      <MemoryRouter initialEntries={[`/manageInstructors/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111')}`]}>
-        <Route path="/manageInstructors/:courseId/:classId">
-          <ManageInstructors />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+      <Route
+        path="/manageInstructors/:courseId/:classId"
+        element={<ManageInstructors />}
+      />,
+      {
+        preloadedState: mockStore,
+        initialEntries: [`/manageInstructors/${courseId}/${classId}`],
+      },
     );
 
     waitFor(() => {
@@ -93,13 +96,14 @@ describe('Manage instructors page', () => {
 
   test('Delete instructor', async () => {
     const { getByText, getAllByTestId } = renderWithProviders(
-      <MemoryRouter initialEntries={[`/manageInstructors/${encodeURIComponent('course-v1:XXX+YYY+2023')}/${encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111')}`]}>
-        `/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`
-        <Route path="/manageInstructors/:courseId/:classId">
-          <ManageInstructors />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
+      <Route
+        path="/manageInstructors/:courseId/:classId"
+        element={<ManageInstructors />}
+      />,
+      {
+        preloadedState: mockStore,
+        initialEntries: [`/manageInstructors/${courseId}/${classId}`],
+      },
     );
 
     const deleteIcons = getAllByTestId('delete-icon');
