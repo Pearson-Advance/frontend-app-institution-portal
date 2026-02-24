@@ -34,3 +34,20 @@ export function renderWithProviders(
   );
   return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 }
+
+export function ProvidersWrapper({
+  children,
+  preloadedState = {},
+  initialEntries = ['/'],
+  store = initializeStore(preloadedState),
+}) {
+  return (
+    <Provider store={store}>
+      <IntlProvider locale="en">
+        <MemoryRouter initialEntries={initialEntries}>
+          {children}
+        </MemoryRouter>
+      </IntlProvider>
+    </Provider>
+  );
+}

@@ -2,7 +2,7 @@ import { useReducer, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getConfig } from '@edx/frontend-platform';
-import { Dropdown, Toast, useToggle } from '@edx/paragon';
+import { Dropdown, Toast, useToggle } from '@openedx/paragon';
 
 import { assignVoucher, revokeVoucher } from 'features/Courses/data/api';
 import {

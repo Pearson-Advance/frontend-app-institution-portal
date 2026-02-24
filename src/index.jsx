@@ -1,11 +1,13 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+
 import {
   APP_INIT_ERROR, APP_READY, subscribe, initialize,
 } from '@edx/frontend-platform';
 import { AppProvider, ErrorPage } from '@edx/frontend-platform/react';
-import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
 
 import Main from 'features/Main';
@@ -15,19 +17,24 @@ import appMessages from './i18n';
 import './index.scss';
 import { store } from './store';
 
+const container = document.getElementById('root');
+const root = createRoot(container);
+
 subscribe(APP_READY, () => {
-  ReactDOM.render(
+  root.render(
+    <StrictMode>
     <IntlProvider locale="en">
       <AppProvider store={store}>
         <Main />
       </AppProvider>
-    </IntlProvider>,
+    </IntlProvider>
+    </StrictMode>,
     document.getElementById('root'),
   );
 });
 
 subscribe(APP_INIT_ERROR, (error) => {
-  ReactDOM.render(<ErrorPage message={error.message} />, document.getElementById('root'));
+  root.render(<ErrorPage message={error.message} />);
 });
 
 initialize({

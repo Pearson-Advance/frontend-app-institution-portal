@@ -5,7 +5,7 @@ import React, {
   useMemo,
 } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { Container, Pagination } from '@edx/paragon';
+import { Container, Pagination } from '@openedx/paragon';
 import { useDispatch, useSelector } from 'react-redux';
 import { getConfig } from '@edx/frontend-platform';
 

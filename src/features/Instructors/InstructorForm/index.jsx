@@ -12,12 +12,12 @@ import {
   ModalDialog,
   ModalCloseButton,
   useToggle,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 
 import { Button, ConfirmationModal } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 import { getConfig } from '@edx/frontend-platform';
-import { Info, Close, MailOutline } from '@edx/paragon/icons';
+import { Info, Close, MailOutline } from '@openedx/paragon/icons';
 
 import { RequestStatus, deactivationMessage } from 'features/constants';
 import { addInstructor, editInstructor } from 'features/Instructors/data/thunks';

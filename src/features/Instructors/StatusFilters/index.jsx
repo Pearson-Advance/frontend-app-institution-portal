@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Tabs, Tab } from '@edx/paragon';
+import { Tabs, Tab } from '@openedx/paragon';
 
 import { fetchInstructorsData } from 'features/Instructors/data/thunks';
 import { updateFilters, resetInstructorsRequest } from 'features/Instructors/data/slice';

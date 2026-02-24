@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Badge } from 'react-paragon-topaz';
 import {
   Dropdown, IconButton, Icon, useToggle,
-} from '@edx/paragon';
-import { MoreHoriz } from '@edx/paragon/icons';
+} from '@openedx/paragon';
+import { MoreHoriz } from '@openedx/paragon/icons';
 
 import AddClass from 'features/Courses/AddClass';
 import LinkWithQuery from 'features/Main/LinkWithQuery';

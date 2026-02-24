@@ -3,7 +3,7 @@ import React, {
   useState,
 } from 'react';
 
-import { Row, Col } from '@edx/paragon';
+import { Row, Col } from '@openedx/paragon';
 import { Select } from 'react-paragon-topaz';
 
 import { useLocation, useNavigate } from 'react-router-dom';

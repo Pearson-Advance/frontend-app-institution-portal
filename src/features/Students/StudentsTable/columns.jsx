@@ -4,9 +4,9 @@ import {
   IconButton,
   Icon,
   Overlay,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { Link } from 'react-router-dom';
-import { MoreHoriz } from '@edx/paragon/icons';
+import { MoreHoriz } from '@openedx/paragon/icons';
 import React from 'react';
 import { getConfig } from '@edx/frontend-platform';
 import { Badge, STUDENT_STATUS_VARIANTS, ProgressSteps } from 'react-paragon-topaz';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container } from '@edx/paragon';
+import { Container } from '@openedx/paragon';
 
 import { UNAUTHORIZED_HELP_MESSAGE, SUPPORT_EMAIL } from 'features/constants';
 

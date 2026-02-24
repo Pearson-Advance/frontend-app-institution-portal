@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import {
   Container, Spinner, Row, useToggle, Toast,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { logError } from '@edx/frontend-platform/logging';
 import { Button } from 'react-paragon-topaz';
 

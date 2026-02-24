@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { CheckboxControl } from '@edx/paragon';
+import { CheckboxControl } from '@openedx/paragon';
 import { addRowSelect, deleteRowSelect } from 'features/Instructors/data/slice';
 
 const useConvertIndeterminateProp = (props) => {

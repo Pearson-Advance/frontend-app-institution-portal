@@ -4,7 +4,7 @@ import React, {
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getConfig } from '@edx/frontend-platform';
-import { Container, Pagination, useToggle } from '@edx/paragon';
+import { Container, Pagination, useToggle } from '@openedx/paragon';
 import { Button } from 'react-paragon-topaz';
 
 import AddClass from 'features/Courses/AddClass';

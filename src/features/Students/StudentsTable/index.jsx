@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import DataTable from '@edx/paragon/dist/DataTable';
 import {
   Row,
   Col,
-} from '@edx/paragon';
+  DataTable
+} from '@openedx/paragon';
 
 import { columns } from 'features/Students/StudentsTable/columns';
 import { RequestStatus } from 'features/constants';

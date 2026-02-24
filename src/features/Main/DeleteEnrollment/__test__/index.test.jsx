@@ -5,7 +5,7 @@ import {
   fireEvent,
   waitFor,
 } from '@testing-library/react';
-import { Dropdown } from '@edx/paragon';
+import { Dropdown } from '@openedx/paragon';
 
 import { renderWithProviders } from 'test-utils';
 import { deleteEnrollment } from 'features/Main/data/api';

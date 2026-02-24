@@ -1,9 +1,60 @@
-import { fireEvent } from '@testing-library/react';
+
+jest.mock('features/Classes/data/thunks', () => ({
+  ...jest.requireActual('features/Classes/data/thunks'),
+  supersetUrlClassesDashboard: jest.fn(),
+}));
+
+import { fireEvent, waitFor } from '@testing-library/react';
 
 import { columns } from 'features/Classes/ClassesTable/columns';
 import { renderWithProviders } from 'test-utils';
 
 import * as classesThunks from 'features/Classes/data/thunks';
+
+jest.mock('@edx/frontend-platform', () => ({
+  getConfig: () => ({
+    CLASSES_INSIGHTS_FLAG: true,
+    GRADEBOOK_MICROFRONTEND_URL: '',
+    LMS_BASE_URL: '',
+    LEARNING_MICROFRONTEND_URL: '',
+  }),
+}));
+
+jest.mock('@openedx/paragon', () => {
+  /* eslint-disable no-shadow, global-require */
+  const React = require('react');
+
+  return {
+    Dropdown: Object.assign(
+      ({ children }) => <div>{children}</div>,
+      {
+        Item: ({ children, ...props }) => (
+          <button type="button" {...props}>{children}</button>
+        ),
+      },
+    ),
+
+    DropdownToggle: ({ children, ...props }) => (
+      <button type="button" {...props}>{children}</button>
+    ),
+
+    DropdownMenu: ({ children }) => <div>{children}</div>,
+
+    Toast: ({ show, children }) => (show ? (
+      <div data-testid="toast-message">{children}</div>
+    ) : null),
+
+    useToggle: (initial = false) => {
+      const [value, setValue] = React.useState(initial);
+      return [
+        value,
+        () => setValue(true),
+        () => setValue(false),
+      ];
+    },
+  };
+});
+
 
 describe('columns', () => {
   const classDataMock = {
@@ -18,7 +69,7 @@ describe('columns', () => {
   };
 
   beforeEach(() => {
-    jest.spyOn(classesThunks, 'supersetUrlClassesDashboard').mockResolvedValue(null);
+     classesThunks.supersetUrlClassesDashboard.mockResolvedValue(null);
   });
 
   afterEach(() => {
@@ -165,6 +216,14 @@ describe('columns', () => {
     });
 
     const mockStore = {
+      main: {
+         selectedInstitution: { id: 1 },
+      },
+      courses: {
+    newClass: {
+      status: 'idle',
+    },
+  },
       classes: {
         table: {
           data: [{ ...classDataMock }],
@@ -182,6 +241,10 @@ describe('columns', () => {
       preloadedState: mockStore,
       initialEntries: ['/classes/'],
     });
+
+      await waitFor(() => {
+    expect(classesThunks.supersetUrlClassesDashboard).toHaveBeenCalled();
+  });
 
     fireEvent.click(getByTestId('droprown-action'));
 

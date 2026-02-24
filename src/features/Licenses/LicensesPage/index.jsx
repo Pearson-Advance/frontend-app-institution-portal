@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Pagination, Container } from '@edx/paragon';
+import { Pagination, Container } from '@openedx/paragon';
 
 import { initialPage } from 'features/constants';
 import { updateCurrentPage, updateFilters, resetLicensesTable } from 'features/Licenses/data/slice';

@@ -8,8 +8,8 @@ import {
   Icon,
   useToggle,
   Toast,
-} from '@edx/paragon';
-import { MoreHoriz } from '@edx/paragon/icons';
+} from '@openedx/paragon';
+import { MoreHoriz } from '@openedx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 import { logError } from '@edx/frontend-platform/logging';
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { Row, Col, Spinner } from '@edx/paragon';
+import { Row, Col, Spinner } from '@openedx/paragon';
 import ClassCard from 'features/Dashboard/InstructorAssignSection/ClassCard';
 import { Button } from 'react-paragon-topaz';
 
