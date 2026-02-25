@@ -16,35 +16,26 @@ jest.mock('@edx/frontend-platform', () => ({
   })),
 }));
 
-jest.mock('react-select', () => function reactSelect({
-  options, valueR, onChange, onInputChange,
-}) {
-  function handleInputChange(event) {
-    onInputChange(event.currentTarget.value, { action: 'set-value' });
+jest.mock('react-paragon-topaz', () => ({
+  Select: ({ options, onChange, onInputChange }) => {
+    const handleChange = (event) => {
+      const { value } = event.target;
 
-    return event;
-  }
+      onChange({ value });
+      onInputChange(value, { action: 'set-value' });
+    };
 
-  function handleChange(event) {
-    onChange({ id: event.currentTarget.value });
-    handleInputChange(event);
-    return event;
-  }
-
-  return (
-    <select
-      data-testid="select"
-      value={valueR}
-      onChange={handleChange}
-    >
-      {options.map(({ label, value }) => (
-        <option key={value} value={value}>
-          {label}
-        </option>
-      ))}
-    </select>
-  );
-});
+    return (
+      <select data-testid="select" onChange={handleChange}>
+        {options.map(({ label, value }) => (
+          <option key={value} value={value}>
+            {label}
+          </option>
+        ))}
+      </select>
+    );
+  },
+}));
 
 const mockStore = {
   courses: {

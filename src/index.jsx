@@ -23,11 +23,11 @@ const root = createRoot(container);
 subscribe(APP_READY, () => {
   root.render(
     <StrictMode>
-    <IntlProvider locale="en">
-      <AppProvider store={store}>
-        <Main />
-      </AppProvider>
-    </IntlProvider>
+      <IntlProvider locale="en">
+        <AppProvider store={store}>
+          <Main />
+        </AppProvider>
+      </IntlProvider>
     </StrictMode>,
     document.getElementById('root'),
   );

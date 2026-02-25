@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import {DataTable} from '@openedx/paragon';
+import { DataTable } from '@openedx/paragon';
 
 const Table = ({
   columns,

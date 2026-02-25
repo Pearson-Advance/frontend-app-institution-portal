@@ -6,7 +6,7 @@ import { getConfig } from '@edx/frontend-platform';
 import {
   Row,
   Col,
-  DataTable
+  DataTable,
 } from '@openedx/paragon';
 
 import { getColumns } from 'features/Instructors/InstructorsTable/columns';

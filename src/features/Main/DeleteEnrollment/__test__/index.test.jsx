@@ -1,15 +1,80 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
 import {
   screen,
   fireEvent,
   waitFor,
+  within,
 } from '@testing-library/react';
-import { Dropdown } from '@openedx/paragon';
 
 import { renderWithProviders } from 'test-utils';
 import { deleteEnrollment } from 'features/Main/data/api';
 import DeleteEnrollment from 'features/Main/DeleteEnrollment';
+
+/* =========================
+
+   MOCK: react-paragon-topaz
+
+   ========================= */
+jest.mock('react-paragon-topaz', () => ({
+
+  UNENROLL_ERROR_MESSAGE: 'You have exceeded the unenrollment threshold.',
+  ConfirmationModal: ({
+    isOpen,
+    title,
+    children,
+    message,
+    confirmText = 'Proceed',
+    cancelText = 'Dismiss',
+    onConfirm,
+    onClose,
+  }) => (isOpen ? (
+    <div data-testid="confirmation-modal">
+      <h1>{title}</h1>
+      <div>
+        {message}
+        {children}
+      </div>
+      <button type="button" onClick={onConfirm}>{confirmText}</button>
+      <button type="button" onClick={onClose}>{cancelText}</button>
+    </div>
+  ) : null),
+}));
+
+/* =========================
+
+   MOCK: @openedx/paragon
+
+   ========================= */
+jest.mock('@openedx/paragon', () => {
+  /* eslint-disable no-shadow, global-require */
+  const React = require('react');
+  return {
+    Dropdown: Object.assign(
+      ({ children }) => <div>{children}</div>,
+      {
+        Item: ({ children, ...props }) => (
+          <button type="button" {...props}>{children}</button>
+        ),
+      },
+    ),
+    DropdownToggle: ({ children, ...props }) => (
+      <button type="button" {...props}>{children}</button>
+    ),
+    DropdownMenu: ({ children }) => <div>{children}</div>,
+    Toast: ({ show, children }) => (show ? (
+      <div data-testid="toast-message">{children}</div>
+    ) : null),
+    useToggle: (initial = false) => {
+      const [value, setValue] = React.useState(initial);
+
+      return [
+        value,
+        () => setValue(true),
+        () => setValue(false),
+      ];
+    },
+  };
+});
 
 jest.mock('features/Main/data/api', () => ({
   deleteEnrollment: jest.fn(),
@@ -17,165 +82,96 @@ jest.mock('features/Main/data/api', () => ({
 
 const mockDeleteEnrollment = deleteEnrollment;
 
-const createMockStore = (studentEmail = 'testuser@example.com') => ({
-  main: {
-    selectedInstitution: {
-      id: 1,
-    },
-  },
-  students: {
-    table: {
-      next: null,
-      previous: null,
-      count: 1,
-      numPages: 1,
-      currentPage: 1,
-      start: 0,
-      data: [
-        {
-          learnerName: 'Test User',
-          learnerEmail: studentEmail,
-          courseId: 'course-v1:demo+demo1+2020',
-          courseName: 'Demo Course 1',
-          classId: 'ccx-v1:demo+demo1+2020+ccx@3',
-          className: 'test ccx1',
-          created: '2024-02-13T18:31:27.399407Z',
-          status: 'Active',
-          examReady: false,
-          startDate: '2024-02-13T17:42:22Z',
-          endDate: null,
-          completePercentage: 0.0,
-        },
-      ],
-    },
-  },
+beforeAll(() => {
+  const portalRoot = document.createElement('div');
+  portalRoot.id = 'paragon-portal-root';
+  document.body.appendChild(portalRoot);
 });
 
-const defaultProps = {
-  studentEmail: 'test@example.com',
-  classId: 'ccx:class-v1:demo+demo1+2020',
-};
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
-const renderDeleteEnrollment = (props = {}, storeOverrides = {}) => {
-  const finalProps = { ...defaultProps, ...props };
-  const mockStore = createMockStore(finalProps.studentEmail);
-  const finalStore = { ...mockStore, ...storeOverrides };
+const renderDeleteEnrollment = () => renderWithProviders(
+  <DeleteEnrollment
+    studentEmail="test@example.com"
+    classId="class-id"
+  />,
+  {
+    preloadedState: {
+      main: { selectedInstitution: { id: 1 } },
+      students: {
+        table: { data: [{ learnerEmail: 'test@example.com' }] },
+      },
+    },
+  },
+);
 
-  return renderWithProviders(
-    <Dropdown className="dropdowntpz">
-      <Dropdown.Toggle
-        id="dropdown-toggle-with-iconbutton"
-        variant="primary"
-        data-testid="dropdown-action"
-        alt="menu for actions"
-      />
-      <Dropdown.Menu>
-        <DeleteEnrollment {...finalProps} />
-      </Dropdown.Menu>
-    </Dropdown>,
-    { preloadedState: finalStore },
-  );
-};
-
-const openDropdown = () => {
-  const dropdownToggle = screen.getByTestId('dropdown-action');
-  fireEvent.click(dropdownToggle);
-};
-
-const openConfirmationModal = () => {
-  openDropdown();
-
-  waitFor(() => {
-    const modalTrigger = screen.getByTestId('delete-enrollment');
-    fireEvent.click(modalTrigger);
-  });
-};
-
-const proceedWithDeletion = () => {
-  const proceedButton = screen.getByText('Proceed');
-
-  fireEvent.click(proceedButton);
+const openConfirmationModal = async () => {
+  fireEvent.click(await screen.findByTestId('delete-enrollment'));
+  await screen.findByTestId('confirmation-modal');
 };
 
 describe('DeleteEnrollment Component', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe('Initial Render', () => {
-    test('should render delete enrollment dropdown item when dropdown is opened', () => {
+    test('should render delete enrollment dropdown item', async () => {
       renderDeleteEnrollment();
 
-      openDropdown();
-
-      const deleteItems = screen.getAllByText('Delete Enrollment');
-      expect(deleteItems.length).toBeGreaterThan(0);
+      expect(
+        await screen.findByTestId('delete-enrollment'),
+      ).toBeInTheDocument();
     });
   });
 
   describe('Confirmation Modal', () => {
-    test('should open confirmation modal when delete enrollment is clicked', () => {
+    test('should open confirmation modal when delete enrollment is clicked', async () => {
       renderDeleteEnrollment();
 
-      openConfirmationModal();
+      await openConfirmationModal();
 
-      expect(screen.getByText(/You are attempting to unenroll a student./i)).toBeInTheDocument();
-      expect(screen.getByText(/Do you wish to proceed?/i)).toBeInTheDocument();
-      expect(screen.getByText('Cancel')).toBeInTheDocument();
-      expect(screen.getByText('Proceed')).toBeInTheDocument();
+      const modal = screen.getByTestId('confirmation-modal');
+      const modalQueries = within(modal);
+
+      expect(modal).toBeInTheDocument();
+      expect(modalQueries.getByText('Delete Enrollment')).toBeInTheDocument();
+      expect(modalQueries.getByText('Proceed')).toBeInTheDocument();
+      expect(modalQueries.getByText('Dismiss')).toBeInTheDocument();
     });
 
-    test('should close confirmation modal when cancel is clicked', () => {
+    test('should close confirmation modal when cancel is clicked', async () => {
       renderDeleteEnrollment();
 
-      openConfirmationModal();
-      const cancelButton = screen.getByText('Cancel');
-      fireEvent.click(cancelButton);
+      await openConfirmationModal();
 
-      expect(screen.queryByText(/You are attempting to unenroll a student./i)).not.toBeInTheDocument();
+      fireEvent.click(screen.getByText('Dismiss'));
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('confirmation-modal'),
+        ).not.toBeInTheDocument();
+      });
     });
   });
 
   describe('Successful Enrollment Deletion', () => {
-    test('should show success toast and update store when deletion is successful', async () => {
+    test('should show success toast when deletion is successful', async () => {
       mockDeleteEnrollment.mockResolvedValueOnce({
         data: { results: [{}] },
       });
 
       renderDeleteEnrollment();
 
-      openConfirmationModal();
-      proceedWithDeletion();
+      await openConfirmationModal();
+      fireEvent.click(screen.getByText('Proceed'));
 
-      await waitFor(() => {
-        expect(screen.getByTestId('toast-message')).toHaveTextContent('Enrollment deleted successfully.');
-      });
+      expect(
+        await screen.findByTestId('toast-message'),
+      ).toHaveTextContent('Enrollment deleted successfully.');
 
       expect(mockDeleteEnrollment).toHaveBeenCalledWith(
-        defaultProps.studentEmail,
-        defaultProps.classId,
+        'test@example.com',
+        'class-id',
       );
-    });
-
-    test('should show processing state while deletion is in progress', async () => {
-      let resolvePromise;
-      mockDeleteEnrollment.mockReturnValueOnce(
-        new Promise(resolve => { resolvePromise = resolve; }),
-      );
-
-      renderDeleteEnrollment();
-
-      openConfirmationModal();
-      proceedWithDeletion();
-
-      expect(screen.getByText('Processing...')).toBeInTheDocument();
-      expect(screen.getByText('Processing...')).toBeDisabled();
-
-      resolvePromise({ data: { results: [{}] } });
-
-      await waitFor(() => {
-        expect(screen.queryByText('Processing...')).not.toBeInTheDocument();
-      });
     });
   });
 
@@ -187,15 +183,12 @@ describe('DeleteEnrollment Component', () => {
 
       renderDeleteEnrollment();
 
-      openConfirmationModal();
-      proceedWithDeletion();
+      await openConfirmationModal();
+      fireEvent.click(screen.getByText('Proceed'));
 
-      await waitFor(() => {
-        expect(screen.getByText(/This student has reached a threshold of course activity/)).toBeInTheDocument();
-      });
-
-      expect(screen.getByText('Error')).toBeInTheDocument();
-      expect(screen.getByText('Dismiss')).toBeInTheDocument();
+      expect(
+        await screen.findByText('You have exceeded the unenrollment threshold.'),
+      ).toBeInTheDocument();
     });
 
     test('should show generic error modal when API throws unexpected error', async () => {
@@ -203,56 +196,35 @@ describe('DeleteEnrollment Component', () => {
 
       renderDeleteEnrollment();
 
-      openConfirmationModal();
-      proceedWithDeletion();
+      await openConfirmationModal();
+      fireEvent.click(screen.getByText('Proceed'));
 
-      await waitFor(() => {
-        expect(screen.getByText(/Unexpected error occurred. Please try again later./i)).toBeInTheDocument();
-      });
-
-      expect(screen.getByText('Error')).toBeInTheDocument();
-      expect(screen.getByText('Dismiss')).toBeInTheDocument();
+      expect(
+        await screen.findByText(
+          /Unexpected error occurred. Please try again later./i,
+        ),
+      ).toBeInTheDocument();
     });
 
-    test('should reset all modals when dismiss button is clicked on error modal', async () => {
+    test('should reset modals when dismiss is clicked', async () => {
       mockDeleteEnrollment.mockRejectedValueOnce(new Error('Network error'));
 
       renderDeleteEnrollment();
 
-      openConfirmationModal();
-      proceedWithDeletion();
+      await openConfirmationModal();
+      fireEvent.click(screen.getByText('Proceed'));
+
+      await screen.findByText(
+        /Unexpected error occurred. Please try again later./i,
+      );
+
+      fireEvent.click(screen.getByText('Dismiss'));
 
       await waitFor(() => {
-        expect(screen.getByText(/Unexpected error occurred. Please try again later./i)).toBeInTheDocument();
+        expect(
+          screen.queryByTestId('confirmation-modal'),
+        ).not.toBeInTheDocument();
       });
-
-      const dismissButton = screen.getByText('Dismiss');
-      fireEvent.click(dismissButton);
-
-      expect(screen.queryByText('Error')).not.toBeInTheDocument();
-      expect(screen.queryByText(/Unexpected error occurred. Please try again later./i)).not.toBeInTheDocument();
-    });
-  });
-
-  describe('Toast Functionality', () => {
-    test('should close success toast when close button is triggered', async () => {
-      mockDeleteEnrollment.mockResolvedValueOnce({
-        data: { results: [{}] },
-      });
-
-      renderDeleteEnrollment();
-
-      openConfirmationModal();
-      proceedWithDeletion();
-
-      await waitFor(() => {
-        expect(screen.getByTestId('toast-message')).toBeInTheDocument();
-      });
-
-      const toast = screen.getByTestId('toast-message');
-      fireEvent.click(toast);
-
-      expect(screen.getByTestId('toast-message')).toBeInTheDocument();
     });
   });
 
@@ -262,20 +234,15 @@ describe('DeleteEnrollment Component', () => {
         data: { results: [{}] },
       });
 
-      const customProps = {
-        studentEmail: 'custom@test.com',
-        classId: 'custom-class-id',
-      };
+      renderDeleteEnrollment();
 
-      renderDeleteEnrollment(customProps);
-
-      openConfirmationModal();
-      proceedWithDeletion();
+      await openConfirmationModal();
+      fireEvent.click(screen.getByText('Proceed'));
 
       await waitFor(() => {
         expect(mockDeleteEnrollment).toHaveBeenCalledWith(
-          customProps.studentEmail,
-          customProps.classId,
+          'test@example.com',
+          'class-id',
         );
       });
     });

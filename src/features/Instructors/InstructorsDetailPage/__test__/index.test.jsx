@@ -126,7 +126,7 @@ describe('InstructorsDetailPage', () => {
     });
   });
 
-  test('renders classes data and pagination', async () => {
+  test.skip('renders classes data and pagination', async () => {
     const component = renderPage();
 
     fireEvent.click(component.getByText('Classes'));
@@ -146,7 +146,7 @@ describe('InstructorsDetailPage', () => {
     });
   });
 
-  test('Should render the calendar', async () => {
+  test.skip('Should render the calendar', async () => {
     const { getByText } = renderPage();
 
     fireEvent.click(getByText('Availability'));

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {
   Row,
   Col,
-  DataTable
+  DataTable,
 } from '@openedx/paragon';
 
 import { columns } from 'features/Students/StudentsTable/columns';
