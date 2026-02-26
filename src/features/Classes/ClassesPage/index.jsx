@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Pagination } from '@edx/paragon';
+import { Container, Pagination } from '@openedx/paragon';
 import { useLocation } from 'react-router-dom';
 
 import ClassesTable from 'features/Classes/ClassesTable';

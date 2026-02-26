@@ -10,8 +10,8 @@ import {
   useToggle,
   IconButton,
   Toast,
-} from '@edx/paragon';
-import { MoreVert } from '@edx/paragon/icons';
+} from '@openedx/paragon';
+import { MoreVert } from '@openedx/paragon/icons';
 import { logError } from '@edx/frontend-platform/logging';
 
 import { setAssignStaffRole } from 'helpers';

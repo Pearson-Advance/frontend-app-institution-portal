@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { Row, Col, DataTable } from '@edx/paragon';
+import { Row, Col, DataTable } from '@openedx/paragon';
 import { columns } from 'features/Licenses/LicensesTable/columns';
 
 import { RequestStatus } from 'features/constants';

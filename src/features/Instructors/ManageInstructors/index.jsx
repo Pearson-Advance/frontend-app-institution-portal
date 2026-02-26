@@ -7,7 +7,7 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 
-import { Container, Toast } from '@edx/paragon';
+import { Container, Toast } from '@openedx/paragon';
 import { logError } from '@edx/frontend-platform/logging';
 import { Button } from 'react-paragon-topaz';
 import ListInstructors from 'features/Instructors/ManageInstructors/ListInstructors';

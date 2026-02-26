@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Card, CardGrid, ToggleButton } from '@edx/paragon';
+import { Card, CardGrid, ToggleButton } from '@openedx/paragon';
 import { ToggleButtonGroup } from 'react-paragon-topaz';
 import { fetchClassesMetricsData, fetchStudentsMetricsData } from 'features/Students/data/thunks';
 

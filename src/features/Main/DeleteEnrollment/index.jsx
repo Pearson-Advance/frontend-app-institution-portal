@@ -3,7 +3,7 @@ import {
   Dropdown,
   Toast,
   useToggle,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {

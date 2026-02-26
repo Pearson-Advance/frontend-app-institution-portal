@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Spinner } from '@edx/paragon';
+import { Spinner } from '@openedx/paragon';
 import { Schedule } from 'react-paragon-topaz';
 import {
   startOfWeek,

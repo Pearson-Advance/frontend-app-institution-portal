@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { ModalDialog, ModalCloseButton, Spinner } from '@edx/paragon';
+import { ModalDialog, ModalCloseButton, Spinner } from '@openedx/paragon';
 import { Button } from 'react-paragon-topaz';
 
 import 'features/Common/DeleteModal/index.scss';

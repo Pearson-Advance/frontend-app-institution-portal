@@ -10,7 +10,7 @@ import {
   ModalCloseButton,
   Toast,
   Col,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 
 import { Button, Select } from 'react-paragon-topaz';
 import { camelCaseObject } from '@edx/frontend-platform';

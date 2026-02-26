@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getConfig } from '@edx/frontend-platform';
 
-import { Container, Col, Row } from '@edx/paragon';
+import { Container, Col, Row } from '@openedx/paragon';
 import StudentsMetrics from 'features/Students/StudentsMetrics';
 import LicensesTable from 'features/Licenses/LicensesTable';
 import { Button } from 'react-paragon-topaz';

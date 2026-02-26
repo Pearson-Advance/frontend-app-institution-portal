@@ -10,7 +10,7 @@ import {
   FormGroup,
   ModalDialog,
   ModalCloseButton,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 

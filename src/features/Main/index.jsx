@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom';
 
 import { getConfig } from '@edx/frontend-platform';
-import { Container, Spinner } from '@edx/paragon';
+import { Container, Spinner } from '@openedx/paragon';
 import { Banner, getUserRoles, USER_ROLES } from 'react-paragon-topaz';
 
 import CookiePolicyBanner from '@pearsonedunext/frontend-component-cookie-policy-banner';

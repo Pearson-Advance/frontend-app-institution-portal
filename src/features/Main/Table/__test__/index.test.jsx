@@ -30,7 +30,7 @@ describe('Table component', () => {
     const email = getByText(data[0].learnerEmail);
     expect(email).toBeInTheDocument();
 
-    const tableFooter = getByText('Showing 2 of 2.');
+    const tableFooter = getByText('Showing 1 - 2 of 2.');
     expect(tableFooter).toBeInTheDocument();
   });
 

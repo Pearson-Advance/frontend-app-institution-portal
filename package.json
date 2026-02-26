@@ -33,28 +33,22 @@
   "bugs": {
     "url": "https://github.com/Pearson-Advance/frontend-app-institution-portal/issues"
   },
-  "overrides": {
-    "react-paragon-topaz": {
-      "@openedx/paragon": "23.19.1"
-    }
-  },
   "dependencies": {
     "@edx/brand": "npm:@edx/brand-openedx@1.2.0",
     "@edx/frontend-component-footer": "^14.6.0",
     "@edx/frontend-component-header": "^8.0.0",
     "@edx/frontend-platform": "^8.4.0",
-    "@edx/paragon": "^20.45.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@openedx/frontend-plugin-framework": "^1.7.0",
+    "@openedx/paragon": "^22.16.1",
     "@pearsonedunext/frontend-component-cookie-policy-banner": "^6.0.1",
     "@reduxjs/toolkit": "^1.9.5",
-    "@testing-library/react-hooks": "^8.0.1",
     "core-js": "3.31.0",
     "date-fns": "^3.3.1",
     "prop-types": "15.8.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-intl": "^5.25.1",
     "react-paragon-topaz": "^2.0.0",
     "react-redux": "^7.2.9",
@@ -69,7 +63,8 @@
     "@edx/reactifex": "^2.1.1",
     "@openedx/frontend-build": "^14.6.2",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "12.1.5",
+    "@testing-library/react": "16.3.1",
+    "@testing-library/user-event": "^14.6.1",
     "axios": "0.27.2",
     "axios-mock-adapter": "^1.20.0",
     "glob": "7.2.3",

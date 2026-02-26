@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'react-paragon-topaz';
-import { Container, Pagination, Spinner } from '@edx/paragon';
+import { Container, Pagination, Spinner } from '@openedx/paragon';
 
 import Table from 'features/Main/Table';
 import LinkWithQuery from 'features/Main/LinkWithQuery';

@@ -8,8 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   Form, Col, Icon,
-} from '@edx/paragon';
-import { Search } from '@edx/paragon/icons';
+} from '@openedx/paragon';
+import { Search } from '@openedx/paragon/icons';
 import { logError } from '@edx/frontend-platform/logging';
 import {
   Select, Button, useFormInput, usePreviousValueCompare,

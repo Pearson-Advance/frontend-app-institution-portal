@@ -5,8 +5,8 @@ import {
   IconButton,
   Icon,
   useToggle,
-} from '@edx/paragon';
-import { MoreHoriz } from '@edx/paragon/icons';
+} from '@openedx/paragon';
+import { MoreHoriz } from '@openedx/paragon/icons';
 
 import InstructorForm from 'features/Instructors/InstructorForm';
 import { daysWeek, hoursDay } from 'features/constants';

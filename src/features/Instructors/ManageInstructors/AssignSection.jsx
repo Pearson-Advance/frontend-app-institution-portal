@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
   Container, Row, Col, DataTable, Pagination, Button,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import InstructorsFilters from 'features/Instructors/InstructorsFilters';
 import ControlledSelect from 'features/Instructors/ManageInstructors/ControlledSelect';
 

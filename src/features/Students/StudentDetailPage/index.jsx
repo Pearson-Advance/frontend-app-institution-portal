@@ -3,7 +3,7 @@ import {
   Tabs,
   Tab,
   Container,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { getConfig } from '@edx/frontend-platform';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, Link } from 'react-router-dom';

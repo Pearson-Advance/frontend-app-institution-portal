@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+/* eslint-disable react/prop-types, react/button-has-type */
 import { fireEvent, act, waitFor } from '@testing-library/react';
 
 import { renderWithProviders } from 'test-utils';
@@ -41,8 +41,8 @@ jest.mock('react-paragon-topaz', () => ({
       ))}
     </select>
   ),
-  Button: ({ children, ...props }) => (
-    <button {...props} type="button">
+  Button: ({ children, type = 'button', ...props }) => (
+    <button type={type} {...props}>
       {children}
     </button>
   ),
@@ -55,15 +55,15 @@ describe('StudentsFilters Component', () => {
     jest.clearAllMocks();
   });
 
-  test.skip('renders inputs and select elements correctly', () => {
-    const { getByText, getByPlaceholderText } = renderWithProviders(
+  test('renders inputs and select elements correctly', () => {
+    const { getByText, getByPlaceholderText, getByTestId } = renderWithProviders(
       <StudentsFilters resetPagination={resetPagination} />,
     );
 
     expect(getByText('Search')).toBeInTheDocument();
-    expect(getByText('Course')).toBeInTheDocument();
-    expect(getByText('Class')).toBeInTheDocument();
-    expect(getByText('Exam ready')).toBeInTheDocument();
+    expect(getByTestId('course_id')).toBeInTheDocument();
+    expect(getByTestId('class_name')).toBeInTheDocument();
+    expect(getByTestId('exam_ready')).toBeInTheDocument();
     expect(getByPlaceholderText('Enter Student Name')).toBeInTheDocument();
   });
 
@@ -88,7 +88,7 @@ describe('StudentsFilters Component', () => {
     });
   });
 
-  test.skip('filters students by name and applies filters', async () => {
+  test('filters students by name and applies filters', async () => {
     const { getByTestId, getByText } = renderWithProviders(
       <StudentsFilters resetPagination={resetPagination} />,
     );
@@ -106,12 +106,12 @@ describe('StudentsFilters Component', () => {
     expect(fetchStudentsData).toHaveBeenCalled();
   });
 
-  test.skip('allows selecting "Exam ready" option and applying filters', async () => {
-    const { getByText } = renderWithProviders(
+  test('allows selecting "Exam ready" option and applying filters', async () => {
+    const { getByText, getByTestId } = renderWithProviders(
       <StudentsFilters resetPagination={resetPagination} />,
     );
 
-    const examSelect = getByText('Exam ready');
+    const examSelect = getByTestId('exam_ready');
     fireEvent.change(examSelect, {
       target: { value: 'IN_PROGRESS' },
     });

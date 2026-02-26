@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Tooltip, OverlayTrigger } from '@edx/paragon';
+import { Tooltip, OverlayTrigger } from '@openedx/paragon';
 
 import { textLength } from 'features/constants';
 

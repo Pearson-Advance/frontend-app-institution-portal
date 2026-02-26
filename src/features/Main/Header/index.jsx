@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { AppContext } from '@edx/frontend-platform/react';
 import { getConfig } from '@edx/frontend-platform';
-import { Dropdown } from '@edx/paragon';
+import { Dropdown } from '@openedx/paragon';
 import { Header as HeaderBase } from 'react-paragon-topaz';
 
 export const Header = () => {

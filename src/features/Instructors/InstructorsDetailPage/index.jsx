@@ -11,7 +11,7 @@ import {
   Pagination,
   Tabs,
   Tab,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import {
   CalendarExpanded, ProfileCard, formatUTCDate, parseUTCDateWithoutTZ,
 } from 'react-paragon-topaz';

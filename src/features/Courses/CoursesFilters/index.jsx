@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Col, Form } from '@edx/paragon';
+import { Col, Form } from '@openedx/paragon';
 import { Select } from 'react-paragon-topaz';
 
 import { updateFilters, updateCurrentPage } from 'features/Courses/data/slice';

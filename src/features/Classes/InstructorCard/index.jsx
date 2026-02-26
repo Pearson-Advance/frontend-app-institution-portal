@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Spinner } from '@edx/paragon';
+import { Spinner } from '@openedx/paragon';
 import { Button } from 'react-paragon-topaz';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';

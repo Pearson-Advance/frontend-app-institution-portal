@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Col, Form } from '@edx/paragon';
+import { Col, Form } from '@openedx/paragon';
 import { logError } from '@edx/frontend-platform/logging';
 import { Select, Button } from 'react-paragon-topaz';
 import PropTypes from 'prop-types';
