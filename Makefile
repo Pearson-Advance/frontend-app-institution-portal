@@ -43,20 +43,11 @@ push_translations:
 	# Pushing comments to Transifex...
 	./node_modules/@edx/reactifex/bash_scripts/put_comments_v3.sh
 
-ifeq ($(OPENEDX_ATLAS_PULL),)
 # Pulls translations from Transifex.
 pull_translations:
 	@echo "Skipping pull_translations for instructors portal (no tx in Tutor MFE image)."
-else
-# Pulls translations using atlas.
-pull_translations:
-	rm -rf src/i18n/messages
-	mkdir src/i18n/messages
-	cd src/i18n/messages \
-	   && atlas pull --filter=$(transifex_langs) \
-	            translations/frontend-component-footer/src/i18n/messages:frontend-component-footer \
-	            translations/frontend-component-header/src/i18n/messages:frontend-component-header \
-	            translations/frontend-template-application/src/i18n/messages:frontend-template-application
 
-	$(intl_imports) frontend-component-header frontend-component-footer frontend-template-application
-endif
+# This target is used by Travis.
+validate-no-uncommitted-package-lock-changes:
+	# Checking for package-lock.json changes...
+	git diff --exit-code package-lock.json
