@@ -1,7 +1,5 @@
-@import 'assets/colors.scss';
-
 .sub-title {
-  color: $gray-70;
+  color: var(--pgn-color-gray-vue-500);
   font-size: 12px;
 }
 

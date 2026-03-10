@@ -1,9 +1,6 @@
-@import "assets/colors.scss";
-@import "assets/variables.scss";
-
 .custom-text-black {
   &:-webkit-any-link {
-    color: $color-black;
+    color: var(--pgn-color-black);
   }
 }
 
@@ -14,7 +11,7 @@
 }
 
 .course-progress {
-  color: $gray-70;
+  color: var(--pgn-color-gray-vue-500);
 }
 
 .pagination-table .pagination {
@@ -33,12 +30,12 @@
 
 .link {
   &:-webkit-any-link {
-    color: $primary;
+    color: var(--pgn-color-secondary-base);
   }
 }
 
 .back-arrow.btn {
-  color: $primary;
+  color: var(--pgn-color-secondary-base);
   padding: 0;
   font-size: 18px;
 
@@ -52,19 +49,19 @@
 }
 
 .epp-overlay {
-  background-color: $overlay-bg;
-  color: $overlay-text;
+  background-color: var(--pgn-color-black);
+  color: var(--pgn-color-white);
   padding: 8px 12px;
   border-radius: 6px;
   font-size: 14px;
   max-width: 320px;
-  box-shadow: 0 4px 12px $overlay-shadow;
+  box-shadow: 0 4px 12px var(--pgn-color-gray-300);
   z-index: 9999;
   line-height: 1.4;
 }
 
 a.epp-link {
-  color: $blue-50;
+  color: var(--pgn-color-blue-vue-300);
   text-decoration: underline;
 }
 

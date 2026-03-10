@@ -1,13 +1,10 @@
-@import "assets/colors.scss";
-@import "assets/variables.scss";
-
 .container-cards {
-  border: 1px solid $gray-20;
+  border: 1px solid var(--pgn-color-gray-vue-200);
   padding: 2rem;
-  border-radius: $border-radius-1;
+  border-radius: var(--pgn-size-border-radius-base);
   margin-bottom: 2rem;
   box-shadow: 0px 3px 12px 0px rgba(0, 0, 0, 0.16);
-  background-color: $color-white;
+  background-color: var(--pgn-color-white);
 
   .pgn__card {
     box-shadow: none;
@@ -21,7 +18,7 @@
       font-size: 1rem;
       text-align: center;
       font-weight: 600;
-      color: $black-80;
+      color: var(--pgn-color-gray-800);
     }
 
     .pgn__card-section {
@@ -30,24 +27,24 @@
   }
 
   .card-pink {
-    background: $color-pink;
+    background: var(--pgn-color-red-vue-100);
   }
 
   .card-green {
-    background: $color-green;
+    background: var(--pgn-color-green-vue-125);
   }
 
   .card-yellow {
-    background: $color-yellow;
+    background: var(--pgn-color-yellow-vue-050);
   }
 
   .card-purple {
-    background: $color-purple;
+    background: var(--pgn-color-purple-vue-100);
   }
 
   .card-number {
     font-size: 44px;
-    color: $black-80;
+    color: var(--pgn-color-gray-800);
   }
 
   .btn-group-tpz {

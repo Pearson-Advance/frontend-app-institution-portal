@@ -1,5 +1,3 @@
-@import 'assets/colors.scss';
-
 $size: 48px;
 .instructor-image {
   height: $size;
@@ -8,13 +6,13 @@ $size: 48px;
   max-height: $size;
   border-radius: 50%;
   object-fit: cover;
-  background-color: $gray-20;
+  background-color: var(--pgn-color-gray-vue-200);
   display: grid;
   place-items: center;
 }
 
 .text-black {
-  color: $black;
+  color: var(--pgn-color-black);
 }
 
 article .multiline-text {

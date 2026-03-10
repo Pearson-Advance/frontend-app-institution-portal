@@ -1,6 +1,3 @@
-@import 'assets/variables.scss';
-@import 'assets/colors.scss';
-
 .status-filter-tabs {
   display: flex;
   justify-content: flex-end;
@@ -15,8 +12,8 @@
 .status-filter-tabs.nav-button-group .nav-link {
   padding: 0.5rem 1.25rem;
   font-weight: 500;
-  border: 1px solid $gray-70;
-  color: $gray-70;
+  border: 1px solid var(--pgn-color-gray-vue-500);
+  color: var(--pgn-color-gray-vue-500);
   transition: all 0.2s ease-in-out;
   text-decoration: none;
   font-size: 14px;
@@ -34,14 +31,14 @@
 }
 
 .status-filter-tabs .nav-link:hover {
-  background-color:$gray-10;
-  color: $gray-70;
+  background-color: var(--pgn-color-gray-vue-100);
+  color: var(--pgn-color-gray-vue-500);
 }
 
 .status-filter-tabs .nav-link.nav-item.active {
-  background-color: $blue-20;
-  border-color: $gray-70;
-  color: $primary;
+  background-color: var(--pgn-color-secondary-200);
+  border-color: var(--pgn-color-gray-vue-500);
+  color: var(--pgn-color-secondary-base);
   text-shadow: 0 0 0.5px;
   border-bottom-width: 1px;
 }
