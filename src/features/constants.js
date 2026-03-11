@@ -296,3 +296,17 @@ export const VOUCHER_RULES = {
     showRevoke: false,
   },
 };
+
+/**
+ * Possible UI states for the Bulk Registration flow.
+ * @readonly
+ * @enum {string}
+ */
+export const BULK_REGISTRATION_STATES = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  SUCCESS_ALL: 'success_all',
+  SUCCESS_PARTIAL: 'success_partial',
+  ERROR_ROWS: 'error_rows',
+  ERROR_FATAL: 'error_fatal',
+};
