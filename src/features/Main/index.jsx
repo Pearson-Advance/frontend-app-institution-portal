@@ -19,6 +19,7 @@ import { Header } from 'features/Main/Header';
 import { Footer } from 'features/Main/Footer';
 import ClassPage from 'features/Classes/Class/ClassPage';
 import ClassesPage from 'features/Classes/ClassesPage';
+import BulkRegistrationPage from 'features/BulkRegistration/BulkRegistrationPage';
 import CoursesPage from 'features/Courses/CoursesPage';
 import LicensesPage from 'features/Licenses/LicensesPage';
 import StudentsPage from 'features/Students/StudentsPage';
@@ -76,6 +77,7 @@ const Main = () => {
   const routes = [
     { path: '/dashboard', component: DashboardPage, exact: true },
     { path: '/students', component: StudentsPage, exact: true },
+    { path: '/students/bulk-registration', component: BulkRegistrationPage, exact: true },
     { path: '/students/:studentEmail', component: StudentDetailPage, exact: true },
     { path: '/instructors', component: InstructorsPage, exact: true },
     { path: '/instructors/:instructorUsername', component: InstructorsDetailPage, exact: true },
