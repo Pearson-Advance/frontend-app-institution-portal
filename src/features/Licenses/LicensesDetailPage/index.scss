@@ -1,16 +1,13 @@
-@import "assets/variables.scss";
-@import "assets/colors.scss";
-
 .course-title {
   max-width: 700px;
 }
 
 .license-page-content-container {
-  border: 1px solid $gray-20;
-  border-radius: $border-radius-1;
+  border: 1px solid var(--pgn-color-gray-vue-200);
+  border-radius: var(--pgn-size-border-radius-base);
   padding: 24px 30px 30px 30px;
-  box-shadow: 0px 3px 12px 0px $gray-30;
-  background-color: $color-white;
+  box-shadow: 0px 3px 12px 0px var(--pgn-color-gray-200);
+  background-color: var(--pgn-color-white);
 
   .flex-end {
     display: flex;
@@ -24,14 +21,14 @@
   padding: 0 1.5rem;
   padding-left: 2rem;
   padding-right: 4rem;
-  background-color: $color-white;
-  border-radius: $border-radius-1;
+  background-color: var(--pgn-color-white);
+  border-radius: var(--pgn-size-border-radius-base);
   box-shadow: 0px 3px 12px 0px rgba(0, 0, 0, 0.16);
 
   .title {
     font-size: 15px;
     font-weight: 700;
-    color: $gray-70;
+    color: var(--pgn-color-gray-vue-500);
     margin-bottom: 5px;
     text-transform: uppercase;
   }
@@ -39,7 +36,7 @@
   .value {
     display: block;
     width: 100%;
-    color: $black;
+    color: var(--pgn-color-black);
   }
 
   .purchased-seats {
@@ -53,7 +50,7 @@
   .separator {
     width: 2px;
     height: 50px;
-    background-color: $gray-20;
+    background-color: var(--pgn-color-gray-vue-200);
   }
 }
 

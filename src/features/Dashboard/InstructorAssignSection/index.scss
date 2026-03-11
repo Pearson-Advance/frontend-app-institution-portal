@@ -1,8 +1,6 @@
-@import "assets/colors.scss";
-
 .title-instr-assign {
   padding: 1rem;
-  border-bottom: 1px solid $gray-20;
+  border-bottom: 1px solid var(--pgn-color-gray-vue-200);
   margin: 0;
 }
 
@@ -13,7 +11,7 @@
   &:active,
   &:focus,
   &:focus-visible {
-    color: $primary;
+    color: var(--pgn-color-secondary-base);
     background: transparent;
     border: none;
     outline: none;
@@ -28,20 +26,20 @@
 
 .class-card-container {
   padding: 1rem;
-  border-bottom: 1px solid $gray-20;
+  border-bottom: 1px solid var(--pgn-color-gray-vue-200);
 
   .course-name {
     margin-bottom: 0.3rem;
     font-size: 0.75rem;
     text-transform: uppercase;
     font-weight: 700;
-    color: $gray-70;
+    color: var(--pgn-color-gray-vue-500);
   }
 
   .date {
     font-size: 1rem;
     line-height: 21px;
-    color: $gray-70;
+    color: var(--pgn-color-gray-vue-500);
   }
 
   .fa-calendar-day {

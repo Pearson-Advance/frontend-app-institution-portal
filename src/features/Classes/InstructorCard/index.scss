@@ -1,21 +1,18 @@
-@import 'assets/colors.scss';
-@import 'assets/variables.scss';
-
 .separator {
   width: 2px;
   height: 150px;
-  background-color: $gray-20;
+  background-color: var(--pgn-color-gray-vue-200);
   margin-right: 20px;
 }
 
 article.instructor-wrapper {
   padding: 1.8rem;
-  color: $gray-70;
+  color: var(--pgn-color-gray-vue-500);
   overflow: hidden;
-  border: 1px solid $gray-20;
-  border-radius: $border-radius-1;
-  box-shadow: 0px 3px 12px 0px $gray-30;
-  background-color: $color-white;
+  border: 1px solid var(--pgn-color-gray-vue-200);
+  border-radius: var(--pgn-size-border-radius-base);
+  box-shadow: 0px 3px 12px 0px var(--pgn-color-gray-200);
+  background-color: var(--pgn-color-white);
 
   .text-color {
     color: inherit;

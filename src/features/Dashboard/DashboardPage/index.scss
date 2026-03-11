@@ -1,25 +1,22 @@
-@import "assets/colors.scss";
-@import "assets/variables.scss";
-
 .license-section {
-  background-color: $color-white;
+  background-color: var(--pgn-color-white);
   padding: 2rem 0;
 }
 
 .instructor-assign-section {
-  background-color: $color-white;
+  background-color: var(--pgn-color-white);
 }
 
 .license-section {
   box-shadow: 0px 3px 12px 0px rgba(0, 0, 0, 0.16);
-  border-radius: $border-radius-1;
+  border-radius: var(--pgn-size-border-radius-base);
   min-height: 426px;
   max-height: 10px;
 }
 
 .instructor-assign-section {
   box-shadow: 0px 3px 12px 0px rgba(0, 0, 0, 0.16);
-  border-radius: $border-radius-1;
+  border-radius: var(--pgn-size-border-radius-base);
   min-height: 426px;
 }
 
