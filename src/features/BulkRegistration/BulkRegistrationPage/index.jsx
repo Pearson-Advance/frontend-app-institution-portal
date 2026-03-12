@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link, Redirect } from 'react-router-dom';
+import { getConfig } from '@edx/frontend-platform';
 
 import {
   LoadingScreen,
@@ -10,55 +12,18 @@ import {
 } from 'features/BulkRegistration/BulkRegistrationPage/components/Results';
 import UploadForm from 'features/BulkRegistration/BulkRegistrationPage/components/UploadForm';
 import { BULK_REGISTRATION_STATES } from 'features/constants';
+import { uploadCSV } from 'features/BulkRegistration/data/api';
 
 import './index.scss';
 
-// ─── Mock API call ────────────────────────────────────────────────────────────
-const mockUploadCSV = async (file) => {
-  await new Promise((resolve) => { setTimeout(resolve, 1000); });
-
-  const name = file.name.toLowerCase();
-
-  if (name.includes('fatal') || name.includes('500')) {
-    throw Object.assign(new Error('Internal server error. Please contact support.'), { status: 500, detail: 'Internal server error. Please contact support.' });
-  }
-
-  if (name.includes('error') || name.includes('fail')) {
-    return {
-      type: BULK_REGISTRATION_STATES.ERROR_ROWS,
-      failedRows: [
-        {
-          row: 2, firstName: 'John', lastName: 'Smith', email: '-', status: 'Validation failed', message: 'Invalid or missing email address',
-        },
-        {
-          row: 5, firstName: 'Sarah', lastName: 'Williams', email: 'sarah.williams@example.com', status: 'Processing failed', message: 'Database connection timeout during account creation',
-        },
-        {
-          row: 7, firstName: '-', lastName: '-', email: 'incomplete@example.com', status: 'Validation failed', message: 'First name and last name are required',
-        },
-      ],
-    };
-  }
-
-  if (name.includes('partial') || name.includes('mixed')) {
-    return {
-      type: BULK_REGISTRATION_STATES.SUCCESS_PARTIAL,
-      totalRows: 8,
-      alreadyExisted: 2,
-      createdSuccessfully: 6,
-    };
-  }
-
-  return {
-    type: BULK_REGISTRATION_STATES.SUCCESS_ALL,
-    totalRegistered: 8,
-  };
-};
+const mockUploadCSV = (file) => uploadCSV(file);
 
 const BulkRegister = () => {
   const [state, setState] = useState(BULK_REGISTRATION_STATES.IDLE);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const enableBulkRegistration = getConfig()?.PSS_ENABLE_BULK_REGISTRATION || false;
+  const selectedInstitution = useSelector((store) => store.main.selectedInstitution);
 
   const handleUpload = useCallback(async (file) => {
     setState(BULK_REGISTRATION_STATES.LOADING);
@@ -77,6 +42,10 @@ const BulkRegister = () => {
     setResult(null);
     setError(null);
   }, []);
+
+  if (!enableBulkRegistration && selectedInstitution?.hasBulkRegister) {
+    // return <Redirect to="/students" />;
+  }
 
   return (
     <div className="bulk-register px-4 container-mw-xl container-fluid">
