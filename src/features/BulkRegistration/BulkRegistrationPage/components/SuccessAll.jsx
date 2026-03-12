@@ -8,7 +8,7 @@ const SuccessAll = ({ data, onReset }) => (
       <div>
         <p className="success-banner__title">All registrations successful!</p>
         <p className="success-banner__subtitle">
-          We&apos;ve successfully registered all {data.totalRegistered} students from your uploaded file.
+          We&apos;ve successfully registered all {data.totalRegistered} {data.totalRegistered > 1 ? 'students' : 'student'} from your uploaded file.
         </p>
       </div>
     </div>

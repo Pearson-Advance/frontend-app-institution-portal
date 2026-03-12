@@ -5,6 +5,7 @@ import {
   screen, fireEvent, act,
 } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
+import { getConfig } from '@edx/frontend-platform';
 
 import { renderWithProviders } from 'test-utils';
 import BulkRegister from 'features/BulkRegistration/BulkRegistrationPage';
@@ -36,6 +37,102 @@ jest.mock('@edx/paragon', () => {
   return { ...actual, DataTable: MockDataTable };
 });
 
+jest.mock('@edx/frontend-platform', () => ({
+  getConfig: jest.fn(),
+}));
+
+jest.mock('helpers', () => ({
+  validateCSVFile: jest.fn((file) => {
+    if (!file.name.endsWith('.csv')) {
+      return Promise.reject(new Error('Invalid file type'));
+    }
+    return Promise.resolve();
+  }),
+}));
+
+jest.mock('features/BulkRegistration/data/api', () => ({
+  postBulkRegister: jest.fn((file) => {
+    if (file.name === 'students.csv') {
+      return Promise.resolve({
+        data: {
+          errors: {
+            summary: {
+              total_rows: '8', created: '8', existed: '0', failed: '0',
+            },
+          },
+          rows: [],
+        },
+      });
+    }
+
+    if (file.name === 'partial.csv') {
+      return Promise.resolve({
+        data: {
+          errors: {
+            summary: {
+              total_rows: '8', created: '6', existed: '2', failed: '0',
+            },
+          },
+          rows: [],
+        },
+      });
+    }
+
+    if (file.name === 'error.csv') {
+      return Promise.resolve({
+        data: {
+          errors: {
+            summary: {
+              total_rows: '5', created: '2', existed: '0', failed: '3',
+            },
+          },
+          rows: [
+            {
+              row_number: '2',
+              email: 'a@example.com',
+              status: 'Validation failed',
+              errors: { email: ['Already exists'] },
+            },
+            {
+              row_number: '4',
+              email: 'b@example.com',
+              status: 'Validation failed',
+              errors: { first_name: ['This field is required'] },
+            },
+            {
+              row_number: '6',
+              email: 'c@example.com',
+              status: 'Processing failed',
+              errors: {},
+            },
+          ],
+        },
+      });
+    }
+
+    if (file.name === 'fatal.csv') {
+      const err = Object.assign(new Error('Server error'), {
+        response: {
+          status: 500,
+          data: { detail: 'Internal server error. Please contact support.' },
+        },
+      });
+      return Promise.reject(err);
+    }
+
+    return Promise.resolve({
+      data: {
+        errors: {
+          summary: {
+            total_rows: '0', created: '0', existed: '0', failed: '0',
+          },
+        },
+        rows: [],
+      },
+    });
+  }),
+}));
+
 const makeFile = (name, type = 'text/csv') => new File(['first_name,last_name\nJohn,Doe'], name, { type });
 
 let renderResult;
@@ -47,7 +144,15 @@ const renderComponent = () => {
         <BulkRegister />
       </Route>
     </MemoryRouter>,
-    { preloadedState: {} },
+    {
+      preloadedState: {
+        main: {
+          selectedInstitution: {
+            hasBulkRegister: true,
+          },
+        },
+      },
+    },
   );
   return renderResult;
 };
@@ -66,6 +171,7 @@ const selectFileAndSubmit = async (file) => {
 };
 
 beforeEach(() => {
+  getConfig.mockReturnValue({ PSS_ENABLE_BULK_REGISTRATION: true });
   jest.useFakeTimers();
   renderComponent();
 });
@@ -177,6 +283,7 @@ describe('Success', () => {
 
   test('Should display the correct numeric values in the partial success stat cards', async () => {
     await selectFileAndSubmit(makeFile('partial.csv'));
+    // total_rows=8, existed=2, created=6
     expect(screen.getByText('8')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
     expect(screen.getByText('6')).toBeInTheDocument();
@@ -192,7 +299,7 @@ describe('Error', () => {
   test('Should render the failed rows table with the correct column headers', async () => {
     await selectFileAndSubmit(makeFile('error.csv'));
     expect(screen.getAllByText(/failed rows/i).length).toBeGreaterThan(0);
-    ['ROW', 'FIRST NAME', 'LAST NAME', 'EMAIL', 'STATUS', 'MESSAGE'].forEach((header) => {
+    ['ROW', 'EMAIL', 'STATUS', 'MESSAGE'].forEach((header) => {
       expect(screen.getByText(header)).toBeInTheDocument();
     });
   });
@@ -245,5 +352,47 @@ describe('Navigation', () => {
   test('Should keep the Back to Students button visible on the fatal error screen', async () => {
     await selectFileAndSubmit(makeFile('fatal.csv'));
     expect(screen.getByRole('link', { name: /back to students/i })).toBeInTheDocument();
+  });
+});
+
+describe('Redirect', () => {
+  test('Should redirect to /students when hasBulkRegister is false', () => {
+    const { container } = renderWithProviders(
+      <MemoryRouter initialEntries={['/students/bulk-registration']}>
+        <Route path="/students/bulk-registration">
+          <BulkRegister />
+        </Route>
+        <Route path="/students">
+          <div>Students page</div>
+        </Route>
+      </MemoryRouter>,
+      {
+        preloadedState: {
+          main: { selectedInstitution: { hasBulkRegister: false } },
+        },
+      },
+    );
+    expect(container).toHaveTextContent('Students page');
+  });
+
+  test('Should redirect to /students when PSS_ENABLE_BULK_REGISTRATION is false', () => {
+    getConfig.mockReturnValue({ PSS_ENABLE_BULK_REGISTRATION: false });
+
+    const { container } = renderWithProviders(
+      <MemoryRouter initialEntries={['/students/bulk-registration']}>
+        <Route path="/students/bulk-registration">
+          <BulkRegister />
+        </Route>
+        <Route path="/students">
+          <div>Students page</div>
+        </Route>
+      </MemoryRouter>,
+      {
+        preloadedState: {
+          main: { selectedInstitution: { hasBulkRegister: true } },
+        },
+      },
+    );
+    expect(container).toHaveTextContent('Students page');
   });
 });

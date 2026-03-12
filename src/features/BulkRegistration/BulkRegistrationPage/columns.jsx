@@ -2,8 +2,6 @@ import StatusBadge from 'features/BulkRegistration/BulkRegistrationPage/componen
 
 export const ERROR_COLUMNS = [
   { Header: 'ROW', accessor: 'row' },
-  { Header: 'FIRST NAME', accessor: 'firstName' },
-  { Header: 'LAST NAME', accessor: 'lastName' },
   { Header: 'EMAIL', accessor: 'email' },
   {
     Header: 'STATUS',

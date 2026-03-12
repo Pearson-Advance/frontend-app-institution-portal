@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import { logError } from '@edx/frontend-platform/logging';
 
 import { assignStaffRole } from 'features/Main/data/api';
+import { BULK_REGISTRATION_MAX_ROWS, BULK_REGISTRATION_REQUIRED_COLUMNS } from 'features/constants';
 
 /**
  * Format a UTC date
@@ -153,3 +154,88 @@ export const formatSelectOptions = (options) => {
     value: option.id,
   }));
 };
+
+/**
+ * Validates a CSV file before processing.
+ *
+ * The function performs several checks:
+ * - Ensures the file is a CSV based on MIME type or file extension.
+ * - Verifies the file is not empty.
+ * - Confirms that all required columns are present in the header row.
+ * - Ensures the file contains at least one data row.
+ * - Enforces a maximum number of allowed rows.
+ *
+ * If any validation fails, an Error is thrown with additional metadata
+ * (`status` and `detail`) that can be used for API responses.
+ *
+ * @async
+ * @function validateCSVFile
+ * @param {File} file - The uploaded file object to validate.
+ *
+ * @throws {Error} Throws an error if:
+ * - The file is not a CSV.
+ * - The file is empty.
+ * - Required columns are missing.
+ * - The file has no data rows.
+ * - The file exceeds the maximum allowed number of rows.
+ *
+ * @returns {Promise<boolean>} Resolves to `true` if the file passes all validations.
+ */
+export async function validateCSVFile(file) {
+  const isCSV = file.type === 'text/csv'
+    || file.name.toLowerCase().endsWith('.csv');
+
+  if (!isCSV) {
+    throw Object.assign(new Error('Invalid file type. Only CSV files are allowed.'), {
+      status: 400,
+      detail: 'Invalid file type. Only CSV files are allowed.',
+    });
+  }
+
+  const text = await file.text();
+  const lines = text
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+
+  if (lines.length === 0) {
+    throw Object.assign(new Error('The CSV file is empty.'), {
+      status: 400,
+      detail: 'The CSV file is empty.',
+    });
+  }
+
+  const headers = lines[0].split(',').map((h) => h.trim().replace(/^"|"$/g, ''));
+  const missingColumns = BULK_REGISTRATION_REQUIRED_COLUMNS.filter((col) => !headers.includes(col));
+
+  if (missingColumns.length > 0) {
+    throw Object.assign(
+      new Error(`Missing required columns: ${missingColumns.join(', ')}`),
+      {
+        status: 400,
+        detail: `Missing required columns: ${missingColumns.join(', ')}`,
+      },
+    );
+  }
+
+  const dataRows = lines.length - 1;
+
+  if (dataRows <= 0) {
+    throw Object.assign(new Error('The CSV file must contain at least 1 data row.'), {
+      status: 400,
+      detail: 'The CSV file must contain at least 1 data row.',
+    });
+  }
+
+  if (dataRows > BULK_REGISTRATION_MAX_ROWS) {
+    throw Object.assign(
+      new Error(`The CSV file exceeds the maximum allowed rows. Max: ${BULK_REGISTRATION_MAX_ROWS}, Found: ${dataRows}`),
+      {
+        status: 400,
+        detail: `The CSV file exceeds the maximum allowed rows. Max: ${BULK_REGISTRATION_MAX_ROWS}, Found: ${dataRows}`,
+      },
+    );
+  }
+
+  return true;
+}
