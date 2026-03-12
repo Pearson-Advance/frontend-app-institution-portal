@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { getConfig } from '@edx/frontend-platform';
 import { Pagination } from '@edx/paragon';
 import { Link } from 'react-router-dom';
 
@@ -15,6 +16,7 @@ import './index.scss';
 
 const StudentsPage = () => {
   const dispatch = useDispatch();
+  const enableBulkRegistration = getConfig()?.PSS_ENABLE_BULK_REGISTRATION || false;
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const stateStudents = useSelector((state) => state.students);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -44,14 +46,18 @@ const StudentsPage = () => {
       <h2 className="title-page">Students</h2>
       <StudentsMetrics />
       <div className="page-content-container">
-        <div className="bulk-registration">
-          <h3 className="bulk-registration__title">
-            Bulk Registration
-          </h3>
-          <Link to="/students/bulk-registration" className="bulk-registration__link">
-            Go to Bulk Registration
-          </Link>
-        </div>
+        {
+          (enableBulkRegistration && selectedInstitution?.hasBulkRegister) && (
+            <div className="bulk-registration">
+              <h3 className="bulk-registration__title">
+                Bulk Registration
+              </h3>
+              <Link to="/students/bulk-registration" className="bulk-registration__link">
+                Go to Bulk Registration
+              </Link>
+            </div>
+          )
+        }
         <StudentsFilters resetPagination={resetPagination} />
         <StudentsTable
           data={stateStudents.table.data}
