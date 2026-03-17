@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 const StatusBadge = ({ status }) => {
   const map = {
-    'Validation failed': 'badge--error',
+    FAILED_VALIDATION: 'badge--error',
     'Processing failed': 'badge--warning',
   };
 
