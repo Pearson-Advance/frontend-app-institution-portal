@@ -1,0 +1,29 @@
+@import 'assets/variables.scss';
+
+.bulk-registration {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1.5em 2em;
+  border: 1px solid $gray-20;
+  margin: 2em 2.5em;
+  border-radius: $border-radius-1;
+
+  &__title {
+    margin-bottom: 0;
+  }
+
+  &__link {
+    color: $primary !important;
+    text-decoration: none !important;
+    border: 1px solid $primary;
+    padding: 0.5em 1em;
+    border-radius: $border-radius-1;
+    font-weight: 500;
+  }
+
+  &__link:hover {
+    background-color: $primary;
+    color: $color-white !important;
+  }
+}
