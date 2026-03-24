@@ -3,14 +3,24 @@ import { BULK_REGISTRATION_STATES } from 'features/constants';
 import { postBulkRegister } from 'features/BulkRegistration/data/api';
 
 function parseFailedRows(rows) {
-  return rows.map((row) => ({
-    row: Number(row.row_number) - 1,
-    email: row.email || '-',
-    status: row.status,
-    message: Object.entries(row.errors || {})
-      .map(([field, msgs]) => `${field}: ${msgs.join(', ')}`)
-      .join(' | '),
-  }));
+  return rows.map((row) => {
+    let message = '-';
+
+    if (Array.isArray(row.errors)) {
+      message = row.errors.length ? row.errors.join(', ') : '-';
+    } else if (row.errors && typeof row.errors === 'object') {
+      message = Object.entries(row.errors)
+        .map(([field, msgs]) => `${field}: ${msgs?.join(', ')}`)
+        .join(' | ');
+    }
+
+    return {
+      row: Number(row.row_number) - 1,
+      email: row.email || '-',
+      status: row.status,
+      message,
+    };
+  });
 }
 
 function parseRegistrationResult(data) {
@@ -20,10 +30,10 @@ function parseRegistrationResult(data) {
   const existed = Number(summary.existed || 0);
   const failed = Number(summary.failed || 0);
 
-  if (failed > 0 && data.rows?.length) {
+  if (failed > 0 && data?.errors.rows?.length) {
     return {
       type: BULK_REGISTRATION_STATES.ERROR_ROWS,
-      failedRows: parseFailedRows(data.rows),
+      failedRows: parseFailedRows(data.errors.rows),
     };
   }
 

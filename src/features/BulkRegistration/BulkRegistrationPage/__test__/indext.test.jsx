@@ -59,8 +59,8 @@ jest.mock('features/BulkRegistration/data/api', () => ({
             summary: {
               total_rows: '8', created: '8', existed: '0', failed: '0',
             },
+            rows: [],
           },
-          rows: [],
         },
       });
     }
@@ -72,8 +72,8 @@ jest.mock('features/BulkRegistration/data/api', () => ({
             summary: {
               total_rows: '8', created: '6', existed: '2', failed: '0',
             },
+            rows: [],
           },
-          rows: [],
         },
       });
     }
@@ -85,27 +85,27 @@ jest.mock('features/BulkRegistration/data/api', () => ({
             summary: {
               total_rows: '5', created: '2', existed: '0', failed: '3',
             },
+            rows: [
+              {
+                row_number: '2',
+                email: 'a@example.com',
+                status: 'Validation failed',
+                errors: { email: ['Already exists'] },
+              },
+              {
+                row_number: '4',
+                email: 'b@example.com',
+                status: 'Validation failed',
+                errors: { first_name: ['This field is required'] },
+              },
+              {
+                row_number: '6',
+                email: 'c@example.com',
+                status: 'Processing failed',
+                errors: {},
+              },
+            ],
           },
-          rows: [
-            {
-              row_number: '2',
-              email: 'a@example.com',
-              status: 'Validation failed',
-              errors: { email: ['Already exists'] },
-            },
-            {
-              row_number: '4',
-              email: 'b@example.com',
-              status: 'Validation failed',
-              errors: { first_name: ['This field is required'] },
-            },
-            {
-              row_number: '6',
-              email: 'c@example.com',
-              status: 'Processing failed',
-              errors: {},
-            },
-          ],
         },
       });
     }
@@ -126,8 +126,8 @@ jest.mock('features/BulkRegistration/data/api', () => ({
           summary: {
             total_rows: '0', created: '0', existed: '0', failed: '0',
           },
+          rows: [],
         },
-        rows: [],
       },
     });
   }),
