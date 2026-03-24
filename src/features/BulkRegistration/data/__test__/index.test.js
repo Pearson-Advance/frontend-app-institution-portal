@@ -19,8 +19,8 @@ const makeApiResponse = (summary = {}, rows = []) => ({
       summary: {
         total_rows: '0', created: '0', existed: '0', failed: '0', ...summary,
       },
+      rows,
     },
-    rows,
   },
 });
 
@@ -133,9 +133,12 @@ describe('uploadCSV — happy path', () => {
 
   test('Should NOT return ERROR_ROWS when failed > 0 but rows array is empty', async () => {
     postBulkRegister.mockResolvedValue(
-      makeApiResponse({
-        total_rows: '3', created: '3', existed: '0', failed: '1',
-      }, []),
+      makeApiResponse(
+        {
+          total_rows: '3', created: '3', existed: '0', failed: '1',
+        },
+        [],
+      ),
     );
 
     const result = await uploadCSV(makeFile());
@@ -145,10 +148,13 @@ describe('uploadCSV — happy path', () => {
   });
 });
 
-describe('uploadCSV — parseFailedRows', () => {
+describe('uploadCSV — parseFailedRows with object errors', () => {
   const rowsResponse = (rows) => makeApiResponse(
     {
-      total_rows: String(rows.length), created: '0', existed: '0', failed: String(rows.length),
+      total_rows: String(rows.length),
+      created: '0',
+      existed: '0',
+      failed: String(rows.length),
     },
     rows,
   );
@@ -185,7 +191,7 @@ describe('uploadCSV — parseFailedRows', () => {
     expect(failedRows[0].status).toBe('Processing failed');
   });
 
-  test('Should format message as "field: msg1, msg2" for a single error field', async () => {
+  test('Should format message as "field: msg" for a single error field', async () => {
     postBulkRegister.mockResolvedValue(
       rowsResponse([makeApiRow({ errors: { email: ['Invalid format'] } })]),
     );
@@ -215,24 +221,13 @@ describe('uploadCSV — parseFailedRows', () => {
     expect(failedRows[0].message).toBe('email: Required | first_name: Too long');
   });
 
-  test('Should produce an empty message string when errors object is empty', async () => {
-    postBulkRegister.mockResolvedValue(
-      rowsResponse([makeApiRow({ errors: {} })]),
-    );
-
-    const { failedRows } = await uploadCSV(makeFile());
-
-    expect(failedRows[0].message).toBe('');
-  });
-
-  test('Should produce an empty message string when errors field is missing', async () => {
+  test('Should produce "-" as message when errors field is missing', async () => {
     postBulkRegister.mockResolvedValue(
       rowsResponse([makeApiRow({ errors: undefined })]),
     );
 
     const { failedRows } = await uploadCSV(makeFile());
-
-    expect(failedRows[0].message).toBe('');
+    expect(failedRows[0].message).toBe('-');
   });
 
   test('Should map all rows in the response', async () => {
@@ -245,6 +240,34 @@ describe('uploadCSV — parseFailedRows', () => {
     expect(failedRows).toHaveLength(2);
     expect(failedRows[0].row).toBe(1);
     expect(failedRows[1].row).toBe(4);
+  });
+});
+
+describe('uploadCSV — parseFailedRows with array errors', () => {
+  const rowsResponse = (rows) => makeApiResponse(
+    {
+      total_rows: String(rows.length),
+      created: '0',
+      existed: '0',
+      failed: String(rows.length),
+    },
+    rows,
+  );
+
+  test('Should join array errors into a single comma-separated message', async () => {
+    postBulkRegister.mockResolvedValue(
+      rowsResponse([makeApiRow({ errors: ['Invalid email', 'Name required'] })]),
+    );
+    const { failedRows } = await uploadCSV(makeFile());
+    expect(failedRows[0].message).toBe('Invalid email, Name required');
+  });
+
+  test('Should use a single array error message as-is', async () => {
+    postBulkRegister.mockResolvedValue(
+      rowsResponse([makeApiRow({ errors: ['Row is malformed'] })]),
+    );
+    const { failedRows } = await uploadCSV(makeFile());
+    expect(failedRows[0].message).toBe('Row is malformed');
   });
 });
 
@@ -301,10 +324,7 @@ describe('uploadCSV — handleUploadError: 400 with csv_file detail+rows', () =>
 
   test('Should return ERROR_ROWS when 400 response has csv_file.detail and csv_file.rows', async () => {
     postBulkRegister.mockRejectedValue(
-      make400RowsError({
-        detail: 'Some rows failed',
-        rows: [makeApiRow()],
-      }),
+      make400RowsError({ detail: 'Some rows failed', rows: [makeApiRow()] }),
     );
 
     const result = await uploadCSV(makeFile());
@@ -351,7 +371,7 @@ describe('uploadCSV — handleUploadError: 500 / generic', () => {
     });
   });
 
-  test('Should fall back to generic message when response.data.detail is missing', async () => {
+  test('Should fall back to error.message when response.data.detail is missing', async () => {
     const err = Object.assign(new Error('Network failure'), { response: { status: 503, data: {} } });
     postBulkRegister.mockRejectedValue(err);
 
