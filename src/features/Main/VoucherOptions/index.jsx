@@ -78,8 +78,9 @@ const VoucherOptions = ({
       if (response?.status === HTTP_STATUS.CREATED) {
         showMessage(VOUCHER_SUCCESS_MESSAGES.ASSIGN);
       }
-    } catch {
-      showMessage(VOUCHER_ERROR_MESSAGES.ASSIGN);
+    } catch (error) {
+      const errorMessage = error?.response?.data?.detail || VOUCHER_ERROR_MESSAGES.ASSIGN;
+      showMessage(errorMessage);
     } finally {
       dispatch({ type: VOUCHER_ACTIONS.ASSIGN_END });
     }
@@ -111,7 +112,8 @@ const VoucherOptions = ({
         return;
       }
 
-      showMessage(VOUCHER_ERROR_MESSAGES.REVOKE);
+      const errorMessage = error?.response?.data?.detail || VOUCHER_ERROR_MESSAGES.REVOKE;
+      showMessage(errorMessage);
     } finally {
       dispatch({ type: VOUCHER_ACTIONS.REVOKE_END });
     }

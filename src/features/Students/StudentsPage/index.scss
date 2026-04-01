@@ -1,0 +1,27 @@
+.bulk-registration {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1.5em 2em;
+  border: 1px solid var(--pgn-color-gray-200);
+  margin: 2em 2.5em;
+  border-radius: var(--pgn-size-border-radius-base);
+
+  &__title {
+    margin-bottom: 0;
+  }
+
+  &__link {
+    color: var(--pgn-color-primary-base) !important;
+    text-decoration: none !important;
+    border: 1px solid var(--pgn-color-primary-base);
+    padding: 0.5em 1em;
+    border-radius: var(--pgn-size-border-radius-base);
+    font-weight: 500;
+  }
+
+  &__link:hover {
+    background-color: var(--pgn-color-primary-base);
+    color: var(--pgn-color-white) !important;
+  }
+}
