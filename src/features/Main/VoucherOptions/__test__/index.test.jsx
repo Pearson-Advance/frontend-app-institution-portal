@@ -110,9 +110,25 @@ describe('VoucherOptions', () => {
     });
   });
 
-  test('should show error message when assignment fails', async () => {
+  test('should show custom error message from error.response.data.detail when assignment fails', async () => {
     getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: true });
-    assignVoucher.mockRejectedValueOnce(new Error('Server error'));
+    const customErrorMessage = 'Custom error from API';
+    assignVoucher.mockRejectedValueOnce({ response: { data: { detail: customErrorMessage } } });
+
+    renderWithProviders(<VoucherOptions {...baseProps} />);
+
+    fireEvent.click(screen.getByText(VOUCHER_UI_LABELS.ASSIGN));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(customErrorMessage),
+      ).toBeInTheDocument();
+    });
+  });
+
+  test('should show fallback error message when assignment fails and no detail is present', async () => {
+    getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: true });
+    assignVoucher.mockRejectedValueOnce({});
 
     renderWithProviders(<VoucherOptions {...baseProps} />);
 
@@ -204,10 +220,25 @@ describe('VoucherOptions', () => {
     });
   });
 
-  test('should show default revoke error message for unexpected revoke errors', async () => {
+  test('should show custom error message from error.response.data.detail when revoke fails', async () => {
     getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: true });
+    const customErrorMessage = 'Custom revoke error from API';
+    revokeVoucher.mockRejectedValueOnce({ response: { data: { detail: customErrorMessage } } });
 
-    revokeVoucher.mockRejectedValueOnce(new Error('Unknown error'));
+    renderWithProviders(<VoucherOptions {...baseProps} />);
+
+    fireEvent.click(screen.getByText(VOUCHER_UI_LABELS.REVOKE));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(customErrorMessage),
+      ).toBeInTheDocument();
+    });
+  });
+
+  test('should show fallback revoke error message when revoke fails and no detail is present', async () => {
+    getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: true });
+    revokeVoucher.mockRejectedValueOnce({});
 
     renderWithProviders(<VoucherOptions {...baseProps} />);
 

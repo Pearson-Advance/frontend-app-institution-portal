@@ -1,0 +1,490 @@
+$shadow-card:      0 1px 4px rgba(0, 0, 0, 0.08);
+$border-radius-2:  0.625rem;
+$border-radius-3:  0.875rem;
+
+// ─── Base ─────────────────────────────────────────────────────────────────────
+.bulk-register {
+  min-height: 100vh;
+  padding: 28px 40px 60px;
+  color: var(--pgn-color-black);
+  max-width: 1100px;
+}
+
+// ─── Back button ──────────────────────────────────────────────────────────────
+.bulk-register a.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: var(--pgn-color-gray-vue-600);
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 24px;
+  transition: color 0.18s;
+  text-decoration: none;
+
+  &:hover { color: var(--pgn-color-primary-base); }
+}
+
+// ─── Header ───────────────────────────────────────────────────────────────────
+.bulk-register__header {
+  margin-bottom: 28px;
+}
+
+.bulk-register__title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  letter-spacing: -0.3px;
+}
+
+.bulk-register__subtitle {
+  font-size: 14px;
+  color: var(--pgn-color-gray-vue-600);
+  margin: 0;
+}
+
+// ─── Generic card ─────────────────────────────────────────────────────────────
+.state-card {
+  background: var(--pgn-color-white);
+  border: 1px solid var(--pgn-color-gray-vue-200);
+  border-radius: $border-radius-3;
+  padding: 28px;
+  box-shadow: $shadow-card;
+}
+
+// ─── Upload card ──────────────────────────────────────────────────────────────
+.upload-card {
+  background: var(--pgn-color-white);
+  border: 1px solid var(--pgn-color-gray-vue-200);
+  border-radius: $border-radius-3;
+  padding: 24px;
+  box-shadow: $shadow-card;
+}
+
+.required-columns {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: var(--pgn-color-gray-vue-100);
+  border-radius: $border-radius-2;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 13px;
+  color: var(--pgn-color-gray-vue-600);
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.column-chip {
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--pgn-color-white);
+  border: 1px solid var(--pgn-color-gray-vue-200);
+  border-radius: var(--pgn-size-border-radius-base);
+  padding: 4px 10px;
+  color: var(--pgn-color-black);
+}
+
+// ─── Drop zone ────────────────────────────────────────────────────────────────
+.drop-zone {
+  width: 100%;
+  border: 2px dashed var(--pgn-color-gray-vue-200);
+  border-radius: $border-radius-2;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: border-color 0.1s, background 0.1s;
+  margin-bottom: 20px;
+  background: var(--pgn-color-gray-vue-100);
+
+  &:hover,
+  &--active {
+    border-color: var(--pgn-color-primary-base);
+    background: var(--pgn-color-primary-100);
+  }
+
+  &--has-file {
+    border-color: var(--pgn-color-green-vue-300);
+    background: var(--pgn-color-green-vue-125);
+  }
+
+  &__icon { font-size: 28px; }
+
+  &__text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--pgn-color-primary-base);
+  }
+
+  &__filename {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--pgn-color-green-vue-700);
+  }
+
+  &__hint {
+    font-size: 12px;
+    color: var(--pgn-color-gray-vue-600);
+  }
+}
+
+// ─── Actions ──────────────────────────────────────────────────────────────────
+.upload-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.state-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+// ─── Buttons ──────────────────────────────────────────────────────────────────
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--pgn-size-border-radius-base);
+  padding: 9px 20px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: background 0.18s, border-color 0.18s, opacity 0.18s;
+
+  &--primary {
+    background: var(--pgn-color-primary-base);
+    color: var(--pgn-color-white);
+    border-color: var(--pgn-color-primary-base);
+
+    &:hover:not(:disabled) {
+      background: var(--pgn-btn-hover-bg);
+      border-color: var(--pgn-btn-hover-bg);
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  &--outline {
+    background: var(--pgn-color-white);
+    color: var(--pgn-color-primary-base);
+    border-color: var(--pgn-color-primary-base);
+
+    &:hover { background: var(--pgn-color-primary-100); }
+  }
+
+  &--sm {
+    font-size: 13px;
+    padding: 6px 14px;
+  }
+}
+
+// ─── Loading ──────────────────────────────────────────────────────────────────
+.state-card--loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 56px 28px;
+
+  .state-card__title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--pgn-color-black);
+  }
+
+  .state-card__subtitle {
+    font-size: 13px;
+    color: var(--pgn-color-gray-vue-600);
+    margin: 0;
+  }
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--pgn-color-primary-100);
+  border-top-color: var(--pgn-color-primary-base);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ─── Success all ──────────────────────────────────────────────────────────────
+.state-card--success {
+  border-color: var(--pgn-color-green-vue-300);
+  background: var(--pgn-color-green-vue-125);
+}
+
+.success-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+
+  &__icon {
+    font-size: 22px;
+    color: var(--pgn-color-green-vue-700);
+    margin-top: 2px;
+  }
+
+  &__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--pgn-color-green-vue-700);
+    margin: 0 0 4px;
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    color: var(--pgn-color-green-vue-700);
+    margin: 0;
+  }
+}
+
+// ─── Summary title ────────────────────────────────────────────────────────────
+.summary-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 20px;
+}
+
+// ─── Stats grid ───────────────────────────────────────────────────────────────
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.stat-card {
+  border-radius: $border-radius-2;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &__label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__value {
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  &--neutral {
+    background: var(--pgn-color-gray-vue-100);
+    border: 1px solid var(--pgn-color-gray-200);
+    .stat-card__label { color: var(--pgn-color-gray-vue-500); }
+    .stat-card__value { color: var(--pgn-color-black); }
+  }
+
+  &--warning {
+    background: var(--pgn-color-yellow-vue-050);
+    border: 1px solid var(--pgn-color-yellow-vue-300);
+    .stat-card__label { color: var(--pgn-color-yellow-vue-700); }
+    .stat-card__value { color: var(--pgn-color-yellow-vue-700); }
+  }
+
+  &--success {
+    background: var(--pgn-color-green-vue-125);
+    border: 1px solid var(--pgn-color-green-vue-300);
+    .stat-card__label { color: var(--pgn-color-green-vue-700); }
+    .stat-card__value { color: var(--pgn-color-green-vue-700); }
+  }
+}
+
+// ─── Error rows ───────────────────────────────────────────────────────────────
+.state-card--error-rows {
+  border-color: var(--pgn-color-red-vue-300);
+}
+
+.error-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--pgn-color-red-vue-700);
+  margin: 0 0 8px;
+}
+
+.error-description {
+  font-size: 13.5px;
+  color: var(--pgn-color-gray-vue-600);
+  margin: 0 0 20px;
+  line-height: 1.6;
+}
+
+.failed-rows-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--pgn-color-gray-vue-100);
+  border: 1px solid var(--pgn-color-gray-vue-200);
+  border-radius: $border-radius-2 $border-radius-2 0 0;
+  padding: 12px 16px;
+  border-bottom: none;
+
+  &__badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--pgn-color-black);
+  }
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+
+  &--red { background: var(--pgn-color-red-vue-700); }
+}
+
+// ─── Paragon DataTable override ───────────────────────────────────────────────
+.paragon-datatable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  border: 1px solid var(--pgn-color-gray-vue-200);
+  border-top: none;
+  border-radius: 0 0 $border-radius-2 $border-radius-2;
+  overflow: hidden;
+
+  thead tr {
+    background: var(--pgn-color-gray-vue-100);
+    border-bottom: 1px solid var(--pgn-color-gray-vue-200);
+  }
+
+  th {
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--pgn-color-gray-vue-600);
+    text-align: left;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--pgn-color-gray-vue-200);
+    transition: background 0.15s;
+
+    &:last-child { border-bottom: none; }
+    &:hover { background: var(--pgn-color-primary-100); }
+  }
+
+  td {
+    padding: 12px 14px;
+    color: var(--pgn-color-black);
+  }
+}
+
+// ─── Status badge ─────────────────────────────────────────────────────────────
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: 20px;
+  padding: 3px 10px;
+  white-space: nowrap;
+
+  &::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  &.badge--error {
+    background: var(--pgn-color-red-vue-100);
+    color: var(--pgn-color-red-vue-700);
+    border: 1px solid var(--pgn-color-red-vue-300);
+
+    &::before { background: var(--pgn-color-red-vue-700); }
+  }
+
+  &.badge--warning {
+    background: var(--pgn-color-yellow-vue-050);
+    color: var(--pgn-color-yellow-vue-700);
+    border: 1px solid var(--pgn-color-yellow-vue-300);
+
+    &::before { background: var(--pgn-color-yellow-vue-700); }
+  }
+}
+
+// ─── Fatal error ──────────────────────────────────────────────────────────────
+.state-card--fatal {
+  background: var(--pgn-color-red-vue-100);
+  border-color: var(--pgn-color-red-vue-300);
+}
+
+.fatal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--pgn-color-red-vue-700);
+  margin: 0 0 8px;
+}
+
+.fatal-message {
+  font-size: 14px;
+  color: var(--pgn-color-red-vue-700);
+  margin: 0 0 6px;
+  font-weight: 500;
+}
+
+.fatal-detail {
+  font-size: 13px;
+  color: var(--pgn-color-red-vue-700);
+  margin: 0;
+  font-family: monospace;
+  background: var(--pgn-color-red-vue-100);
+  border-radius: var(--pgn-size-border-radius-base);
+  padding: 6px 10px;
+}
+
+// ─── Demo hint ────────────────────────────────────────────────────────────────
+.demo-hint {
+  margin-top: 24px;
+  background: var(--pgn-color-yellow-vue-050);
+  border: 1px dashed var(--pgn-color-yellow-vue-300);
+  border-radius: $border-radius-2;
+  padding: 14px 18px;
+  font-size: 13px;
+  color: var(--pgn-color-yellow-vue-700);
+
+  p { margin: 0 0 6px; }
+
+  code {
+    background: rgba(var(--pgn-color-black), 0.06);
+    border-radius: var(--pgn-size-border-radius-base);
+    padding: 2px 6px;
+    font-size: 12px;
+  }
+}

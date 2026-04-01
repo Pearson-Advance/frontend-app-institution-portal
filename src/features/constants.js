@@ -187,7 +187,7 @@ export const HTTP_STATUS = {
  * @enum {string}
  */
 export const VOUCHER_SUCCESS_MESSAGES = {
-  ASSIGN: 'Assign Complete, Please Refresh.',
+  ASSIGN: 'The action was completed. Please Refresh your screen.',
   REVOKE: 'Voucher revoked successfully.',
 };
 
@@ -296,3 +296,36 @@ export const VOUCHER_RULES = {
     showRevoke: false,
   },
 };
+
+/**
+ * Possible UI states for the Bulk Registration flow.
+ * @readonly
+ * @enum {string}
+ */
+export const BULK_REGISTRATION_STATES = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  SUCCESS_ALL: 'success_all',
+  SUCCESS_PARTIAL: 'success_partial',
+  ERROR_ROWS: 'error_rows',
+  ERROR_FATAL: 'error_fatal',
+};
+
+/**
+ * Required column names expected in the CSV header.
+ * These columns must exist in the first row of the uploaded CSV file
+ * for the validation to pass.
+ *
+ * @constant
+ * @type {string[]}
+ */
+export const BULK_REGISTRATION_REQUIRED_COLUMNS = ['First Name', 'Last Name', 'Email', 'Password'];
+
+/**
+ * Maximum number of data rows allowed in the CSV file (excluding the header).
+ * Used to prevent excessively large uploads.
+ *
+ * @constant
+ * @type {number}
+ */
+export const BULK_REGISTRATION_MAX_ROWS = 100;
