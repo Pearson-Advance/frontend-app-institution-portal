@@ -20,6 +20,7 @@ const SuccessPartial = ({ data, onReset }) => (
     </div>
     <div className="state-actions">
       <Button type="button" className="btn btn--outline" onClick={onReset}>
+        <i className="fa-sharp fa-thin fa-file-spreadsheet" />
         Upload a new file
       </Button>
     </div>

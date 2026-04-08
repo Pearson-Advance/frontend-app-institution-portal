@@ -315,9 +315,9 @@ describe('Error', () => {
     expect(screen.getByText('Processing failed')).toBeInTheDocument();
   });
 
-  test('Should return to the idle upload form after clicking Upload Another', async () => {
+  test('Should return to the idle upload form after clicking Upload a new file', async () => {
     await selectFileAndSubmit(makeFile('error.csv'));
-    fireEvent.click(screen.getByRole('button', { name: /upload another/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Upload a new file/i }));
     expect(screen.getByRole('button', { name: /upload & process/i })).toBeInTheDocument();
   });
 
