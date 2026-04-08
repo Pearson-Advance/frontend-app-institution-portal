@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Button } from 'react-paragon-topaz';
 
-const SuccessPartial = ({ data, onReset }) => (
+const SuccessPartial = ({ data, onReset, disableUpload }) => (
   <div className="state-card">
     <h2 className="summary-title">Summary</h2>
     <div className="stats-grid">
@@ -17,22 +17,37 @@ const SuccessPartial = ({ data, onReset }) => (
         <span className="stat-card__label">Created Successfully</span>
         <span className="stat-card__value">{data.createdSuccessfully}</span>
       </div>
+      {data.failedRowsCount > 0 && (
+        <div className="stat-card stat-card--error">
+          <span className="stat-card__label">Failed</span>
+          <span className="stat-card__value">{data.failedRowsCount}</span>
+        </div>
+      )}
     </div>
-    <div className="state-actions">
-      <Button type="button" className="btn btn--outline" onClick={onReset}>
-        Upload a new file
-      </Button>
-    </div>
+    {!disableUpload && (
+      <div className="state-actions">
+        <Button type="button" className="btn btn--outline" onClick={onReset}>
+          <i className="fa-sharp fa-thin fa-file-spreadsheet" />
+          Upload a new file
+        </Button>
+      </div>
+    )}
   </div>
 );
 
 SuccessPartial.propTypes = {
   data: PropTypes.shape({
-    totalRows: PropTypes.number.isRequired,
+    totalRows: PropTypes.number.isRequired || PropTypes.string.isRequired,
     alreadyExisted: PropTypes.number.isRequired,
     createdSuccessfully: PropTypes.number.isRequired,
+    failedRowsCount: PropTypes.number,
   }).isRequired,
   onReset: PropTypes.func.isRequired,
+  disableUpload: PropTypes.bool,
+};
+
+SuccessPartial.defaultProps = {
+  disableUpload: false,
 };
 
 export default SuccessPartial;

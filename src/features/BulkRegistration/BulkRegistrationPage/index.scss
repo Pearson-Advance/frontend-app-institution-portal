@@ -314,6 +314,13 @@ $border-radius-3:  0.875rem;
     .stat-card__label { color: var(--pgn-color-green-vue-700); }
     .stat-card__value { color: var(--pgn-color-green-vue-700); }
   }
+
+  &--error {
+    background: var(--pgn-color-red-vue-100);
+    border: 1px solid var(--pgn-color-red-vue-500);
+    .stat-card__label { color: var(--pgn-color-red-vue-500); }
+    .stat-card__value { color: var(--pgn-color-red-vue-500); }
+  }
 }
 
 // ─── Error rows ───────────────────────────────────────────────────────────────
