@@ -20,7 +20,7 @@ const ErrorRows = ({ data, onReset }) => (
       </span>
       <Button type="button" className="btn btn--outline btn--sm" onClick={onReset}>
         <i className="fa-sharp fa-thin fa-file-spreadsheet" />
-        Upload Another
+        Upload a new file
       </Button>
     </div>
 

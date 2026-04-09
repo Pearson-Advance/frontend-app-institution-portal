@@ -15,7 +15,7 @@ const SuccessAll = ({ data, onReset }) => (
     <div className="state-actions">
       <Button type="button" className="btn btn--outline" onClick={onReset}>
         <i className="fa-sharp fa-thin fa-file-spreadsheet" />
-        Upload another file
+        Upload a new file
       </Button>
     </div>
   </div>
