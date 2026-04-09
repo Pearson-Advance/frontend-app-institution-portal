@@ -131,6 +131,21 @@ describe('uploadCSV — happy path', () => {
     expect(result.type).toBe(BULK_REGISTRATION_STATES.ERROR_ROWS);
   });
 
+  test('Should return ERROR_ROWS result with failedRowsCount populated', async () => {
+    postBulkRegister.mockResolvedValue(
+      makeApiResponse(
+        {
+          total_rows: '3', created: '0', existed: '0', failed: '2',
+        },
+        [makeApiRow({ row_number: '2' }), makeApiRow({ row_number: '4' })],
+      ),
+    );
+
+    const result = await uploadCSV(makeFile());
+
+    expect(result.failedRowsCount).toBe(2);
+  });
+
   test('Should NOT return ERROR_ROWS when failed > 0 but rows array is empty', async () => {
     postBulkRegister.mockResolvedValue(
       makeApiResponse(
@@ -143,7 +158,6 @@ describe('uploadCSV — happy path', () => {
 
     const result = await uploadCSV(makeFile());
 
-    // No rows array → falls through to SUCCESS_ALL
     expect(result.type).toBe(BULK_REGISTRATION_STATES.SUCCESS_ALL);
   });
 });
@@ -164,7 +178,7 @@ describe('uploadCSV — parseFailedRows with object errors', () => {
 
     const { failedRows } = await uploadCSV(makeFile());
 
-    expect(failedRows[0].row).toBe(2);
+    expect(failedRows[0].row).toBe('3');
   });
 
   test('Should include the email field from the API row', async () => {
@@ -238,8 +252,8 @@ describe('uploadCSV — parseFailedRows with object errors', () => {
     const { failedRows } = await uploadCSV(makeFile());
 
     expect(failedRows).toHaveLength(2);
-    expect(failedRows[0].row).toBe(1);
-    expect(failedRows[1].row).toBe(4);
+    expect(failedRows[0].row).toBe('2');
+    expect(failedRows[1].row).toBe('5');
   });
 });
 
@@ -254,20 +268,32 @@ describe('uploadCSV — parseFailedRows with array errors', () => {
     rows,
   );
 
-  test('Should join array errors into a single comma-separated message', async () => {
+  test('Should join array errors into a single comma-separated message with support prefix', async () => {
     postBulkRegister.mockResolvedValue(
       rowsResponse([makeApiRow({ errors: ['Invalid email', 'Name required'] })]),
     );
     const { failedRows } = await uploadCSV(makeFile());
-    expect(failedRows[0].message).toBe('Invalid email, Name required');
+    expect(failedRows[0].message).toBe(
+      'Please click here and share the details below with support for further assistance:  Invalid email, Name required',
+    );
   });
 
-  test('Should use a single array error message as-is', async () => {
+  test('Should use a single array error message with the support prefix', async () => {
     postBulkRegister.mockResolvedValue(
       rowsResponse([makeApiRow({ errors: ['Row is malformed'] })]),
     );
     const { failedRows } = await uploadCSV(makeFile());
-    expect(failedRows[0].message).toBe('Row is malformed');
+    expect(failedRows[0].message).toBe(
+      'Please click here and share the details below with support for further assistance:  Row is malformed',
+    );
+  });
+
+  test('Should produce "-" when errors is an empty array', async () => {
+    postBulkRegister.mockResolvedValue(
+      rowsResponse([makeApiRow({ errors: [] })]),
+    );
+    const { failedRows } = await uploadCSV(makeFile());
+    expect(failedRows[0].message).toBe('-');
   });
 });
 
@@ -342,7 +368,7 @@ describe('uploadCSV — handleUploadError: 400 with csv_file detail+rows', () =>
 
     const result = await uploadCSV(makeFile());
 
-    expect(result.failedRows[0]).toMatchObject({ row: 2, email: 'x@x.com', status: 'Validation failed' });
+    expect(result.failedRows[0]).toMatchObject({ row: '3', email: 'x@x.com', status: 'Validation failed' });
   });
 });
 

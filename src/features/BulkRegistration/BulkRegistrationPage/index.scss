@@ -317,6 +317,13 @@ $shadow-card:      0 1px 4px rgba(0, 0, 0, 0.08);
     .stat-card__label { color: $pgn-color-green-700; }
     .stat-card__value { color: $pgn-color-green-700; }
   }
+
+  &--error {
+    background: $pgn-color-red-100;
+    border: 1px solid $pgn-color-red-300;
+    .stat-card__label { color: $pgn-color-red-500; }
+    .stat-card__value { color: $pgn-color-red-500; }
+  }
 }
 
 // ─── Error rows ───────────────────────────────────────────────────────────────
