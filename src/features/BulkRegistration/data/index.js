@@ -7,7 +7,7 @@ function parseFailedRows(rows) {
     let message = '-';
 
     if (Array.isArray(row.errors)) {
-      message = row.errors.length ? row.errors.join(', ') : '-';
+      message = row.errors.length ? `Please click here and share the details below with support for further assistance:  ${row.errors.join(', ')}` : '-';
     } else if (row.errors && typeof row.errors === 'object') {
       message = Object.entries(row.errors)
         .map(([field, msgs]) => `${field}: ${msgs?.join(', ')}`)
@@ -15,7 +15,7 @@ function parseFailedRows(rows) {
     }
 
     return {
-      row: Number(row.row_number) - 1,
+      row: row.row_number,
       email: row.email || '-',
       status: row.status,
       message,
@@ -34,6 +34,10 @@ function parseRegistrationResult(data) {
     return {
       type: BULK_REGISTRATION_STATES.ERROR_ROWS,
       failedRows: parseFailedRows(data.errors.rows),
+      totalRows,
+      alreadyExisted: existed,
+      createdSuccessfully: created,
+      failedRowsCount: failed,
     };
   }
 
@@ -69,6 +73,10 @@ function handleUploadError(error) {
       return {
         type: BULK_REGISTRATION_STATES.ERROR_ROWS,
         failedRows: parseFailedRows(csvError.rows),
+        totalRows: Number(csvError?.summary?.total_rows || 0),
+        alreadyExisted: Number(csvError?.summary?.existed || 0),
+        createdSuccessfully: Number(csvError?.summary?.created || 0),
+        failedRowsCount: Number(csvError?.summary?.failed || 0),
       };
     }
   }

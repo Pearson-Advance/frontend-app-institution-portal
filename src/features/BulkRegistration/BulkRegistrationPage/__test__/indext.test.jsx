@@ -283,10 +283,14 @@ describe('Success', () => {
 
   test('Should display the correct numeric values in the partial success stat cards', async () => {
     await selectFileAndSubmit(makeFile('partial.csv'));
-    // total_rows=8, existed=2, created=6
     expect(screen.getByText('8')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
     expect(screen.getByText('6')).toBeInTheDocument();
+  });
+
+  test('Should not show the Failed stat card when failed count is zero', async () => {
+    await selectFileAndSubmit(makeFile('partial.csv'));
+    expect(screen.queryByText('Failed')).not.toBeInTheDocument();
   });
 });
 
@@ -294,6 +298,19 @@ describe('Error', () => {
   test('Should show the error state with the failed rows description', async () => {
     await selectFileAndSubmit(makeFile('error.csv'));
     expect(screen.getByText(/we detected errors in your data/i)).toBeInTheDocument();
+  });
+
+  test('Should render the summary stat cards alongside the failed rows table', async () => {
+    await selectFileAndSubmit(makeFile('error.csv'));
+    expect(screen.getByText('Summary')).toBeInTheDocument();
+    expect(screen.getByText('Total rows')).toBeInTheDocument();
+    expect(screen.getByText('Created Successfully')).toBeInTheDocument();
+  });
+
+  test('Should show the Failed stat card with the correct count in the error summary', async () => {
+    await selectFileAndSubmit(makeFile('error.csv'));
+    expect(screen.getByText('Failed')).toBeInTheDocument();
+    expect(screen.getAllByText('3').length).toBeGreaterThan(0);
   });
 
   test('Should render the failed rows table with the correct column headers', async () => {
