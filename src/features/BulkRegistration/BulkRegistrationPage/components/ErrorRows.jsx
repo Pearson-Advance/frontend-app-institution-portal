@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { DataTable } from '@openedx/paragon';
 import { Button } from 'react-paragon-topaz';
 
+import SuccessPartial from 'features/BulkRegistration/BulkRegistrationPage/components/SuccessPartial';
 import { ERROR_COLUMNS } from '../columns';
 
 const ErrorRows = ({ data, onReset }) => (
@@ -13,18 +14,20 @@ const ErrorRows = ({ data, onReset }) => (
       it again.
     </p>
 
-    <div className="failed-rows-header">
+    <SuccessPartial data={data} onReset={onReset} disableUpload />
+
+    <div className="failed-rows-header mt-3">
       <span className="failed-rows-header__badge">
         <span className="dot dot--red" />
         Failed Rows ({data.failedRows.length})
       </span>
       <Button type="button" className="btn btn--outline btn--sm" onClick={onReset}>
         <i className="fa-sharp fa-thin fa-file-spreadsheet" />
-        Upload Another
+        Upload a new file
       </Button>
     </div>
 
-    <DataTable columns={ERROR_COLUMNS} data={data.failedRows} />
+    <DataTable columns={ERROR_COLUMNS} data={data.failedRows} itemCount={data?.failedRows?.length || 0} />
   </div>
 );
 
