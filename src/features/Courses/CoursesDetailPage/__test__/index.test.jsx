@@ -1,15 +1,20 @@
 import React from 'react';
-import { waitFor } from '@testing-library/react';
+import { waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Route } from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
 
 import { RequestStatus } from 'features/constants';
+import { fetchClassesData } from 'features/Classes/data/thunks';
 
 import { renderWithProviders } from 'test-utils';
 import CoursesDetailPage from 'features/Courses/CoursesDetailPage';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
+}));
+
+jest.mock('features/Classes/data/thunks', () => ({
+  fetchClassesData: jest.fn(() => () => Promise.resolve()),
 }));
 
 const mockStore = {
@@ -24,6 +29,17 @@ const mockStore = {
       modified: '2023-06-22T22:48:56.124907Z',
       label: 'Institution 1',
       value: 1,
+    },
+  },
+  instructors: {
+    selectOptions: {
+      data: [],
+    },
+    table: {
+      data: [],
+      count: 0,
+      num_pages: 1,
+      current_page: 1,
     },
   },
   courses: {
@@ -144,6 +160,95 @@ describe('CoursesDetailPage', () => {
       expect(component.container).toHaveTextContent('200');
       expect(component.container).toHaveTextContent('instructor_1');
       expect(component.container).toHaveTextContent('instructor_2');
+    });
+  });
+
+  test('Should render the class filter input', () => {
+    const { getByTestId } = renderWithProviders(
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
+        <Route path="/courses/:courseId">
+          <CoursesDetailPage />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    expect(getByTestId('class_name')).toBeInTheDocument();
+  });
+
+  test('Apply and Reset buttons should be disabled when filter is empty', () => {
+    const { getByText } = renderWithProviders(
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
+        <Route path="/courses/:courseId">
+          <CoursesDetailPage />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    expect(getByText('Apply')).toBeDisabled();
+    expect(getByText('Reset')).toBeDisabled();
+  });
+
+  test('Apply and Reset buttons should be enabled when filter has value', () => {
+    const { getByTestId, getByText } = renderWithProviders(
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
+        <Route path="/courses/:courseId">
+          <CoursesDetailPage />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    fireEvent.change(getByTestId('class_name'), { target: { value: 'Demo Class' } });
+
+    expect(getByText('Apply')).not.toBeDisabled();
+    expect(getByText('Reset')).not.toBeDisabled();
+  });
+
+  test('Should dispatch fetchClassesData with filter on Apply', async () => {
+    const { getByTestId, getByText } = renderWithProviders(
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
+        <Route path="/courses/:courseId">
+          <CoursesDetailPage />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    fireEvent.change(getByTestId('class_name'), { target: { value: 'Demo Class' } });
+    fireEvent.click(getByText('Apply'));
+
+    await waitFor(() => {
+      expect(fetchClassesData).toHaveBeenCalledWith(
+        1,
+        1,
+        'course-v1:XXX+YYY+2023',
+        expect.objectContaining({ class_name: 'Demo Class' }),
+      );
+    });
+  });
+
+  test('Should clear filter and refetch without params on Reset', async () => {
+    const { getByTestId, getByText } = renderWithProviders(
+      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
+        <Route path="/courses/:courseId">
+          <CoursesDetailPage />
+        </Route>
+      </MemoryRouter>,
+      { preloadedState: mockStore },
+    );
+
+    fireEvent.change(getByTestId('class_name'), { target: { value: 'Demo Class' } });
+    fireEvent.click(getByText('Reset'));
+
+    await waitFor(() => {
+      expect(getByTestId('class_name')).toHaveValue('');
+      expect(fetchClassesData).toHaveBeenCalledWith(
+        1,
+        1,
+        'course-v1:XXX+YYY+2023',
+      );
     });
   });
 });
