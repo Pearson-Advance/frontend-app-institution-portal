@@ -75,18 +75,19 @@ const mockStore = {
   },
 };
 
-jest.mock('react-select', () => function reactSelect({ options, currentValue, onChange }) {
+jest.mock('react-select', () => function reactSelect({ options, value, onChange }) {
   function handleChange(event) {
     const currentOption = options.find(
-      (option) => option.value === event.currentTarget.value,
+      (option) => String(option.value) === event.currentTarget.value,
     );
     onChange(currentOption);
   }
 
   return (
-    <select data-testid="select" value={currentValue} onChange={handleChange}>
-      {options.map(({ label, value }) => (
-        <option key={value} value={value}>
+    <select data-testid="select" value={value?.value || ''} onChange={handleChange}>
+      <option value="" label="label" />
+      {options.map(({ label, value: optionValue }) => (
+        <option key={optionValue} value={optionValue}>
           {label}
         </option>
       ))}
@@ -95,8 +96,6 @@ jest.mock('react-select', () => function reactSelect({ options, currentValue, on
 });
 
 describe('ClassesFilters Component', () => {
-  const mockSetFilters = jest.fn();
-
   beforeEach(() => {
     initializeMockApp({
       authenticatedUser: {
@@ -108,95 +107,99 @@ describe('ClassesFilters Component', () => {
     });
 
     axiosMock = new MockAdapter(getAuthenticatedHttpClient());
-    mockSetFilters.mockClear();
 
     const coursesApiUrl = `
     ${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/courses/?limit=false&institution_id=1&page=1`;
     const instructorApiUrl = `
     ${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/instructors/?page=1&institution_id=1&limit=false`;
 
-    axiosMock.onGet(coursesApiUrl)
-      .reply(200, coursesMockResponse);
-
-    axiosMock.onGet(instructorApiUrl)
-      .reply(200, instructorMockResponse);
+    axiosMock.onGet(coursesApiUrl).reply(200, coursesMockResponse);
+    axiosMock.onGet(instructorApiUrl).reply(200, instructorMockResponse);
   });
 
   afterEach(() => {
     axiosMock.reset();
   });
 
-  test(
-    'The <Apply> button should be disabled if there is no selection in any filter, then it will be available if the user selects an option',
-    () => {
-      const resetPagination = jest.fn();
-      const { getByText, getAllByTestId } = renderWithProviders(
-        <ClassesFilters resetPagination={resetPagination} />,
-        { preloadedState: mockStore },
-      );
+  test('Apply debe estar deshabilitado inicialmente y habilitarse con filtros', () => {
+    const resetPagination = jest.fn();
+    const { getByText, getAllByTestId, getByTestId } = renderWithProviders(
+      <ClassesFilters resetPagination={resetPagination} />,
+      { preloadedState: mockStore },
+    );
 
-      const buttonApplyFilters = getByText('Apply');
-      expect(buttonApplyFilters).toHaveAttribute('disabled');
+    const buttonApply = getByText('Apply');
+    expect(buttonApply).toBeDisabled();
 
-      const instructorSelect = getAllByTestId('select')[1];
+    const instructorSelect = getAllByTestId('select')[1];
+    fireEvent.change(instructorSelect, {
+      target: { value: 's4mS3pi0l' },
+    });
 
-      fireEvent.change(instructorSelect, {
-        target: { value: 's4mS3pi0l' },
-      });
+    expect(buttonApply).toBeEnabled();
 
-      expect(buttonApplyFilters).not.toBeDisabled();
-    },
-  );
+    const classInput = getByTestId('class_name');
+    fireEvent.change(classInput, {
+      target: { value: 'ab' },
+    });
+
+    expect(buttonApply).toBeEnabled();
+  });
 
   test('Should call the service when apply filters', async () => {
     const resetPagination = jest.fn();
-    const { getByText, getAllByTestId } = renderWithProviders(
+    const { getByText, getAllByTestId, getByTestId } = renderWithProviders(
       <ClassesFilters resetPagination={resetPagination} />,
       { preloadedState: mockStore },
     );
 
     const courseSelect = getAllByTestId('select')[0];
     const instructorSelect = getAllByTestId('select')[1];
-    const buttonApplyFilters = getByText('Apply');
-
-    expect(courseSelect).toBeInTheDocument();
-    expect(instructorSelect).toBeInTheDocument();
+    const classInput = getByTestId('class_name');
+    const buttonApply = getByText('Apply');
 
     fireEvent.change(instructorSelect, {
-      target: { value: 'Sam Sepiol' },
+      target: { value: 's4mS3pi0l' },
     });
 
     fireEvent.change(courseSelect, {
-      target: { value: 'Demo Course 1' },
+      target: { value: '1' },
     });
 
-    expect(getByText('Sam Sepiol')).toBeInTheDocument();
-    expect(getByText('Demo Course 1')).toBeInTheDocument();
+    fireEvent.change(classInput, {
+      target: { value: 'math' },
+    });
 
     await act(async () => {
-      fireEvent.click(buttonApplyFilters);
+      fireEvent.click(buttonApply);
     });
+
+    expect(buttonApply).toBeInTheDocument();
   });
 
   test('Should clear the filters', async () => {
     const resetPagination = jest.fn();
-    const { getByText, getAllByTestId } = renderWithProviders(
+    const { getByText, getAllByTestId, getByTestId } = renderWithProviders(
       <ClassesFilters resetPagination={resetPagination} />,
       { preloadedState: mockStore },
     );
 
     const courseSelect = getAllByTestId('select')[0];
-    const buttonClearFilters = getByText('Reset');
-
-    expect(courseSelect).toBeInTheDocument();
-    expect(courseSelect).toBeInTheDocument();
+    const classInput = getByTestId('class_name');
+    const buttonReset = getByText('Reset');
 
     fireEvent.change(courseSelect, {
-      target: { value: 'Demo Course 1' },
+      target: { value: '1' },
+    });
+
+    fireEvent.change(classInput, {
+      target: { value: 'test' },
     });
 
     await act(async () => {
-      fireEvent.click(buttonClearFilters);
+      fireEvent.click(buttonReset);
     });
+
+    expect(classInput).toHaveValue('');
   });
 });
