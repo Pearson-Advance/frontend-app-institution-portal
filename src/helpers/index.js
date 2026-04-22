@@ -239,3 +239,48 @@ export async function validateCSVFile(file) {
 
   return true;
 }
+
+/**
+ * Generates a default date range where the start date is 4 weeks prior to today.
+ *
+ * This is typically used for filtering data (e.g., API queries) by sending
+ * a dynamic `startDate` that represents a rolling 4-week window.
+ *
+ * @function getDefaultDates
+ * @returns {{ startDate: string }}
+ * An object containing:
+ * - startDate: A string in YYYY-MM-DD format representing the date 4 weeks ago from today.
+ *
+ * @example
+ * // If today is 2026-04-27
+ * getDefaultDates();
+ * // returns: { startDate: "2026-03-30" }
+ */
+export const getDefaultDates = (startDate) => {
+  const start = startDate ? new Date(startDate) : new Date();
+
+  const fourWeeksAgo = new Date(
+    start.getTime() - (28 * 24 * 60 * 60 * 1000),
+  );
+
+  const toISO = (date) => date.toISOString().split('T')[0];
+
+  return {
+    startDate: toISO(fourWeeksAgo),
+    labelStartDate: toISO(start),
+  };
+};
+
+/**
+ * Filters out empty, null, or undefined values from a parameters object.
+ *
+ * @param {Object} params - The object containing key-value pairs to filter.
+ * @returns {Object} A new object containing only entries with non-empty, non-null, and non-undefined values.
+ *
+ * @example
+ * buildFilterParams({ name: 'John', age: null, city: '', country: 'US' });
+ * // Returns: { name: 'John', country: 'US' }
+ */
+export const buildFilterParams = (params) => Object.fromEntries(
+  Object.entries(params).filter(([, value]) => value !== '' && value !== null && value !== undefined),
+);

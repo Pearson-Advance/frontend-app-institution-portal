@@ -6,6 +6,7 @@ import {
   getInitials,
   setAssignStaffRole,
   validateCSVFile,
+  buildFilterParams,
 } from 'helpers';
 
 import { assignStaffRole } from 'features/Main/data/api';
@@ -328,5 +329,49 @@ describe('validateCSVFile', () => {
       const file = makeCSVFile('foo,bar');
       await expect(validateCSVFile(file)).rejects.toThrow('Missing required columns:');
     });
+  });
+});
+
+describe('buildFilterParams', () => {
+  test('should remove null values', () => {
+    const result = buildFilterParams({ name: 'John', age: null });
+    expect(result).toEqual({ name: 'John' });
+  });
+
+  test('should remove undefined values', () => {
+    const result = buildFilterParams({ name: 'John', age: undefined });
+    expect(result).toEqual({ name: 'John' });
+  });
+
+  test('should remove empty string values', () => {
+    const result = buildFilterParams({ name: 'John', city: '' });
+    expect(result).toEqual({ name: 'John' });
+  });
+
+  test('should remove all empty, null, and undefined values at once', () => {
+    const result = buildFilterParams({
+      name: 'John', age: null, city: '', country: undefined,
+    });
+    expect(result).toEqual({ name: 'John' });
+  });
+
+  test('should return the same object if all values are valid', () => {
+    const result = buildFilterParams({ name: 'John', age: 30, city: 'NY' });
+    expect(result).toEqual({ name: 'John', age: 30, city: 'NY' });
+  });
+
+  test('should return an empty object if all values are invalid', () => {
+    const result = buildFilterParams({ name: '', age: null, city: undefined });
+    expect(result).toEqual({});
+  });
+
+  test('should return an empty object if input is empty', () => {
+    const result = buildFilterParams({});
+    expect(result).toEqual({});
+  });
+
+  test('should keep falsy values that are not empty string, null, or undefined', () => {
+    const result = buildFilterParams({ active: false, count: 0 });
+    expect(result).toEqual({ active: false, count: 0 });
   });
 });
