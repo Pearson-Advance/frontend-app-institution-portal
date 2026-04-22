@@ -24,10 +24,21 @@ import { fetchCoursesOptionsData } from 'features/Courses/data/thunks';
 import { fetchClassesDataSuccess, updateCurrentPage as updateClassesCurrentPage } from 'features/Classes/data/slice';
 import { fetchCoursesDataSuccess, updateCurrentPage } from 'features/Courses/data/slice';
 
+import { getDefaultDates } from 'helpers';
 import { initialPage } from 'features/constants';
 import { useInstitutionIdQueryParam } from 'hooks';
 
 import 'features/Courses/CoursesDetailPage/index.scss';
+
+const initialFilters = {
+  classFilter: '',
+  startDate: '',
+  endDate: '',
+};
+
+const buildFilterParams = (params) => Object.fromEntries(
+  Object.entries(params).filter(([, value]) => value !== '' && value !== null && value !== undefined),
+);
 
 const CoursesDetailPage = () => {
   const history = useHistory();
@@ -40,13 +51,17 @@ const CoursesDetailPage = () => {
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [isOpenModal, openModal, closeModal] = useToggle(false);
-  const [classFilter, setClassFilter] = useState('');
+
+  const [filters, setFilters] = useState(initialFilters);
+  const { classFilter, startDate, endDate } = filters;
+  const updateFilter = (key, value) => setFilters((prev) => ({ ...prev, [key]: value }));
 
   const defaultCourseInfo = useMemo(() => ({
     numberOfStudents: '-',
     numberOfPendingStudents: '-',
     masterCourseId: '-',
   }), []);
+
   const institution = useSelector((state) => state.main.selectedInstitution);
   const courseInfo = useSelector((state) => state.courses.selectOptions)
     .find((course) => course?.masterCourseId === courseIdDecoded) || defaultCourseInfo;
@@ -55,7 +70,15 @@ const CoursesDetailPage = () => {
   const totalStudents = courseInfo.numberOfStudents + courseInfo.numberOfPendingStudents;
   const courseDetailsLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${courseInfo.masterCourseId}/home`;
 
-  const isButtonDisabled = classFilter.trim().length < 2;
+  const isButtonDisabled = classFilter.trim().length < 2
+    && startDate === initialFilters.startDate
+    && endDate === initialFilters.endDate;
+
+  const buildCurrentFilterParams = () => buildFilterParams({
+    class_name: classFilter,
+    start_date: getDefaultDates(startDate).startDate,
+    end_date: endDate,
+  });
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -65,20 +88,16 @@ const CoursesDetailPage = () => {
   const handleResetFilter = () => {
     setCurrentPage(initialPage);
     dispatch(updateCurrentPage(initialPage));
-    dispatch(fetchClassesData(institution.id, initialPage, courseIdDecoded));
-    setClassFilter('');
+    setFilters(initialFilters);
+    dispatch(fetchClassesData(institution.id, initialPage, courseIdDecoded, {}));
   };
 
   const handleFilter = async (e) => {
     e.preventDefault();
 
-    if (isButtonDisabled) {
-      return;
-    }
-    const form = e.target;
-    const formData = new FormData(form);
-    formData.append('class_name', classFilter);
-    const formJson = Object.fromEntries(formData.entries());
+    if (isButtonDisabled) { return; }
+
+    const formJson = buildCurrentFilterParams();
 
     try {
       dispatch(fetchClassesData(institution.id, initialPage, courseIdDecoded, formJson));
@@ -88,14 +107,10 @@ const CoursesDetailPage = () => {
   };
 
   useEffect(() => {
-    const initialState = {
-      results: [],
-      count: 0,
-      numPages: 0,
-    };
+    const initialState = { results: [], count: 0, numPages: 0 };
 
     if (institution.id) {
-      dispatch(fetchClassesData(institution.id, initialPage, courseIdDecoded));
+      dispatch(fetchClassesData(institution.id, initialPage, courseIdDecoded, {}));
       dispatch(fetchInstructorsOptionsData(institution.id, initialPage, { limit: false }));
       dispatch(fetchCoursesOptionsData(institution.id));
     }
@@ -104,12 +119,12 @@ const CoursesDetailPage = () => {
       dispatch(fetchCoursesDataSuccess(initialState));
       dispatch(fetchClassesDataSuccess(initialState));
     };
-  }, [dispatch, institution.id, courseIdDecoded]);
+  }, [dispatch, institution.id, courseIdDecoded]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (institution.id) {
-      const filters = classFilter.trim() ? { class_name: classFilter } : {};
-      dispatch(fetchClassesData(institution.id, currentPage, courseIdDecoded, filters));
+      const filterParams = buildCurrentFilterParams();
+      dispatch(fetchClassesData(institution.id, currentPage, courseIdDecoded, filterParams));
     }
   }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -155,6 +170,7 @@ const CoursesDetailPage = () => {
           </div>
         </div>
       </div>
+
       <div className="d-flex justify-content-end align-items-center my-3">
         <Button
           as="a"
@@ -166,9 +182,7 @@ const CoursesDetailPage = () => {
           <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />
           Course content
         </Button>
-        <Button onClick={openModal}>
-          Add Class
-        </Button>
+        <Button onClick={openModal}>Add Class</Button>
         <AddClass
           isOpen={isOpenModal}
           onClose={closeModal}
@@ -176,6 +190,7 @@ const CoursesDetailPage = () => {
           finalCall={finalCall}
         />
       </div>
+
       <div className="page-content-container px-2">
         <Form onSubmit={handleFilter} className="mb-5 mt-3">
           <Form.Row className="d-flex flex-wrap w-100 mr-0 px-2">
@@ -186,11 +201,37 @@ const CoursesDetailPage = () => {
                 floatingLabel="Class name"
                 name="class_name"
                 data-testid="class_name"
-                onChange={(e) => setClassFilter(e.target.value)}
+                onChange={(e) => updateFilter('classFilter', e.target.value)}
                 value={classFilter}
               />
             </Form.Group>
+
+            <Form.Row className="d-flex flex-wrap w-100 mr-0 pl-2">
+              <Form.Group as={Col} className="w-50 px-0">
+                <Form.Control
+                  type="date"
+                  floatingLabel="Search start date"
+                  className="my-1 mr-2"
+                  name="start_date"
+                  data-testid="start_date"
+                  value={startDate}
+                  onChange={(e) => updateFilter('startDate', e.target.value)}
+                />
+              </Form.Group>
+              <Form.Group as={Col} className="w-50 px-0">
+                <Form.Control
+                  type="date"
+                  floatingLabel="Search end date"
+                  className="my-1 mr-0"
+                  name="end_date"
+                  data-testid="end_date"
+                  value={endDate}
+                  onChange={(e) => updateFilter('endDate', e.target.value)}
+                />
+              </Form.Group>
+            </Form.Row>
           </Form.Row>
+
           <Form.Group className="w-100 d-flex justify-content-end px-3">
             <Button
               onClick={handleResetFilter}
@@ -204,17 +245,18 @@ const CoursesDetailPage = () => {
             <Button type="submit" disabled={isButtonDisabled}>Apply</Button>
           </Form.Group>
         </Form>
+
         <CourseDetailTable count={classes.count} data={classes.data} />
         {classes.numPages > 1 && (
-        <Pagination
-          paginationLabel="paginationNavigation"
-          pageCount={classes.numPages}
-          currentPage={currentPage}
-          onPageSelect={handlePagination}
-          variant="reduced"
-          className="mx-auto pagination-table"
-          size="small"
-        />
+          <Pagination
+            paginationLabel="paginationNavigation"
+            pageCount={classes.numPages}
+            currentPage={currentPage}
+            onPageSelect={handlePagination}
+            variant="reduced"
+            className="mx-auto pagination-table"
+            size="small"
+          />
         )}
       </div>
     </Container>

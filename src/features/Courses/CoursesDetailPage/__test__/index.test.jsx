@@ -17,6 +17,14 @@ jest.mock('features/Classes/data/thunks', () => ({
   fetchClassesData: jest.fn(() => () => Promise.resolve()),
 }));
 
+jest.mock('helpers', () => ({
+  ...jest.requireActual('helpers'),
+  getDefaultDates: jest.fn(() => ({
+    startDate: '2024-01-01',
+    endDate: '2024-12-31',
+  })),
+}));
+
 const mockStore = {
   main: {
     selectedInstitution: {
@@ -135,70 +143,59 @@ const mockStore = {
   },
 };
 
+const renderComponent = (store = mockStore) => renderWithProviders(
+  <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
+    <Route path="/courses/:courseId">
+      <CoursesDetailPage />
+    </Route>
+  </MemoryRouter>,
+  { preloadedState: store },
+);
+
 describe('CoursesDetailPage', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('Should render the table and the course info', async () => {
-    const component = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
-        <Route path="/courses/:courseId">
-          <CoursesDetailPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
+    const { container } = renderComponent();
 
     waitFor(() => {
-      expect(component.container).toHaveTextContent('Demo Course 1 1');
-      expect(component.container).toHaveTextContent('Demo MasterCourse 1');
-      expect(component.container).toHaveTextContent('Demo MasterCourse 2');
-      expect(component.container).toHaveTextContent('Demo Class 1');
-      expect(component.container).toHaveTextContent('Demo Class 2');
-      expect(component.container).toHaveTextContent('09/21/24');
-      expect(component.container).toHaveTextContent('09/21/25');
-      expect(component.container).toHaveTextContent('1');
-      expect(component.container).toHaveTextContent('2');
-      expect(component.container).toHaveTextContent('100');
-      expect(component.container).toHaveTextContent('200');
-      expect(component.container).toHaveTextContent('instructor_1');
-      expect(component.container).toHaveTextContent('instructor_2');
+      expect(container).toHaveTextContent('Demo Course 1 1');
+      expect(container).toHaveTextContent('Demo MasterCourse 1');
+      expect(container).toHaveTextContent('Demo MasterCourse 2');
+      expect(container).toHaveTextContent('Demo Class 1');
+      expect(container).toHaveTextContent('Demo Class 2');
+      expect(container).toHaveTextContent('09/21/24');
+      expect(container).toHaveTextContent('09/21/25');
+      expect(container).toHaveTextContent('1');
+      expect(container).toHaveTextContent('2');
+      expect(container).toHaveTextContent('100');
+      expect(container).toHaveTextContent('200');
+      expect(container).toHaveTextContent('instructor_1');
+      expect(container).toHaveTextContent('instructor_2');
     });
   });
 
-  test('Should render the class filter input', () => {
-    const { getByTestId } = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
-        <Route path="/courses/:courseId">
-          <CoursesDetailPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
-
+  test('Should render the class name filter input', () => {
+    const { getByTestId } = renderComponent();
     expect(getByTestId('class_name')).toBeInTheDocument();
   });
 
-  test('Apply and Reset buttons should be disabled when filter is empty', () => {
-    const { getByText } = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
-        <Route path="/courses/:courseId">
-          <CoursesDetailPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
+  test('Should render the start date and end date filter inputs', () => {
+    const { getByTestId } = renderComponent();
+    expect(getByTestId('start_date')).toBeInTheDocument();
+    expect(getByTestId('end_date')).toBeInTheDocument();
+  });
 
+  test('Apply and Reset buttons should be disabled when no filter has changed', () => {
+    const { getByText } = renderComponent();
     expect(getByText('Apply')).toBeDisabled();
     expect(getByText('Reset')).toBeDisabled();
   });
 
-  test('Apply and Reset buttons should be enabled when filter has value', () => {
-    const { getByTestId, getByText } = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
-        <Route path="/courses/:courseId">
-          <CoursesDetailPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
+  test('Apply and Reset buttons should be enabled when class name has valid value', () => {
+    const { getByTestId, getByText } = renderComponent();
 
     fireEvent.change(getByTestId('class_name'), { target: { value: 'Demo Class' } });
 
@@ -206,15 +203,35 @@ describe('CoursesDetailPage', () => {
     expect(getByText('Reset')).not.toBeDisabled();
   });
 
-  test('Should dispatch fetchClassesData with filter on Apply', async () => {
-    const { getByTestId, getByText } = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
-        <Route path="/courses/:courseId">
-          <CoursesDetailPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
+  test('Apply and Reset buttons should remain disabled when class name has less than 2 chars and dates are default', () => {
+    const { getByTestId, getByText } = renderComponent();
+
+    fireEvent.change(getByTestId('class_name'), { target: { value: 'D' } });
+
+    expect(getByText('Apply')).toBeDisabled();
+    expect(getByText('Reset')).toBeDisabled();
+  });
+
+  test('Apply and Reset buttons should be enabled when start_date changes from default', () => {
+    const { getByTestId, getByText } = renderComponent();
+
+    fireEvent.change(getByTestId('start_date'), { target: { value: '2023-06-01' } });
+
+    expect(getByText('Apply')).not.toBeDisabled();
+    expect(getByText('Reset')).not.toBeDisabled();
+  });
+
+  test('Apply and Reset buttons should be enabled when end_date changes from default', () => {
+    const { getByTestId, getByText } = renderComponent();
+
+    fireEvent.change(getByTestId('end_date'), { target: { value: '2025-03-15' } });
+
+    expect(getByText('Apply')).not.toBeDisabled();
+    expect(getByText('Reset')).not.toBeDisabled();
+  });
+
+  test('Should dispatch fetchClassesData with class_name filter on Apply', async () => {
+    const { getByTestId, getByText } = renderComponent();
 
     fireEvent.change(getByTestId('class_name'), { target: { value: 'Demo Class' } });
     fireEvent.click(getByText('Apply'));
@@ -229,26 +246,37 @@ describe('CoursesDetailPage', () => {
     });
   });
 
-  test('Should clear filter and refetch without params on Reset', async () => {
-    const { getByTestId, getByText } = renderWithProviders(
-      <MemoryRouter initialEntries={[`/courses/${encodeURIComponent('course-v1:XXX+YYY+2023')}`]}>
-        <Route path="/courses/:courseId">
-          <CoursesDetailPage />
-        </Route>
-      </MemoryRouter>,
-      { preloadedState: mockStore },
-    );
+  test('Should clear all filters and refetch', async () => {
+    const { getByTestId, getByText } = renderComponent();
+
+    fireEvent.change(getByTestId('class_name'), { target: { value: 'Demo Class' } });
+    fireEvent.change(getByTestId('start_date'), { target: { value: '2023-06-01' } });
+    fireEvent.change(getByTestId('end_date'), { target: { value: '2023-12-31' } });
+    fireEvent.click(getByText('Reset'));
+
+    await waitFor(() => {
+      expect(getByTestId('class_name')).toHaveValue('');
+      expect(getByTestId('start_date')).toHaveValue('');
+      expect(getByTestId('end_date')).toHaveValue('');
+
+      expect(fetchClassesData).toHaveBeenLastCalledWith(
+        1,
+        1,
+        'course-v1:XXX+YYY+2023',
+        expect.objectContaining({}),
+      );
+    });
+  });
+
+  test('Should disable Apply and Reset buttons after Reset', async () => {
+    const { getByTestId, getByText } = renderComponent();
 
     fireEvent.change(getByTestId('class_name'), { target: { value: 'Demo Class' } });
     fireEvent.click(getByText('Reset'));
 
     await waitFor(() => {
-      expect(getByTestId('class_name')).toHaveValue('');
-      expect(fetchClassesData).toHaveBeenCalledWith(
-        1,
-        1,
-        'course-v1:XXX+YYY+2023',
-      );
+      expect(getByText('Apply')).toBeDisabled();
+      expect(getByText('Reset')).toBeDisabled();
     });
   });
 });

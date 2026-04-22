@@ -8,14 +8,30 @@ import { Select, Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 
 import { initialPage } from 'features/constants';
+import { getDefaultDates } from 'helpers';
 import { fetchClassesData } from 'features/Classes/data/thunks';
 import { fetchCoursesOptionsData } from 'features/Courses/data/thunks';
 import { fetchInstructorsOptionsData } from 'features/Instructors/data/thunks';
 import { updateFilters, updateCurrentPage } from 'features/Classes/data/slice';
 
-const notAssignedOption = {
+const NOT_ASSIGNED_OPTION = {
   label: 'Not assigned',
   value: 'null',
+};
+
+const buildFilterParams = (params) => Object.fromEntries(
+  Object.entries(params).filter(([, value]) => value !== '' && value !== null && value !== undefined),
+);
+
+const getInitialFilters = () => {
+  const { labelStartDate } = getDefaultDates();
+  return {
+    classFilter: '',
+    courseSelected: null,
+    instructorSelected: null,
+    startDate: labelStartDate,
+    endDate: '',
+  };
 };
 
 const ClassesFilters = ({ resetPagination }) => {
@@ -30,38 +46,56 @@ const ClassesFilters = ({ resetPagination }) => {
   const queryParams = new URLSearchParams(location.search);
   const queryNotInstructors = queryParams.get('instructors');
 
+  const [filters, setFilters] = useState(getInitialFilters);
   const [courseOptions, setCourseOptions] = useState([]);
-  const [instructorOptions, setInstructorOptions] = useState([notAssignedOption]);
-  const [courseSelected, setCourseSelected] = useState(null);
-  const [instructorSelected, setInstructorSelected] = useState(null);
-  const [classFilter, setClassFilter] = useState('');
+  const [instructorOptions, setInstructorOptions] = useState([NOT_ASSIGNED_OPTION]);
+
+  const {
+    classFilter,
+    courseSelected,
+    instructorSelected,
+    startDate,
+    endDate,
+  } = filters;
+
+  const initialFilters = getInitialFilters();
 
   const isValidClassFilter = classFilter.trim().length > 1;
-  const isButtonDisabled = courseSelected === null && instructorSelected === null && !isValidClassFilter;
+  const isButtonDisabled = courseSelected === null
+    && instructorSelected === null
+    && !isValidClassFilter
+    && startDate === initialFilters.startDate
+    && endDate === initialFilters.endDate;
+
+  const updateFilter = (key, value) => setFilters((prev) => ({ ...prev, [key]: value }));
 
   useEffect(() => {
     if (queryNotInstructors === 'null') {
-      setInstructorSelected([notAssignedOption]);
+      dispatch(updateFilters({}));
+      updateFilter('instructorSelected', NOT_ASSIGNED_OPTION);
     }
   }, [queryNotInstructors]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSelectFilters = async (e) => {
     e.preventDefault();
 
-    if (isButtonDisabled) {
-      return;
-    }
+    if (isButtonDisabled) { return; }
 
     const nullInstructor = instructorSelected?.value === 'null';
-    const notSelectedInstructor = instructorSelected?.value ? instructorSelected?.value : '';
-    const form = e.target;
-    const formData = new FormData(form);
+    const notSelectedInstructor = instructorSelected?.value ?? null;
+    const formData = new FormData(e.target);
     const courseName = formData.get('course_name');
-    formData.delete('course_name');
-    formData.append('instructors', nullInstructor ? 'null' : '');
-    formData.set('instructor', nullInstructor ? '' : notSelectedInstructor);
-    formData.append('class_name', classFilter);
-    const formJson = Object.fromEntries(formData.entries());
+
+    const { startDate: computedStartDate } = getDefaultDates(startDate);
+
+    const formJson = buildFilterParams({
+      course_name: courseName,
+      instructor: nullInstructor ? null : notSelectedInstructor,
+      instructors: nullInstructor ? 'null' : null,
+      class_name: classFilter,
+      start_date: computedStartDate,
+      end_date: endDate,
+    });
 
     try {
       dispatch(updateFilters(formJson));
@@ -73,38 +107,40 @@ const ClassesFilters = ({ resetPagination }) => {
   };
 
   const handleCleanFilters = () => {
-    dispatch(fetchClassesData(institution.id, initialPage));
+    const { startDate: computedStartDate } = getDefaultDates();
+
+    const initialDates = {
+      start_date: computedStartDate,
+      end_date: '',
+    };
+
+    dispatch(fetchClassesData(institution.id, initialPage, '', initialDates));
     resetPagination();
-    setInstructorSelected(null);
-    setCourseSelected(null);
-    dispatch(updateFilters({}));
-    setClassFilter('');
+    setFilters(getInitialFilters());
   };
 
   useEffect(() => {
     const parseCoursesToOptions = courses.length > 0
-      ? courses.map(course => ({
+      ? courses.map((course) => ({
         ...course,
         label: course.masterCourseName,
         value: course.masterCourseId,
       })) : [];
 
     const parseInstructorsToOptions = instructors?.length > 0
-      ? instructors.map(instructor => ({
+      ? instructors.map((instructor) => ({
         ...instructor,
         label: instructor.instructorName,
         value: instructor.instructorUsername,
-      }))
-      : [];
+      })) : [];
 
     setCourseOptions(parseCoursesToOptions);
-    setInstructorOptions([notAssignedOption, ...parseInstructorsToOptions]);
+    setInstructorOptions([NOT_ASSIGNED_OPTION, ...parseInstructorsToOptions]);
   }, [instructors, courses]);
 
   useEffect(() => {
     if (firstRenderPage.current) {
-      setInstructorSelected(null);
-      setCourseSelected(null);
+      setFilters((prev) => ({ ...prev, courseSelected: null, instructorSelected: null }));
     }
 
     if (Object.keys(institution).length > 0) {
@@ -115,7 +151,7 @@ const ClassesFilters = ({ resetPagination }) => {
     if (queryNotInstructors === 'null') {
       firstRenderPage.current = true;
     }
-  }, [institution, dispatch, queryNotInstructors, firstRenderPage]);
+  }, [institution, dispatch, queryNotInstructors]);
 
   return (
     <Form onSubmit={handleSelectFilters} className="w-100 px-4 d-flex flex-column align-items-center">
@@ -127,8 +163,32 @@ const ClassesFilters = ({ resetPagination }) => {
             floatingLabel="Class name"
             name="class_name"
             data-testid="class_name"
-            onChange={(e) => setClassFilter(e.target.value)}
+            onChange={(e) => updateFilter('classFilter', e.target.value)}
             value={classFilter}
+          />
+        </Form.Group>
+      </Form.Row>
+      <Form.Row className="px-0 d-flex flex-wrap w-100">
+        <Form.Group as={Col} className="w-50 px-0">
+          <Form.Control
+            type="date"
+            floatingLabel="Search start date"
+            className="my-1 mr-2"
+            name="start_date"
+            data-testid="start_date"
+            value={startDate}
+            onChange={(e) => updateFilter('startDate', e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group as={Col} className="w-50 px-0">
+          <Form.Control
+            type="date"
+            floatingLabel="Search end date"
+            className="my-1 mr-0"
+            name="end_date"
+            data-testid="end_date"
+            value={endDate}
+            onChange={(e) => updateFilter('endDate', e.target.value)}
           />
         </Form.Group>
       </Form.Row>
@@ -139,7 +199,7 @@ const ClassesFilters = ({ resetPagination }) => {
             name="course_name"
             className="mr-2 select"
             options={courseOptions}
-            onChange={option => setCourseSelected(option)}
+            onChange={(option) => updateFilter('courseSelected', option)}
             value={courseSelected}
           />
         </Form.Group>
@@ -148,7 +208,7 @@ const ClassesFilters = ({ resetPagination }) => {
             placeholder="Instructor"
             name="instructor"
             options={instructorOptions}
-            onChange={option => setInstructorSelected(option)}
+            onChange={(option) => updateFilter('instructorSelected', option)}
             value={instructorSelected}
           />
         </Form.Group>
