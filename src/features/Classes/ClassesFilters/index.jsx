@@ -34,8 +34,10 @@ const ClassesFilters = ({ resetPagination }) => {
   const [instructorOptions, setInstructorOptions] = useState([notAssignedOption]);
   const [courseSelected, setCourseSelected] = useState(null);
   const [instructorSelected, setInstructorSelected] = useState(null);
+  const [classFilter, setClassFilter] = useState('');
 
-  const isButtonDisabled = courseSelected === null && instructorSelected === null;
+  const isValidClassFilter = classFilter.trim().length > 1;
+  const isButtonDisabled = courseSelected === null && instructorSelected === null && !isValidClassFilter;
 
   useEffect(() => {
     if (queryNotInstructors === 'null') {
@@ -58,6 +60,7 @@ const ClassesFilters = ({ resetPagination }) => {
     formData.delete('course_name');
     formData.append('instructors', nullInstructor ? 'null' : '');
     formData.set('instructor', nullInstructor ? '' : notSelectedInstructor);
+    formData.append('class_name', classFilter);
     const formJson = Object.fromEntries(formData.entries());
 
     try {
@@ -75,6 +78,7 @@ const ClassesFilters = ({ resetPagination }) => {
     setInstructorSelected(null);
     setCourseSelected(null);
     dispatch(updateFilters({}));
+    setClassFilter('');
   };
 
   useEffect(() => {
@@ -115,6 +119,19 @@ const ClassesFilters = ({ resetPagination }) => {
 
   return (
     <Form onSubmit={handleSelectFilters} className="w-100 px-4 d-flex flex-column align-items-center">
+      <Form.Row className="px-0 d-flex flex-wrap w-100 mr-0">
+        <Form.Group as={Col} className="mr-0 w-100 px-0">
+          <Form.Control
+            className="w-100 mr-0"
+            type="text"
+            floatingLabel="Class name"
+            name="class_name"
+            data-testid="class_name"
+            onChange={(e) => setClassFilter(e.target.value)}
+            value={classFilter}
+          />
+        </Form.Group>
+      </Form.Row>
       <Form.Row className="px-0 d-flex flex-wrap w-100">
         <Form.Group as={Col} className="px-0 w-50">
           <Select

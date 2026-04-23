@@ -139,7 +139,7 @@ describe('ClassesFilters Component', () => {
     'The <Apply> button should be disabled if there is no selection in any filter, then it will be available if the user selects an option',
     () => {
       const resetPagination = jest.fn();
-      const { getByText, getAllByTestId } = renderWithProviders(
+      const { getByText, getAllByTestId, getByTestId } = renderWithProviders(
         <ClassesFilters resetPagination={resetPagination} />,
         { preloadedState: mockStore },
       );
@@ -151,6 +151,13 @@ describe('ClassesFilters Component', () => {
 
       fireEvent.change(instructorSelect, {
         target: { value: 's4mS3pi0l' },
+      });
+
+      expect(buttonApplyFilters).not.toBeDisabled();
+
+      const classInput = getByTestId('class_name');
+      fireEvent.change(classInput, {
+        target: { value: 'ab' },
       });
 
       expect(buttonApplyFilters).not.toBeDisabled();
@@ -189,23 +196,29 @@ describe('ClassesFilters Component', () => {
 
   test('Should clear the filters', async () => {
     const resetPagination = jest.fn();
-    const { getByText, getAllByTestId } = renderWithProviders(
+    const { getByText, getAllByTestId, getByTestId } = renderWithProviders(
       <ClassesFilters resetPagination={resetPagination} />,
       { preloadedState: mockStore },
     );
 
     const courseSelect = getAllByTestId('select')[0];
+    const classInput = getByTestId('class_name');
     const buttonClearFilters = getByText('Reset');
 
-    expect(courseSelect).toBeInTheDocument();
     expect(courseSelect).toBeInTheDocument();
 
     fireEvent.change(courseSelect, {
       target: { value: 'Demo Course 1' },
     });
 
+    fireEvent.change(classInput, {
+      target: { value: 'test' },
+    });
+
     await act(async () => {
       fireEvent.click(buttonClearFilters);
     });
+
+    expect(classInput).toHaveValue('');
   });
 });

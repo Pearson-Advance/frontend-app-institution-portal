@@ -17,7 +17,7 @@ export const Header = () => {
       logoUrl={`${getConfig().LMS_BASE_URL}`}
     >
       <div className="header-right d-flex align-items-center">
-        <a href={questionsLink()}>
+        <a href={questionsLink()} target="_blank" rel="noopener noreferrer" aria-label="Help / Questions">
           <i className="fa-regular fa-circle-question icon" />
         </a>
         <Dropdown className="dropdown-user">
