@@ -15,6 +15,14 @@ jest.mock('react-router-dom', () => ({
   useLocation: jest.fn(() => ({})),
 }));
 
+jest.mock('helpers', () => ({
+  ...jest.requireActual('helpers'),
+  getDefaultDates: jest.fn(() => ({
+    startDate: '2024-01-01',
+    endDate: '2024-05-31',
+  })),
+}));
+
 let axiosMock;
 
 const courseOption = {
@@ -203,6 +211,8 @@ describe('ClassesFilters Component', () => {
 
     const courseSelect = getAllByTestId('select')[0];
     const classInput = getByTestId('class_name');
+    const startDateInput = getByTestId('start_date');
+    const endDateInput = getByTestId('end_date');
     const buttonClearFilters = getByText('Reset');
 
     expect(courseSelect).toBeInTheDocument();
@@ -215,10 +225,46 @@ describe('ClassesFilters Component', () => {
       target: { value: 'test' },
     });
 
+    fireEvent.change(startDateInput, {
+      target: { value: '2024-01-01' },
+    });
+
+    fireEvent.change(endDateInput, {
+      target: { value: '2024-07-31' },
+    });
+
     await act(async () => {
       fireEvent.click(buttonClearFilters);
     });
 
     expect(classInput).toHaveValue('');
+    expect(startDateInput).toHaveValue('2024-01-01');
+    expect(endDateInput).toHaveValue('');
+  });
+
+  test('Should apply filters including dates', async () => {
+    const resetPagination = jest.fn();
+    const { getByText, getByTestId } = renderWithProviders(
+      <ClassesFilters resetPagination={resetPagination} />,
+      { preloadedState: mockStore },
+    );
+
+    const startDateInput = getByTestId('start_date');
+    const endDateInput = getByTestId('end_date');
+    const buttonApply = getByText('Apply');
+
+    fireEvent.change(startDateInput, {
+      target: { value: '2024-01-01' },
+    });
+
+    fireEvent.change(endDateInput, {
+      target: { value: '2024-02-01' },
+    });
+
+    await act(async () => {
+      fireEvent.click(buttonApply);
+    });
+
+    expect(buttonApply).toBeInTheDocument();
   });
 });
