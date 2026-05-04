@@ -82,14 +82,12 @@ const ClassesFilters = ({ resetPagination }) => {
     const formData = new FormData(e.target);
     const courseName = formData.get('course_name');
 
-    const { startDate: computedStartDate } = getDefaultDates(startDate);
-
     const formJson = buildFilterParams({
       course_name: courseName,
       instructor: nullInstructor ? null : notSelectedInstructor,
       instructors: nullInstructor ? 'null' : null,
       class_name: classFilter,
-      start_date: computedStartDate,
+      start_date: startDate,
       end_date: endDate,
     });
 

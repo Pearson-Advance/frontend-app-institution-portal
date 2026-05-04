@@ -24,7 +24,7 @@ import { fetchCoursesOptionsData } from 'features/Courses/data/thunks';
 import { fetchClassesDataSuccess, updateCurrentPage as updateClassesCurrentPage } from 'features/Classes/data/slice';
 import { fetchCoursesDataSuccess, updateCurrentPage } from 'features/Courses/data/slice';
 
-import { getDefaultDates, buildFilterParams } from 'helpers';
+import { buildFilterParams } from 'helpers';
 import { initialPage } from 'features/constants';
 import { useInstitutionIdQueryParam } from 'hooks';
 
@@ -72,7 +72,7 @@ const CoursesDetailPage = () => {
 
   const buildCurrentFilterParams = () => buildFilterParams({
     class_name: classFilter,
-    start_date: getDefaultDates(startDate).startDate,
+    start_date: startDate,
     end_date: endDate,
   });
 
