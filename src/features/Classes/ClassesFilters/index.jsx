@@ -20,13 +20,14 @@ const NOT_ASSIGNED_OPTION = {
 };
 
 const getInitialFilters = () => {
-  const { labelStartDate } = getDefaultDates();
+  const { startDate, endDate } = getDefaultDates();
+
   return {
     classFilter: '',
     courseSelected: null,
     instructorSelected: null,
-    startDate: labelStartDate,
-    endDate: '',
+    startDate,
+    endDate,
   };
 };
 
@@ -101,11 +102,14 @@ const ClassesFilters = ({ resetPagination }) => {
   };
 
   const handleCleanFilters = () => {
-    const { startDate: computedStartDate } = getDefaultDates();
+    const {
+      startDate: computedStartDate,
+      endDate: computedEndDate,
+    } = getDefaultDates();
 
     const initialDates = {
       start_date: computedStartDate,
-      end_date: '',
+      end_date: computedEndDate,
     };
 
     dispatch(fetchClassesData(institution.id, initialPage, '', initialDates));

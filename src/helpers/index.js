@@ -241,33 +241,40 @@ export async function validateCSVFile(file) {
 }
 
 /**
- * Generates a default date range where the start date is 4 weeks prior to today.
+ * Generates a default date range:
+ * - startDate: 4 weeks prior to the reference date
+ * - endDate: 2 weeks after the reference date
  *
- * This is typically used for filtering data (e.g., API queries) by sending
- * a dynamic `startDate` that represents a rolling 4-week window.
+ * The reference date is `startDate` if provided, otherwise today.
  *
  * @function getDefaultDates
- * @returns {{ startDate: string }}
+ * @param {string} [startDate] - Optional base date in YYYY-MM-DD format.
+ * @returns {{ startDate: string, endDate: string }}
  * An object containing:
- * - startDate: A string in YYYY-MM-DD format representing the date 4 weeks ago from today.
+ * - startDate: YYYY-MM-DD string (4 weeks before reference date)
+ * - endDate: YYYY-MM-DD string (2 weeks after reference date)
  *
  * @example
  * // If today is 2026-04-27
  * getDefaultDates();
- * // returns: { startDate: "2026-03-30" }
+ * // returns: { startDate: "2026-03-30", endDate: "2026-05-11" }
  */
 export const getDefaultDates = (startDate) => {
-  const start = startDate ? new Date(startDate) : new Date();
+  const base = startDate ? new Date(startDate) : new Date();
 
   const fourWeeksAgo = new Date(
-    start.getTime() - (28 * 24 * 60 * 60 * 1000),
+    base.getTime() - (28 * 24 * 60 * 60 * 1000),
+  );
+
+  const twoWeeksAhead = new Date(
+    base.getTime() + (14 * 24 * 60 * 60 * 1000),
   );
 
   const toISO = (date) => date.toISOString().split('T')[0];
 
   return {
     startDate: toISO(fourWeeksAgo),
-    labelStartDate: toISO(start),
+    endDate: toISO(twoWeeksAhead),
   };
 };
 
