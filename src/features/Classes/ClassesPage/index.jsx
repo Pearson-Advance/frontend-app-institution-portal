@@ -26,6 +26,7 @@ const ClassesPage = () => {
   useEffect(() => {
     const baseFilters = {
       start_date: getDefaultDates().startDate,
+      end_date: getDefaultDates().endDate,
     };
 
     if (Object.keys(selectedInstitution).length > 0) {

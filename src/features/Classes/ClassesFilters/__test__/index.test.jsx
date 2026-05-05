@@ -239,7 +239,7 @@ describe('ClassesFilters Component', () => {
 
     expect(classInput).toHaveValue('');
     expect(startDateInput).toHaveValue('2024-01-01');
-    expect(endDateInput).toHaveValue('');
+    expect(endDateInput).toHaveValue('2024-05-31');
   });
 
   test('Should apply filters including dates', async () => {
