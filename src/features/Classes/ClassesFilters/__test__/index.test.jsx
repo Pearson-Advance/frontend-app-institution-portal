@@ -15,14 +15,6 @@ jest.mock('react-router-dom', () => ({
   useLocation: jest.fn(() => ({})),
 }));
 
-jest.mock('helpers', () => ({
-  ...jest.requireActual('helpers'),
-  getDefaultDates: jest.fn(() => ({
-    startDate: '2024-01-01',
-    endDate: '2024-05-31',
-  })),
-}));
-
 let axiosMock;
 
 const courseOption = {
@@ -238,8 +230,8 @@ describe('ClassesFilters Component', () => {
     });
 
     expect(classInput).toHaveValue('');
-    expect(startDateInput).toHaveValue('2024-01-01');
-    expect(endDateInput).toHaveValue('2024-05-31');
+    expect(startDateInput).toHaveValue('');
+    expect(endDateInput).toHaveValue('');
   });
 
   test('Should apply filters including dates', async () => {

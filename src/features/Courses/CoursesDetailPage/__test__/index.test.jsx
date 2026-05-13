@@ -16,14 +16,6 @@ jest.mock('features/Classes/data/thunks', () => ({
   fetchClassesData: jest.fn(() => () => Promise.resolve()),
 }));
 
-jest.mock('helpers', () => ({
-  ...jest.requireActual('helpers'),
-  getDefaultDates: jest.fn(() => ({
-    startDate: '2024-01-01',
-    endDate: '2024-12-31',
-  })),
-}));
-
 const mockStore = {
   main: {
     selectedInstitution: {

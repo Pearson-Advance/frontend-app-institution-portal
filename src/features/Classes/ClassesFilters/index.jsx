@@ -8,7 +8,7 @@ import { Select, Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 
 import { initialPage } from 'features/constants';
-import { getDefaultDates, buildFilterParams } from 'helpers';
+import { buildFilterParams } from 'helpers';
 import { fetchClassesData } from 'features/Classes/data/thunks';
 import { fetchCoursesOptionsData } from 'features/Courses/data/thunks';
 import { fetchInstructorsOptionsData } from 'features/Instructors/data/thunks';
@@ -19,17 +19,13 @@ const NOT_ASSIGNED_OPTION = {
   value: 'null',
 };
 
-const getInitialFilters = () => {
-  const { startDate, endDate } = getDefaultDates();
-
-  return {
-    classFilter: '',
-    courseSelected: null,
-    instructorSelected: null,
-    startDate,
-    endDate,
-  };
-};
+const getInitialFilters = () => ({
+  classFilter: '',
+  courseSelected: null,
+  instructorSelected: null,
+  startDate: '',
+  endDate: '',
+});
 
 const ClassesFilters = ({ resetPagination }) => {
   const dispatch = useDispatch();
@@ -102,17 +98,7 @@ const ClassesFilters = ({ resetPagination }) => {
   };
 
   const handleCleanFilters = () => {
-    const {
-      startDate: computedStartDate,
-      endDate: computedEndDate,
-    } = getDefaultDates();
-
-    const initialDates = {
-      start_date: computedStartDate,
-      end_date: computedEndDate,
-    };
-
-    dispatch(fetchClassesData(institution.id, initialPage, '', initialDates));
+    dispatch(fetchClassesData(institution.id, initialPage));
     resetPagination();
     setFilters(getInitialFilters());
   };
