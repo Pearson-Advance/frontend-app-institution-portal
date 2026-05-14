@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Container, Pagination } from '@openedx/paragon';
 import { useLocation } from 'react-router-dom';
 
-import { getDefaultDates } from 'helpers';
 import ClassesTable from 'features/Classes/ClassesTable';
 import ClassesFilters from 'features/Classes/ClassesFilters';
 
@@ -24,18 +23,13 @@ const ClassesPage = () => {
   const instructorsNull = { instructors: queryNotInstructors };
 
   useEffect(() => {
-    const baseFilters = {
-      start_date: getDefaultDates().startDate,
-      end_date: getDefaultDates().endDate,
-    };
-
     if (Object.keys(selectedInstitution).length > 0) {
       if (queryNotInstructors === 'null' && !resetFiltersRef.current) {
-        dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', { ...instructorsNull, ...baseFilters }));
+        dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', instructorsNull));
       } else if (queryNotInstructors === 'null' && resetFiltersRef.current) {
-        dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', { ...stateClasses.filters, ...baseFilters }));
+        dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', stateClasses.filters));
       } else {
-        dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', { ...stateClasses.filters, ...baseFilters }));
+        dispatch(fetchClassesData(selectedInstitution.id, currentPage, '', stateClasses.filters));
       }
     }
 

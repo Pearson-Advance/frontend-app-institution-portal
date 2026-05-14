@@ -241,44 +241,6 @@ export async function validateCSVFile(file) {
 }
 
 /**
- * Generates a default date range:
- * - startDate: 4 weeks prior to the reference date
- * - endDate: 2 weeks after the reference date
- *
- * The reference date is `startDate` if provided, otherwise today.
- *
- * @function getDefaultDates
- * @param {string} [startDate] - Optional base date in YYYY-MM-DD format.
- * @returns {{ startDate: string, endDate: string }}
- * An object containing:
- * - startDate: YYYY-MM-DD string (4 weeks before reference date)
- * - endDate: YYYY-MM-DD string (2 weeks after reference date)
- *
- * @example
- * // If today is 2026-04-27
- * getDefaultDates();
- * // returns: { startDate: "2026-03-30", endDate: "2026-05-11" }
- */
-export const getDefaultDates = (startDate) => {
-  const base = startDate ? new Date(startDate) : new Date();
-
-  const fourWeeksAgo = new Date(
-    base.getTime() - (28 * 24 * 60 * 60 * 1000),
-  );
-
-  const twoWeeksAhead = new Date(
-    base.getTime() + (14 * 24 * 60 * 60 * 1000),
-  );
-
-  const toISO = (date) => date.toISOString().split('T')[0];
-
-  return {
-    startDate: toISO(fourWeeksAgo),
-    endDate: toISO(twoWeeksAhead),
-  };
-};
-
-/**
  * Filters out empty, null, or undefined values from a parameters object.
  *
  * @param {Object} params - The object containing key-value pairs to filter.
