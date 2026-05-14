@@ -80,7 +80,6 @@ const ClassesFilters = ({ resetPagination }) => {
     const courseName = formData.get('course_name');
 
     const formJson = buildFilterParams({
-      course_name: courseName,
       instructor: nullInstructor ? null : notSelectedInstructor,
       instructors: nullInstructor ? 'null' : null,
       class_name: classFilter,
