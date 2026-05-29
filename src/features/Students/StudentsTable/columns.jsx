@@ -28,7 +28,7 @@ const columns = [
       return (
         <Link
           to={url}
-          className="text-truncate link"
+          className="link"
         >
           {row.values.learnerName}
         </Link>
@@ -62,7 +62,7 @@ const columns = [
     Cell: ({ row }) => (
       <LinkWithQuery
         to={`/courses/${encodeURIComponent(row.original.courseId)}/${encodeURIComponent(row.original.classId)}`}
-        className="text-truncate link"
+        className="link"
       >
         {row.values.className}
       </LinkWithQuery>
@@ -184,7 +184,7 @@ const columns = [
             data-testid="droprown-action"
             alt="menu for actions"
           />
-          <Dropdown.Menu>
+          <Dropdown.Menu popperConfig={{ strategy: 'fixed' }}>
             <Dropdown.Item
               target="_blank"
               rel="noreferrer"

@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import {
   Row,
   Col,
-  DataTable,
 } from '@openedx/paragon';
 
 import { columns } from 'features/Students/StudentsTable/columns';
 import { RequestStatus } from 'features/constants';
+import Table from 'features/Main/Table';
 
 const StudentsTable = ({
   data,
@@ -21,17 +21,14 @@ const StudentsTable = ({
   return (
     <Row className="justify-content-center my-4 my-3">
       <Col xs={11} className="p-0">
-        <DataTable
+        <Table
           isLoading={isLoading}
           isSortable
           itemCount={count}
           data={data}
           columns={COLUMNS}
-        >
-          <DataTable.Table />
-          <DataTable.EmptyTable content="No students found." />
-          <DataTable.TableFooter />
-        </DataTable>
+          text="No students found."
+        />
       </Col>
     </Row>
   );

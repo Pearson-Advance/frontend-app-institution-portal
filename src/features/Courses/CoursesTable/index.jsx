@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { Row, Col, DataTable } from '@openedx/paragon';
+import { Row, Col } from '@openedx/paragon';
+import Table from 'features/Main/Table';
 
 import { columns } from 'features/Courses/CoursesTable/columns';
 import { RequestStatus } from 'features/constants';
@@ -16,17 +17,14 @@ const CoursesTable = ({ data, count }) => {
   return (
     <Row className="justify-content-center my-4 my-3">
       <Col xs={11} className="p-0">
-        <DataTable
+        <Table
           isLoading={isLoading}
           isSortable
           columns={COLUMNS}
           itemCount={count}
           data={data}
-        >
-          <DataTable.Table />
-          <DataTable.EmptyTable content="No courses found." />
-          <DataTable.TableFooter />
-        </DataTable>
+          text="No courses found."
+        />
       </Col>
     </Row>
   );

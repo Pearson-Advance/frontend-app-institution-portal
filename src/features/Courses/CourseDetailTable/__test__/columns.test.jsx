@@ -82,7 +82,7 @@ describe('columns', () => {
 
     const linkElement = screen.getByText('Class example');
     expect(linkElement).toBeInTheDocument();
-    expect(linkElement).toHaveClass('text-truncate link');
+    expect(linkElement).toHaveClass('link');
     expect(linkElement).toHaveAttribute('href');
     expect(linkElement.getAttribute('href')).toContain('course-v1:XXX+YYY+2023');
     expect(linkElement.getAttribute('href')).toContain('class%20id');

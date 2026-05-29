@@ -77,3 +77,22 @@ a.epp-link {
     min-width: 680px;
   }
 }
+
+.responsive-data-table {
+  width: 100%;
+  overflow-x: auto;
+
+  .pgn__data-table-cell-wrap {
+        max-width: 15vw;
+  }
+}
+
+.responsive-data-table table {
+  width: 100%;
+  min-width: max-content;
+}
+
+.responsive-data-table td,
+.responsive-data-table th {
+  overflow-wrap: anywhere;
+}

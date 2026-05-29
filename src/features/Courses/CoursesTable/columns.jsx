@@ -68,7 +68,7 @@ const columns = [
             data-testid="droprown-action"
             alt="menu for action"
           />
-          <Dropdown.Menu>
+          <Dropdown.Menu popperConfig={{ strategy: 'fixed' }}>
             <Dropdown.Item href={courseDetailsLink} target="_blank" rel="noopener noreferrer">
               <i className="fa-solid fa-arrow-up-right-from-square mr-2 mb-1" />
               Course content
