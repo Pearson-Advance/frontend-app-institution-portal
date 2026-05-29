@@ -58,6 +58,7 @@ export const Sidebar = () => {
   const activeTab = useSelector((state) => state.main.activeTab);
   const menuItems = [...baseItems];
   const instructorPortalPath = getConfig().INSTRUCTOR_PORTAL_PATH || '';
+  const institution = useSelector((state) => state.main.selectedInstitution);
 
   if (roles.includes(USER_ROLES.INSTRUCTOR) && instructorPortalPath.length > 0) {
     menuItems.push({
@@ -119,15 +120,21 @@ export const Sidebar = () => {
             link,
             label,
             ...rest
-          }) => (
-            <MenuItem
-              key={link}
-              title={label}
-              as="a"
-              href={link}
-              {...rest}
-            />
-          ))
+          }) => {
+            const resolvedLink = label === 'Contact Support' && institution?.supportLink
+              ? institution.supportLink
+              : link;
+
+            return (
+              <MenuItem
+                key={label}
+                title={label}
+                as="a"
+                href={resolvedLink}
+                {...rest}
+              />
+            );
+          })
         }
       </MenuSection>
     </SidebarBase>
