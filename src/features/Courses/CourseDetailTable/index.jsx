@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { DataTable } from '@openedx/paragon';
+import Table from 'features/Main/Table';
 
 import { columns } from 'features/Courses/CourseDetailTable/columns';
 import { RequestStatus } from 'features/constants';
@@ -12,17 +12,14 @@ const CourseDetailTable = ({ data, count }) => {
   const isLoading = classesRequest === RequestStatus.LOADING;
 
   return (
-    <DataTable
+    <Table
       isLoading={isLoading}
       isSortable
       columns={COLUMNS}
       itemCount={count}
       data={data}
-    >
-      <DataTable.Table />
-      <DataTable.EmptyTable content="No classes were found." />
-      <DataTable.TableFooter />
-    </DataTable>
+      text="No classes were found."
+    />
   );
 };
 

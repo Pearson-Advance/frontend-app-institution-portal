@@ -40,7 +40,7 @@ const columns = [
       return (
         <LinkWithQuery
           to={`/courses/${courseId}/${encodeURIComponent(row.original.classId)}?previous=courses`}
-          className="text-truncate link"
+          className="link"
         >
           {row.values.className}
         </LinkWithQuery>
@@ -51,7 +51,7 @@ const columns = [
     Header: 'Course Title',
     accessor: 'masterCourseName',
     Cell: ({ row }) => (
-      <span className="text-truncate">
+      <span>
         {row.original.masterCourseName}
       </span>
     ),
@@ -72,7 +72,7 @@ const columns = [
               );
 
               return (
-                <li key={instructorUsername} className="text-truncate">
+                <li key={instructorUsername}>
                   {instructorData?.instructorName || instructorUsername}
                 </li>
               );
@@ -193,7 +193,7 @@ const columns = [
               data-testid="droprown-action"
               alt="menu for actions"
             />
-            <Dropdown.Menu>
+            <Dropdown.Menu popperConfig={{ strategy: 'fixed' }}>
               <Dropdown.Item
                 target="_blank"
                 rel="noreferrer"

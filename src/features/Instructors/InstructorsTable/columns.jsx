@@ -99,7 +99,7 @@ const getColumns = (showInstructorFeature) => [
             data-testid="droprown-action"
             alt="menu for actions"
           />
-          <Dropdown.Menu>
+          <Dropdown.Menu popperConfig={{ strategy: 'fixed' }}>
             <Dropdown.Item
               className="text-truncate text-decoration-none custom-text-black"
               onClick={openModal}

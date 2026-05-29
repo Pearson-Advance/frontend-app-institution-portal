@@ -6,8 +6,8 @@ import { getConfig } from '@edx/frontend-platform';
 import {
   Row,
   Col,
-  DataTable,
 } from '@openedx/paragon';
+import Table from 'features/Main/Table';
 
 import { getColumns } from 'features/Instructors/InstructorsTable/columns';
 import { RequestStatus } from 'features/constants';
@@ -24,17 +24,14 @@ const InstructorsTable = ({
   return (
     <Row className="justify-content-center my-4 my-3">
       <Col xs={11} className="p-0">
-        <DataTable
+        <Table
           isLoading={isLoading}
           isSortable
           columns={COLUMNS}
           itemCount={count}
           data={data}
-        >
-          <DataTable.Table />
-          <DataTable.EmptyTable content="No instructors found." />
-          <DataTable.TableFooter />
-        </DataTable>
+          text="No instructors found."
+        />
       </Col>
     </Row>
   );
