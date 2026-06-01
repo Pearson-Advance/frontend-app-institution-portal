@@ -1,0 +1,21 @@
+.class-average-score-widget {
+  background: #fff;
+  border: 1px solid #c8d8e8;
+  border-radius: 0.5rem;
+  height: 140px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  width: 232px;
+
+  &__frame {
+    border: 0;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .class-average-score-widget {
+    width: 100%;
+  }
+}

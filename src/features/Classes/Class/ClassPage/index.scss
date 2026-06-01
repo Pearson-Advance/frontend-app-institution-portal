@@ -2,3 +2,15 @@
   display: grid;
   grid-template-rows: min-content 1fr;
 }
+
+.class-summary-row {
+  align-items: flex-start;
+  display: flex;
+  gap: 1.5rem;
+}
+
+@media screen and (max-width: 991px) {
+  .class-summary-row {
+    flex-direction: column;
+  }
+}

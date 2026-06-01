@@ -18,6 +18,7 @@ import { updateActiveTab } from 'features/Main/data/slice';
 import { getColumns } from 'features/Classes/Class/ClassPage/columns';
 import { resetStudentsTable, updateCurrentPage } from 'features/Students/data/slice';
 import { fetchStudentsData, fetchStudentsVouchers } from 'features/Students/data';
+import ClassAverageScoreWidget from 'features/Classes/ClassAverageScoreWidget';
 
 import {
   initialPage,
@@ -240,7 +241,11 @@ const ClassPage = () => {
       </div>
 
       <div className="class-wrapper">
-        <InstructorCard />
+        <div className="class-summary-row">
+          <InstructorCard />
+          <ClassAverageScoreWidget />
+        </div>
+
         <div>
           <div className="d-flex justify-content-end my-3 flex-wrap">
             <Actions previousPage={previousPage} />
@@ -253,15 +258,15 @@ const ClassPage = () => {
             text="No students were found for this class."
           />
           {students.numPages > 1 && (
-          <Pagination
-            paginationLabel="paginationNavigation"
-            pageCount={students.numPages}
-            currentPage={currentPage}
-            onPageSelect={handlePagination}
-            variant="reduced"
-            className="mx-auto pagination-table"
-            size="small"
-          />
+            <Pagination
+              paginationLabel="paginationNavigation"
+              pageCount={students.numPages}
+              currentPage={currentPage}
+              onPageSelect={handlePagination}
+              variant="reduced"
+              className="mx-auto pagination-table"
+              size="small"
+            />
           )}
         </div>
       </div>
