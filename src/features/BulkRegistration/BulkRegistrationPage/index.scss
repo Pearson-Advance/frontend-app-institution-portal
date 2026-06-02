@@ -331,7 +331,7 @@ $border-radius-3:  0.875rem;
 .error-title {
   font-size: 20px;
   font-weight: 700;
-  color: var(--pgn-color-red-vue-700);
+  color: var(--pgn-color-red-vue-500);
   margin: 0 0 8px;
 }
 
@@ -368,7 +368,7 @@ $border-radius-3:  0.875rem;
   border-radius: 50%;
   display: inline-block;
 
-  &--red { background: var(--pgn-color-red-vue-700); }
+  &--red { background: var(--pgn-color-red-vue-500); }
 }
 
 // ─── Paragon DataTable override ───────────────────────────────────────────────
@@ -431,10 +431,10 @@ $border-radius-3:  0.875rem;
 
   &.badge--error {
     background: var(--pgn-color-red-vue-100);
-    color: var(--pgn-color-red-vue-700);
+    color: var(--pgn-color-red-vue-500);
     border: 1px solid var(--pgn-color-red-vue-300);
 
-    &::before { background: var(--pgn-color-red-vue-700); }
+    &::before { background: var(--pgn-color-red-vue-500); }
   }
 
   &.badge--warning {
@@ -455,20 +455,20 @@ $border-radius-3:  0.875rem;
 .fatal-title {
   font-size: 20px;
   font-weight: 700;
-  color: var(--pgn-color-red-vue-700);
+  color: var(--pgn-color-red-vue-500);
   margin: 0 0 8px;
 }
 
 .fatal-message {
   font-size: 14px;
-  color: var(--pgn-color-red-vue-700);
+  color: var(--pgn-color-red-vue-500);
   margin: 0 0 6px;
   font-weight: 500;
 }
 
 .fatal-detail {
   font-size: 13px;
-  color: var(--pgn-color-red-vue-700);
+  color: var(--pgn-color-red-vue-500);
   margin: 0;
   font-family: monospace;
   background: var(--pgn-color-red-vue-100);
