@@ -56,9 +56,12 @@ export const Sidebar = () => {
   const dispatch = useDispatch();
   const roles = getUserRoles();
   const activeTab = useSelector((state) => state.main.activeTab);
+  const institution = useSelector((state) => state.main.selectedInstitution);
   const menuItems = [...baseItems];
   const instructorPortalPath = getConfig().INSTRUCTOR_PORTAL_PATH || '';
-  const institution = useSelector((state) => state.main.selectedInstitution);
+  const isNavyInstitution = (
+    getConfig().NAVY_INSTITUTIONS || []
+  ).includes(institution?.uuid);
 
   if (roles.includes(USER_ROLES.INSTRUCTOR) && instructorPortalPath.length > 0) {
     menuItems.push({
@@ -79,6 +82,28 @@ export const Sidebar = () => {
 
   const addQueryParam = useInstitutionIdQueryParam();
   const currentSelection = activeTab.replace(/\?institutionId=\d+/, '');
+
+  const helpItems = isNavyInstitution
+    ? [
+      {
+        link: institution?.supportLink || 'https://govstore.pearsonvue.com/contact-us-ciwtcots',
+        label: 'CIWT Support Center',
+        icon: <i className="fa-regular fa-messages-question" />,
+        target: '_blank',
+        rel: 'noopener noreferrer',
+        affix: (
+          <i className="affix-icon fa-regular fa-arrow-up-right-from-square" />
+        ),
+      },
+    ]
+    : SIDEBAR_HELP_ITEMS.map(item => (
+      item.label === 'Contact Support' && institution?.supportLink
+        ? {
+          ...item,
+          link: institution.supportLink,
+        }
+        : item
+    ));
 
   return (
     <SidebarBase>
@@ -116,25 +141,19 @@ export const Sidebar = () => {
       </MenuSection>
       <MenuSection title="Help and support">
         {
-          SIDEBAR_HELP_ITEMS.map(({
+          helpItems.map(({
             link,
             label,
             ...rest
-          }) => {
-            const resolvedLink = label === 'Contact Support' && institution?.supportLink
-              ? institution.supportLink
-              : link;
-
-            return (
-              <MenuItem
-                key={label}
-                title={label}
-                as="a"
-                href={resolvedLink}
-                {...rest}
-              />
-            );
-          })
+          }) => (
+            <MenuItem
+              key={label}
+              title={label}
+              as="a"
+              href={link}
+              {...rest}
+            />
+          ))
         }
       </MenuSection>
     </SidebarBase>
