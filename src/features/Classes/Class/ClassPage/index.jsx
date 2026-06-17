@@ -194,17 +194,19 @@ const ClassPage = () => {
       };
 
       dispatch(fetchStudentsData(institution.id, currentPage, params));
-
-      if (displayVoucherOptions) {
-        dispatch(fetchStudentsVouchers(displayVoucherOptions));
-      }
     }
 
     return () => {
       dispatch(resetStudentsTable());
       dispatch(updateCurrentPage(initialPage));
     };
-  }, [dispatch, institution.id, courseIdDecoded, classIdDecoded, currentPage, displayVoucherOptions]);
+  }, [dispatch, institution.id, courseIdDecoded, classIdDecoded, currentPage]);
+
+  useEffect(() => {
+    if (institution.id && displayVoucherOptions) {
+      dispatch(fetchStudentsVouchers(displayVoucherOptions));
+    }
+  }, [dispatch, institution.id, displayVoucherOptions]);
 
   useEffect(() => {
     if (institution.id) {
