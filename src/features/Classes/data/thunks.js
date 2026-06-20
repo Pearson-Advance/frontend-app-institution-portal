@@ -10,9 +10,16 @@ import {
   fetchAllClassesDataRequest,
   fetchAllClassesDataSuccess,
   fetchAllClassesDataFailed,
+  fetchClassAnalyticsWidgetsRequest,
+  fetchClassAnalyticsWidgetsSuccess,
+  fetchClassAnalyticsWidgetsFailed,
 } from 'features/Classes/data/slice';
 
-import { handleSkillableDashboard, handleXtremeLabsDashboard } from 'features/Classes/data/api';
+import {
+  getClassAnalyticsWidgets,
+  handleSkillableDashboard,
+  handleXtremeLabsDashboard,
+} from 'features/Classes/data/api';
 import { getClassesByInstitution, isFeatureEnabled } from 'features/Common/data/api';
 import { initialPage } from 'features/constants';
 import { encode as risonEncode } from 'rison-node';
@@ -73,6 +80,34 @@ function fetchAllClassesData(id, courseId = '', urlParamsFilters = '', limit = f
   };
 }
 
+/**
+ * Fetch analytics widgets for the Class Details page.
+ *
+ * The function intentionally receives a single params object so callers do not
+ * accidentally pass the full object as institution_id.
+ *
+ * @param {Object} params - Request params.
+ * @param {number|string} params.institutionId - Selected institution id.
+ * @param {string} params.classId - Current class/course key.
+ * @returns {Function} Redux thunk.
+ */
+function fetchClassAnalyticsWidgets({ institutionId, classId }) {
+  return async (dispatch) => {
+    dispatch(fetchClassAnalyticsWidgetsRequest());
+
+    try {
+      const response = camelCaseObject(
+        await getClassAnalyticsWidgets({ institutionId, classId }),
+      );
+
+      dispatch(fetchClassAnalyticsWidgetsSuccess(response.data.widgets || []));
+    } catch (error) {
+      dispatch(fetchClassAnalyticsWidgetsFailed());
+      logError(error);
+    }
+  };
+}
+
 function fetchLabSummaryLink(classId, labSummaryTag, showToast) {
   return async () => {
     try {
@@ -108,7 +143,6 @@ function fetchLabSummaryLink(classId, labSummaryTag, showToast) {
  * Builds the Superset “Classes” dashboard URL if the feature is enabled.
  *
  * @param {string} classId
- * @param {number|string} institutionId
  * @param {string} flagName
  * @returns {Promise<string|null>}
  */
@@ -150,6 +184,7 @@ export {
   fetchClassesData,
   fetchClassesOptionsData,
   fetchAllClassesData,
+  fetchClassAnalyticsWidgets,
   fetchLabSummaryLink,
   supersetUrlClassesDashboard,
 };

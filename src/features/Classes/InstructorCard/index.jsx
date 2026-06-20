@@ -17,7 +17,7 @@ import 'features/Classes/InstructorCard/index.scss';
 
 const INSTRUCTORS_NUMBER = 3;
 
-const InstructorCard = ({ previousPage }) => {
+const InstructorCard = ({ previousPage, children }) => {
   const dispatch = useDispatch();
   const { classId, courseId } = useParams();
   const navigate = useNavigate();
@@ -67,64 +67,80 @@ const InstructorCard = ({ previousPage }) => {
   }, [institution.id, classIdDecoded, dispatch]);
 
   return (
-    <article className="instructor-wrapper mb-4 d-flex flex-column flex-sm-row justify-content-between align-items-start">
-      <div className="d-flex flex-column w-75 justify-content-between h-100">
-        <h3 className="text-color text-uppercase font-weight-bold text-truncate w-75" title={classInfo?.className}>
-          {classInfo?.className}
-        </h3>
-        {isLoadingClasses && (
-          <div className="w-100 h-100 d-flex justify-content-center align-items-center">
-            <Spinner
-              animation="border"
-              className="mie-3"
-              screenReaderText="loading"
-            />
-          </div>
-        )}
-        {!isLoadingClasses && (
-          <>
-            <h4 className="text-color text-uppercase font-weight-bold text-truncate w-75" title={classInfo?.masterCourseName}>
-              {classInfo?.masterCourseName}
-            </h4>
-            <div className="text-uppercase">
-              <i className="fa-regular fa-calendar mr-2" />
-              <span>
-                {formatDateRange(classInfo?.startDate, classInfo?.endDate)}
-              </span>
+    <article className="instructor-wrapper mb-4">
+      <div className="instructor-wrapper__main">
+        <section className="instructor-wrapper__class-info">
+          {isLoadingClasses && (
+            <div className="w-100 h-100 d-flex justify-content-center align-items-center">
+              <Spinner
+                animation="border"
+                className="mie-3"
+                screenReaderText="loading"
+              />
             </div>
-            <div className="text-color">
-              <b className="mr-1">Enrollment:</b>
-              {totalEnrolled} enrolled, {seatsAvailable} {seatsAvailable > 0 && 'seat'}{seatsAvailable > 1 && 's'} {seatsAvailable > 0 && 'available'}, {remainingLicenses} license{remainingLicenses > 1 && 's'} remaining
-            </div>
-          </>
-        )}
-      </div>
-      <div className="separator" />
-      <div className="instructor-details">
-        <h4 className="text-color text-uppercase mb-3 h5">Instructor{instructors?.length > 1 && 's'}</h4>
-        {isLoadingClasses && (
-          <div className="w-100 h-100 d-flex justify-content-center align-items-center">
-            <Spinner
-              animation="border"
-              className="mie-3"
-              screenReaderText="loading"
-            />
-          </div>
-        )}
-        {!isLoadingClasses && (
-          <div className="d-flex align-items-center flex-wrap">
-            {classInfo?.instructors?.length === 0 && (
-              <Button
-                variant="outline-primary"
-                className="text-decoration-none text-primary bg-white p-2 px-3"
-                onClick={handleManageInstructorButton}
-              >
-                Assign instructor
-              </Button>
-            )}
+          )}
 
-            {
-              classInfo?.instructors?.slice(0, INSTRUCTORS_NUMBER)?.map((instructor) => {
+          {!isLoadingClasses && (
+            <>
+              <h3
+                className="instructor-wrapper__class-name text-color text-uppercase font-weight-bold text-truncate"
+                title={classInfo?.className}
+              >
+                {classInfo?.className}
+              </h3>
+
+              <h4
+                className="instructor-wrapper__course-name text-color text-uppercase font-weight-bold text-truncate"
+                title={classInfo?.masterCourseName}
+              >
+                {classInfo?.masterCourseName}
+              </h4>
+
+              <div className="instructor-wrapper__date text-uppercase">
+                <i className="fa-regular fa-calendar mr-2" />
+                <span>
+                  {formatDateRange(classInfo?.startDate, classInfo?.endDate)}
+                </span>
+              </div>
+
+              <div className="instructor-wrapper__enrollment text-color">
+                <b className="mr-1">Enrollment:</b>
+                {totalEnrolled} enrolled, {seatsAvailable} {seatsAvailable > 0 && 'seat'}{seatsAvailable > 1 && 's'} {seatsAvailable > 0 && 'available'}, {remainingLicenses} license{remainingLicenses > 1 && 's'} remaining
+              </div>
+            </>
+          )}
+        </section>
+
+        <div className="separator" />
+
+        <section className="instructor-details">
+          <h4 className="text-color text-uppercase mb-3 h5">
+            Instructor{instructors?.length > 1 && 's'}
+          </h4>
+
+          {isLoadingClasses && (
+            <div className="w-100 h-100 d-flex justify-content-center align-items-center">
+              <Spinner
+                animation="border"
+                className="mie-3"
+                screenReaderText="loading"
+              />
+            </div>
+          )}
+
+          {!isLoadingClasses && (
+            <div className="d-flex align-items-center flex-wrap">
+              {classInfo?.instructors?.length === 0 && (
+                <Button
+                  variant="outline-primary"
+                  className="text-decoration-none text-primary bg-white p-2 px-3"
+                  onClick={handleManageInstructorButton}
+                >
+                  Assign instructor
+                </Button>
+              )}
+
+              {classInfo?.instructors?.slice(0, INSTRUCTORS_NUMBER)?.map((instructor) => {
                 const instructorInfo = instructors.find((user) => user.instructorUsername === instructor);
 
                 if (!instructorInfo) { return null; }
@@ -136,38 +152,46 @@ const InstructorCard = ({ previousPage }) => {
                     name={instructorInfo.instructorName}
                   />
                 );
-              })
-            }
-          </div>
-        )}
+              })}
+            </div>
+          )}
 
-        {classInfo?.instructors?.length > INSTRUCTORS_NUMBER && (
-          <div className="mt-2">
-            +
-            <span className="mx-1">{classInfo.instructors.slice(INSTRUCTORS_NUMBER).length}</span>
-            more...
-          </div>
-        )}
+          {classInfo?.instructors?.length > INSTRUCTORS_NUMBER && (
+            <div className="mt-2">
+              +
+              <span className="mx-1">{classInfo.instructors.slice(INSTRUCTORS_NUMBER).length}</span>
+              more...
+            </div>
+          )}
 
-        {classInfo?.instructors?.length > 0 && (
-          <Button
-            variant="tertiary"
-            className="text-decoration-underline text-primary bg-white p-2 px-0"
-            onClick={handleManageInstructorButton}
-          >
-            Manage instructor{instructors?.length > 1 && 's'}
-          </Button>
-        )}
+          {classInfo?.instructors?.length > 0 && (
+            <Button
+              variant="tertiary"
+              className="text-decoration-underline text-primary bg-white p-2 px-0"
+              onClick={handleManageInstructorButton}
+            >
+              Manage instructor{instructors?.length > 1 && 's'}
+            </Button>
+          )}
+        </section>
       </div>
+
+      {children && (
+        <div className="instructor-wrapper__overview">
+          {children}
+        </div>
+      )}
     </article>
   );
 };
 
 InstructorCard.propTypes = {
+  children: PropTypes.node,
   previousPage: PropTypes.string,
 };
 
 InstructorCard.defaultProps = {
+  children: null,
   previousPage: 'courses',
 };
 
