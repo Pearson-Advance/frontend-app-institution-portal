@@ -1,2 +1,5 @@
 export { reducer } from 'features/Classes/data/slice';
-export { fetchClassesData } from 'features/Classes/data/thunks';
+export {
+  fetchClassesData,
+  fetchClassAnalyticsWidgets,
+} from 'features/Classes/data/thunks';

@@ -11,6 +11,7 @@ import { getConfig } from '@edx/frontend-platform';
 
 import Table from 'features/Main/Table';
 import InstructorCard from 'features/Classes/InstructorCard';
+import ClassAnalyticsWidgets from 'features/Classes/ClassAnalyticsWidgets';
 import Actions from 'features/Classes/Class/ClassPage/Actions';
 import { Button } from 'react-paragon-topaz';
 
@@ -242,7 +243,9 @@ const ClassPage = () => {
       </div>
 
       <div className="class-wrapper">
-        <InstructorCard />
+        <InstructorCard previousPage={previousPage}>
+          <ClassAnalyticsWidgets classId={classIdDecoded} />
+        </InstructorCard>
         <div>
           <div className="d-flex justify-content-end my-3 flex-wrap">
             <Actions previousPage={previousPage} />

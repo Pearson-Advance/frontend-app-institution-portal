@@ -19,6 +19,11 @@ const initialState = {
     status: RequestStatus.INITIAL,
     error: null,
   },
+  classAnalyticsWidgets: {
+    data: [],
+    status: RequestStatus.INITIAL,
+    error: null,
+  },
 };
 
 export const classesSlice = createSlice({
@@ -67,6 +72,23 @@ export const classesSlice = createSlice({
     fetchAllClassesDataFailed: (state) => {
       state.allClasses.status = RequestStatus.ERROR;
     },
+    fetchClassAnalyticsWidgetsRequest: (state) => {
+      state.classAnalyticsWidgets.status = RequestStatus.LOADING;
+      state.classAnalyticsWidgets.error = null;
+    },
+    fetchClassAnalyticsWidgetsSuccess: (state, { payload }) => {
+      state.classAnalyticsWidgets.data = payload;
+      state.classAnalyticsWidgets.status = RequestStatus.SUCCESS;
+      state.classAnalyticsWidgets.error = null;
+    },
+    fetchClassAnalyticsWidgetsFailed: (state) => {
+      state.classAnalyticsWidgets.data = [];
+      state.classAnalyticsWidgets.status = RequestStatus.ERROR;
+      state.classAnalyticsWidgets.error = true;
+    },
+    resetClassAnalyticsWidgets: (state) => {
+      state.classAnalyticsWidgets = initialState.classAnalyticsWidgets;
+    },
     resetClasses: (state) => {
       state.allClasses = initialState.allClasses;
     },
@@ -84,6 +106,10 @@ export const {
   fetchAllClassesDataRequest,
   fetchAllClassesDataSuccess,
   fetchAllClassesDataFailed,
+  fetchClassAnalyticsWidgetsRequest,
+  fetchClassAnalyticsWidgetsSuccess,
+  fetchClassAnalyticsWidgetsFailed,
+  resetClassAnalyticsWidgets,
   resetClasses,
   resetClassesTable,
 } = classesSlice.actions;

@@ -1,0 +1,52 @@
+.class-analytics-overview {
+  background-color: #f3f5f7;
+  border-radius: 0.375rem;
+  padding: 1.25rem 1.5rem;
+  width: 100%;
+}
+
+.class-analytics-overview__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.class-analytics-overview__title {
+  color: #323538;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.class-analytics-overview__button {
+  background-color: #fff;
+  border-color: #0075b4;
+  color: #0075b4;
+  font-size: 0.875rem;
+  font-weight: 700;
+  padding: 0.45rem 0.85rem;
+}
+
+.class-analytics-overview__cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+@media screen and (max-width: 575px) {
+  .class-analytics-overview {
+    padding: 1rem;
+  }
+
+  .class-analytics-overview__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .class-analytics-overview__cards {
+    flex-direction: column;
+  }
+}
