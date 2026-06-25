@@ -39,7 +39,7 @@ const StatusFilters = ({ currentPage, statusFilter, setStatusFilter }) => {
 
   return (
     <Tabs
-      defaultActiveKey="All"
+      defaultActiveKey="Active"
       activeKey={statusFilter}
       onSelect={setStatusFilter}
       variant="button-group"

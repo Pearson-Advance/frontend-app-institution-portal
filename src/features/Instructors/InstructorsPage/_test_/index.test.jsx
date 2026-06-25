@@ -99,11 +99,11 @@ describe('InstructorPage', () => {
 
     waitFor(() => {
       expect(component.container).toHaveTextContent('Instructor1');
-      expect(component.container).toHaveTextContent('Instructor2');
       expect(component.container).toHaveTextContent('Instructor 1');
-      expect(component.container).toHaveTextContent('Instructor 2');
       expect(component.container).toHaveTextContent('instructor1@example.com');
-      expect(component.container).toHaveTextContent('instructor2@example.com');
+      expect(component.container).not.toHaveTextContent('Instructor2');
+      expect(component.container).not.toHaveTextContent('Instructor 2');
+      expect(component.container).not.toHaveTextContent('instructor2@example.com');
     });
   });
 
