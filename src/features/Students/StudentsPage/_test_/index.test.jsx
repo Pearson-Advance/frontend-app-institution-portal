@@ -21,7 +21,7 @@ const mockStore = {
           instructors: ['Instructor 1'],
           created: 'Fri, 25 Aug 2023 19:01:22 GMT',
           firstAccess: 'Fri, 25 Aug 2023 19:01:23 GMT',
-          lastAccess: 'Fri, 25 Aug 2023 20:20:22 GMT',
+          lastAccess: '2023-08-25T20:20:22Z',
           status: 'Active',
           examReady: {
             status: 'READY',
@@ -37,7 +37,7 @@ const mockStore = {
           instructors: ['Instructor 2'],
           created: 'Sat, 26 Aug 2023 19:01:22 GMT',
           firstAccess: 'Sat, 26 Aug 2023 19:01:24 GMT',
-          lastAccess: 'Sat, 26 Aug 2023 21:22:22 GMT',
+          lastAccess: '2023-08-26T21:22:22Z',
           status: 'Pending',
           examReady: {
             status: 'PENDING',
