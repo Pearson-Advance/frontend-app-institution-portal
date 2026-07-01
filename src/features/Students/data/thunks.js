@@ -20,7 +20,7 @@ import {
   getClassesMetrics,
   getStudentsMetrics,
   getStudentsByEmail,
-  getStudentbyInstitutionAdmin,
+  getStudentsByInstitutionId,
   getInstitutionVouchersByExamSeriesCode,
 } from 'features/Students/data/api';
 import { RequestStatus } from 'features/constants';
@@ -30,7 +30,7 @@ function fetchStudentsData(id, currentPage, filtersData) {
     dispatch(fetchStudentsDataRequest());
 
     try {
-      const response = camelCaseObject(await getStudentbyInstitutionAdmin(id, currentPage, filtersData));
+      const response = camelCaseObject(await getStudentsByInstitutionId(id, currentPage, filtersData));
       dispatch(fetchStudentsDataSuccess(response.data));
     } catch (error) {
       dispatch(fetchStudentsDataFailed());

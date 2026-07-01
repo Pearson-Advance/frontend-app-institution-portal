@@ -19,10 +19,11 @@ import DeleteModal from 'features/Common/DeleteModal';
 import LinkWithQuery from 'features/Main/LinkWithQuery';
 import EnrollStudent from 'features/Classes/EnrollStudent';
 
-import { RequestStatus, initialPage, modalDeleteText } from 'features/constants';
+import { RequestStatus, modalDeleteText } from 'features/constants';
 
 import { deleteClass } from 'features/Courses/data/thunks';
-import { fetchClassesData, fetchLabSummaryLink, supersetUrlClassesDashboard } from 'features/Classes/data/thunks';
+import { fetchLabSummaryLink, supersetUrlClassesDashboard } from 'features/Classes/data/thunks';
+import { classesApi } from 'features/Classes/data/classesApi';
 
 import { formatUTCDate, setAssignStaffRole } from 'helpers';
 import { resetClassState } from 'features/Courses/data/slice';
@@ -127,7 +128,6 @@ const columns = [
       };
 
       const dispatch = useDispatch();
-      const institution = useSelector((state) => state.main.selectedInstitution);
       const deletionState = useSelector((state) => state.courses.newClass.status);
       const [isOpenModal, openModal, closeModal] = useToggle(false);
       const [isOpenEnrollModal, openEnrollModal, closeEnrollModal] = useToggle(false);
@@ -162,7 +162,7 @@ const columns = [
             isRequestComplete: true,
           });
 
-          await dispatch(fetchClassesData(institution.id, initialPage));
+          dispatch(classesApi.util.invalidateTags(['Classes']));
         } catch (error) {
           logError(error);
         } finally {
@@ -202,7 +202,7 @@ const columns = [
       };
 
       const finalCall = () => {
-        dispatch(fetchClassesData(institution.id, initialPage));
+        dispatch(classesApi.util.invalidateTags(['Classes']));
       };
 
       return (

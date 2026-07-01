@@ -1,5 +1,5 @@
 import {
-  getStudentbyInstitutionAdmin, handleEnrollments,
+  getStudentsByInstitutionId, handleEnrollments,
 } from 'features/Students/data/api';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { MAX_TABLE_RECORDS } from 'features/constants';
@@ -15,7 +15,7 @@ jest.mock('@edx/frontend-platform', () => ({
   })),
 }));
 
-describe('getStudentbyInstitutionAdmin', () => {
+describe('getStudentsByInstitutionId', () => {
   test('should call getAuthenticatedHttpClient with the correct parameters', () => {
     const httpClientMock = {
       get: jest.fn(),
@@ -26,7 +26,7 @@ describe('getStudentbyInstitutionAdmin', () => {
 
     getAuthenticatedHttpClient.mockReturnValue(httpClientMock);
 
-    getStudentbyInstitutionAdmin(institutionId, page);
+    getStudentsByInstitutionId(institutionId, page);
 
     expect(getAuthenticatedHttpClient).toHaveBeenCalledTimes(1);
     expect(getAuthenticatedHttpClient).toHaveBeenCalledWith();

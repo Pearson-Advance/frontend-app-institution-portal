@@ -3,9 +3,21 @@ import { Route } from 'react-router-dom';
 import { renderWithProviders } from 'test-utils';
 
 import InstructorCard from 'features/Classes/InstructorCard';
+import { useGetClassesByCourseQuery } from 'features/Classes/data/classesApi';
+import { useGetInstructorsOptionsQuery } from 'features/Instructors/data/instructorsApi';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
+}));
+
+jest.mock('features/Classes/data/classesApi', () => ({
+  ...jest.requireActual('features/Classes/data/classesApi'),
+  useGetClassesByCourseQuery: jest.fn(),
+}));
+
+jest.mock('features/Instructors/data/instructorsApi', () => ({
+  ...jest.requireActual('features/Instructors/data/instructorsApi'),
+  useGetInstructorsOptionsQuery: jest.fn(),
 }));
 
 const basePath = `/courses/${encodeURIComponent(
@@ -13,6 +25,9 @@ const basePath = `/courses/${encodeURIComponent(
 )}/${encodeURIComponent('ccx-v1')}`;
 
 const stateMock = {
+  main: {
+    selectedInstitution: { id: 1 },
+  },
   instructors: {
     selectOptions: {
       data: [
@@ -41,16 +56,31 @@ const stateMock = {
 };
 
 describe('InstructorCard', () => {
-  const renderComponent = (customState = stateMock) => renderWithProviders(
-    <Route
-      path="/courses/:courseId/:classId"
-      element={<InstructorCard isOpen onClose={() => {}} />}
-    />,
-    {
-      preloadedState: customState,
-      initialEntries: [basePath],
-    },
-  );
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const renderComponent = (customState = stateMock) => {
+    useGetClassesByCourseQuery.mockReturnValue({
+      data: customState.classes?.allClasses?.data ?? [],
+      isFetching: false,
+    });
+    useGetInstructorsOptionsQuery.mockReturnValue({
+      data: customState.instructors?.selectOptions?.data ?? [],
+      isFetching: false,
+    });
+
+    return renderWithProviders(
+      <Route
+        path="/courses/:courseId/:classId"
+        element={<InstructorCard isOpen onClose={() => {}} />}
+      />,
+      {
+        preloadedState: customState,
+        initialEntries: [basePath],
+      },
+    );
+  };
 
   test('Should render with correct elements', () => {
     const { getByText } = renderComponent();

@@ -1,6 +1,8 @@
 import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
 import { getInstructorByInstitution } from 'features/Common/data/api';
+import { classesApi } from 'features/Classes/data/classesApi';
+import { instructorsApi } from 'features/Instructors/data/instructorsApi';
 import {
   handleInstructorsEnrollment,
   handleNewInstructor,
@@ -63,6 +65,8 @@ function assignInstructors(data) {
     try {
       const response = await handleInstructorsEnrollment(data);
       dispatch(assignInstructorsSuccess(response.data));
+      dispatch(classesApi.util.invalidateTags(['Classes']));
+      dispatch(instructorsApi.util.invalidateTags(['InstructorsOptions']));
     } catch (error) {
       dispatch(assignInstructorsFailed());
       logError(error);

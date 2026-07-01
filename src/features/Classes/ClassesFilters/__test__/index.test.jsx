@@ -8,11 +8,23 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { renderWithProviders } from 'test-utils';
 
 import ClassesFilters from 'features/Classes/ClassesFilters';
+import { useGetCoursesOptionsQuery } from 'features/Courses/data/coursesApi';
+import { useGetInstructorsOptionsQuery } from 'features/Instructors/data/instructorsApi';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(() => ({})),
   useLocation: jest.fn(() => ({})),
+}));
+
+jest.mock('features/Courses/data/coursesApi', () => ({
+  ...jest.requireActual('features/Courses/data/coursesApi'),
+  useGetCoursesOptionsQuery: jest.fn(),
+}));
+
+jest.mock('features/Instructors/data/instructorsApi', () => ({
+  ...jest.requireActual('features/Instructors/data/instructorsApi'),
+  useGetInstructorsOptionsQuery: jest.fn(),
 }));
 
 let axiosMock;
@@ -96,8 +108,9 @@ jest.mock('react-paragon-topaz', () => ({
       ))}
     </select>
   ),
-  Button: ({ children, ...props }) => (
-    <button {...props} type="button">
+  Button: ({ children, type = 'button', ...props }) => (
+    // eslint-disable-next-line react/button-has-type
+    <button {...props} type={type}>
       {children}
     </button>
   ),
@@ -118,6 +131,15 @@ describe('ClassesFilters Component', () => {
 
     axiosMock = new MockAdapter(getAuthenticatedHttpClient());
     mockSetFilters.mockClear();
+
+    useGetCoursesOptionsQuery.mockReturnValue({
+      data: [courseOption],
+      isFetching: false,
+    });
+    useGetInstructorsOptionsQuery.mockReturnValue({
+      data: [instructorOption],
+      isFetching: false,
+    });
 
     const coursesApiUrl = `
     ${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/courses/?limit=false&institution_id=1&page=1`;
@@ -258,5 +280,78 @@ describe('ClassesFilters Component', () => {
     });
 
     expect(buttonApply).toBeInTheDocument();
+  });
+
+  test('Should restore previously applied filter values from state', () => {
+    const resetPagination = jest.fn();
+    const preloadedState = {
+      ...mockStore,
+      classes: {
+        filtersForm: {
+          classFilter: 'Persisted class',
+          courseSelected: null,
+          instructorSelected: null,
+          startDate: '2024-01-01',
+          endDate: '2024-02-01',
+        },
+      },
+    };
+
+    const { getByTestId } = renderWithProviders(
+      <ClassesFilters resetPagination={resetPagination} />,
+      { preloadedState },
+    );
+
+    expect(getByTestId('class_name')).toHaveValue('Persisted class');
+    expect(getByTestId('start_date')).toHaveValue('2024-01-01');
+    expect(getByTestId('end_date')).toHaveValue('2024-02-01');
+  });
+
+  test('Should persist filter form values in state when applying', async () => {
+    const resetPagination = jest.fn();
+    const { getByText, getByTestId, store } = renderWithProviders(
+      <ClassesFilters resetPagination={resetPagination} />,
+      { preloadedState: mockStore },
+    );
+
+    fireEvent.change(getByTestId('class_name'), {
+      target: { value: 'My class' },
+    });
+
+    await act(async () => {
+      fireEvent.click(getByText('Apply'));
+    });
+
+    expect(store.getState().classes.filtersForm.classFilter).toBe('My class');
+  });
+
+  test('Should reset the persisted filter form when cleaning filters', async () => {
+    const resetPagination = jest.fn();
+    const preloadedState = {
+      ...mockStore,
+      classes: {
+        filtersForm: {
+          classFilter: 'Persisted class',
+          courseSelected: null,
+          instructorSelected: null,
+          startDate: '',
+          endDate: '',
+        },
+      },
+    };
+
+    const { getByText, getByTestId, store } = renderWithProviders(
+      <ClassesFilters resetPagination={resetPagination} />,
+      { preloadedState },
+    );
+
+    expect(getByTestId('class_name')).toHaveValue('Persisted class');
+
+    await act(async () => {
+      fireEvent.click(getByText('Reset'));
+    });
+
+    expect(store.getState().classes.filtersForm).toEqual({});
+    expect(getByTestId('class_name')).toHaveValue('');
   });
 });

@@ -17,18 +17,16 @@ import { Button } from 'react-paragon-topaz';
 
 import { updateActiveTab } from 'features/Main/data/slice';
 import { getColumns } from 'features/Classes/Class/ClassPage/columns';
-import { resetStudentsTable, updateCurrentPage } from 'features/Students/data/slice';
-import { fetchStudentsData, fetchStudentsVouchers } from 'features/Students/data';
+import { fetchStudentsVouchers } from 'features/Students/data';
 
 import {
   initialPage,
-  RequestStatus,
   VOUCHER_STATUS,
   VOUCHER_RULE_TYPES,
   VOUCHER_RULES,
 } from 'features/constants';
-import { resetClassesTable, resetClasses } from 'features/Classes/data/slice';
-import { fetchAllClassesData } from 'features/Classes/data/thunks';
+import { useGetClassesByCourseQuery } from 'features/Classes/data/classesApi';
+import { useGetStudentsByClassQuery } from 'features/Students/data/studentsApi';
 
 import { useInstitutionIdQueryParam } from 'hooks';
 
@@ -47,24 +45,44 @@ const ClassPage = () => {
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const institution = useSelector((state) => state.main.selectedInstitution);
-  const students = useSelector((state) => state.students.table);
   const vouchers = useSelector((state) => state.students.vouchers?.results || []);
   const addQueryParam = useInstitutionIdQueryParam();
-
-  const isLoadingStudents = students.status === RequestStatus.LOADING;
 
   const enableVoucherColumn = getConfig().PSS_ENABLE_ASSIGN_VOUCHER || false;
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
-    dispatch(updateCurrentPage(targetPage));
   };
 
   const defaultClassInfo = useMemo(() => ({
     className: '',
   }), []);
 
-  const classInfo = useSelector((state) => state.classes.allClasses.data)
+  const { data: classesByCourse = [] } = useGetClassesByCourseQuery(
+    { institutionId: institution.id, courseId: courseIdDecoded },
+    { skip: !institution.id },
+  );
+
+  const {
+    data: studentsData = {},
+    isFetching: isLoadingStudents,
+  } = useGetStudentsByClassQuery(
+    {
+      institutionId: institution.id,
+      page: currentPage,
+      courseId: courseIdDecoded,
+      classId: classIdDecoded,
+    },
+    { skip: !institution.id },
+  );
+
+  const {
+    results: studentsList = [],
+    count: studentsCount = 0,
+    numPages: studentsNumPages = 0,
+  } = studentsData;
+
+  const classInfo = classesByCourse
     .find((classElement) => classElement?.classId === classIdDecoded) || defaultClassInfo;
 
   const displayVoucherOptions = classInfo.examSeriesCode;
@@ -134,25 +152,25 @@ const ClassPage = () => {
   };
 
   const mergeStudentsWithVouchers = () => {
-    if (!students?.data?.length) {
+    if (!studentsList?.length) {
       return [];
     }
 
     if (!vouchers?.length) {
-      return students.data.map(student => ({
+      return studentsList.map(student => ({
         ...student,
         voucherInfo: createVoucherInfo(null, VOUCHER_RULE_TYPES.NO_VOUCHER),
       }));
     }
 
     if (!institution?.uuid) {
-      return students.data.map(student => ({
+      return studentsList.map(student => ({
         ...student,
         voucherInfo: createVoucherInfo(null, VOUCHER_RULE_TYPES.DEFAULT),
       }));
     }
 
-    return students.data.map(student => {
+    return studentsList.map(student => {
       const { sameInstitution, otherInstitution } = groupUserVouchersByInstitution(
         vouchers,
         student.userId,
@@ -187,38 +205,10 @@ const ClassPage = () => {
   }, [dispatch, classIdDecoded]);
 
   useEffect(() => {
-    if (institution.id) {
-      const params = {
-        course_id: courseIdDecoded,
-        class_id: classIdDecoded,
-        limit: true,
-      };
-
-      dispatch(fetchStudentsData(institution.id, currentPage, params));
-    }
-
-    return () => {
-      dispatch(resetStudentsTable());
-      dispatch(updateCurrentPage(initialPage));
-    };
-  }, [dispatch, institution.id, courseIdDecoded, classIdDecoded, currentPage]);
-
-  useEffect(() => {
     if (institution.id && displayVoucherOptions) {
       dispatch(fetchStudentsVouchers(displayVoucherOptions));
     }
   }, [dispatch, institution.id, displayVoucherOptions]);
-
-  useEffect(() => {
-    if (institution.id) {
-      dispatch(fetchAllClassesData(institution.id, courseIdDecoded));
-    }
-
-    return () => {
-      dispatch(resetClassesTable());
-      dispatch(resetClasses());
-    };
-  }, [dispatch, institution.id, courseIdDecoded]);
 
   useEffect(() => {
     if (institution.id !== undefined && institutionRef.current === undefined) {
@@ -253,14 +243,14 @@ const ClassPage = () => {
           <Table
             isLoading={isLoadingStudents}
             columns={COLUMNS}
-            count={students.count}
+            count={studentsCount}
             data={mergeStudentsWithVouchers()}
             text="No students were found for this class."
           />
-          {students.numPages > 1 && (
+          {studentsNumPages > 1 && (
           <Pagination
             paginationLabel="paginationNavigation"
-            pageCount={students.numPages}
+            pageCount={studentsNumPages}
             currentPage={currentPage}
             onPageSelect={handlePagination}
             variant="reduced"

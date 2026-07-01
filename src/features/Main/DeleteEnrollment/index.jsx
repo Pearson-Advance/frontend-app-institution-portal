@@ -16,6 +16,7 @@ import {
 import {
   fetchStudentsDataSuccess,
 } from 'features/Students/data/slice';
+import { studentsApi } from 'features/Students/data/studentsApi';
 import { deleteEnrollment } from 'features/Main/data/api';
 
 /**
@@ -62,6 +63,8 @@ const DeleteEnrollment = ({ studentEmail, classId }) => {
           results: updatedStudents,
           count: updatedStudents.length,
         }));
+
+        dispatch(studentsApi.util.invalidateTags(['StudentsClass']));
 
         setMessage('Enrollment deleted successfully.');
         closeConfirmation();

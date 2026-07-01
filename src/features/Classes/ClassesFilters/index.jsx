@@ -5,19 +5,26 @@ import PropTypes from 'prop-types';
 
 import { Col, Form } from '@openedx/paragon';
 import { Select, Button } from 'react-paragon-topaz';
-import { logError } from '@edx/frontend-platform/logging';
 
 import { initialPage } from 'features/constants';
 import { buildFilterParams } from 'helpers';
-import { fetchClassesData } from 'features/Classes/data/thunks';
-import { fetchCoursesOptionsData } from 'features/Courses/data/thunks';
-import { fetchInstructorsOptionsData } from 'features/Instructors/data/thunks';
-import { updateFilters, updateCurrentPage } from 'features/Classes/data/slice';
+import { useGetCoursesOptionsQuery } from 'features/Courses/data/coursesApi';
+import { useGetInstructorsOptionsQuery } from 'features/Instructors/data/instructorsApi';
+import {
+  updateFilters,
+  updateFiltersForm,
+  resetFiltersForm,
+  updateCurrentPage,
+} from 'features/Classes/data/slice';
 
 const NOT_ASSIGNED_OPTION = {
   label: 'Not assigned',
   value: 'null',
 };
+
+// Stable empty array reference to avoid re-triggering effects while the
+// cached queries are loading (a new [] on every render would cause a loop).
+const EMPTY_OPTIONS = [];
 
 const getInitialFilters = () => ({
   classFilter: '',
@@ -33,13 +40,24 @@ const ClassesFilters = ({ resetPagination }) => {
   const firstRenderPage = useRef(false);
 
   const institution = useSelector((state) => state.main.selectedInstitution);
-  const courses = useSelector((state) => state.courses.selectOptions);
-  const instructors = useSelector((state) => state.instructors.selectOptions.data);
+  const persistedFiltersForm = useSelector((state) => state.classes.filtersForm);
+
+  const { data: courses = EMPTY_OPTIONS, isLoading: isLoadingCourses } = useGetCoursesOptionsQuery(
+    { institutionId: institution.id },
+    { skip: !institution.id },
+  );
+  const { data: instructors = EMPTY_OPTIONS, isLoading: isLoadingInstructors } = useGetInstructorsOptionsQuery(
+    { institutionId: institution.id, filters: { limit: false } },
+    { skip: !institution.id },
+  );
 
   const queryParams = new URLSearchParams(location.search);
   const queryNotInstructors = queryParams.get('instructors');
 
-  const [filters, setFilters] = useState(getInitialFilters);
+  const [filters, setFilters] = useState(() => ({
+    ...getInitialFilters(),
+    ...persistedFiltersForm,
+  }));
   const [courseOptions, setCourseOptions] = useState([]);
   const [instructorOptions, setInstructorOptions] = useState([NOT_ASSIGNED_OPTION]);
 
@@ -69,15 +87,13 @@ const ClassesFilters = ({ resetPagination }) => {
     }
   }, [queryNotInstructors]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSelectFilters = async (e) => {
+  const handleSelectFilters = (e) => {
     e.preventDefault();
 
     if (isButtonDisabled) { return; }
 
     const nullInstructor = instructorSelected?.value === 'null';
     const notSelectedInstructor = instructorSelected?.value ?? null;
-    const formData = new FormData(e.target);
-    const courseName = formData.get('course_name');
 
     const formJson = buildFilterParams({
       instructor: nullInstructor ? null : notSelectedInstructor,
@@ -87,17 +103,18 @@ const ClassesFilters = ({ resetPagination }) => {
       end_date: endDate,
     });
 
-    try {
-      dispatch(updateFilters(formJson));
-      dispatch(updateCurrentPage(initialPage));
-      dispatch(fetchClassesData(institution.id, initialPage, courseName, formJson));
-    } catch (error) {
-      logError(error);
-    }
+    const appliedFilters = courseSelected?.value
+      ? { ...formJson, courseId: courseSelected.value }
+      : formJson;
+
+    dispatch(updateFilters(appliedFilters));
+    dispatch(updateFiltersForm(filters));
+    dispatch(updateCurrentPage(initialPage));
   };
 
   const handleCleanFilters = () => {
-    dispatch(fetchClassesData(institution.id, initialPage));
+    dispatch(updateFilters({}));
+    dispatch(resetFiltersForm());
     resetPagination();
     setFilters(getInitialFilters());
   };
@@ -126,15 +143,10 @@ const ClassesFilters = ({ resetPagination }) => {
       setFilters((prev) => ({ ...prev, courseSelected: null, instructorSelected: null }));
     }
 
-    if (Object.keys(institution).length > 0) {
-      dispatch(fetchCoursesOptionsData(institution.id));
-      dispatch(fetchInstructorsOptionsData(institution.id, initialPage, { limit: false }));
-    }
-
     if (queryNotInstructors === 'null') {
       firstRenderPage.current = true;
     }
-  }, [institution, dispatch, queryNotInstructors]);
+  }, [institution, queryNotInstructors]);
 
   return (
     <Form onSubmit={handleSelectFilters} className="w-100 px-4 d-flex flex-column align-items-center">
@@ -184,6 +196,8 @@ const ClassesFilters = ({ resetPagination }) => {
             options={courseOptions}
             onChange={(option) => updateFilter('courseSelected', option)}
             value={courseSelected}
+            isLoading={isLoadingCourses}
+            isDisabled={isLoadingCourses}
           />
         </Form.Group>
         <Form.Group as={Col} className="px-0 w-50">
@@ -193,6 +207,8 @@ const ClassesFilters = ({ resetPagination }) => {
             options={instructorOptions}
             onChange={(option) => updateFilter('instructorSelected', option)}
             value={instructorSelected}
+            isLoading={isLoadingInstructors}
+            isDisabled={isLoadingInstructors}
           />
         </Form.Group>
       </Form.Row>

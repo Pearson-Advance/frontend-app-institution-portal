@@ -11,13 +11,12 @@ import { Button } from 'react-paragon-topaz';
 
 import DeleteModal from 'features/Common/DeleteModal';
 
-import { assignInstructors, fetchInstructorsOptionsData } from 'features/Instructors/data';
-import { RequestStatus, initialPage } from 'features/constants';
+import { assignInstructors } from 'features/Instructors/data';
+import { RequestStatus } from 'features/constants';
 
 const ListInstructors = ({ instructors, isLoadingInstructors }) => {
   const dispatch = useDispatch();
 
-  const institution = useSelector((state) => state.main.selectedInstitution);
   const statusAssignRequest = useSelector((state) => state.instructors.assignInstructors.status);
 
   const { classId } = useParams();
@@ -47,7 +46,6 @@ const ListInstructors = ({ instructors, isLoadingInstructors }) => {
       };
 
       await dispatch(assignInstructors(instructorData));
-      dispatch(fetchInstructorsOptionsData(institution.id, initialPage, { limit: false, class_id: classIdDecoded }));
     } catch (error) {
       logError(error);
       setShowToast(true);

@@ -38,6 +38,7 @@ import { fetchInstitutionData } from 'features/Main/data/thunks';
 import { updateSelectedInstitution } from 'features/Main/data/slice';
 
 import { useInstitutionIdQueryParam } from 'hooks';
+import { useResetClassesFiltersOnLeave } from 'features/Classes/hooks';
 
 import { cookieText, INSTITUTION_QUERY_ID, RequestStatus } from 'features/constants';
 
@@ -60,6 +61,8 @@ const Main = () => {
 
   const requiredRoles = [USER_ROLES.GLOBAL_STAFF, USER_ROLES.INSTITUTION_ADMIN];
   const isAuthorizedUser = requiredRoles.some(role => roles.includes(role));
+
+  useResetClassesFiltersOnLeave();
 
   useEffect(() => {
     dispatch(fetchInstitutionData());

@@ -3,9 +3,21 @@ import { Route } from 'react-router-dom';
 import { renderWithProviders } from 'test-utils';
 
 import InstructorCard from 'features/Classes/InstructorCard';
+import { useGetClassesByCourseQuery } from 'features/Classes/data/classesApi';
+import { useGetInstructorsOptionsQuery } from 'features/Instructors/data/instructorsApi';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
+}));
+
+jest.mock('features/Classes/data/classesApi', () => ({
+  ...jest.requireActual('features/Classes/data/classesApi'),
+  useGetClassesByCourseQuery: jest.fn(),
+}));
+
+jest.mock('features/Instructors/data/instructorsApi', () => ({
+  ...jest.requireActual('features/Instructors/data/instructorsApi'),
+  useGetInstructorsOptionsQuery: jest.fn(),
 }));
 
 const basePath = `/courses/${encodeURIComponent(
@@ -40,6 +52,18 @@ const stateMock = {
 };
 
 describe('InstructorCard analytics slot', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useGetClassesByCourseQuery.mockReturnValue({
+      data: stateMock.classes.allClasses.data,
+      isFetching: false,
+    });
+    useGetInstructorsOptionsQuery.mockReturnValue({
+      data: stateMock.instructors.selectOptions.data,
+      isFetching: false,
+    });
+  });
+
   test('renders children inside the class details card', () => {
     const { getByText } = renderWithProviders(
       <Route

@@ -13,12 +13,11 @@ import { Button } from 'react-paragon-topaz';
 import ListInstructors from 'features/Instructors/ManageInstructors/ListInstructors';
 import AssignSection from 'features/Instructors/ManageInstructors/AssignSection';
 
-import { RequestStatus, initialPage } from 'features/constants';
-import { resetClassesTable, resetClasses } from 'features/Classes/data/slice';
-import { fetchAllClassesData } from 'features/Classes/data/thunks';
 import { updateFilters, resetRowSelect } from 'features/Instructors/data/slice';
-import { assignInstructors, fetchInstructorsOptionsData } from 'features/Instructors/data';
+import { assignInstructors } from 'features/Instructors/data';
 import { updateActiveTab } from 'features/Main/data/slice';
+import { useGetClassesByCourseQuery } from 'features/Classes/data/classesApi';
+import { useGetInstructorsOptionsQuery } from 'features/Instructors/data/instructorsApi';
 
 import 'features/Instructors/ManageInstructors/index.scss';
 
@@ -32,12 +31,10 @@ const ManageInstructors = () => {
   const [toastMessage, setToastMessage] = useState('');
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const rowsSelected = useSelector((state) => state.instructors.rowsSelected);
-  const instructorsByClass = useSelector((state) => state.instructors.selectOptions);
 
   const { courseId, classId } = useParams();
   const queryParams = new URLSearchParams(location.search);
   const previousPage = queryParams.get('previous') || 'courses';
-  const isLoadingInstructors = instructorsByClass?.status === RequestStatus.LOADING;
   const isButtonDisabled = rowsSelected.length === 0;
   const classIdDecoded = decodeURIComponent(classId);
   const courseIdDecoded = decodeURIComponent(courseId);
@@ -47,7 +44,20 @@ const ManageInstructors = () => {
     masterCourseName: '',
   }), []);
 
-  const classInfo = useSelector((state) => state.classes.allClasses.data)
+  const { data: classesByCourse = [] } = useGetClassesByCourseQuery(
+    { institutionId: selectedInstitution.id, courseId: courseIdDecoded },
+    { skip: !selectedInstitution.id },
+  );
+
+  const {
+    data: instructorsByClass = [],
+    isFetching: isLoadingInstructors,
+  } = useGetInstructorsOptionsQuery(
+    { institutionId: selectedInstitution.id, filters: { limit: false, class_id: classIdDecoded } },
+    { skip: !selectedInstitution.id },
+  );
+
+  const classInfo = classesByCourse
     .find((classElement) => classElement?.classId === classIdDecoded) || defaultClassInfo;
 
   const resetValues = () => {
@@ -72,11 +82,6 @@ const ManageInstructors = () => {
       };
 
       await dispatch(assignInstructors(enrollmentData));
-      dispatch(fetchInstructorsOptionsData(
-        selectedInstitution.id,
-        initialPage,
-        { limit: false, class_id: classIdDecoded },
-      ));
       if (rowsSelected.length === 1) {
         setToastMessage(`${rowsSelected[0]} has been successfully assigned to Class ${classInfo.className}`);
       } else if (rowsSelected.length > 1) {
@@ -94,19 +99,8 @@ const ManageInstructors = () => {
     if (selectedInstitution.id) {
       // Leaves a gap time space to prevent being override by ActiveTabUpdater component
       setTimeout(() => dispatch(updateActiveTab(previousPage)), 100);
-      dispatch(fetchInstructorsOptionsData(
-        selectedInstitution.id,
-        initialPage,
-        { limit: false, class_id: classIdDecoded },
-      ));
-      dispatch(fetchAllClassesData(selectedInstitution.id, courseIdDecoded));
     }
-
-    return () => {
-      dispatch(resetClassesTable());
-      dispatch(resetClasses());
-    };
-  }, [dispatch, selectedInstitution.id, previousPage, classIdDecoded, courseIdDecoded]);
+  }, [dispatch, selectedInstitution.id, previousPage]);
 
   return (
     <>
@@ -129,7 +123,7 @@ const ManageInstructors = () => {
           <h4 className="class-name">{classInfo.className}</h4>
           <p className="course-name">{classInfo.masterCourseName}</p>
         </div>
-        <ListInstructors instructors={instructorsByClass?.data} isLoadingInstructors={isLoadingInstructors} />
+        <ListInstructors instructors={instructorsByClass} isLoadingInstructors={isLoadingInstructors} />
         <AssignSection ref={cancelButtonRef} />
         <div className="d-flex col-12 justify-content-end align-items-start p-0 mt-4">
           <Button

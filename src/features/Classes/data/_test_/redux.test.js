@@ -2,7 +2,12 @@ import MockAdapter from 'axios-mock-adapter';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
 import { fetchClassesData, fetchAllClassesData } from 'features/Classes/data/thunks';
-import { updateCurrentPage } from 'features/Classes/data/slice';
+import {
+  updateCurrentPage,
+  updateFilters,
+  updateFiltersForm,
+  resetClassesFilters,
+} from 'features/Classes/data/slice';
 import { executeThunk } from 'test-utils';
 import { initializeStore } from 'store';
 
@@ -89,6 +94,18 @@ describe('Classes redux tests', () => {
 
     store.dispatch(updateCurrentPage(newPage));
     expect(store.getState().classes.table).toEqual(expectState);
+  });
+
+  test('reset classes filters clears filters, filters form and current page', () => {
+    store.dispatch(updateFilters({ class_name: 'Demo Class' }));
+    store.dispatch(updateFiltersForm({ classFilter: 'Demo Class' }));
+    store.dispatch(updateCurrentPage(3));
+
+    store.dispatch(resetClassesFilters());
+
+    expect(store.getState().classes.filters).toEqual({});
+    expect(store.getState().classes.filtersForm).toEqual({});
+    expect(store.getState().classes.table.currentPage).toEqual(1);
   });
 
   test('successful fetch all classes data', async () => {
