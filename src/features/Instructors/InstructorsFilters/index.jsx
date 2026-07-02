@@ -103,9 +103,13 @@ const InstructorsFilters = ({ resetPagination, isAssignSection, onResetFilters }
   const isSameFiltersData = usePreviousValueCompare(requestPayload);
 
   const handleCleanFilters = () => {
+    const resetFilters = { active: true };
+
+    dispatch(updateFilters(resetFilters));
     dispatch(fetchInstructorsData(
       selectedInstitution?.id,
       initialPage,
+      resetFilters,
     ));
 
     if (onResetFilters) {
@@ -113,7 +117,6 @@ const InstructorsFilters = ({ resetPagination, isAssignSection, onResetFilters }
     }
 
     resetPagination();
-    dispatch(updateFilters({}));
     resetFields();
   };
 

@@ -9,7 +9,6 @@ import StatusFilters from 'features/Instructors/StatusFilters';
 import { Button } from 'react-paragon-topaz';
 
 import { updateCurrentPage, updateFilters, resetInstructorsRequest } from 'features/Instructors/data/slice';
-import { fetchInstructorsData } from 'features/Instructors/data/thunks';
 import { initialPage, INSTRUCTOR_STATUS_TABS } from 'features/constants';
 
 const InstructorsPage = () => {
@@ -17,19 +16,17 @@ const InstructorsPage = () => {
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const [statusFilter, setStatusFilter] = useState(INSTRUCTOR_STATUS_TABS.ALL);
+  const [statusFilter, setStatusFilter] = useState(INSTRUCTOR_STATUS_TABS.ACTIVE);
   const [isOpen, openModal, closeModal] = useToggle(false);
 
   useEffect(() => {
-    if (Object.keys(selectedInstitution).length > 0) {
-      dispatch(fetchInstructorsData(selectedInstitution.id, currentPage));
-    }
+    if (Object.keys(selectedInstitution).length === 0) { return undefined; }
 
     return () => {
       dispatch(resetInstructorsRequest());
       dispatch(updateFilters({}));
     };
-  }, [selectedInstitution, dispatch, currentPage]);
+  }, [selectedInstitution, dispatch]);
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -41,7 +38,7 @@ const InstructorsPage = () => {
   };
 
   const handleResetFilters = () => {
-    setStatusFilter(INSTRUCTOR_STATUS_TABS.ALL);
+    setStatusFilter(INSTRUCTOR_STATUS_TABS.ACTIVE);
   };
 
   return (
