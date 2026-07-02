@@ -45,11 +45,12 @@ describe('StudentsTable Columns', () => {
 
   test('returns an array of columns with correct properties', () => {
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(10);
+    expect(columns).toHaveLength(11);
 
     const [
       studentCol,
       emailCol,
+      lastAccessDateCol,
       statusCol,
       classNameCol,
       dateCol,
@@ -65,6 +66,9 @@ describe('StudentsTable Columns', () => {
 
     expect(emailCol).toHaveProperty('Header', 'Email');
     expect(emailCol).toHaveProperty('accessor', 'learnerEmail');
+
+    expect(lastAccessDateCol).toHaveProperty('Header', 'Last access date');
+    expect(lastAccessDateCol).toHaveProperty('accessor', 'lastAccess');
 
     expect(statusCol).toHaveProperty('Header', 'Status');
     expect(statusCol).toHaveProperty('accessor', 'status');
@@ -91,7 +95,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders dropdown menu correctly', async () => {
-    const ActionColumn = () => columns[9].Cell({
+    const ActionColumn = () => columns[10].Cell({
       row: {
         values: {
           classId: 'CCX1',
@@ -120,7 +124,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders EPP Days Left cell with correct value', () => {
-    const EppDaysColumn = columns[8];
+    const EppDaysColumn = columns[9];
     const CellComponent = () => EppDaysColumn.Cell({
       row: {
         values: {
@@ -138,7 +142,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders EPP Days Left cell as "--" when null', () => {
-    const EppDaysColumn = columns[8];
+    const EppDaysColumn = columns[9];
     const CellComponent = () => EppDaysColumn.Cell({
       row: {
         values: {
