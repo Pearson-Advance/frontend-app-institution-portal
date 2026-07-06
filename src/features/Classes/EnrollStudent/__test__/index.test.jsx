@@ -3,6 +3,7 @@ import { renderWithProviders } from 'test-utils';
 import { fireEvent, waitFor } from '@testing-library/react';
 
 import EnrollStudent from 'features/Classes/EnrollStudent';
+import { useGetClassesByCourseQuery } from 'features/Classes/data/classesApi';
 
 import * as api from 'features/Students/data/api';
 
@@ -14,6 +15,11 @@ jest.mock('react-router-dom', () => ({
 jest.mock('features/Students/data/api', () => ({
   handleEnrollments: jest.fn().mockReturnValue({}),
   getMessages: jest.fn().mockReturnValue({}),
+}));
+
+jest.mock('features/Classes/data/classesApi', () => ({
+  ...jest.requireActual('features/Classes/data/classesApi'),
+  useGetClassesByCourseQuery: jest.fn(),
 }));
 
 jest.mock('@edx/frontend-platform/logging', () => ({
@@ -34,6 +40,13 @@ const mockStore = {
 };
 
 describe('EnrollStudent', () => {
+  beforeEach(() => {
+    useGetClassesByCourseQuery.mockReturnValue({
+      data: mockStore.classes.allClasses.data,
+      isFetching: false,
+    });
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });

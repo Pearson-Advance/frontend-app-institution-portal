@@ -14,10 +14,9 @@ import {
 import { Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
 
-import { fetchStudentsData } from 'features/Students/data';
 import { handleEnrollments, getMessages } from 'features/Students/data/api';
-import { fetchAllClassesData } from 'features/Classes/data/thunks';
-import { initialPage } from 'features/constants';
+import { studentsApi } from 'features/Students/data/studentsApi';
+import { classesApi, useGetClassesByCourseQuery } from 'features/Classes/data/classesApi';
 
 import 'features/Classes/EnrollStudent/index.scss';
 
@@ -41,7 +40,12 @@ const EnrollStudent = ({
     className: '',
   }), []);
 
-  const classInfo = useSelector((state) => state.classes.allClasses.data)
+  const { data: classesByCourse = [] } = useGetClassesByCourseQuery(
+    { institutionId: institution.id, courseId: courseIdDecoded },
+    { skip: !institution.id || !courseId },
+  );
+
+  const classInfo = classesByCourse
     .find((classElement) => classElement?.classId === classIdDecoded) || defaultClassInfo;
 
   const handleEnrollStudent = async (e) => {
@@ -96,16 +100,9 @@ const EnrollStudent = ({
 
       setToastMessage(textToast);
 
-      const params = {
-        course_id: courseIdDecoded,
-        class_id: customClassId || classIdDecoded,
-        limit: true,
-      };
+      dispatch(studentsApi.util.invalidateTags(['StudentsClass']));
 
-      dispatch(fetchStudentsData(institution.id, initialPage, params));
-
-      // Get the classes info updated with the new number of students enrolled.
-      dispatch(fetchAllClassesData(institution.id, courseIdDecoded));
+      dispatch(classesApi.util.invalidateTags(['Classes']));
 
       setShowToast(true);
       return onClose();

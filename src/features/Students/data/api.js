@@ -2,7 +2,7 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { getConfig } from '@edx/frontend-platform';
 import { MAX_TABLE_RECORDS } from 'features/constants';
 
-function getStudentbyInstitutionAdmin(institutionId, page, filters) {
+function getStudentsByInstitutionId(institutionId, page, filters) {
   const params = {
     page,
     page_size: MAX_TABLE_RECORDS,
@@ -97,7 +97,7 @@ function getInstitutionVouchersByExamSeriesCode(examSeriesCode) {
 }
 
 export {
-  getStudentbyInstitutionAdmin,
+  getStudentsByInstitutionId,
   handleEnrollments,
   getStudentsMetrics,
   getClassesMetrics,

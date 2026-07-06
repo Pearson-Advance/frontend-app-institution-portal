@@ -1,15 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Spinner } from '@openedx/paragon';
 import { Button } from 'react-paragon-topaz';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { formatDateRange } from 'helpers';
 import { useInstitutionIdQueryParam } from 'hooks';
-import { initialPage, RequestStatus } from 'features/constants';
-import { resetInstructorOptions } from 'features/Instructors/data/slice';
-import { fetchInstructorsOptionsData } from 'features/Instructors/data/thunks';
+import { useGetClassesByCourseQuery } from 'features/Classes/data/classesApi';
+import { useGetInstructorsOptionsQuery } from 'features/Instructors/data/instructorsApi';
 
 import InstructorAvatar from 'features/Classes/InstructorAvatar';
 
@@ -18,12 +17,9 @@ import 'features/Classes/InstructorCard/index.scss';
 const INSTRUCTORS_NUMBER = 3;
 
 const InstructorCard = ({ previousPage, children }) => {
-  const dispatch = useDispatch();
   const { classId, courseId } = useParams();
   const navigate = useNavigate();
   const institution = useSelector((state) => state.main.selectedInstitution);
-  const instructors = useSelector((state) => state.instructors.selectOptions.data);
-  const classes = useSelector((state) => state.classes.allClasses);
   const classIdDecoded = decodeURIComponent(classId);
 
   const addQueryParam = useInstitutionIdQueryParam();
@@ -32,9 +28,17 @@ const InstructorCard = ({ previousPage, children }) => {
     navigate(addQueryParam(`/manage-instructors/${courseId}/${classId}?previous=${previousPage}`));
   };
 
-  const isLoadingClasses = classes.status === RequestStatus.LOADING;
+  const { data: classesData = [], isFetching: isLoadingClasses } = useGetClassesByCourseQuery(
+    { institutionId: institution.id, courseId: decodeURIComponent(courseId) },
+    { skip: !institution.id },
+  );
 
-  const [classInfo] = classes.data.filter(
+  const { data: instructors = [] } = useGetInstructorsOptionsQuery(
+    { institutionId: institution.id, filters: { limit: false, class_id: classIdDecoded } },
+    { skip: !institution.id },
+  );
+
+  const [classInfo] = classesData.filter(
     (classElement) => classElement.classId === classIdDecoded,
   );
 
@@ -58,13 +62,6 @@ const InstructorCard = ({ previousPage, children }) => {
     0,
     (purchasedSeats || 0) - (totalEnrollments || 0) - (totalPendingEnrollments || 0),
   );
-
-  useEffect(() => {
-    if (institution.id) {
-      dispatch(fetchInstructorsOptionsData(institution.id, initialPage, { limit: false, class_id: classIdDecoded }));
-    }
-    return () => dispatch(resetInstructorOptions());
-  }, [institution.id, classIdDecoded, dispatch]);
 
   return (
     <article className="instructor-wrapper mb-4">

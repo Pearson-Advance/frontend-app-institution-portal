@@ -12,6 +12,7 @@ const initialState = {
     count: 0,
   },
   filters: {},
+  filtersForm: {},
   selectOptions: [],
   allClasses: {
     data: [],
@@ -51,6 +52,17 @@ export const classesSlice = createSlice({
     },
     updateFilters: (state, { payload }) => {
       state.filters = payload;
+    },
+    updateFiltersForm: (state, { payload }) => {
+      state.filtersForm = payload;
+    },
+    resetFiltersForm: (state) => {
+      state.filtersForm = initialState.filtersForm;
+    },
+    resetClassesFilters: (state) => {
+      state.filters = initialState.filters;
+      state.filtersForm = initialState.filtersForm;
+      state.table.currentPage = initialState.table.currentPage;
     },
     updateClassesOptions: (state, { payload }) => {
       state.selectOptions = payload;
@@ -101,6 +113,9 @@ export const {
   fetchClassesDataSuccess,
   fetchClassesDataFailed,
   updateFilters,
+  updateFiltersForm,
+  resetFiltersForm,
+  resetClassesFilters,
   updateClassesOptions,
   fillClassesTable,
   fetchAllClassesDataRequest,

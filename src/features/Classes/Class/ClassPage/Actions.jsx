@@ -24,7 +24,8 @@ import EnrollStudent from 'features/Classes/EnrollStudent';
 
 import { resetClassState } from 'features/Courses/data/slice';
 import { deleteClass } from 'features/Courses/data/thunks';
-import { fetchAllClassesData, fetchLabSummaryLink } from 'features/Classes/data/thunks';
+import { fetchLabSummaryLink } from 'features/Classes/data/thunks';
+import { classesApi, useGetClassesByCourseQuery } from 'features/Classes/data/classesApi';
 
 const initialDeletionClassState = {
   isModalOpen: false,
@@ -37,7 +38,6 @@ const Actions = ({ previousPage }) => {
   const { courseId, classId } = useParams();
   const courseIdDecoded = decodeURIComponent(courseId);
   const classIdDecoded = decodeURIComponent(classId);
-  const classes = useSelector((state) => state.classes.allClasses.data);
   const deletionState = useSelector((state) => state.courses.newClass.status);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const gradebookUrl = getConfig().GRADEBOOK_MICROFRONTEND_URL || getConfig().LMS_BASE_URL;
@@ -51,6 +51,11 @@ const Actions = ({ previousPage }) => {
   const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
 
   const classLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classIdDecoded}/home`;
+
+  const { data: classes = [] } = useGetClassesByCourseQuery(
+    { institutionId: selectedInstitution.id, courseId: courseIdDecoded },
+    { skip: !selectedInstitution.id },
+  );
 
   const [classInfo] = classes.filter(
     (classElement) => classElement.classId === classIdDecoded,
@@ -116,7 +121,7 @@ const Actions = ({ previousPage }) => {
   };
 
   const finalCall = () => {
-    dispatch(fetchAllClassesData(selectedInstitution.id, courseIdDecoded));
+    dispatch(classesApi.util.invalidateTags(['Classes']));
   };
 
   return (

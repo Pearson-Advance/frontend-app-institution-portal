@@ -1,15 +1,11 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Row, Col } from '@openedx/paragon';
 import { columns } from 'features/Classes/ClassesTable/columns';
-import { RequestStatus } from 'features/constants';
 import Table from 'features/Main/Table';
 
-const ClassesTable = ({ data, count }) => {
-  const classesRequest = useSelector((state) => state.classes.table.status);
+const ClassesTable = ({ data, count, isLoading }) => {
   const COLUMNS = useMemo(() => columns, []);
-  const isLoading = classesRequest === RequestStatus.LOADING;
 
   return (
     <Row className="justify-content-center my-4 my-3 mx-0">
@@ -30,11 +26,13 @@ const ClassesTable = ({ data, count }) => {
 ClassesTable.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape([])),
   count: PropTypes.number,
+  isLoading: PropTypes.bool,
 };
 
 ClassesTable.defaultProps = {
   data: [],
   count: 0,
+  isLoading: false,
 };
 
 export default ClassesTable;

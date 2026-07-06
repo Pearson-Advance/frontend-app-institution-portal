@@ -5,9 +5,21 @@ import { renderWithProviders } from 'test-utils';
 import { RequestStatus } from 'features/constants';
 
 import ManageInstructors from 'features/Instructors/ManageInstructors';
+import { useGetClassesByCourseQuery } from 'features/Classes/data/classesApi';
+import { useGetInstructorsOptionsQuery } from 'features/Instructors/data/instructorsApi';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
+}));
+
+jest.mock('features/Classes/data/classesApi', () => ({
+  ...jest.requireActual('features/Classes/data/classesApi'),
+  useGetClassesByCourseQuery: jest.fn(),
+}));
+
+jest.mock('features/Instructors/data/instructorsApi', () => ({
+  ...jest.requireActual('features/Instructors/data/instructorsApi'),
+  useGetInstructorsOptionsQuery: jest.fn(),
 }));
 
 const mockStore = {
@@ -66,6 +78,18 @@ const courseId = encodeURIComponent('course-v1:XXX+YYY+2023');
 const classId = encodeURIComponent('ccx-v1:XXX+YYY+2023+ccx@111');
 
 describe('Manage instructors page', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useGetClassesByCourseQuery.mockReturnValue({
+      data: [],
+      isFetching: false,
+    });
+    useGetInstructorsOptionsQuery.mockReturnValue({
+      data: mockStore.instructors.selectOptions.data,
+      isFetching: false,
+    });
+  });
+
   test('render page', async () => {
     const { getByText, getAllByRole, getByTestId } = renderWithProviders(
       <Route
