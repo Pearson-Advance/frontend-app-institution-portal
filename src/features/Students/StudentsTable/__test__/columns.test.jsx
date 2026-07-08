@@ -94,6 +94,36 @@ describe('StudentsTable Columns', () => {
     expect(actionCol).toHaveProperty('accessor', 'classId');
   });
 
+  test('renders Last access date formatted', () => {
+    const LastAccessCell = () => columns[2].Cell({
+      row: { original: { lastAccess: '2024-03-15T10:00:00Z', status: 'Active' } },
+    });
+
+    const { getByText } = renderWithProviders(<LastAccessCell />, { preloadedState: mockStore });
+
+    expect(getByText('03/15/24')).toBeInTheDocument();
+  });
+
+  test('renders Last access date as -- when enrollment is pending', () => {
+    const LastAccessCell = () => columns[2].Cell({
+      row: { original: { lastAccess: '2024-03-15T10:00:00Z', status: 'pending' } },
+    });
+
+    const { getByText } = renderWithProviders(<LastAccessCell />, { preloadedState: mockStore });
+
+    expect(getByText('--')).toBeInTheDocument();
+  });
+
+  test('renders Last access date as -- when null', () => {
+    const LastAccessCell = () => columns[2].Cell({
+      row: { original: { lastAccess: null, status: 'Active' } },
+    });
+
+    const { getByText } = renderWithProviders(<LastAccessCell />, { preloadedState: mockStore });
+
+    expect(getByText('--')).toBeInTheDocument();
+  });
+
   test('renders dropdown menu correctly', async () => {
     const ActionColumn = () => columns[10].Cell({
       row: {
