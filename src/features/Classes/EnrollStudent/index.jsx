@@ -127,6 +127,7 @@ const EnrollStudent = ({
         title="Invite student to enroll"
         isOpen={isOpen}
         onClose={onClose}
+        isOverflowVisible={false}
         hasCloseButton
       >
         <ModalDialog.Header>

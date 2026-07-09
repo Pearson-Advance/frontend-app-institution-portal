@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import { renderWithProviders } from 'test-utils';
 import { fireEvent, act, waitFor } from '@testing-library/react';
@@ -23,8 +24,37 @@ jest.mock('features/Classes/data/thunks', () => ({
 }));
 
 jest.mock('features/Students/data/slice', () => ({
+  ...jest.requireActual('features/Students/data/slice'),
   updateFilters: jest.fn(() => ({ type: 'UPDATE_FILTERS' })),
   updateCurrentPage: jest.fn(() => ({ type: 'UPDATE_PAGE' })),
+}));
+
+jest.mock('react-paragon-topaz', () => ({
+  Select: ({
+    options = [], value, onChange, name,
+  }) => (
+    <select
+      data-testid={name || 'select'}
+      name={name}
+      value={value?.value || ''}
+      onChange={(e) => {
+        const selected = options.find(opt => String(opt.value) === e.target.value) || null;
+        onChange(selected);
+      }}
+    >
+      <option value="">--</option>
+      {options.map(({ label, value: optionValue }) => (
+        <option key={optionValue} value={optionValue}>
+          {label}
+        </option>
+      ))}
+    </select>
+  ),
+  Button: ({ children, type = 'button', ...props }) => (
+    <button type={type === 'submit' ? 'submit' : 'button'} {...props}>
+      {children}
+    </button>
+  ),
 }));
 
 describe('StudentsFilters Component', () => {
@@ -34,19 +64,19 @@ describe('StudentsFilters Component', () => {
     jest.clearAllMocks();
   });
 
-  test.skip('renders inputs and select elements correctly', () => {
-    const { getByText, getByPlaceholderText } = renderWithProviders(
+  test('renders inputs and select elements correctly', () => {
+    const { getByText, getByPlaceholderText, getByTestId } = renderWithProviders(
       <StudentsFilters resetPagination={resetPagination} />,
     );
 
     expect(getByText('Search')).toBeInTheDocument();
-    expect(getByText('Course')).toBeInTheDocument();
-    expect(getByText('Class')).toBeInTheDocument();
-    expect(getByText('Exam ready')).toBeInTheDocument();
+    expect(getByTestId('course_id')).toBeInTheDocument();
+    expect(getByTestId('class_name')).toBeInTheDocument();
+    expect(getByTestId('exam_ready')).toBeInTheDocument();
     expect(getByPlaceholderText('Enter Student Name')).toBeInTheDocument();
   });
 
-  test.skip('switches to email input when selecting email radio option', async () => {
+  test('switches to email input when selecting email radio option', async () => {
     const {
       getByTestId, getByPlaceholderText, getByText, queryByPlaceholderText,
     } = renderWithProviders(
@@ -67,7 +97,7 @@ describe('StudentsFilters Component', () => {
     });
   });
 
-  test.skip('filters students by name and applies filters', async () => {
+  test('filters students by name and applies filters', async () => {
     const { getByTestId, getByText } = renderWithProviders(
       <StudentsFilters resetPagination={resetPagination} />,
     );
@@ -85,16 +115,13 @@ describe('StudentsFilters Component', () => {
     expect(fetchStudentsData).toHaveBeenCalled();
   });
 
-  test.skip('allows selecting "Exam ready" option and applying filters', async () => {
-    const { getByText, getAllByText } = renderWithProviders(
+  test('allows selecting "Exam ready" option and applying filters', async () => {
+    const { getByText, getByTestId } = renderWithProviders(
       <StudentsFilters resetPagination={resetPagination} />,
     );
 
-    const examSelect = getByText('Exam ready');
-    fireEvent.mouseDown(examSelect);
-
-    const option = getAllByText('In Progress')[0];
-    fireEvent.click(option);
+    const examSelect = getByTestId('exam_ready');
+    fireEvent.change(examSelect, { target: { value: 'IN_PROGRESS' } });
 
     const applyButton = getByText('Apply');
 
@@ -105,13 +132,12 @@ describe('StudentsFilters Component', () => {
     expect(fetchStudentsData).toHaveBeenCalled();
   });
 
-  test.skip('renders all options for "Exam ready" select', async () => {
-    const { getByText, getAllByText } = renderWithProviders(
+  test('renders all options for "Exam ready" select', () => {
+    const { getByTestId } = renderWithProviders(
       <StudentsFilters resetPagination={resetPagination} />,
     );
 
-    const examSelect = getByText('Exam ready');
-    fireEvent.mouseDown(examSelect);
+    const examSelect = getByTestId('exam_ready');
 
     const expectedOptions = [
       'In Progress',
@@ -122,20 +148,17 @@ describe('StudentsFilters Component', () => {
     ];
 
     expectedOptions.forEach((option) => {
-      expect(getAllByText(option)[0]).toBeInTheDocument();
+      expect(examSelect).toHaveTextContent(option);
     });
   });
 
-  test.skip('sends correct filter value when selecting "Exam ready" option', async () => {
-    const { getByText, getAllByText } = renderWithProviders(
+  test('sends correct filter value when selecting "Exam ready" option', async () => {
+    const { getByText, getByTestId } = renderWithProviders(
       <StudentsFilters resetPagination={resetPagination} />,
     );
 
-    const examSelect = getByText('Exam ready');
-    fireEvent.mouseDown(examSelect);
-
-    const selectedOption = getAllByText('EPP Eligible')[0];
-    fireEvent.click(selectedOption);
+    const examSelect = getByTestId('exam_ready');
+    fireEvent.change(examSelect, { target: { value: 'EPP_ELIGIBLE' } });
 
     const applyButton = getByText('Apply');
 
@@ -148,7 +171,7 @@ describe('StudentsFilters Component', () => {
     }));
   });
 
-  test.skip('clears filters when clicking Reset', async () => {
+  test('clears filters when clicking Reset', async () => {
     const { getByPlaceholderText, getByText } = renderWithProviders(
       <StudentsFilters resetPagination={resetPagination} />,
     );
