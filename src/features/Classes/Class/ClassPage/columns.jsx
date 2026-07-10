@@ -57,7 +57,8 @@ const getColumns = ({ displayVoucherOptions = false, enableVoucherColumn = false
     Header: 'Last access date',
     accessor: 'lastAccess',
     Cell: ({ row }) => {
-      const lastAccess = row.original.lastAccess
+      const isPending = row.original.status?.toLowerCase() === 'pending';
+      const lastAccess = !isPending && row.original.lastAccess
         ? formatUTCDate(row.original.lastAccess, 'MM/dd/yy')
         : '--';
       return <span>{lastAccess}</span>;

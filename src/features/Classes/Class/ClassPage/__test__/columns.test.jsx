@@ -130,6 +130,42 @@ describe('getColumns', () => {
     expect(getByText('Active')).toBeInTheDocument();
   });
 
+  test('renders Last access date formatted', () => {
+    const cols = getColumns();
+
+    const LastAccessCell = () => cols[3].Cell({
+      row: { original: { lastAccess: '2024-03-15T10:00:00Z', status: 'Active' } },
+    });
+
+    const { getByText } = renderWithProviders(<LastAccessCell />, { preloadedState: mockStore });
+
+    expect(getByText('03/15/24')).toBeInTheDocument();
+  });
+
+  test('renders Last access date as -- when enrollment is pending', () => {
+    const cols = getColumns();
+
+    const LastAccessCell = () => cols[3].Cell({
+      row: { original: { lastAccess: '2024-03-15T10:00:00Z', status: 'pending' } },
+    });
+
+    const { getByText } = renderWithProviders(<LastAccessCell />, { preloadedState: mockStore });
+
+    expect(getByText('--')).toBeInTheDocument();
+  });
+
+  test('renders Last access date as -- when null', () => {
+    const cols = getColumns();
+
+    const LastAccessCell = () => cols[3].Cell({
+      row: { original: { lastAccess: null, status: 'Active' } },
+    });
+
+    const { getByText } = renderWithProviders(<LastAccessCell />, { preloadedState: mockStore });
+
+    expect(getByText('--')).toBeInTheDocument();
+  });
+
   test('renders Current Grade with safe value', () => {
     const columns = getColumns();
 
