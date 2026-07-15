@@ -17,12 +17,15 @@ import { camelCaseObject } from '@edx/frontend-platform';
 import { logError } from '@edx/frontend-platform/logging';
 
 import { addClass, editClass } from 'features/Courses/data';
-import { fetchInstructorsOptionsData } from 'features/Instructors/data/thunks';
+import { useGetInstructorsOptionsQuery } from 'features/Instructors/data/instructorsApi';
 
-import { initialPage } from 'features/constants';
 import { formatUTCDate } from 'helpers';
 
 import 'features/Courses/AddClass/index.scss';
+
+// Stable empty array reference to avoid re-triggering the mapping effect while
+// the cached query is loading (a new [] on every render would cause a loop).
+const EMPTY_OPTIONS = [];
 
 const AddClass = ({
   isOpen, onClose, courseInfo, isEditing, finalCall,
@@ -30,7 +33,10 @@ const AddClass = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
-  const instructorsList = useSelector((state) => state.instructors.selectOptions.data);
+  const { data: instructorsList = EMPTY_OPTIONS, isLoading: isLoadingInstructors } = useGetInstructorsOptionsQuery(
+    { institutionId: selectedInstitution?.id, filters: { limit: false, active: true } },
+    { skip: !selectedInstitution?.id || isEditing || !isOpen },
+  );
   const notificationMsg = useSelector((state) => state.courses.notificationMessage);
   const [showToast, setShowToast] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -123,12 +129,6 @@ const AddClass = ({
   };
 
   useEffect(() => {
-    if (Object.keys(selectedInstitution).length > 0 && isOpen && !isEditing) {
-      dispatch(fetchInstructorsOptionsData(selectedInstitution.id, initialPage, { limit: false }));
-    }
-  }, [selectedInstitution, isOpen, dispatch, isEditing]);
-
-  useEffect(() => {
     if (instructorsList.length > 0) {
       const options = instructorsList.map(instructor => ({
         ...instructor,
@@ -202,6 +202,8 @@ const AddClass = ({
                   options={instructorsOptions}
                   onChange={option => setInstructorSelected(option)}
                   value={instructorSelected}
+                  isLoading={isLoadingInstructors}
+                  isDisabled={isLoadingInstructors}
                 />
               </Form.Group>
             )}
