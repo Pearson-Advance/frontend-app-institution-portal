@@ -1,26 +1,26 @@
 import { waitFor, fireEvent } from '@testing-library/react';
 import { Route } from 'react-router-dom';
 import AddClass from 'features/Courses/AddClass';
+import { useGetInstructorsOptionsQuery } from 'features/Instructors/data/instructorsApi';
 import { renderWithProviders } from 'test-utils';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
 }));
 
-const mockStore = {
-  instructors: {
-    selectOptions: {
-      data: [
-        {
-          masterCourseName: 'Demo Course 1',
-          numberOfClasses: 1,
-          missingClassesForInstructor: null,
-          numberOfStudents: 1,
-          numberOfPendingStudents: 11,
-        },
-      ],
-    },
-  },
+jest.mock('features/Instructors/data/instructorsApi', () => ({
+  ...jest.requireActual('features/Instructors/data/instructorsApi'),
+  useGetInstructorsOptionsQuery: jest.fn(),
+}));
+
+const instructorOption = {
+  masterCourseName: 'Demo Course 1',
+  numberOfClasses: 1,
+  missingClassesForInstructor: null,
+  numberOfStudents: 1,
+  numberOfPendingStudents: 11,
+  instructorName: 'Sam Sepiol',
+  instructorUsername: 's4mS3pi0l',
 };
 
 const courseInfoMocked = {
@@ -33,6 +33,13 @@ const basePath = `/courses/${encodeURIComponent(
 )}`;
 
 describe('Add class modal', () => {
+  beforeEach(() => {
+    useGetInstructorsOptionsQuery.mockReturnValue({
+      data: [instructorOption],
+      isLoading: false,
+    });
+  });
+
   const renderComponent = () => renderWithProviders(
     <Route
       path="/courses/:courseId"
@@ -45,7 +52,6 @@ describe('Add class modal', () => {
         )}
     />,
     {
-      preloadedState: mockStore,
       initialEntries: [basePath],
     },
   );
