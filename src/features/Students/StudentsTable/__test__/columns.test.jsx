@@ -67,7 +67,7 @@ describe('StudentsTable Columns', () => {
     expect(emailCol).toHaveProperty('Header', 'Email');
     expect(emailCol).toHaveProperty('accessor', 'learnerEmail');
 
-    expect(lastAccessDateCol).toHaveProperty('Header', 'Last access date');
+    expect(lastAccessDateCol).toHaveProperty('Header', 'Last Login');
     expect(lastAccessDateCol).toHaveProperty('accessor', 'lastAccess');
 
     expect(statusCol).toHaveProperty('Header', 'Status');
