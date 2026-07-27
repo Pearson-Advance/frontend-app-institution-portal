@@ -79,7 +79,7 @@ describe('getColumns', () => {
     expect(number).toHaveProperty('Header', 'No');
     expect(student).toHaveProperty('Header', 'Student');
     expect(learnerEmail).toHaveProperty('Header', 'Email');
-    expect(lastAccessDate).toHaveProperty('Header', 'Last access date');
+    expect(lastAccessDate).toHaveProperty('Header', 'Last Login');
     expect(status).toHaveProperty('Header', 'Status');
     expect(voucherStatus).toHaveProperty('Header', 'Voucher Status');
     expect(completePercentage).toHaveProperty('Header', 'Current Grade');
