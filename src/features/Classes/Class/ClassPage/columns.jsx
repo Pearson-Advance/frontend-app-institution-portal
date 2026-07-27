@@ -18,7 +18,11 @@ import VoucherOptions from 'features/Main/VoucherOptions';
 
 import { VOUCHER_BADGE_VARIANTS } from 'features/constants';
 
-const getColumns = ({ displayVoucherOptions = false, enableVoucherColumn = false } = {}) => ([
+const getColumns = ({
+  displayVoucherOptions = false,
+  enableVoucherColumn = false,
+  onVoucherActionSuccess = () => {},
+} = {}) => ([
   {
     Header: 'No',
     accessor: 'index',
@@ -212,6 +216,7 @@ const getColumns = ({ displayVoucherOptions = false, enableVoucherColumn = false
                 learnerEmail={learnerEmail}
                 showAssign={voucherInfo?.showAssign}
                 showRevoke={voucherInfo?.showRevoke}
+                onVoucherActionSuccess={onVoucherActionSuccess}
               />
             )}
             {
