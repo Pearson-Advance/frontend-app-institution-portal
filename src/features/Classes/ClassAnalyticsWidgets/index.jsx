@@ -83,6 +83,7 @@ const ClassAnalyticsWidgets = ({ classId }) => {
             key={widget.key}
             title={widget.title}
             value={widget.formattedValue || widget.formatted_value}
+            subtitle={widget.subtitle}
             trend={widget.formattedTrend || widget.formatted_trend}
             trendDirection={widget.trendDirection || widget.trend_direction}
             hasError={widget.error}

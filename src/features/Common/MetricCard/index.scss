@@ -37,6 +37,21 @@
   min-height: 1.25rem;
 }
 
+.metric-card__footer-content {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.metric-card__subtitle {
+  color: #5f6368;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
 .metric-card__trend {
   align-items: center;
   display: inline-flex;
