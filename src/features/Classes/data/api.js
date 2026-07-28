@@ -52,8 +52,22 @@ function getClassAnalyticsWidgets({ institutionId, classId }) {
   );
 }
 
+/**
+ * Download the Gradebook of a class as a CSV file.
+ *
+ * @param {string} classId - CCX course id of the class.
+ * @returns {Promise} Authenticated HTTP response with the CSV file as a blob.
+ */
+function getGradebookCsv(classId) {
+  return getAuthenticatedHttpClient().get(
+    `${getConfig().LMS_BASE_URL}/courses/${classId}/ccx_grades.csv`,
+    { responseType: 'blob' },
+  );
+}
+
 export {
   getClassAnalyticsWidgets,
+  getGradebookCsv,
   handleSkillableDashboard,
   handleXtremeLabsDashboard,
 };

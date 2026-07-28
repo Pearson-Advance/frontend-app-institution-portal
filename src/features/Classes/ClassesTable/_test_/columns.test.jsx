@@ -9,6 +9,7 @@ import * as classesThunks from 'features/Classes/data/thunks';
 jest.mock('features/Classes/data/thunks', () => ({
   ...jest.requireActual('features/Classes/data/thunks'),
   supersetUrlClassesDashboard: jest.fn(),
+  downloadGradebookCsv: jest.fn(),
 }));
 
 jest.mock('@edx/frontend-platform', () => ({
@@ -84,6 +85,7 @@ describe('columns', () => {
 
   beforeEach(() => {
     classesThunks.supersetUrlClassesDashboard.mockResolvedValue(null);
+    classesThunks.downloadGradebookCsv.mockReturnValue(() => Promise.resolve());
   });
 
   afterEach(() => {
@@ -172,8 +174,53 @@ describe('columns', () => {
     expect(getByText('Manage Instructors')).toBeInTheDocument();
     expect(getByText('Edit Class')).toBeInTheDocument();
     expect(getByText('Gradebook')).toBeInTheDocument();
+    expect(getByText('Download gradebook')).toBeInTheDocument();
     expect(getByText('Enroll student')).toBeInTheDocument();
     expect(getByText('Delete Class')).toBeInTheDocument();
+  });
+
+  test('Downloads the gradebook when the action is clicked', async () => {
+    const ActionColumn = () => columns[8].Cell({
+      row: {
+        values: {
+          masterCourseName: 'course example',
+        },
+        original: { ...classDataMock },
+      },
+    });
+
+    const mockStore = {
+      classes: {
+        table: {
+          data: [
+            { ...classDataMock },
+          ],
+          count: 2,
+          num_pages: 1,
+          current_page: 1,
+        },
+        allClasses: {
+          data: [
+            { ...classDataMock },
+          ],
+        },
+      },
+    };
+
+    const { getByTestId } = renderWithProviders(<ActionColumn />, {
+      preloadedState: mockStore,
+      initialEntries: ['/classes/'],
+    });
+
+    fireEvent.click(getByTestId('droprown-action'));
+    fireEvent.click(getByTestId('download-gradebook-action'));
+
+    await waitFor(() => {
+      expect(classesThunks.downloadGradebookCsv).toHaveBeenCalledWith(
+        classDataMock.classId,
+        expect.any(Function),
+      );
+    });
   });
 
   test('Show Lab Dashboard option when link is sent', async () => {

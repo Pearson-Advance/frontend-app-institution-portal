@@ -22,7 +22,7 @@ import EnrollStudent from 'features/Classes/EnrollStudent';
 import { RequestStatus, modalDeleteText } from 'features/constants';
 
 import { deleteClass } from 'features/Courses/data/thunks';
-import { fetchLabSummaryLink, supersetUrlClassesDashboard } from 'features/Classes/data/thunks';
+import { fetchLabSummaryLink, supersetUrlClassesDashboard, downloadGradebookCsv } from 'features/Classes/data/thunks';
 import { classesApi } from 'features/Classes/data/classesApi';
 
 import { formatUTCDate, setAssignStaffRole } from 'helpers';
@@ -132,6 +132,7 @@ const columns = [
       const [isOpenModal, openModal, closeModal] = useToggle(false);
       const [isOpenEnrollModal, openEnrollModal, closeEnrollModal] = useToggle(false);
       const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
+      const [isDownloadingGradebook, setIsDownloadingGradebook] = useState(false);
       const gradebookUrl = getConfig().GRADEBOOK_MICROFRONTEND_URL || getConfig().LMS_BASE_URL;
       const {
         isVisible,
@@ -151,6 +152,20 @@ const columns = [
 
       const handleGradebookButton = () => {
         window.open(`${gradebookUrl}/gradebook/${classId}`, '_blank', 'noopener,noreferrer');
+      };
+
+      const handleDownloadGradebook = async () => {
+        if (isDownloadingGradebook) {
+          return;
+        }
+
+        setIsDownloadingGradebook(true);
+
+        try {
+          await dispatch(downloadGradebookCsv(classId, showToast));
+        } finally {
+          setIsDownloadingGradebook(false);
+        }
       };
 
       const handleDeleteClass = async (rowClassId) => {
@@ -254,6 +269,14 @@ const columns = [
             <Dropdown.Item onClick={handleGradebookButton}>
               <i className="fa-regular fa-book mr-2 mb-1" />
               Gradebook
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={handleDownloadGradebook}
+              disabled={isDownloadingGradebook}
+              data-testid="download-gradebook-action"
+            >
+              <i className="fa-regular fa-download mr-2 mb-1" />
+              {isDownloadingGradebook ? 'Downloading gradebook…' : 'Download gradebook'}
             </Dropdown.Item>
             {classesDashboardUrl && (
               <Dropdown.Item

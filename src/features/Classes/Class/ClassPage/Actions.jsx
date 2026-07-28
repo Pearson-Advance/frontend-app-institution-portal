@@ -24,7 +24,7 @@ import EnrollStudent from 'features/Classes/EnrollStudent';
 
 import { resetClassState } from 'features/Courses/data/slice';
 import { deleteClass } from 'features/Courses/data/thunks';
-import { fetchLabSummaryLink } from 'features/Classes/data/thunks';
+import { fetchLabSummaryLink, downloadGradebookCsv } from 'features/Classes/data/thunks';
 import { classesApi, useGetClassesByCourseQuery } from 'features/Classes/data/classesApi';
 
 const initialDeletionClassState = {
@@ -49,6 +49,7 @@ const Actions = ({ previousPage }) => {
   } = useToast();
 
   const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
+  const [isDownloadingGradebook, setIsDownloadingGradebook] = useState(false);
 
   const classLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classIdDecoded}/home`;
 
@@ -82,6 +83,20 @@ const Actions = ({ previousPage }) => {
 
   const handleGradebookButton = () => {
     window.open(`${gradebookUrl}/gradebook/${classIdDecoded}`, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleDownloadGradebook = async () => {
+    if (isDownloadingGradebook) {
+      return;
+    }
+
+    setIsDownloadingGradebook(true);
+
+    try {
+      await dispatch(downloadGradebookCsv(classIdDecoded, showToast));
+    } finally {
+      setIsDownloadingGradebook(false);
+    }
   };
 
   const handleResetDeletion = () => {
@@ -166,6 +181,14 @@ const Actions = ({ previousPage }) => {
           <Dropdown.Item onClick={handleGradebookButton}>
             <i className="fa-regular fa-book mr-2 mb-1" />
             Gradebook
+          </Dropdown.Item>
+          <Dropdown.Item
+            onClick={handleDownloadGradebook}
+            disabled={isDownloadingGradebook}
+            data-testid="download-gradebook-action"
+          >
+            <i className="fa-regular fa-download mr-2 mb-1" />
+            {isDownloadingGradebook ? 'Downloading gradebook…' : 'Download gradebook'}
           </Dropdown.Item>
           {classInfo?.labSummaryTag && (
             <Dropdown.Item onClick={handleLabSummary}>
