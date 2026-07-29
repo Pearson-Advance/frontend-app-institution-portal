@@ -116,6 +116,12 @@ describe('ClassAnalyticsWidgets', () => {
             formatted_trend: '+2%',
             trend_direction: 'up',
           },
+          {
+            key: 'pass_fail_rate',
+            title: 'Pass/Fail Rate',
+            formatted_value: '88%',
+            subtitle: '7 passed, 1 failed',
+          },
         ],
       },
     });
@@ -126,6 +132,9 @@ describe('ClassAnalyticsWidgets', () => {
     expect(getByText('Class Average Score')).toBeInTheDocument();
     expect(getByText('100.0%')).toBeInTheDocument();
     expect(getByText('+2%')).toBeInTheDocument();
+    expect(getByText('Pass/Fail Rate')).toBeInTheDocument();
+    expect(getByText('88%')).toBeInTheDocument();
+    expect(getByText('7 passed, 1 failed')).toBeInTheDocument();
     expect(getClassAnalyticsWidgets).toHaveBeenCalledWith({
       institutionId: 2,
       classId,

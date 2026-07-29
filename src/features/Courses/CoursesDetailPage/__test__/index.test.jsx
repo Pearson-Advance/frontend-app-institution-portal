@@ -1,4 +1,4 @@
-import { waitFor, fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { Route } from 'react-router-dom';
 import '@testing-library/jest-dom';
 
@@ -15,6 +15,9 @@ jest.mock('@edx/frontend-platform/logging', () => ({
 jest.mock('features/Classes/data/thunks', () => ({
   fetchClassesData: jest.fn(() => () => Promise.resolve()),
 }));
+
+const courseId = 'course-v1:XXX+YYY+2023';
+const secondCourseId = 'course-v1:XXX+ZZZ+2023';
 
 const mockStore = {
   main: {
@@ -44,6 +47,7 @@ const mockStore = {
     table: {
       data: [
         {
+          masterCourseId: courseId,
           masterCourseName: 'Demo Course 1',
           numberOfClasses: 3,
           missingClassesForInstructor: 0,
@@ -51,6 +55,7 @@ const mockStore = {
           numberOfPendingStudents: 0,
         },
         {
+          masterCourseId: secondCourseId,
           masterCourseName: 'Demo Course 2',
           numberOfClasses: 3,
           missingClassesForInstructor: 0,
@@ -64,6 +69,7 @@ const mockStore = {
     },
     selectOptions: [
       {
+        masterCourseId: courseId,
         masterCourseName: 'Demo Course 1',
         numberOfClasses: 3,
         missingClassesForInstructor: 0,
@@ -71,6 +77,7 @@ const mockStore = {
         numberOfPendingStudents: 0,
       },
       {
+        masterCourseId: secondCourseId,
         masterCourseName: 'Demo Course 2',
         numberOfClasses: 3,
         missingClassesForInstructor: 0,
@@ -130,7 +137,7 @@ const mockStore = {
   },
 };
 
-const route = '/courses/course-v1:XXX+YYY+2023';
+const route = `/courses/${courseId}`;
 
 const renderComponent = (store = mockStore) => renderWithProviders(
   <Route path="/courses/:courseId" element={<CoursesDetailPage />} />,
@@ -148,16 +155,15 @@ describe('CoursesDetailPage', () => {
   test('Should render the table and the course info', async () => {
     const { container } = renderComponent();
 
-    waitFor(() => {
-      expect(container).toHaveTextContent('Demo Course 1 1');
+    await waitFor(() => {
+      expect(container).toHaveTextContent('Demo Course 1');
+      expect(container).toHaveTextContent('3 / 3');
       expect(container).toHaveTextContent('Demo MasterCourse 1');
       expect(container).toHaveTextContent('Demo MasterCourse 2');
       expect(container).toHaveTextContent('Demo Class 1');
       expect(container).toHaveTextContent('Demo Class 2');
       expect(container).toHaveTextContent('09/21/24');
       expect(container).toHaveTextContent('09/21/25');
-      expect(container).toHaveTextContent('1');
-      expect(container).toHaveTextContent('2');
       expect(container).toHaveTextContent('100');
       expect(container).toHaveTextContent('200');
       expect(container).toHaveTextContent('instructor_1');
@@ -167,17 +173,20 @@ describe('CoursesDetailPage', () => {
 
   test('Should render the class name filter input', () => {
     const { getByTestId } = renderComponent();
+
     expect(getByTestId('class_name')).toBeInTheDocument();
   });
 
   test('Should render the start date and end date filter inputs', () => {
     const { getByTestId } = renderComponent();
+
     expect(getByTestId('start_date')).toBeInTheDocument();
     expect(getByTestId('end_date')).toBeInTheDocument();
   });
 
   test('Apply and Reset buttons should be disabled when no filter has changed', () => {
     const { getByText } = renderComponent();
+
     expect(getByText('Apply')).toBeDisabled();
     expect(getByText('Reset')).toBeDisabled();
   });
@@ -189,14 +198,16 @@ describe('CoursesDetailPage', () => {
       target: { value: 'Demo Class' },
     });
 
-    expect(getByText('Apply')).not.toBeDisabled();
-    expect(getByText('Reset')).not.toBeDisabled();
+    expect(getByText('Apply')).toBeEnabled();
+    expect(getByText('Reset')).toBeEnabled();
   });
 
   test('Apply and Reset buttons should remain disabled when class name has less than 2 chars and dates are default', () => {
     const { getByTestId, getByText } = renderComponent();
 
-    fireEvent.change(getByTestId('class_name'), { target: { value: 'D' } });
+    fireEvent.change(getByTestId('class_name'), {
+      target: { value: 'D' },
+    });
 
     expect(getByText('Apply')).toBeDisabled();
     expect(getByText('Reset')).toBeDisabled();
@@ -205,19 +216,23 @@ describe('CoursesDetailPage', () => {
   test('Apply and Reset buttons should be enabled when start_date changes from default', () => {
     const { getByTestId, getByText } = renderComponent();
 
-    fireEvent.change(getByTestId('start_date'), { target: { value: '2023-06-01' } });
+    fireEvent.change(getByTestId('start_date'), {
+      target: { value: '2023-06-01' },
+    });
 
-    expect(getByText('Apply')).not.toBeDisabled();
-    expect(getByText('Reset')).not.toBeDisabled();
+    expect(getByText('Apply')).toBeEnabled();
+    expect(getByText('Reset')).toBeEnabled();
   });
 
   test('Apply and Reset buttons should be enabled when end_date changes from default', () => {
     const { getByTestId, getByText } = renderComponent();
 
-    fireEvent.change(getByTestId('end_date'), { target: { value: '2025-03-15' } });
+    fireEvent.change(getByTestId('end_date'), {
+      target: { value: '2025-03-15' },
+    });
 
-    expect(getByText('Apply')).not.toBeDisabled();
-    expect(getByText('Reset')).not.toBeDisabled();
+    expect(getByText('Apply')).toBeEnabled();
+    expect(getByText('Reset')).toBeEnabled();
   });
 
   test('Should dispatch fetchClassesData with class_name filter on Apply', async () => {
@@ -233,7 +248,7 @@ describe('CoursesDetailPage', () => {
       expect(fetchClassesData).toHaveBeenCalledWith(
         1,
         1,
-        'course-v1:XXX+YYY+2023',
+        courseId,
         expect.objectContaining({ class_name: 'Demo Class' }),
       );
     });
@@ -242,21 +257,27 @@ describe('CoursesDetailPage', () => {
   test('Should clear all filters and refetch', async () => {
     const { getByTestId, getByText } = renderComponent();
 
-    fireEvent.change(getByTestId('class_name'), { target: { value: 'Demo Class' } });
-    fireEvent.change(getByTestId('start_date'), { target: { value: '2023-06-01' } });
-    fireEvent.change(getByTestId('end_date'), { target: { value: '2023-12-31' } });
+    fireEvent.change(getByTestId('class_name'), {
+      target: { value: 'Demo Class' },
+    });
+    fireEvent.change(getByTestId('start_date'), {
+      target: { value: '2023-06-01' },
+    });
+    fireEvent.change(getByTestId('end_date'), {
+      target: { value: '2023-12-31' },
+    });
+
     fireEvent.click(getByText('Reset'));
 
     await waitFor(() => {
       expect(getByTestId('class_name')).toHaveValue('');
       expect(getByTestId('start_date')).toHaveValue('');
       expect(getByTestId('end_date')).toHaveValue('');
-
       expect(fetchClassesData).toHaveBeenLastCalledWith(
         1,
         1,
-        'course-v1:XXX+YYY+2023',
-        expect.objectContaining({}),
+        courseId,
+        {},
       );
     });
   });
@@ -264,15 +285,31 @@ describe('CoursesDetailPage', () => {
   test('Should disable Apply and Reset buttons after Reset', async () => {
     const { getByTestId, getByText } = renderComponent();
 
-    fireEvent.change(getByTestId('class_name'), {
+    const classNameInput = getByTestId('class_name');
+    const applyButton = getByText('Apply');
+    const resetButton = getByText('Reset');
+
+    fireEvent.change(classNameInput, {
       target: { value: 'Demo Class' },
     });
 
-    fireEvent.click(getByText('Reset'));
+    expect(classNameInput).toHaveValue('Demo Class');
+    expect(applyButton).toBeEnabled();
+    expect(resetButton).toBeEnabled();
+
+    fireEvent.click(resetButton);
 
     await waitFor(() => {
-      expect(getByText('Apply')).toBeDisabled();
-      expect(getByText('Reset')).toBeDisabled();
+      expect(classNameInput).toHaveValue('');
+      expect(applyButton).toBeDisabled();
+      expect(resetButton).toBeDisabled();
     });
+
+    expect(fetchClassesData).toHaveBeenLastCalledWith(
+      1,
+      1,
+      courseId,
+      {},
+    );
   });
 });

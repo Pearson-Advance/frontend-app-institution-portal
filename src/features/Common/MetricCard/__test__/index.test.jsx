@@ -20,6 +20,28 @@ describe('MetricCard', () => {
     expect(getByText('-')).toBeInTheDocument();
   });
 
+  test('renders an optional subtitle', () => {
+    const { getByText } = render(
+      <MetricCard
+        title="Pass/Fail Rate"
+        value="88%"
+        subtitle="7 passed, 1 failed"
+      />,
+    );
+
+    expect(getByText('Pass/Fail Rate')).toBeInTheDocument();
+    expect(getByText('88%')).toBeInTheDocument();
+    expect(getByText('7 passed, 1 failed')).toBeInTheDocument();
+  });
+
+  test('preserves a numeric zero value', () => {
+    const { getByText } = render(
+      <MetricCard title="Pass/Fail Rate" value={0} />,
+    );
+
+    expect(getByText('0')).toBeInTheDocument();
+  });
+
   test('renders trend and up icon when trend direction is up', () => {
     const { container, getByText } = render(
       <MetricCard
