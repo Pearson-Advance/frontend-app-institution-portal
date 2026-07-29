@@ -17,6 +17,7 @@ import {
 
 import {
   getClassAnalyticsWidgets,
+  getGradebookCsv,
   handleSkillableDashboard,
   handleXtremeLabsDashboard,
 } from 'features/Classes/data/api';
@@ -140,6 +141,42 @@ function fetchLabSummaryLink(classId, labSummaryTag, showToast) {
 }
 
 /**
+ * Download the Gradebook of a class as a CSV file.
+ *
+ * Shows an in-progress toast, requests the CSV from the LMS and lets the
+ * browser download the resulting file. The returned promise resolves once the
+ * request completes (or rejects on error) so callers can block the trigger and
+ * avoid duplicated requests while the operation is in progress.
+ *
+ * @param {string} classId - CCX course id of the class.
+ * @param {Function} showToast - Callback used to display notifications.
+ * @returns {Function} Redux thunk returning a promise.
+ */
+function downloadGradebookCsv(classId, showToast) {
+  return async () => {
+    try {
+      showToast('Your gradebook download is in progress. This may take a moment.');
+
+      const response = await getGradebookCsv(classId);
+
+      const blob = new Blob([response.data], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+
+      link.href = url;
+      link.setAttribute('download', `ccx_grades_${classId}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      showToast('An error occurred while downloading the gradebook. Please try again.');
+      logError(error);
+    }
+  };
+}
+
+/**
  * Builds the Superset “Classes” dashboard URL if the feature is enabled.
  *
  * @param {string} classId
@@ -186,5 +223,6 @@ export {
   fetchAllClassesData,
   fetchClassAnalyticsWidgets,
   fetchLabSummaryLink,
+  downloadGradebookCsv,
   supersetUrlClassesDashboard,
 };
