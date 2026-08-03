@@ -2,6 +2,7 @@ import { Route } from 'react-router-dom';
 import { fireEvent } from '@testing-library/react';
 
 import { renderWithProviders } from 'test-utils';
+import VoucherOptions from 'features/Main/VoucherOptions';
 import { getColumns } from '../columns';
 
 jest.mock('@edx/frontend-platform', () => ({
@@ -11,7 +12,13 @@ jest.mock('@edx/frontend-platform', () => ({
   })),
 }));
 
+jest.mock('features/Main/VoucherOptions', () => jest.fn(() => null));
+
 describe('getColumns', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const mockStore = {
     main: {
       selectedInstitution: { id: 1 },
@@ -277,7 +284,11 @@ describe('getColumns', () => {
   });
 
   test('renders Voucher option only when displayVoucherOptions = true', () => {
-    const columns = getColumns({ displayVoucherOptions: true });
+    const onVoucherActionSuccess = jest.fn();
+    const columns = getColumns({
+      displayVoucherOptions: true,
+      onVoucherActionSuccess,
+    });
 
     const ActionColumn = () => columns[9].Cell({
       row: {
@@ -303,7 +314,17 @@ describe('getColumns', () => {
 
     fireEvent.click(component.getByTestId('droprown-action'));
 
-    expect(component.getByText('Assign a voucher')).toBeInTheDocument();
+    expect(VoucherOptions).toHaveBeenCalled();
+
+    const voucherOptionsProps = VoucherOptions.mock.calls[VoucherOptions.mock.calls.length - 1][0];
+
+    expect(voucherOptionsProps).toEqual(expect.objectContaining({
+      courseId: 'course-v1:demo+demo1+2020',
+      learnerEmail: 'testuser@example.com',
+      showAssign: true,
+      showRevoke: undefined,
+      onVoucherActionSuccess,
+    }));
   });
 
   test('does NOT render Voucher option when displayVoucherOptions = false', () => {
@@ -329,7 +350,7 @@ describe('getColumns', () => {
 
     fireEvent.click(component.getByTestId('droprown-action'));
 
-    expect(component.queryByText('Assign a voucher')).not.toBeInTheDocument();
+    expect(VoucherOptions).not.toHaveBeenCalled();
   });
 });
 

@@ -91,8 +91,14 @@ describe('VoucherOptions', () => {
   test('should show success message when voucher is assigned successfully', async () => {
     getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: true });
     assignVoucher.mockResolvedValueOnce({ status: HTTP_STATUS.CREATED });
+    const onVoucherActionSuccess = jest.fn();
 
-    renderWithProviders(<VoucherOptions {...baseProps} />);
+    renderWithProviders(
+      <VoucherOptions
+        {...baseProps}
+        onVoucherActionSuccess={onVoucherActionSuccess}
+      />,
+    );
 
     fireEvent.click(screen.getByText(VOUCHER_UI_LABELS.ASSIGN));
 
@@ -108,6 +114,29 @@ describe('VoucherOptions', () => {
     await waitFor(() => {
       expect(screen.getByText(VOUCHER_SUCCESS_MESSAGES.ASSIGN)).toBeInTheDocument();
     });
+
+    expect(onVoucherActionSuccess).toHaveBeenCalledTimes(1);
+  });
+
+  test('should not call onVoucherActionSuccess when assignment fails', async () => {
+    getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: true });
+    assignVoucher.mockRejectedValueOnce({});
+    const onVoucherActionSuccess = jest.fn();
+
+    renderWithProviders(
+      <VoucherOptions
+        {...baseProps}
+        onVoucherActionSuccess={onVoucherActionSuccess}
+      />,
+    );
+
+    fireEvent.click(screen.getByText(VOUCHER_UI_LABELS.ASSIGN));
+
+    await waitFor(() => {
+      expect(screen.getByText(VOUCHER_ERROR_MESSAGES.ASSIGN)).toBeInTheDocument();
+    });
+
+    expect(onVoucherActionSuccess).not.toHaveBeenCalled();
   });
 
   test('should show custom error message from error.response.data.detail when assignment fails', async () => {
@@ -165,8 +194,14 @@ describe('VoucherOptions', () => {
   test('should show success message when voucher is revoked successfully', async () => {
     getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: true });
     revokeVoucher.mockResolvedValueOnce({ status: HTTP_STATUS.SUCCESS });
+    const onVoucherActionSuccess = jest.fn();
 
-    renderWithProviders(<VoucherOptions {...baseProps} />);
+    renderWithProviders(
+      <VoucherOptions
+        {...baseProps}
+        onVoucherActionSuccess={onVoucherActionSuccess}
+      />,
+    );
 
     fireEvent.click(screen.getByText(VOUCHER_UI_LABELS.REVOKE));
 
@@ -182,6 +217,29 @@ describe('VoucherOptions', () => {
     await waitFor(() => {
       expect(screen.getByText(VOUCHER_SUCCESS_MESSAGES.REVOKE)).toBeInTheDocument();
     });
+
+    expect(onVoucherActionSuccess).toHaveBeenCalledTimes(1);
+  });
+
+  test('should not call onVoucherActionSuccess when revoke fails', async () => {
+    getConfig.mockReturnValue({ PSS_ENABLE_ASSIGN_VOUCHER: true });
+    revokeVoucher.mockRejectedValueOnce({});
+    const onVoucherActionSuccess = jest.fn();
+
+    renderWithProviders(
+      <VoucherOptions
+        {...baseProps}
+        onVoucherActionSuccess={onVoucherActionSuccess}
+      />,
+    );
+
+    fireEvent.click(screen.getByText(VOUCHER_UI_LABELS.REVOKE));
+
+    await waitFor(() => {
+      expect(screen.getByText(VOUCHER_ERROR_MESSAGES.REVOKE)).toBeInTheDocument();
+    });
+
+    expect(onVoucherActionSuccess).not.toHaveBeenCalled();
   });
 
   test('should show not found message on 404 revoke error', async () => {

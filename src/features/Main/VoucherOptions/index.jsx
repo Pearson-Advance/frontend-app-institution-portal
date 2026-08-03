@@ -37,7 +37,11 @@ function reducer(state, action) {
 }
 
 const VoucherOptions = ({
-  courseId, learnerEmail, showAssign, showRevoke,
+  courseId,
+  learnerEmail,
+  showAssign,
+  showRevoke,
+  onVoucherActionSuccess,
 }) => {
   const enableOption = getConfig().PSS_ENABLE_ASSIGN_VOUCHER || false;
   const institution = useSelector((state) => state.main.selectedInstitution);
@@ -77,6 +81,7 @@ const VoucherOptions = ({
 
       if (response?.status === HTTP_STATUS.CREATED) {
         showMessage(VOUCHER_SUCCESS_MESSAGES.ASSIGN);
+        onVoucherActionSuccess();
       }
     } catch (error) {
       const errorMessage = error?.response?.data?.detail || VOUCHER_ERROR_MESSAGES.ASSIGN;
@@ -84,7 +89,7 @@ const VoucherOptions = ({
     } finally {
       dispatch({ type: VOUCHER_ACTIONS.ASSIGN_END });
     }
-  }, [assignLoading, invalidInputs, makePayload, showMessage]);
+  }, [assignLoading, invalidInputs, makePayload, showMessage, onVoucherActionSuccess]);
 
   const handleRevokeVoucher = useCallback(async () => {
     if (revokeLoading || invalidInputs) { return; }
@@ -96,6 +101,7 @@ const VoucherOptions = ({
 
       if (response?.status === HTTP_STATUS.SUCCESS) {
         showMessage(VOUCHER_SUCCESS_MESSAGES.REVOKE);
+        onVoucherActionSuccess();
       }
     } catch (error) {
       const status = error?.customAttributes?.httpErrorStatus;
@@ -117,7 +123,7 @@ const VoucherOptions = ({
     } finally {
       dispatch({ type: VOUCHER_ACTIONS.REVOKE_END });
     }
-  }, [revokeLoading, invalidInputs, makePayload, showMessage]);
+  }, [revokeLoading, invalidInputs, makePayload, showMessage, onVoucherActionSuccess]);
 
   if (!enableOption) { return null; }
 
@@ -162,6 +168,11 @@ VoucherOptions.propTypes = {
   learnerEmail: PropTypes.string.isRequired,
   showAssign: PropTypes.bool.isRequired,
   showRevoke: PropTypes.bool.isRequired,
+  onVoucherActionSuccess: PropTypes.func,
+};
+
+VoucherOptions.defaultProps = {
+  onVoucherActionSuccess: () => {},
 };
 
 export default VoucherOptions;

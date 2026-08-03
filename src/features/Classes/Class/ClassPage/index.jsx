@@ -3,11 +3,13 @@ import React, {
   useEffect,
   useRef,
   useMemo,
+  useCallback,
 } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Container, Pagination } from '@openedx/paragon';
 import { useDispatch, useSelector } from 'react-redux';
 import { getConfig } from '@edx/frontend-platform';
+import { logError } from '@edx/frontend-platform/logging';
 
 import Table from 'features/Main/Table';
 import InstructorCard from 'features/Classes/InstructorCard';
@@ -66,6 +68,7 @@ const ClassPage = () => {
   const {
     data: studentsData = {},
     isFetching: isLoadingStudents,
+    refetch: refetchStudents,
   } = useGetStudentsByClassQuery(
     {
       institutionId: institution.id,
@@ -188,9 +191,30 @@ const ClassPage = () => {
     });
   };
 
+  const refreshStudentsList = useCallback(async () => {
+    try {
+      const studentsRefreshResult = await refetchStudents();
+
+      if (studentsRefreshResult?.error) {
+        logError(studentsRefreshResult.error);
+        return;
+      }
+
+      if (institution.id && displayVoucherOptions) {
+        await dispatch(fetchStudentsVouchers(displayVoucherOptions));
+      }
+    } catch (error) {
+      logError(error);
+    }
+  }, [refetchStudents, institution.id, displayVoucherOptions, dispatch]);
+
   const COLUMNS = useMemo(() => (
-    getColumns({ displayVoucherOptions, enableVoucherColumn })
-  ), [displayVoucherOptions, enableVoucherColumn]);
+    getColumns({
+      displayVoucherOptions,
+      enableVoucherColumn,
+      onVoucherActionSuccess: refreshStudentsList,
+    })
+  ), [displayVoucherOptions, enableVoucherColumn, refreshStudentsList]);
 
   useEffect(() => {
     const initialTitle = document.title;

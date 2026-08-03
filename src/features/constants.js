@@ -187,7 +187,7 @@ export const HTTP_STATUS = {
  * @enum {string}
  */
 export const VOUCHER_SUCCESS_MESSAGES = {
-  ASSIGN: 'The action was completed. Please Refresh your screen.',
+  ASSIGN: 'Voucher assigned successfully.',
   REVOKE: 'Voucher revoked successfully.',
 };
 
