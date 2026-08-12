@@ -45,12 +45,13 @@ describe('StudentsTable Columns', () => {
 
   test('returns an array of columns with correct properties', () => {
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(11);
+    expect(columns).toHaveLength(12);
 
     const [
       studentCol,
       emailCol,
       lastAccessDateCol,
+      lastLoginPlatformCol,
       statusCol,
       classNameCol,
       dateCol,
@@ -68,7 +69,10 @@ describe('StudentsTable Columns', () => {
     expect(emailCol).toHaveProperty('accessor', 'learnerEmail');
 
     expect(lastAccessDateCol).toHaveProperty('Header', 'Last Login');
-    expect(lastAccessDateCol).toHaveProperty('accessor', 'lastAccess');
+    expect(lastAccessDateCol).toHaveProperty('accessor', 'lastLogin');
+
+    expect(lastLoginPlatformCol).toHaveProperty('Header', 'Last Access');
+    expect(lastLoginPlatformCol).toHaveProperty('accessor', 'lastAccess');
 
     expect(statusCol).toHaveProperty('Header', 'Status');
     expect(statusCol).toHaveProperty('accessor', 'status');
@@ -94,8 +98,38 @@ describe('StudentsTable Columns', () => {
     expect(actionCol).toHaveProperty('accessor', 'classId');
   });
 
-  test('renders Last access date formatted', () => {
-    const LastAccessCell = () => columns[2].Cell({
+  test('renders Last Login date formatted', () => {
+    const LastLoginCell = () => columns[2].Cell({
+      row: { original: { lastLogin: '2024-03-15T10:00:00Z', status: 'Active' } },
+    });
+
+    const { getByText } = renderWithProviders(<LastLoginCell />, { preloadedState: mockStore });
+
+    expect(getByText('03/15/24')).toBeInTheDocument();
+  });
+
+  test('renders Last Login date as -- when enrollment is pending', () => {
+    const LastLoginCell = () => columns[2].Cell({
+      row: { original: { lastLogin: '2024-03-15T10:00:00Z', status: 'pending' } },
+    });
+
+    const { getByText } = renderWithProviders(<LastLoginCell />, { preloadedState: mockStore });
+
+    expect(getByText('--')).toBeInTheDocument();
+  });
+
+  test('renders Last Login date as -- when null', () => {
+    const LastLoginCell = () => columns[2].Cell({
+      row: { original: { lastLogin: null, status: 'Active' } },
+    });
+
+    const { getByText } = renderWithProviders(<LastLoginCell />, { preloadedState: mockStore });
+
+    expect(getByText('--')).toBeInTheDocument();
+  });
+
+  test('renders Last Access date formatted', () => {
+    const LastAccessCell = () => columns[3].Cell({
       row: { original: { lastAccess: '2024-03-15T10:00:00Z', status: 'Active' } },
     });
 
@@ -104,8 +138,8 @@ describe('StudentsTable Columns', () => {
     expect(getByText('03/15/24')).toBeInTheDocument();
   });
 
-  test('renders Last access date as -- when enrollment is pending', () => {
-    const LastAccessCell = () => columns[2].Cell({
+  test('renders Last Access date as -- when enrollment is pending', () => {
+    const LastAccessCell = () => columns[3].Cell({
       row: { original: { lastAccess: '2024-03-15T10:00:00Z', status: 'pending' } },
     });
 
@@ -114,8 +148,8 @@ describe('StudentsTable Columns', () => {
     expect(getByText('--')).toBeInTheDocument();
   });
 
-  test('renders Last access date as -- when null', () => {
-    const LastAccessCell = () => columns[2].Cell({
+  test('renders Last Access date as -- when null', () => {
+    const LastAccessCell = () => columns[3].Cell({
       row: { original: { lastAccess: null, status: 'Active' } },
     });
 
@@ -125,7 +159,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders dropdown menu correctly', async () => {
-    const ActionColumn = () => columns[10].Cell({
+    const ActionColumn = () => columns[11].Cell({
       row: {
         values: {
           classId: 'CCX1',
@@ -154,7 +188,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders EPP Days Left cell with correct value', () => {
-    const EppDaysColumn = columns[9];
+    const EppDaysColumn = columns[10];
     const CellComponent = () => EppDaysColumn.Cell({
       row: {
         values: {
@@ -172,7 +206,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders EPP Days Left cell as "--" when null', () => {
-    const EppDaysColumn = columns[9];
+    const EppDaysColumn = columns[10];
     const CellComponent = () => EppDaysColumn.Cell({
       row: {
         values: {

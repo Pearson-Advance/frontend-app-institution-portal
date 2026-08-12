@@ -67,13 +67,14 @@ describe('getColumns', () => {
     const columns = getColumns({ enableVoucherColumn: true });
 
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(11);
+    expect(columns).toHaveLength(12);
 
     const [
       number,
       student,
       learnerEmail,
       lastAccessDate,
+      lastLoginPlatform,
       status,
       voucherStatus,
       completePercentage,
@@ -87,6 +88,9 @@ describe('getColumns', () => {
     expect(student).toHaveProperty('Header', 'Student');
     expect(learnerEmail).toHaveProperty('Header', 'Email');
     expect(lastAccessDate).toHaveProperty('Header', 'Last Login');
+    expect(lastAccessDate).toHaveProperty('accessor', 'lastLogin');
+    expect(lastLoginPlatform).toHaveProperty('Header', 'Last Access');
+    expect(lastLoginPlatform).toHaveProperty('accessor', 'lastAccess');
     expect(status).toHaveProperty('Header', 'Status');
     expect(voucherStatus).toHaveProperty('Header', 'Voucher Status');
     expect(completePercentage).toHaveProperty('Header', 'Current Grade');
@@ -125,7 +129,7 @@ describe('getColumns', () => {
   test('renders Status badge', () => {
     const columns = getColumns();
 
-    const StatusColumn = () => columns[4].Cell({
+    const StatusColumn = () => columns[5].Cell({
       row: { values: { status: 'Active' } },
     });
 
@@ -137,10 +141,46 @@ describe('getColumns', () => {
     expect(getByText('Active')).toBeInTheDocument();
   });
 
-  test('renders Last access date formatted', () => {
+  test('renders Last Login date formatted', () => {
     const cols = getColumns();
 
-    const LastAccessCell = () => cols[3].Cell({
+    const LastLoginCell = () => cols[3].Cell({
+      row: { original: { lastLogin: '2024-03-15T10:00:00Z', status: 'Active' } },
+    });
+
+    const { getByText } = renderWithProviders(<LastLoginCell />, { preloadedState: mockStore });
+
+    expect(getByText('03/15/24')).toBeInTheDocument();
+  });
+
+  test('renders Last Login date as -- when enrollment is pending', () => {
+    const cols = getColumns();
+
+    const LastLoginCell = () => cols[3].Cell({
+      row: { original: { lastLogin: '2024-03-15T10:00:00Z', status: 'pending' } },
+    });
+
+    const { getByText } = renderWithProviders(<LastLoginCell />, { preloadedState: mockStore });
+
+    expect(getByText('--')).toBeInTheDocument();
+  });
+
+  test('renders Last Login date as -- when null', () => {
+    const cols = getColumns();
+
+    const LastLoginCell = () => cols[3].Cell({
+      row: { original: { lastLogin: null, status: 'Active' } },
+    });
+
+    const { getByText } = renderWithProviders(<LastLoginCell />, { preloadedState: mockStore });
+
+    expect(getByText('--')).toBeInTheDocument();
+  });
+
+  test('renders Last Access date formatted', () => {
+    const cols = getColumns();
+
+    const LastAccessCell = () => cols[4].Cell({
       row: { original: { lastAccess: '2024-03-15T10:00:00Z', status: 'Active' } },
     });
 
@@ -149,22 +189,10 @@ describe('getColumns', () => {
     expect(getByText('03/15/24')).toBeInTheDocument();
   });
 
-  test('renders Last access date as -- when enrollment is pending', () => {
+  test('renders Last Access date as -- when null', () => {
     const cols = getColumns();
 
-    const LastAccessCell = () => cols[3].Cell({
-      row: { original: { lastAccess: '2024-03-15T10:00:00Z', status: 'pending' } },
-    });
-
-    const { getByText } = renderWithProviders(<LastAccessCell />, { preloadedState: mockStore });
-
-    expect(getByText('--')).toBeInTheDocument();
-  });
-
-  test('renders Last access date as -- when null', () => {
-    const cols = getColumns();
-
-    const LastAccessCell = () => cols[3].Cell({
+    const LastAccessCell = () => cols[4].Cell({
       row: { original: { lastAccess: null, status: 'Active' } },
     });
 
@@ -176,7 +204,7 @@ describe('getColumns', () => {
   test('renders Current Grade with safe value', () => {
     const columns = getColumns();
 
-    const GradeColumn = () => columns[5].Cell({
+    const GradeColumn = () => columns[6].Cell({
       row: { values: { completePercentage: 25.8 } },
     });
 
@@ -191,7 +219,7 @@ describe('getColumns', () => {
   test('renders Exam Ready ProgressSteps', () => {
     const columns = getColumns();
 
-    const ExamColumn = () => columns[6].Cell({
+    const ExamColumn = () => columns[7].Cell({
       row: {
         values: {
           examReady: { status: 'NOT_STARTED' },
@@ -210,7 +238,7 @@ describe('getColumns', () => {
   test('renders Last exam date as -- when null', () => {
     const columns = getColumns();
 
-    const LastExamColumn = () => columns[7].Cell({
+    const LastExamColumn = () => columns[8].Cell({
       row: {
         values: {
           examReady: { lastExamDate: null },
@@ -229,7 +257,7 @@ describe('getColumns', () => {
   test('renders Epp Days Left when value exists', () => {
     const columns = getColumns();
 
-    const EppDaysColumn = () => columns[8].Cell({
+    const EppDaysColumn = () => columns[9].Cell({
       row: { values: { examReady: { eppDaysLeft: 3 } } },
     });
 
@@ -244,7 +272,7 @@ describe('getColumns', () => {
   test('renders Epp Days Left as -- when null', () => {
     const columns = getColumns();
 
-    const EppDaysColumn = () => columns[8].Cell({
+    const EppDaysColumn = () => columns[9].Cell({
       row: { values: { examReady: { eppDaysLeft: null } } },
     });
 
@@ -259,7 +287,7 @@ describe('getColumns', () => {
   test('renders Actions dropdown', () => {
     const columns = getColumns();
 
-    const ActionColumn = () => columns[9].Cell({
+    const ActionColumn = () => columns[10].Cell({
       row: {
         values: { classId: 'CCX1' },
         original: {
@@ -290,7 +318,7 @@ describe('getColumns', () => {
       onVoucherActionSuccess,
     });
 
-    const ActionColumn = () => columns[9].Cell({
+    const ActionColumn = () => columns[10].Cell({
       row: {
         values: { classId: 'CCX1' },
         original: {
@@ -330,7 +358,7 @@ describe('getColumns', () => {
   test('does NOT render Voucher option when displayVoucherOptions = false', () => {
     const columns = getColumns();
 
-    const ActionColumn = () => columns[9].Cell({
+    const ActionColumn = () => columns[10].Cell({
       row: {
         values: { classId: 'CCX1' },
         original: {
