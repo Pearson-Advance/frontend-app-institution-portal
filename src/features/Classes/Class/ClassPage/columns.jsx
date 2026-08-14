@@ -59,10 +59,20 @@ const getColumns = ({
   },
   {
     Header: 'Last Login',
-    accessor: 'lastAccess',
+    accessor: 'lastLogin',
     Cell: ({ row }) => {
       const isPending = row.original.status?.toLowerCase() === 'pending';
-      const lastAccess = !isPending && row.original.lastAccess
+      const lastLogin = !isPending && row.original.lastLogin
+        ? formatUTCDate(row.original.lastLogin, 'MM/dd/yy')
+        : '--';
+      return <span>{lastLogin}</span>;
+    },
+  },
+  {
+    Header: 'Last Access',
+    accessor: 'lastAccess',
+    Cell: ({ row }) => {
+      const lastAccess = row.original.lastAccess
         ? formatUTCDate(row.original.lastAccess, 'MM/dd/yy')
         : '--';
       return <span>{lastAccess}</span>;

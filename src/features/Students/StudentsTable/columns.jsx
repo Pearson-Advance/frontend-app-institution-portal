@@ -49,6 +49,17 @@ const columns = [
   },
   {
     Header: 'Last Login',
+    accessor: 'lastLogin',
+    Cell: ({ row }) => {
+      const isPending = row.original.status?.toLowerCase() === 'pending';
+      const lastLogin = !isPending && row.original.lastLogin
+        ? formatUTCDate(row.original.lastLogin, 'MM/dd/yy')
+        : '--';
+      return <span>{lastLogin}</span>;
+    },
+  },
+  {
+    Header: 'Last Access',
     accessor: 'lastAccess',
     Cell: ({ row }) => {
       const isPending = row.original.status?.toLowerCase() === 'pending';
