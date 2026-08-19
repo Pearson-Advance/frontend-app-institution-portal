@@ -27,12 +27,15 @@ import {
   VOUCHER_RULE_TYPES,
   VOUCHER_RULES,
 } from 'features/constants';
+import { getSupersetAnalyticsStatus } from 'features/Classes/data/api';
 import { useGetClassesByCourseQuery } from 'features/Classes/data/classesApi';
 import { useGetStudentsByClassQuery } from 'features/Students/data/studentsApi';
 
 import { useInstitutionIdQueryParam } from 'hooks';
 
 import 'features/Classes/Class/ClassPage/index.scss';
+
+const isConfigEnabled = (value) => value === true || value === 'true';
 
 const ClassPage = () => {
   const location = useLocation();
@@ -46,11 +49,14 @@ const ClassPage = () => {
 
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
+  const [isSupersetAnalyticsEnabled, setIsSupersetAnalyticsEnabled] = useState(false);
   const institution = useSelector((state) => state.main.selectedInstitution);
   const vouchers = useSelector((state) => state.students.vouchers?.results || []);
   const addQueryParam = useInstitutionIdQueryParam();
 
   const enableVoucherColumn = getConfig().PSS_ENABLE_ASSIGN_VOUCHER || false;
+  const isAnalyticsWidgetsConfigured = isConfigEnabled(getConfig().ENABLE_CLASS_ANALYTICS_WIDGETS)
+    || isConfigEnabled(getConfig().PSS_ENABLE_CLASS_ANALYTICS_WIDGETS);
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -217,6 +223,37 @@ const ClassPage = () => {
   ), [displayVoucherOptions, enableVoucherColumn, refreshStudentsList]);
 
   useEffect(() => {
+    let isMounted = true;
+
+    setIsSupersetAnalyticsEnabled(false);
+
+    if (!isAnalyticsWidgetsConfigured) {
+      return undefined;
+    }
+
+    const fetchAnalyticsStatus = async () => {
+      try {
+        const { data } = await getSupersetAnalyticsStatus();
+
+        if (isMounted) {
+          setIsSupersetAnalyticsEnabled(data?.enabled === true);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setIsSupersetAnalyticsEnabled(false);
+          logError(error);
+        }
+      }
+    };
+
+    fetchAnalyticsStatus();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isAnalyticsWidgetsConfigured]);
+
+  useEffect(() => {
     const initialTitle = document.title;
 
     document.title = classIdDecoded;
@@ -258,7 +295,9 @@ const ClassPage = () => {
 
       <div className="class-wrapper">
         <InstructorCard previousPage={previousPage}>
-          <ClassAnalyticsWidgets classId={classIdDecoded} />
+          {isSupersetAnalyticsEnabled && (
+            <ClassAnalyticsWidgets classId={classIdDecoded} />
+          )}
         </InstructorCard>
         <div>
           <div className="d-flex justify-content-end my-3 flex-wrap">

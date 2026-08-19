@@ -53,6 +53,20 @@ function getClassAnalyticsWidgets({ institutionId, classId }) {
 }
 
 /**
+ * Fetch whether Superset analytics is enabled for the current user.
+ *
+ * The response is intentionally feature-specific so the frontend does not
+ * need to inspect arbitrary Waffle flags.
+ *
+ * @returns {Promise} Authenticated HTTP response containing `{ enabled }`.
+ */
+function getSupersetAnalyticsStatus() {
+  return getAuthenticatedHttpClient().get(
+    `${getCourseOperationsApiV2BaseUrl()}/classes/analytics-status/`,
+  );
+}
+
+/**
  * Download the Gradebook of a class as a CSV file.
  *
  * @param {string} classId - CCX course id of the class.
@@ -67,6 +81,7 @@ function getGradebookCsv(classId) {
 
 export {
   getClassAnalyticsWidgets,
+  getSupersetAnalyticsStatus,
   getGradebookCsv,
   handleSkillableDashboard,
   handleXtremeLabsDashboard,
