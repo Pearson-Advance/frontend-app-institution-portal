@@ -206,7 +206,7 @@ const CoursesDetailPage = () => {
               <Form.Group as={Col} className="w-50 px-0">
                 <Form.Control
                   type="date"
-                  floatingLabel="Search start date"
+                  floatingLabel="Class start date from"
                   className="my-1 mr-2"
                   name="start_date"
                   data-testid="start_date"
@@ -217,7 +217,7 @@ const CoursesDetailPage = () => {
               <Form.Group as={Col} className="w-50 px-0">
                 <Form.Control
                   type="date"
-                  floatingLabel="Search end date"
+                  floatingLabel="Class start date to"
                   className="my-1 mr-0"
                   name="end_date"
                   data-testid="end_date"
