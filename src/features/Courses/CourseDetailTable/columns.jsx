@@ -60,23 +60,14 @@ const columns = [
     Header: 'Instructor',
     accessor: 'instructors',
     Cell: ({ row }) => {
-      const instructorInfo = useSelector((state) => state.instructors.selectOptions.data);
-
       if (row.values.instructors?.length > 0) {
         return (
           <ul className="instructors-list mb-0">
-
-            {row.values.instructors.map(instructorUsername => {
-              const instructorData = instructorInfo.find(
-                instructor => instructor.instructorUsername === instructorUsername,
-              );
-
-              return (
-                <li key={instructorUsername}>
-                  {instructorData?.instructorName || instructorUsername}
-                </li>
-              );
-            })}
+            {row.values.instructors.map(instructorName => (
+              <li key={instructorName}>
+                {instructorName}
+              </li>
+            ))}
           </ul>
         );
       }

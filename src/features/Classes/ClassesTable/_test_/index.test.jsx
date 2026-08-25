@@ -32,7 +32,7 @@ describe('Classes Table', () => {
               minStudentsAllowed: 50,
               numberOfStudents: 1,
               maxStudents: 100,
-              instructors: ['instructor_1'],
+              instructors: ['First Instructor'],
             },
             {
               masterCourseName: 'Demo MasterCourse 2',
@@ -42,7 +42,7 @@ describe('Classes Table', () => {
               minStudentsAllowed: 200,
               numberOfStudents: 2,
               maxStudents: 10,
-              instructors: ['instructor_2', 'instructor_3'],
+              instructors: ['Second Instructor', 'instructor_3'],
             },
           ],
           count: 2,
@@ -59,7 +59,7 @@ describe('Classes Table', () => {
               minStudentsAllowed: 50,
               numberOfStudents: 1,
               maxStudents: 100,
-              instructors: ['instructor_1'],
+              instructors: ['First Instructor'],
             },
             {
               masterCourseName: 'Demo MasterCourse 2',
@@ -69,7 +69,7 @@ describe('Classes Table', () => {
               minStudentsAllowed: 200,
               numberOfStudents: 2,
               maxStudents: 10,
-              instructors: ['instructor_2', 'instructor_3'],
+              instructors: ['Second Instructor', 'instructor_3'],
             },
           ],
         },
@@ -98,8 +98,8 @@ describe('Classes Table', () => {
     expect(component.container).toHaveTextContent('2');
     expect(component.container).toHaveTextContent('100');
     expect(component.container).toHaveTextContent('10');
-    expect(component.container).toHaveTextContent('instructor_1');
-    expect(component.container).toHaveTextContent('instructor_2');
+    expect(component.container).toHaveTextContent('First Instructor');
+    expect(component.container).toHaveTextContent('Second Instructor');
     expect(component.container).toHaveTextContent('instructor_3');
   });
 });

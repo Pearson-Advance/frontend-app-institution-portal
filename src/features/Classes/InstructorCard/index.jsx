@@ -16,6 +16,8 @@ import 'features/Classes/InstructorCard/index.scss';
 
 const INSTRUCTORS_NUMBER = 3;
 
+const normalizeName = (value) => (value || '').trim().toLowerCase();
+
 const InstructorCard = ({ previousPage, children }) => {
   const { classId, courseId } = useParams();
   const navigate = useNavigate();
@@ -137,16 +139,17 @@ const InstructorCard = ({ previousPage, children }) => {
                 </Button>
               )}
 
-              {classInfo?.instructors?.slice(0, INSTRUCTORS_NUMBER)?.map((instructor) => {
-                const instructorInfo = instructors.find((user) => user.instructorUsername === instructor);
-
-                if (!instructorInfo) { return null; }
+              {classInfo?.instructors?.slice(0, INSTRUCTORS_NUMBER)?.map((instructor, index) => {
+                const instructorInfo = instructors.find(
+                  (user) => normalizeName(user.instructorName) === normalizeName(instructor)
+                    || normalizeName(user.instructorUsername) === normalizeName(instructor),
+                );
 
                 return (
                   <InstructorAvatar
-                    key={instructorInfo.instructorUsername}
-                    profileImage={instructorInfo.instructorImage}
-                    name={instructorInfo.instructorName}
+                    key={instructorInfo?.instructorUsername || `${instructor}-${index}`}
+                    profileImage={instructorInfo?.instructorImage || ''}
+                    name={instructorInfo?.instructorName || instructor || ''}
                   />
                 );
               })}
