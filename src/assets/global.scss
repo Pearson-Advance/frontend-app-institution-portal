@@ -78,21 +78,57 @@ a.epp-link {
   }
 }
 
+.table-wrapper-fix {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+}
+
 .responsive-data-table {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
+  display: block;
+}
 
-  .pgn__data-table-cell-wrap {
-        max-width: 15vw;
+.responsive-data-table {
+  .pgn__data-table-container,
+  .pgn__data-table-wrapper,
+  .table-responsive {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  table.pgn__data-table,
+  table {
+    width: 100%;
+    min-width: 1100px;
+    table-layout: auto;
+  }
+
+  th {
+    white-space: nowrap;
+  }
+
+  td {
+    white-space: normal;
+    word-break: normal;
   }
 }
 
-.responsive-data-table table {
-  width: 100%;
-  min-width: max-content;
-}
+.page-content-container {
+  .pgn__data-table-layout-wrapper{
+    border: none;
+  }
 
-.responsive-data-table td,
-.responsive-data-table th {
-  overflow-wrap: anywhere;
+  .pgn__data-table-layout-main {
+    border: 1px solid var(--pgn-color-gray-vue-200);
+    border-radius: 8px;
+  }
 }

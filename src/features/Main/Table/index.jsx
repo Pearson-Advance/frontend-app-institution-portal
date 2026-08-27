@@ -12,18 +12,20 @@ const Table = ({
   const COLUMNS = useMemo(() => columns, [columns]);
 
   return (
-    <div className="responsive-data-table">
-      <DataTable
-        isSortable
-        columns={COLUMNS}
-        itemCount={count}
-        data={data}
-        {...props}
-      >
-        <DataTable.Table />
-        <DataTable.EmptyTable content={text} />
-        <DataTable.TableFooter />
-      </DataTable>
+    <div className="table-wrapper-fix">
+      <div className="responsive-data-table">
+        <DataTable
+          isSortable
+          columns={COLUMNS}
+          itemCount={count}
+          data={data}
+          {...props}
+        >
+          <DataTable.Table />
+          <DataTable.EmptyTable content={text} />
+          <DataTable.TableFooter />
+        </DataTable>
+      </div>
     </div>
   );
 };
