@@ -6,6 +6,8 @@
   flex-direction: column;
   padding: 2rem;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .instructor-wrapper__main {
@@ -14,6 +16,7 @@
   gap: 1.5rem;
   justify-content: space-between;
   width: 100%;
+  min-width: 0;
 }
 
 .instructor-wrapper__class-info {
@@ -47,11 +50,13 @@
   font-size: 1rem;
   line-height: 1.4;
   margin-top: 1.25rem;
+  word-break: break-word;
 }
 
 .instructor-wrapper__overview {
   margin-top: 1.5rem;
   width: 100%;
+  min-width: 0;
 }
 
 .separator {
@@ -62,17 +67,18 @@
 }
 
 .instructor-details {
-  flex: 0 0 32%;
-  min-width: 260px;
+  flex: 0 1 32%;
+  min-width: 0;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 992px) {
   .instructor-wrapper {
     padding: 1.5rem;
   }
 
   .instructor-wrapper__main {
     flex-direction: column;
+    gap: 1rem;
   }
 
   .separator {
@@ -81,7 +87,7 @@
 
   .instructor-details {
     flex: 1 1 auto;
-    min-width: 0;
     width: 100%;
+    margin-top: 1rem;
   }
 }
