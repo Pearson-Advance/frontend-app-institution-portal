@@ -45,7 +45,7 @@ const ClassesPage = () => {
   };
 
   return (
-    <Container size="xl" className="px-4">
+    <Container className="px-5">
       <h2 className="title-page">Classes</h2>
       <div className="page-content-container">
         <ClassesFilters resetPagination={resetPagination} />

@@ -35,7 +35,7 @@ const LicensesPage = () => {
   }, [selectedInstitution, dispatch, currentPage]);
 
   return (
-    <Container size="xl" className="px-4">
+    <Container className="px-5">
       <h2 className="title-page">License pool inventory</h2>
       <div className="page-content-container">
         <LicensesFilters resetPagination={resetPagination} />

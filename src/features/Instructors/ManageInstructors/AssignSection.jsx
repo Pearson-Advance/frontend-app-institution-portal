@@ -72,7 +72,7 @@ const AssignSection = forwardRef((props, ref) => {
   }, [currentPage, selectedInstitution, dispatch]);
 
   return (
-    <Container size="xl" className="p-4 mt-3 instructors-content">
+    <Container className="p-5 mt-3 instructors-content">
       <h3>Assign / Add instructors</h3>
       <InstructorsFilters isAssignSection resetPagination={resetPagination} />
       <Row className="justify-content-center my-4 my-3 px-3">

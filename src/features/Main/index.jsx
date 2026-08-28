@@ -116,7 +116,7 @@ const Main = () => {
             <>
               <Sidebar />
               <Container className="px-0 container-pages">
-                <Container size="xl" className="px-4">
+                <Container className="px-5">
                   {institutions.length > 1 && (<InstitutionSelector />)}
                 </Container>
                 <Routes>

@@ -42,7 +42,7 @@ const InstructorsPage = () => {
   };
 
   return (
-    <Container size="xl" className="px-4">
+    <Container className="px-5">
       <div className="d-flex justify-content-between align-items-center">
         <h2 className="title-page">Instructors</h2>
         <Button onClick={openModal}>

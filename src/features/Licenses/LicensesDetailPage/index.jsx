@@ -69,7 +69,7 @@ const LicensesDetailPage = () => {
   }, [institution, navigate]);
 
   return (
-    <Container size="xl" className="px-4">
+    <Container className="px-5">
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="d-flex align-items-start mb-3">
           <LinkWithQuery to="/licenses" className="mr-3 mt-2 link">
