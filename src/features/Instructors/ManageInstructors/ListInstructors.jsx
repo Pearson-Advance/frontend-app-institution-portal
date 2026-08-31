@@ -62,7 +62,7 @@ const ListInstructors = ({ instructors, isLoadingInstructors }) => {
       >
         {toastMessageFailed}
       </Toast>
-      <Container size="xl" className="p-4 mt-3 instructors-content">
+      <Container className="p-5 mt-3 instructors-content">
         <DeleteModal
           isOpen={isOpenModal}
           onClose={closeModal}
