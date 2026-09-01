@@ -46,7 +46,7 @@ const stateMock = {
         classId: 'ccx-v1',
         className: 'demo class',
         masterCourseName: 'Demo course',
-        instructors: ['Sam Sepiol'],
+        instructors: ['Sam Deer'],
         numberOfStudents: 2,
         numberOfPendingStudents: 1,
         maxStudents: 5,
@@ -109,7 +109,7 @@ describe('InstructorCard', () => {
             {
               ...stateMock.classes.allClasses.data[0],
               instructors: [
-                'Sam Sepiol',
+                'Sam Deer',
                 'Aldo Pearson',
                 'John Deer',
                 'Deer Ton',
