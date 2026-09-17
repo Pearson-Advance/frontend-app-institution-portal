@@ -14,6 +14,58 @@ import { daysWeek, hoursDay } from 'features/constants';
 import LinkWithQuery from 'features/Main/LinkWithQuery';
 
 const getColumns = (showInstructorFeature) => [
+  showInstructorFeature && {
+    Header: '',
+    accessor: 'instructorId',
+    cellClassName: 'dropdownColumn',
+    disableSortBy: true,
+    Cell: ({ row }) => {
+      const {
+        instructorName,
+        instructorEmail,
+        hasEnrollmentPrivilege,
+        instructorId,
+        active,
+      } = row.original;
+
+      const [isOpenModal, openModal, closeModal] = useToggle(false);
+
+      return (
+        <Dropdown className="dropdowntpz">
+          <Dropdown.Toggle
+            id="dropdown-toggle-with-iconbutton"
+            as={IconButton}
+            src={MoreHoriz}
+            iconAs={Icon}
+            variant="primary"
+            data-testid="droprown-action"
+            alt="menu for actions"
+          />
+          <Dropdown.Menu popperConfig={{ strategy: 'fixed' }}>
+            <Dropdown.Item
+              className="text-truncate text-decoration-none custom-text-black"
+              onClick={openModal}
+            >
+              <i className="fa-regular fa-user-pen mr-2" />
+              Edit Instructor
+            </Dropdown.Item>
+            <InstructorForm
+              isOpen={isOpenModal}
+              onClose={closeModal}
+              isEditing
+              instructorInfo={{
+                instructorName,
+                instructorId,
+                instructorEmail,
+                hasEnrollmentPrivilege,
+                active,
+              }}
+            />
+          </Dropdown.Menu>
+        </Dropdown>
+      );
+    },
+  },
   {
     Header: 'Instructor',
     accessor: 'instructorName',
@@ -71,58 +123,6 @@ const getColumns = (showInstructorFeature) => [
     Cell: ({ row }) => (
       <span>{row.original.active ? 'Active' : 'Inactive'}</span>
     ),
-  },
-  showInstructorFeature && {
-    Header: '',
-    accessor: 'instructorId',
-    cellClassName: 'dropdownColumn',
-    disableSortBy: true,
-    Cell: ({ row }) => {
-      const {
-        instructorName,
-        instructorEmail,
-        hasEnrollmentPrivilege,
-        instructorId,
-        active,
-      } = row.original;
-
-      const [isOpenModal, openModal, closeModal] = useToggle(false);
-
-      return (
-        <Dropdown className="dropdowntpz">
-          <Dropdown.Toggle
-            id="dropdown-toggle-with-iconbutton"
-            as={IconButton}
-            src={MoreHoriz}
-            iconAs={Icon}
-            variant="primary"
-            data-testid="droprown-action"
-            alt="menu for actions"
-          />
-          <Dropdown.Menu popperConfig={{ strategy: 'fixed' }}>
-            <Dropdown.Item
-              className="text-truncate text-decoration-none custom-text-black"
-              onClick={openModal}
-            >
-              <i className="fa-regular fa-user-pen mr-2" />
-              Edit Instructor
-            </Dropdown.Item>
-            <InstructorForm
-              isOpen={isOpenModal}
-              onClose={closeModal}
-              isEditing
-              instructorInfo={{
-                instructorName,
-                instructorId,
-                instructorEmail,
-                hasEnrollmentPrivilege,
-                active,
-              }}
-            />
-          </Dropdown.Menu>
-        </Dropdown>
-      );
-    },
   },
 ].filter(Boolean);
 

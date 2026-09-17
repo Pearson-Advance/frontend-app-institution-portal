@@ -30,79 +30,6 @@ import { resetClassState } from 'features/Courses/data/slice';
 
 const columns = [
   {
-    Header: 'Class',
-    accessor: 'className',
-    Cell: ({ row }) => (
-      <LinkWithQuery
-        to={`/courses/${encodeURIComponent(row.original.masterCourseId)}/${encodeURIComponent(row.original.classId)}?previous=classes`}
-        className="link"
-      >
-        {row.values.className}
-      </LinkWithQuery>
-    ),
-  },
-  {
-    Header: 'Course Title',
-    accessor: 'masterCourseName',
-    Cell: ({ row }) => (
-      <span>
-        {row.original.masterCourseName}
-      </span>
-    ),
-  },
-  {
-    Header: 'Instructor',
-    accessor: 'instructors',
-    Cell: ({ row }) => {
-      if (row.values.instructors?.length > 0) {
-        return (
-          <ul className="instructors-list mb-0">
-            {row.values.instructors.map(instructorName => (
-              <li key={instructorName}>
-                {instructorName}
-              </li>
-            ))}
-          </ul>
-        );
-      }
-
-      return (
-        <span className="text-danger">
-          Unassigned
-        </span>
-      );
-    },
-  },
-  {
-    Header: 'Min',
-    accessor: 'minStudentsAllowed',
-  },
-  {
-    Header: 'Max',
-    accessor: 'maxStudents',
-  },
-  {
-    Header: 'Students Enrolled',
-    accessor: 'numberOfStudents',
-  },
-  {
-    Header: 'Start Date',
-    accessor: 'startDate',
-    Cell: ({ row }) => (row.values.startDate ? formatUTCDate(row.values.startDate, 'MM/dd/yy') : '-'),
-  },
-  {
-    Header: 'End Date',
-    accessor: 'endDate',
-    Cell: ({ row }) => (row.values.endDate ? formatUTCDate(row.values.endDate, 'MM/dd/yy') : '-'),
-  },
-  {
-    Header: 'Status',
-    accessor: 'hidden',
-    Cell: ({ row }) => (
-      <span>{row.original.hidden ? 'Hidden' : 'Visible'}</span>
-    ),
-  },
-  {
     Header: '',
     accessor: 'courseName',
     cellClassName: 'dropdownColumn',
@@ -335,6 +262,79 @@ const columns = [
         </Dropdown>
       );
     },
+  },
+  {
+    Header: 'Class',
+    accessor: 'className',
+    Cell: ({ row }) => (
+      <LinkWithQuery
+        to={`/courses/${encodeURIComponent(row.original.masterCourseId)}/${encodeURIComponent(row.original.classId)}?previous=classes`}
+        className="link"
+      >
+        {row.values.className}
+      </LinkWithQuery>
+    ),
+  },
+  {
+    Header: 'Course Title',
+    accessor: 'masterCourseName',
+    Cell: ({ row }) => (
+      <span>
+        {row.original.masterCourseName}
+      </span>
+    ),
+  },
+  {
+    Header: 'Instructor',
+    accessor: 'instructors',
+    Cell: ({ row }) => {
+      if (row.values.instructors?.length > 0) {
+        return (
+          <ul className="instructors-list mb-0">
+            {row.values.instructors.map(instructorName => (
+              <li key={instructorName}>
+                {instructorName}
+              </li>
+            ))}
+          </ul>
+        );
+      }
+
+      return (
+        <span className="text-danger">
+          Unassigned
+        </span>
+      );
+    },
+  },
+  {
+    Header: 'Min',
+    accessor: 'minStudentsAllowed',
+  },
+  {
+    Header: 'Max',
+    accessor: 'maxStudents',
+  },
+  {
+    Header: 'Students Enrolled',
+    accessor: 'numberOfStudents',
+  },
+  {
+    Header: 'Start Date',
+    accessor: 'startDate',
+    Cell: ({ row }) => (row.values.startDate ? formatUTCDate(row.values.startDate, 'MM/dd/yy') : '-'),
+  },
+  {
+    Header: 'End Date',
+    accessor: 'endDate',
+    Cell: ({ row }) => (row.values.endDate ? formatUTCDate(row.values.endDate, 'MM/dd/yy') : '-'),
+  },
+  {
+    Header: 'Status',
+    accessor: 'hidden',
+    Cell: ({ row }) => (
+      <span>{row.original.hidden ? 'Hidden' : 'Visible'}</span>
+    ),
   },
 ];
 

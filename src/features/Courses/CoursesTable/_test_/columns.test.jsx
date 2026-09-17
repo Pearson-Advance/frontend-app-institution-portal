@@ -9,12 +9,16 @@ describe('columns', () => {
     expect(columns).toHaveLength(6);
 
     const [
+      dropdownColumn,
       courseColumn,
       classesColumn,
       instructorColumn,
       enrollmentColumn,
       studentsInvitedColumn,
     ] = columns;
+
+    expect(dropdownColumn).toHaveProperty('Header', '');
+    expect(dropdownColumn).toHaveProperty('accessor', 'className');
 
     expect(courseColumn).toHaveProperty('Header', 'Courses');
     expect(courseColumn).toHaveProperty('accessor', 'masterCourseName');
@@ -33,7 +37,7 @@ describe('columns', () => {
   });
 
   test('Show menu dropdown', async () => {
-    const ActionColumn = () => columns[5].Cell({
+    const ActionColumn = () => columns[0].Cell({
       row: {
         values: {
           masterCourseName: 'course example',
@@ -41,11 +45,15 @@ describe('columns', () => {
         original: {
           masterCourseName: 'course example',
           masterCourseId: 'course01',
+          licenseId: 'lic01',
         },
       },
     });
 
     const mockStore = {
+      main: {
+        selectedInstitution: { id: 'inst01' },
+      },
       courses: {
         table: {
           data: [
@@ -71,6 +79,7 @@ describe('columns', () => {
 
     const button = component.getByTestId('droprown-action');
     fireEvent.click(button);
+
     expect(component.getByText('Course content')).toBeInTheDocument();
     expect(component.getByText('Add Class')).toBeInTheDocument();
   });

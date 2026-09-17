@@ -6,12 +6,16 @@ describe('columns', () => {
     expect(COLUMNS).toHaveLength(6);
 
     const [
+      dropdownColumn,
       nameColumn,
       lastSeenColumn,
       emailColumn,
       classesColumn,
       statusColumn,
     ] = COLUMNS;
+
+    expect(dropdownColumn).toHaveProperty('Header', '');
+    expect(dropdownColumn).toHaveProperty('accessor', 'instructorId');
 
     expect(nameColumn).toHaveProperty('Header', 'Instructor');
     expect(nameColumn).toHaveProperty('accessor', 'instructorName');
@@ -27,5 +31,22 @@ describe('columns', () => {
 
     expect(statusColumn).toHaveProperty('Header', 'Status');
     expect(statusColumn).toHaveProperty('accessor', 'active');
+  });
+
+  test('returns columns without action and status columns when showInstructorFeature is false', () => {
+    const COLUMNS = getColumns(false);
+    expect(COLUMNS).toHaveLength(4);
+
+    const [
+      nameColumn,
+      lastSeenColumn,
+      emailColumn,
+      classesColumn,
+    ] = COLUMNS;
+
+    expect(nameColumn).toHaveProperty('Header', 'Instructor');
+    expect(lastSeenColumn).toHaveProperty('Header', 'Last seen');
+    expect(emailColumn).toHaveProperty('Header', 'Email');
+    expect(classesColumn).toHaveProperty('Header', 'Courses Taught');
   });
 });

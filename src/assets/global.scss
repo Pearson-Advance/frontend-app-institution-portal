@@ -73,52 +73,98 @@ a.epp-link {
 
 @media screen and (min-width: 600px) and (max-width: 1024px) {
   .page-content-container {
-    max-width: 680px;
-    min-width: 680px;
+    max-width: 100%;
+    min-width: 0;
   }
 }
 
 .table-wrapper-fix {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  overflow: hidden;
-}
-
-.responsive-data-table {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  overflow-x: auto;
   display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  contain: inline-size;
 }
 
 .responsive-data-table {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  position: relative;
+
   .pgn__data-table-container,
   .pgn__data-table-wrapper,
   .table-responsive {
+    overflow-x: visible;
     width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    overflow-x: auto;
   }
 
   table.pgn__data-table,
   table {
     width: 100%;
-    min-width: 1100px;
     table-layout: auto;
+    border-collapse: collapse;
   }
 
-  th {
-    white-space: nowrap;
-  }
-
+  th,
   td {
-    white-space: normal;
-    word-break: normal;
+    border-bottom: 1px solid var(--pgn-color-gray-vue-200, #e1e1e1);
+    white-space: nowrap;
+    padding: 12px 16px;
+  }
+}
+
+.responsive-data-table--sticky {
+  --sticky-col-1-width: 56px;
+
+  td:nth-child(1) {
+    overflow: visible;
+  }
+
+  .dropdowntpz .dropdown-menu {
+    z-index: 9999;
+  }
+
+  .pgn__data-table-layout-wrapper .pgn__data-table th:nth-child(1),
+  .pgn__data-table-layout-wrapper .pgn__data-table td:nth-child(1) {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background-color: var(--pgn-color-white, #ffffff);
+    width: var(--sticky-col-1-width) ;
+    min-width: var(--sticky-col-1-width);
+    max-width: var(--sticky-col-1-width);
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  th:nth-child(2),
+  td:nth-child(2) {
+    position: sticky;
+    left: var(--sticky-col-1-width);
+    z-index: 10;
+    background-color: var(--pgn-color-white, #ffffff);
+    min-width: 200px;
+  }
+
+   &.is-scrolled {
+    th:nth-child(2),
+    td:nth-child(2) {
+      background-image: linear-gradient(to left, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0) 3px);
+    }
+  }
+
+  th:nth-child(1),
+  th:nth-child(2) {
+    z-index: 20;
+  }
+
+  td:nth-child(1):focus-within {
+    z-index: 30;
+  }
+
+  td:nth-child(1):has(.dropdowntpz.show) {
+    z-index: 30;
   }
 }
 
