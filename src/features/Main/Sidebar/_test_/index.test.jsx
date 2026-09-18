@@ -77,7 +77,7 @@ describe('Sidebar', () => {
   });
 
   test('should use default Contact Support link when institution has no supportLink', () => {
-    const defaultSupportLink = 'https://skilling.pearsonvue.com/pearson-core/support/';
+    const defaultSupportLink = 'mailto:pearsonskillingsupport@pearson.com';
     const { getByText } = renderWithProviders(
       <Sidebar />,
       { preloadedState: defaultInitialState },
