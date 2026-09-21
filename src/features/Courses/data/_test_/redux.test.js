@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
-import { fetchCoursesData, addClass } from 'features/Courses/data/thunks';
+import { fetchCoursesData, addClass, toggleClassVisibility } from 'features/Courses/data/thunks';
 import { updateCurrentPage, updateFilters } from 'features/Courses/data/slice';
 import { executeThunk } from 'test-utils';
 import { initializeStore } from 'store';
@@ -144,5 +144,38 @@ describe('Courses redux tests', () => {
 
     expect(store.getState().courses.newClass.status)
       .toEqual('error');
+  });
+
+  test('successful toggle class visibility to hidden', async () => {
+    const classApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/`;
+    const mockResponse = { class_id: 'ccx1', hidden: true };
+    axiosMock.onPatch(classApiUrl).reply(200, mockResponse);
+
+    await executeThunk(toggleClassVisibility('ccx1', true), store.dispatch, store.getState);
+
+    expect(store.getState().courses.newClass.data).toEqual(mockResponse);
+    expect(store.getState().courses.newClass.status).toEqual('success');
+    expect(store.getState().courses.notificationMessage).toEqual('Class hidden successfully');
+  });
+
+  test('successful toggle class visibility to visible', async () => {
+    const classApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/`;
+    const mockResponse = { class_id: 'ccx1', hidden: false };
+    axiosMock.onPatch(classApiUrl).reply(200, mockResponse);
+
+    await executeThunk(toggleClassVisibility('ccx1', false), store.dispatch, store.getState);
+
+    expect(store.getState().courses.newClass.status).toEqual('success');
+    expect(store.getState().courses.notificationMessage).toEqual('Class visible successfully');
+  });
+
+  test('failed toggle class visibility', async () => {
+    const classApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/classes/`;
+    axiosMock.onPatch(classApiUrl).reply(500);
+
+    await executeThunk(toggleClassVisibility('ccx1', true), store.dispatch, store.getState);
+
+    expect(store.getState().courses.newClass.status).toEqual('error');
+    expect(store.getState().courses.notificationMessage).toEqual('Class visibility could not be updated');
   });
 });

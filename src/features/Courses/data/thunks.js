@@ -89,6 +89,28 @@ function editClass(classData) {
   };
 }
 
+function toggleClassVisibility(classId, hidden) {
+  return async (dispatch) => {
+    dispatch(newClassRequest());
+    try {
+      const formData = new FormData();
+      formData.append('class_id', classId);
+      formData.append('hidden', hidden);
+      const response = await handleEditClass(formData);
+      dispatch(newClassSuccess(response.data));
+      const message = hidden ? 'Class hidden successfully' : 'Class visible successfully';
+      dispatch(updateNotificationMsg(message));
+      return { success: true, message };
+    } catch (error) {
+      dispatch(newClassFailed());
+      logError(error);
+      const message = 'Class visibility could not be updated';
+      dispatch(updateNotificationMsg(message));
+      return { success: false, message };
+    }
+  };
+}
+
 function deleteClass(classId) {
   return async (dispatch) => {
     dispatch(newClassRequest());
@@ -110,4 +132,5 @@ export {
   fetchCoursesOptionsData,
   addClass,
   editClass,
+  toggleClassVisibility,
 };

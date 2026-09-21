@@ -33,13 +33,8 @@ function fetchClassesData(id, currentPage, courseId = '', urlParamsFilters = '',
       const response = camelCaseObject(
         await getClassesByInstitution(id, courseId, limit, currentPage, urlParamsFilters),
       );
-      const sortedData = sortAlphabetically(response.data.results, 'className');
-      const classes = {
-        ...response.data,
-        results: sortedData,
-      };
 
-      dispatch(fetchClassesDataSuccess(classes));
+      dispatch(fetchClassesDataSuccess(response.data));
     } catch (error) {
       dispatch(fetchClassesDataFailed());
       logError(error);
@@ -71,9 +66,8 @@ function fetchAllClassesData(id, courseId = '', urlParamsFilters = '', limit = f
       const response = camelCaseObject(
         await getClassesByInstitution(id, courseId, limit, initialPage, urlParamsFilters),
       );
-      const sortedData = sortAlphabetically(response.data, 'className');
 
-      dispatch(fetchAllClassesDataSuccess(sortedData));
+      dispatch(fetchAllClassesDataSuccess(response.data));
     } catch (error) {
       dispatch(fetchAllClassesDataFailed());
       logError(error);

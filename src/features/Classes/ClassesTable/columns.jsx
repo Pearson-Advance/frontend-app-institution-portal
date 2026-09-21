@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -21,7 +21,7 @@ import EnrollStudent from 'features/Classes/EnrollStudent';
 
 import { RequestStatus, modalDeleteText } from 'features/constants';
 
-import { deleteClass } from 'features/Courses/data/thunks';
+import { deleteClass, toggleClassVisibility } from 'features/Courses/data/thunks';
 import { fetchLabSummaryLink, supersetUrlClassesDashboard, downloadGradebookCsv } from 'features/Classes/data/thunks';
 import { classesApi } from 'features/Classes/data/classesApi';
 
@@ -45,6 +45,7 @@ const columns = [
         minStudentsAllowed,
         maxStudents,
         labSummaryTag,
+        hidden,
       } = row.original;
 
       const initialDeletionClassState = {
@@ -58,6 +59,8 @@ const columns = [
       const [isOpenEnrollModal, openEnrollModal, closeEnrollModal] = useToggle(false);
       const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
       const [isDownloadingGradebook, setIsDownloadingGradebook] = useState(false);
+      const [isTogglingVisibility, setIsTogglingVisibility] = useState(false);
+      const isTogglingVisibilityRef = useRef(false);
       const gradebookUrl = getConfig().GRADEBOOK_MICROFRONTEND_URL || getConfig().LMS_BASE_URL;
       const {
         isVisible,
@@ -145,6 +148,22 @@ const columns = [
         dispatch(classesApi.util.invalidateTags(['Classes']));
       };
 
+      const handleToggleVisibility = async () => {
+        if (isTogglingVisibilityRef.current) { return; }
+
+        isTogglingVisibilityRef.current = true;
+        setIsTogglingVisibility(true);
+
+        try {
+          const { message: toggleMessage } = await dispatch(toggleClassVisibility(classId, !hidden));
+          showToast(toggleMessage);
+          finalCall();
+        } finally {
+          isTogglingVisibilityRef.current = false;
+          setIsTogglingVisibility(false);
+        }
+      };
+
       return (
         <Dropdown className="dropdowntpz">
           <Toast
@@ -221,6 +240,14 @@ const columns = [
                 Lab Dashboard
               </Dropdown.Item>
             )}
+            <Dropdown.Item
+              onClick={handleToggleVisibility}
+              disabled={isTogglingVisibility}
+              data-testid="toggle-visibility-action"
+            >
+              <i className={`fa-regular ${hidden ? 'fa-eye' : 'fa-eye-slash'} mr-2 mb-1`} />
+              {hidden ? 'Show class' : 'Hide class'}
+            </Dropdown.Item>
             <Dropdown.Item onClick={handleOpenDeleteModal} className="text-danger">
               <i className="fa-regular fa-trash mr-2 mb-1" />
               Delete Class
