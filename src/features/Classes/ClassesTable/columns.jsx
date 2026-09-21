@@ -96,6 +96,13 @@ const columns = [
     Cell: ({ row }) => (row.values.endDate ? formatUTCDate(row.values.endDate, 'MM/dd/yy') : '-'),
   },
   {
+    Header: 'Status',
+    accessor: 'hidden',
+    Cell: ({ row }) => (
+      <span>{row.original.hidden ? 'Hidden' : 'Visible'}</span>
+    ),
+  },
+  {
     Header: '',
     accessor: 'courseName',
     cellClassName: 'dropdownColumn',
