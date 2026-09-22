@@ -156,6 +156,16 @@ export const INSTRUCTOR_STATUS_TABS = {
 };
 
 /**
+ * Classes visibility status to be used in filters.
+ * @constant {Object}
+ */
+export const CLASS_STATUS_TABS = {
+  ALL: 'All',
+  VISIBLE: 'Visible',
+  HIDDEN: 'Hidden',
+};
+
+/**
  * Action types for voucher state transitions.
  * @readonly
  * @enum {string}

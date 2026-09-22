@@ -94,7 +94,7 @@ describe('columns', () => {
 
   test('returns an array of columns with correct properties', () => {
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(9);
+    expect(columns).toHaveLength(10);
 
     const [
       classNameColumn,
@@ -105,6 +105,7 @@ describe('columns', () => {
       studentsEnrolled,
       startDate,
       endDate,
+      status,
     ] = columns;
 
     expect(classNameColumn).toHaveProperty('Header', 'Class');
@@ -130,10 +131,28 @@ describe('columns', () => {
 
     expect(endDate).toHaveProperty('Header', 'End Date');
     expect(endDate).toHaveProperty('accessor', 'endDate');
+
+    expect(status).toHaveProperty('Header', 'Status');
+    expect(status).toHaveProperty('accessor', 'hidden');
+  });
+
+  test('Status column renders Visible/Hidden based on the hidden flag', () => {
+    const statusColumn = columns[8];
+
+    const { getByText, rerender } = renderWithProviders(
+      statusColumn.Cell({ row: { original: { ...classDataMock, hidden: true } } }),
+    );
+    expect(getByText('Hidden')).toBeInTheDocument();
+
+    rerender(statusColumn.Cell({ row: { original: { ...classDataMock, hidden: false } } }));
+    expect(getByText('Visible')).toBeInTheDocument();
+
+    rerender(statusColumn.Cell({ row: { original: { ...classDataMock } } }));
+    expect(getByText('Visible')).toBeInTheDocument();
   });
 
   test('Show menu dropdown', async () => {
-    const ActionColumn = () => columns[8].Cell({
+    const ActionColumn = () => columns[9].Cell({
       row: {
         values: {
           masterCourseName: 'course example',
@@ -180,7 +199,7 @@ describe('columns', () => {
   });
 
   test('Downloads the gradebook when the action is clicked', async () => {
-    const ActionColumn = () => columns[8].Cell({
+    const ActionColumn = () => columns[9].Cell({
       row: {
         values: {
           masterCourseName: 'course example',
@@ -224,7 +243,7 @@ describe('columns', () => {
   });
 
   test('Show Lab Dashboard option when link is sent', async () => {
-    const ActionColumn = () => columns[8].Cell({
+    const ActionColumn = () => columns[9].Cell({
       row: {
         values: {
           masterCourseName: 'course example',
@@ -269,7 +288,7 @@ describe('columns', () => {
       'https://superset.example.com/dashboard/42',
     );
 
-    const ActionColumn = () => columns[8].Cell({
+    const ActionColumn = () => columns[9].Cell({
       row: {
         values: { masterCourseName: 'course example' },
         original: { ...classDataMock },
