@@ -1,14 +1,15 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Pagination } from '@openedx/paragon';
 import { useLocation } from 'react-router-dom';
 
 import ClassesTable from 'features/Classes/ClassesTable';
 import ClassesFilters from 'features/Classes/ClassesFilters';
+import StatusFilters from 'features/Classes/StatusFilters';
 
 import { updateCurrentPage } from 'features/Classes/data/slice';
 import { useGetClassesQuery } from 'features/Classes/data/classesApi';
-import { initialPage } from 'features/constants';
+import { initialPage, CLASS_STATUS_TABS } from 'features/constants';
 
 const ClassesPage = () => {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const ClassesPage = () => {
   const storedFilters = useSelector((state) => state.classes.filters);
   const currentPage = useSelector((state) => state.classes.table.currentPage) || initialPage;
   const resetFiltersRef = useRef(false);
+  const [statusFilter, setStatusFilter] = useState(CLASS_STATUS_TABS.VISIBLE);
 
   const queryParams = new URLSearchParams(location.search);
   const queryNotInstructors = queryParams.get('instructors');
@@ -49,6 +51,10 @@ const ClassesPage = () => {
       <h2 className="title-page">Classes</h2>
       <div className="page-content-container">
         <ClassesFilters resetPagination={resetPagination} />
+        <StatusFilters
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+        />
         <ClassesTable
           data={classes}
           count={count}
