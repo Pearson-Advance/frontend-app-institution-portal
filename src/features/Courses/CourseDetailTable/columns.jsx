@@ -32,81 +32,6 @@ import 'assets/global.scss';
 
 const columns = [
   {
-    Header: 'Class',
-    accessor: 'className',
-    Cell: ({ row }) => {
-      const { courseId } = useParams();
-
-      return (
-        <LinkWithQuery
-          to={`/courses/${courseId}/${encodeURIComponent(row.original.classId)}?previous=courses`}
-          className="link"
-        >
-          {row.values.className}
-        </LinkWithQuery>
-      );
-    },
-  },
-  {
-    Header: 'Course Title',
-    accessor: 'masterCourseName',
-    Cell: ({ row }) => (
-      <span>
-        {row.original.masterCourseName}
-      </span>
-    ),
-  },
-  {
-    Header: 'Instructor',
-    accessor: 'instructors',
-    Cell: ({ row }) => {
-      if (row.values.instructors?.length > 0) {
-        return (
-          <ul className="instructors-list mb-0">
-            {row.values.instructors.map(instructorName => (
-              <li key={instructorName}>
-                {instructorName}
-              </li>
-            ))}
-          </ul>
-        );
-      }
-
-      return (
-        <span className="text-danger">
-          Unassigned
-        </span>
-      );
-    },
-  },
-  {
-    Header: 'Min',
-    accessor: 'minStudentsAllowed',
-  },
-  {
-    Header: 'Max',
-    accessor: 'maxStudents',
-  },
-  {
-    Header: 'Students Enrolled',
-    accessor: 'numberOfStudents',
-    Cell: ({ row }) => (
-      <span>
-        {row.values.numberOfStudents}
-      </span>
-    ),
-  },
-  {
-    Header: 'Start date',
-    accessor: 'startDate',
-    Cell: ({ row }) => (row.values.startDate ? formatUTCDate(row.values.startDate, 'MM/dd/yy') : '-'),
-  },
-  {
-    Header: 'End date',
-    accessor: 'endDate',
-    Cell: ({ row }) => (row.values.endDate ? formatUTCDate(row.values.endDate, 'MM/dd/yy') : '-'),
-  },
-  {
     Header: '',
     accessor: 'courseName',
     cellClassName: 'dropdownColumn',
@@ -260,6 +185,81 @@ const columns = [
         </>
       );
     },
+  },
+  {
+    Header: 'Class',
+    accessor: 'className',
+    Cell: ({ row }) => {
+      const { courseId } = useParams();
+
+      return (
+        <LinkWithQuery
+          to={`/courses/${courseId}/${encodeURIComponent(row.original.classId)}?previous=courses`}
+          className="link"
+        >
+          {row.values.className}
+        </LinkWithQuery>
+      );
+    },
+  },
+  {
+    Header: 'Course Title',
+    accessor: 'masterCourseName',
+    Cell: ({ row }) => (
+      <span>
+        {row.original.masterCourseName}
+      </span>
+    ),
+  },
+  {
+    Header: 'Instructor',
+    accessor: 'instructors',
+    Cell: ({ row }) => {
+      if (row.values.instructors?.length > 0) {
+        return (
+          <ul className="instructors-list mb-0">
+            {row.values.instructors.map(instructorName => (
+              <li key={instructorName}>
+                {instructorName}
+              </li>
+            ))}
+          </ul>
+        );
+      }
+
+      return (
+        <span className="text-danger">
+          Unassigned
+        </span>
+      );
+    },
+  },
+  {
+    Header: 'Min',
+    accessor: 'minStudentsAllowed',
+  },
+  {
+    Header: 'Max',
+    accessor: 'maxStudents',
+  },
+  {
+    Header: 'Students Enrolled',
+    accessor: 'numberOfStudents',
+    Cell: ({ row }) => (
+      <span>
+        {row.values.numberOfStudents}
+      </span>
+    ),
+  },
+  {
+    Header: 'Start date',
+    accessor: 'startDate',
+    Cell: ({ row }) => (row.values.startDate ? formatUTCDate(row.values.startDate, 'MM/dd/yy') : '-'),
+  },
+  {
+    Header: 'End date',
+    accessor: 'endDate',
+    Cell: ({ row }) => (row.values.endDate ? formatUTCDate(row.values.endDate, 'MM/dd/yy') : '-'),
   },
 ];
 

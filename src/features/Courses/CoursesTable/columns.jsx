@@ -17,32 +17,6 @@ import { initialPage } from 'features/constants';
 
 const columns = [
   {
-    Header: 'Courses',
-    accessor: 'masterCourseName',
-    Cell: ({ row }) => (<LinkWithQuery to={`/courses/${encodeURIComponent(row.original.masterCourseId)}`} className="link">{row.values.masterCourseName}</LinkWithQuery>),
-  },
-  {
-    Header: 'Classes',
-    accessor: 'numberOfClasses',
-  },
-  {
-    Header: 'Instructor',
-    accessor: 'missingClassesForInstructor',
-    Cell: ({ row }) => (
-      row.values.missingClassesForInstructor > 0
-        ? <Badge variant="danger" light>Missing ({row.values.missingClassesForInstructor})</Badge>
-        : <Badge variant="success" light>Ready</Badge>
-    ),
-  },
-  {
-    Header: 'Students Enrolled',
-    accessor: 'numberOfStudents',
-  },
-  {
-    Header: 'Students invited',
-    accessor: 'numberOfPendingStudents',
-  },
-  {
     Header: '',
     accessor: 'className',
     cellClassName: 'dropdownColumn',
@@ -91,6 +65,32 @@ const columns = [
         </Dropdown>
       );
     },
+  },
+  {
+    Header: 'Courses',
+    accessor: 'masterCourseName',
+    Cell: ({ row }) => (<LinkWithQuery to={`/courses/${encodeURIComponent(row.original.masterCourseId)}`} className="link">{row.values.masterCourseName}</LinkWithQuery>),
+  },
+  {
+    Header: 'Classes',
+    accessor: 'numberOfClasses',
+  },
+  {
+    Header: 'Instructor',
+    accessor: 'missingClassesForInstructor',
+    Cell: ({ row }) => (
+      row.values.missingClassesForInstructor > 0
+        ? <Badge variant="danger" light>Missing ({row.values.missingClassesForInstructor})</Badge>
+        : <Badge variant="success" light>Ready</Badge>
+    ),
+  },
+  {
+    Header: 'Students Enrolled',
+    accessor: 'numberOfStudents',
+  },
+  {
+    Header: 'Students invited',
+    accessor: 'numberOfPendingStudents',
   },
 ];
 

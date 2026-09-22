@@ -24,9 +24,61 @@ const getColumns = ({
   onVoucherActionSuccess = () => {},
 } = {}) => ([
   {
-    Header: 'No',
-    accessor: 'index',
-    Cell: ({ row }) => (<span>{row.index + 1}</span>),
+    Header: '',
+    accessor: 'classId',
+    cellClassName: 'dropdownColumn',
+    disableSortBy: true,
+    Cell: ({ row }) => {
+      const {
+        status,
+        classId,
+        courseId,
+        userId,
+        learnerEmail,
+        voucherInfo,
+      } = row.original;
+
+      const progressPageLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/progress/${userId}`;
+
+      return (
+        <Dropdown className="dropdowntpz">
+          <Dropdown.Toggle
+            id="dropdown-toggle-with-iconbutton"
+            as={IconButton}
+            src={MoreHoriz}
+            iconAs={Icon}
+            variant="primary"
+            data-testid="droprown-action"
+            alt="menu for actions"
+          />
+          <Dropdown.Menu popperConfig={{ strategy: 'fixed' }}>
+            <Dropdown.Item
+              target="_blank"
+              rel="noreferrer"
+              href={progressPageLink}
+              className="text-truncate text-decoration-none custom-text-black"
+            >
+              <i className="fa-regular fa-bars-progress mr-2" />
+              View progress
+            </Dropdown.Item>
+            {displayVoucherOptions && (
+              <VoucherOptions
+                courseId={courseId}
+                learnerEmail={learnerEmail}
+                showAssign={voucherInfo?.showAssign}
+                showRevoke={voucherInfo?.showRevoke}
+                onVoucherActionSuccess={onVoucherActionSuccess}
+              />
+            )}
+            {
+              status?.toLowerCase() !== 'expired' && (
+                <DeleteEnrollment studentEmail={learnerEmail} classId={classId} />
+              )
+            }
+          </Dropdown.Menu>
+        </Dropdown>
+      );
+    },
   },
   {
     Header: 'Student',
@@ -182,63 +234,7 @@ const getColumns = ({
       return <span>{eppDaysLeft !== null ? eppDaysLeft : '--'}</span>;
     },
   },
-  {
-    Header: '',
-    accessor: 'classId',
-    cellClassName: 'dropdownColumn',
-    disableSortBy: true,
-    Cell: ({ row }) => {
-      const {
-        status,
-        classId,
-        courseId,
-        userId,
-        learnerEmail,
-        voucherInfo,
-      } = row.original;
 
-      const progressPageLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classId}/progress/${userId}`;
-
-      return (
-        <Dropdown className="dropdowntpz">
-          <Dropdown.Toggle
-            id="dropdown-toggle-with-iconbutton"
-            as={IconButton}
-            src={MoreHoriz}
-            iconAs={Icon}
-            variant="primary"
-            data-testid="droprown-action"
-            alt="menu for actions"
-          />
-          <Dropdown.Menu popperConfig={{ strategy: 'fixed' }}>
-            <Dropdown.Item
-              target="_blank"
-              rel="noreferrer"
-              href={progressPageLink}
-              className="text-truncate text-decoration-none custom-text-black"
-            >
-              <i className="fa-regular fa-bars-progress mr-2" />
-              View progress
-            </Dropdown.Item>
-            {displayVoucherOptions && (
-              <VoucherOptions
-                courseId={courseId}
-                learnerEmail={learnerEmail}
-                showAssign={voucherInfo?.showAssign}
-                showRevoke={voucherInfo?.showRevoke}
-                onVoucherActionSuccess={onVoucherActionSuccess}
-              />
-            )}
-            {
-              status?.toLowerCase() !== 'expired' && (
-                <DeleteEnrollment studentEmail={learnerEmail} classId={classId} />
-              )
-            }
-          </Dropdown.Menu>
-        </Dropdown>
-      );
-    },
-  },
 ].filter(Boolean));
 
 export { getColumns };

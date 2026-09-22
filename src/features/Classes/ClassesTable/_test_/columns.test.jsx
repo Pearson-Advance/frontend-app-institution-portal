@@ -49,7 +49,9 @@ jest.mock('@openedx/paragon', () => {
 
   return {
     Dropdown,
-    IconButton: (props) => <button type="button" {...props} />,
+    IconButton: ({
+      iconAs, as, src, ...props
+    }) => <button type="button" {...props} />,
     Icon: () => <span />,
     Toast: ({ show, children }) => (show ? <div data-testid="toast-message">{children}</div> : null),
     useToggle: (initial = false) => {
@@ -97,6 +99,7 @@ describe('columns', () => {
     expect(columns).toHaveLength(10);
 
     const [
+      dropdownColumn,
       classNameColumn,
       courseTitle,
       instructor,
@@ -107,6 +110,9 @@ describe('columns', () => {
       endDate,
       status,
     ] = columns;
+
+    expect(dropdownColumn).toHaveProperty('Header', '');
+    expect(dropdownColumn).toHaveProperty('accessor', 'courseName');
 
     expect(classNameColumn).toHaveProperty('Header', 'Class');
     expect(classNameColumn).toHaveProperty('accessor', 'className');
@@ -137,7 +143,7 @@ describe('columns', () => {
   });
 
   test('Status column renders Visible/Hidden based on the hidden flag', () => {
-    const statusColumn = columns[8];
+    const statusColumn = columns[9];
 
     const { getByText, rerender } = renderWithProviders(
       statusColumn.Cell({ row: { original: { ...classDataMock, hidden: true } } }),
@@ -152,7 +158,7 @@ describe('columns', () => {
   });
 
   test('Show menu dropdown', async () => {
-    const ActionColumn = () => columns[9].Cell({
+    const ActionColumn = () => columns[0].Cell({
       row: {
         values: {
           masterCourseName: 'course example',
@@ -199,7 +205,7 @@ describe('columns', () => {
   });
 
   test('Downloads the gradebook when the action is clicked', async () => {
-    const ActionColumn = () => columns[9].Cell({
+    const ActionColumn = () => columns[0].Cell({
       row: {
         values: {
           masterCourseName: 'course example',
@@ -243,7 +249,7 @@ describe('columns', () => {
   });
 
   test('Show Lab Dashboard option when link is sent', async () => {
-    const ActionColumn = () => columns[9].Cell({
+    const ActionColumn = () => columns[0].Cell({
       row: {
         values: {
           masterCourseName: 'course example',
@@ -288,7 +294,7 @@ describe('columns', () => {
       'https://superset.example.com/dashboard/42',
     );
 
-    const ActionColumn = () => columns[9].Cell({
+    const ActionColumn = () => columns[0].Cell({
       row: {
         values: { masterCourseName: 'course example' },
         original: { ...classDataMock },

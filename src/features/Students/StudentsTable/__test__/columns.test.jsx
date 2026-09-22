@@ -32,7 +32,7 @@ describe('StudentsTable Columns', () => {
             examReady: {
               status: 'NOT_STARTED',
               last_exam_date: null,
-              epp_days_left: 3,
+              eppDaysLeft: 3,
             },
             startDate: '2024-02-13T17:42:22Z',
             endDate: null,
@@ -48,10 +48,11 @@ describe('StudentsTable Columns', () => {
     expect(columns).toHaveLength(12);
 
     const [
+      actionCol,
       studentCol,
       emailCol,
-      lastAccessDateCol,
-      lastLoginPlatformCol,
+      lastLoginCol,
+      lastAccessCol,
       statusCol,
       classNameCol,
       dateCol,
@@ -59,8 +60,9 @@ describe('StudentsTable Columns', () => {
       examReadyCol,
       lastExamCol,
       eppDaysLeftCol,
-      actionCol,
     ] = columns;
+
+    expect(actionCol).toHaveProperty('accessor', 'classId');
 
     expect(studentCol).toHaveProperty('Header', 'Student');
     expect(studentCol).toHaveProperty('accessor', 'learnerName');
@@ -68,11 +70,11 @@ describe('StudentsTable Columns', () => {
     expect(emailCol).toHaveProperty('Header', 'Email');
     expect(emailCol).toHaveProperty('accessor', 'learnerEmail');
 
-    expect(lastAccessDateCol).toHaveProperty('Header', 'Last Login');
-    expect(lastAccessDateCol).toHaveProperty('accessor', 'lastLogin');
+    expect(lastLoginCol).toHaveProperty('Header', 'Last Login');
+    expect(lastLoginCol).toHaveProperty('accessor', 'lastLogin');
 
-    expect(lastLoginPlatformCol).toHaveProperty('Header', 'Last Access');
-    expect(lastLoginPlatformCol).toHaveProperty('accessor', 'lastAccess');
+    expect(lastAccessCol).toHaveProperty('Header', 'Last Access');
+    expect(lastAccessCol).toHaveProperty('accessor', 'lastAccess');
 
     expect(statusCol).toHaveProperty('Header', 'Status');
     expect(statusCol).toHaveProperty('accessor', 'status');
@@ -94,12 +96,10 @@ describe('StudentsTable Columns', () => {
 
     expect(eppDaysLeftCol).toHaveProperty('accessor', 'examReady.eppDaysLeft');
     expect(typeof eppDaysLeftCol.Header).toBe('function');
-
-    expect(actionCol).toHaveProperty('accessor', 'classId');
   });
 
   test('renders Last Login date formatted', () => {
-    const LastLoginCell = () => columns[2].Cell({
+    const LastLoginCell = () => columns[3].Cell({
       row: { original: { lastLogin: '2024-03-15T10:00:00Z', status: 'Active' } },
     });
 
@@ -109,7 +109,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders Last Login date as -- when enrollment is pending', () => {
-    const LastLoginCell = () => columns[2].Cell({
+    const LastLoginCell = () => columns[3].Cell({
       row: { original: { lastLogin: '2024-03-15T10:00:00Z', status: 'pending' } },
     });
 
@@ -119,7 +119,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders Last Login date as -- when null', () => {
-    const LastLoginCell = () => columns[2].Cell({
+    const LastLoginCell = () => columns[3].Cell({
       row: { original: { lastLogin: null, status: 'Active' } },
     });
 
@@ -129,7 +129,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders Last Access date formatted', () => {
-    const LastAccessCell = () => columns[3].Cell({
+    const LastAccessCell = () => columns[4].Cell({
       row: { original: { lastAccess: '2024-03-15T10:00:00Z', status: 'Active' } },
     });
 
@@ -139,7 +139,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders Last Access date as -- when enrollment is pending', () => {
-    const LastAccessCell = () => columns[3].Cell({
+    const LastAccessCell = () => columns[4].Cell({
       row: { original: { lastAccess: '2024-03-15T10:00:00Z', status: 'pending' } },
     });
 
@@ -149,7 +149,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders Last Access date as -- when null', () => {
-    const LastAccessCell = () => columns[3].Cell({
+    const LastAccessCell = () => columns[4].Cell({
       row: { original: { lastAccess: null, status: 'Active' } },
     });
 
@@ -159,7 +159,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders dropdown menu correctly', async () => {
-    const ActionColumn = () => columns[11].Cell({
+    const ActionColumn = () => columns[0].Cell({
       row: {
         values: {
           classId: 'CCX1',
@@ -188,7 +188,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders EPP Days Left cell with correct value', () => {
-    const EppDaysColumn = columns[10];
+    const EppDaysColumn = columns[11];
     const CellComponent = () => EppDaysColumn.Cell({
       row: {
         values: {
@@ -206,7 +206,7 @@ describe('StudentsTable Columns', () => {
   });
 
   test('renders EPP Days Left cell as "--" when null', () => {
-    const EppDaysColumn = columns[10];
+    const EppDaysColumn = columns[11];
     const CellComponent = () => EppDaysColumn.Cell({
       row: {
         values: {

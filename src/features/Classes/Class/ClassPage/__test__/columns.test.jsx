@@ -67,10 +67,10 @@ describe('getColumns', () => {
     const columns = getColumns({ enableVoucherColumn: true });
 
     expect(columns).toBeInstanceOf(Array);
-    expect(columns).toHaveLength(12);
+    expect(columns).toHaveLength(11);
 
     const [
-      number,
+      actions,
       student,
       learnerEmail,
       lastAccessDate,
@@ -81,10 +81,9 @@ describe('getColumns', () => {
       examReady,
       lastExam,
       eppDaysLeft,
-      actions,
     ] = columns;
 
-    expect(number).toHaveProperty('Header', 'No');
+    expect(actions).toHaveProperty('accessor', 'classId');
     expect(student).toHaveProperty('Header', 'Student');
     expect(learnerEmail).toHaveProperty('Header', 'Email');
     expect(lastAccessDate).toHaveProperty('Header', 'Last Login');
@@ -97,7 +96,6 @@ describe('getColumns', () => {
     expect(examReady).toHaveProperty('Header', 'Exam Ready');
     expect(lastExam).toHaveProperty('Header', 'Last exam date');
     expect(eppDaysLeft).toHaveProperty('accessor', 'examReady.eppDaysLeft');
-    expect(actions).toHaveProperty('accessor', 'classId');
   });
 
   test('renders Student cell with link', () => {
@@ -287,7 +285,7 @@ describe('getColumns', () => {
   test('renders Actions dropdown', () => {
     const columns = getColumns();
 
-    const ActionColumn = () => columns[10].Cell({
+    const ActionColumn = () => columns[0].Cell({
       row: {
         values: { classId: 'CCX1' },
         original: {
@@ -318,7 +316,7 @@ describe('getColumns', () => {
       onVoucherActionSuccess,
     });
 
-    const ActionColumn = () => columns[10].Cell({
+    const ActionColumn = () => columns[0].Cell({
       row: {
         values: { classId: 'CCX1' },
         original: {
@@ -358,7 +356,7 @@ describe('getColumns', () => {
   test('does NOT render Voucher option when displayVoucherOptions = false', () => {
     const columns = getColumns();
 
-    const ActionColumn = () => columns[10].Cell({
+    const ActionColumn = () => columns[0].Cell({
       row: {
         values: { classId: 'CCX1' },
         original: {
