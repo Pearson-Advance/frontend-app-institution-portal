@@ -33,6 +33,12 @@ describe('Course Details Table', () => {
               numberOfStudents: 1,
               maxStudents: 100,
               instructors: ['instructor_1'],
+              instructorsWithStatus: [
+                {
+                  name: 'instructor_1',
+                  status: 'active',
+                },
+              ],
             },
             {
               masterCourseName: 'Demo MasterCourse 2',
@@ -43,6 +49,12 @@ describe('Course Details Table', () => {
               numberOfStudents: 2,
               maxStudents: 200,
               instructors: ['instructor_2'],
+              instructorsWithStatus: [
+                {
+                  name: 'instructor_2',
+                  status: 'inactive',
+                },
+              ],
             },
           ],
           count: 2,
@@ -61,6 +73,12 @@ describe('Course Details Table', () => {
               numberOfStudents: 1,
               maxStudents: 100,
               instructors: ['instructor_1'],
+              instructorsWithStatus: [
+                {
+                  name: 'instructor_1',
+                  status: 'active',
+                },
+              ],
             },
             {
               masterCourseName: 'Demo MasterCourse 2',
@@ -71,6 +89,12 @@ describe('Course Details Table', () => {
               numberOfStudents: 2,
               maxStudents: 200,
               instructors: ['instructor_2'],
+              instructorsWithStatus: [
+                {
+                  name: 'instructor_2',
+                  status: 'inactive',
+                },
+              ],
             },
           ],
         },

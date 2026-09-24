@@ -25,7 +25,7 @@ import { deleteClass } from 'features/Courses/data/thunks';
 import { fetchLabSummaryLink, supersetUrlClassesDashboard, downloadGradebookCsv } from 'features/Classes/data/thunks';
 import { classesApi } from 'features/Classes/data/classesApi';
 
-import { formatUTCDate, setAssignStaffRole } from 'helpers';
+import { formatUTCDate, setAssignStaffRole, formatInstructorsWithStatus } from 'helpers';
 import { resetClassState } from 'features/Courses/data/slice';
 
 const columns = [
@@ -288,10 +288,12 @@ const columns = [
     Header: 'Instructor',
     accessor: 'instructors',
     Cell: ({ row }) => {
-      if (row.values.instructors?.length > 0) {
+      const formattedInstructors = formatInstructorsWithStatus(row.original.instructorsWithStatus);
+
+      if (formattedInstructors.length > 0) {
         return (
           <ul className="instructors-list mb-0">
-            {row.values.instructors.map(instructorName => (
+            {formattedInstructors.map((instructorName) => (
               <li key={instructorName}>
                 {instructorName}
               </li>

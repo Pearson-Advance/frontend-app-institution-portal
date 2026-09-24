@@ -13,7 +13,7 @@ import { MoreHoriz } from '@openedx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 import { logError } from '@edx/frontend-platform/logging';
 
-import { formatUTCDate, setAssignStaffRole } from 'helpers';
+import { formatUTCDate, setAssignStaffRole, formatInstructorsWithStatus } from 'helpers';
 
 import AddClass from 'features/Courses/AddClass';
 import DeleteModal from 'features/Common/DeleteModal';
@@ -215,10 +215,12 @@ const columns = [
     Header: 'Instructor',
     accessor: 'instructors',
     Cell: ({ row }) => {
-      if (row.values.instructors?.length > 0) {
+      const formattedInstructors = formatInstructorsWithStatus(row.original.instructorsWithStatus);
+
+      if (formattedInstructors.length > 0) {
         return (
           <ul className="instructors-list mb-0">
-            {row.values.instructors.map(instructorName => (
+            {formattedInstructors.map((instructorName) => (
               <li key={instructorName}>
                 {instructorName}
               </li>
