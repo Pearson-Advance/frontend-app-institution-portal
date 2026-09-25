@@ -177,6 +177,7 @@ const InstructorsDetailPage = () => {
             lastAccessDate={formatUTCDate(lastAccess)}
             isLoading={isInstructorInfoLoading}
             createdDate={formatUTCDate(created)}
+            status={instructorInfo.active}
           >
             {classes.data.length > 0 && (
               <>

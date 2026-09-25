@@ -7,7 +7,7 @@ import { Col, Form } from '@openedx/paragon';
 import { Select, Button } from 'react-paragon-topaz';
 
 import { initialPage } from 'features/constants';
-import { buildFilterParams } from 'helpers';
+import { buildFilterParams, formatInstructorName } from 'helpers';
 import { useGetCoursesOptionsQuery } from 'features/Courses/data/coursesApi';
 import { useGetInstructorsOptionsQuery } from 'features/Instructors/data/instructorsApi';
 import {
@@ -130,7 +130,7 @@ const ClassesFilters = ({ resetPagination }) => {
     const parseInstructorsToOptions = instructors?.length > 0
       ? instructors.map((instructor) => ({
         ...instructor,
-        label: instructor.instructorName,
+        label: formatInstructorName(instructor),
         value: instructor.instructorUsername,
       })) : [];
 

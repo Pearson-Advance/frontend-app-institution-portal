@@ -118,9 +118,10 @@ describe('columns', () => {
   test('Should render the instructors', () => {
     const values = {
       row: {
-        values: { instructors: ['Sam Sepiol'] },
+        values: { instructorsWithStatus: [{ name: 'Sam Sepiol', status: 'active' }] },
         original: {
           classId: 'Demo Course 1',
+          instructorsWithStatus: [{ name: 'Sam Sepiol', status: 'active' }],
         },
       },
     };
@@ -143,6 +144,12 @@ describe('columns', () => {
               numberOfStudents: 1,
               maxStudents: 100,
               instructors: ['Sam Sepiol'],
+              instructorsWithStatus: [
+                {
+                  name: 'Sam Sepiol',
+                  status: 'active',
+                },
+              ],
             },
             {
               masterCourseName: 'Demo MasterCourse 2',

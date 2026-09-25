@@ -5,7 +5,7 @@ import { Button } from 'react-paragon-topaz';
 import { useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { formatDateRange } from 'helpers';
+import { formatDateRange, formatInstructorName } from 'helpers';
 import { useInstitutionIdQueryParam } from 'hooks';
 import { useGetClassesByCourseQuery } from 'features/Classes/data/classesApi';
 import { useGetInstructorsOptionsQuery } from 'features/Instructors/data/instructorsApi';
@@ -145,11 +145,17 @@ const InstructorCard = ({ previousPage, children }) => {
                     || normalizeName(user.instructorUsername) === normalizeName(instructor),
                 );
 
+                const rawName = instructorInfo?.instructorName || instructor || '';
+
+                const displayName = instructorInfo
+                  ? formatInstructorName(instructorInfo)
+                  : rawName;
+
                 return (
                   <InstructorAvatar
                     key={instructorInfo?.instructorUsername || `${instructor}-${index}`}
                     profileImage={instructorInfo?.instructorImage || ''}
-                    name={instructorInfo?.instructorName || instructor || ''}
+                    name={displayName}
                   />
                 );
               })}

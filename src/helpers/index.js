@@ -104,7 +104,13 @@ export const getInitials = (name) => {
     return '?';
   }
 
-  return name.trim().split(/\s+/).map(word => word.charAt(0).toUpperCase()).join('');
+  const cleanName = name.replace(/\s*\([^)]*\)/g, '').trim();
+
+  if (!cleanName) {
+    return '?';
+  }
+
+  return cleanName.trim().split(/\s+/).map(word => word.charAt(0).toUpperCase()).join('');
 };
 
 /**
@@ -253,3 +259,33 @@ export async function validateCSVFile(file) {
 export const buildFilterParams = (params) => Object.fromEntries(
   Object.entries(params).filter(([, value]) => value !== '' && value !== null && value !== undefined),
 );
+
+/**
+ * Formats a single instructor's display name, appending '(inactive)' if they are inactive.
+ * Supports both API schemas:
+ *   1) { name, status } or { instructor_name, active }
+ *
+ * @param {Object} instructor - Instructor object from API.
+ * @return {string} Formatted display name.
+ */
+export const formatInstructorName = (instructor) => {
+  if (!instructor) { return ''; }
+
+  const name = instructor.name || instructor.instructor_name || instructor.instructorName || '';
+
+  const isInactive = instructor.status?.toLowerCase() === 'inactive'
+    || instructor.active === false;
+
+  return isInactive ? `${name} (inactive)` : name;
+};
+
+/**
+ * Formats an array of instructor objects into an array of formatted name strings.
+ *
+ * @param {Array<Object>} instructors - Array of instructor objects from API.
+ * @return {string[]} Array of formatted instructor names.
+ */
+export const formatInstructorsWithStatus = (instructors = []) => {
+  if (!Array.isArray(instructors)) { return []; }
+  return instructors.map(formatInstructorName).filter(Boolean);
+};
