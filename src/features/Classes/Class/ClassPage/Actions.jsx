@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'react-paragon-topaz';
 import { getConfig } from '@edx/frontend-platform';
@@ -23,7 +23,7 @@ import DeleteModal from 'features/Common/DeleteModal';
 import EnrollStudent from 'features/Classes/EnrollStudent';
 
 import { resetClassState } from 'features/Courses/data/slice';
-import { deleteClass } from 'features/Courses/data/thunks';
+import { deleteClass, toggleClassVisibility } from 'features/Courses/data/thunks';
 import { fetchLabSummaryLink, downloadGradebookCsv } from 'features/Classes/data/thunks';
 import { classesApi, useGetClassesByCourseQuery } from 'features/Classes/data/classesApi';
 
@@ -50,6 +50,8 @@ const Actions = ({ previousPage }) => {
 
   const [deletionClassState, setDeletionState] = useState(initialDeletionClassState);
   const [isDownloadingGradebook, setIsDownloadingGradebook] = useState(false);
+  const [isTogglingVisibility, setIsTogglingVisibility] = useState(false);
+  const isTogglingVisibilityRef = useRef(false);
 
   const classLink = `${getConfig().LEARNING_MICROFRONTEND_URL}/course/${classIdDecoded}/home`;
 
@@ -139,6 +141,22 @@ const Actions = ({ previousPage }) => {
     dispatch(classesApi.util.invalidateTags(['Classes']));
   };
 
+  const handleToggleVisibility = async () => {
+    if (isTogglingVisibilityRef.current) { return; }
+
+    isTogglingVisibilityRef.current = true;
+    setIsTogglingVisibility(true);
+
+    try {
+      const { message: toggleMessage } = await dispatch(toggleClassVisibility(classIdDecoded, !classInfo?.hidden));
+      showToast(toggleMessage);
+      finalCall();
+    } finally {
+      isTogglingVisibilityRef.current = false;
+      setIsTogglingVisibility(false);
+    }
+  };
+
   return (
     <>
       <Toast
@@ -196,6 +214,14 @@ const Actions = ({ previousPage }) => {
               Lab Dashboard
             </Dropdown.Item>
           )}
+          <Dropdown.Item
+            onClick={handleToggleVisibility}
+            disabled={isTogglingVisibility}
+            data-testid="toggle-visibility-action"
+          >
+            <i className={`fa-regular ${classInfo?.hidden ? 'fa-eye' : 'fa-eye-slash'} mr-2 mb-1`} />
+            {classInfo?.hidden ? 'Show class' : 'Hide class'}
+          </Dropdown.Item>
           <Dropdown.Item onClick={handleOpenDeleteModal} className="text-danger">
             <i className="fa-regular fa-trash mr-2 mb-1" />
             Delete class

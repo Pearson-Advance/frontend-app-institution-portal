@@ -1,6 +1,5 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import { camelCaseObject } from '@edx/frontend-platform';
-import { sortAlphabetically } from 'react-paragon-topaz';
 
 import { getClassesByInstitution } from 'features/Common/data/api';
 import { initialPage } from 'features/constants';
@@ -25,7 +24,7 @@ export const classesApi = createApi({
 
           return {
             data: {
-              results: sortAlphabetically(response.data.results, 'className'),
+              results: response.data.results,
               count: response.data.count,
               numPages: response.data.numPages,
             },
@@ -51,7 +50,7 @@ export const classesApi = createApi({
             await getClassesByInstitution(institutionId, courseId, false),
           );
 
-          return { data: sortAlphabetically(response.data, 'className') };
+          return { data: response.data };
         } catch (error) {
           return {
             error: {

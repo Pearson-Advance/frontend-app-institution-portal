@@ -5,11 +5,17 @@ import { columns } from 'features/Classes/ClassesTable/columns';
 import { renderWithProviders } from 'test-utils';
 
 import * as classesThunks from 'features/Classes/data/thunks';
+import * as coursesThunks from 'features/Courses/data/thunks';
 
 jest.mock('features/Classes/data/thunks', () => ({
   ...jest.requireActual('features/Classes/data/thunks'),
   supersetUrlClassesDashboard: jest.fn(),
   downloadGradebookCsv: jest.fn(),
+}));
+
+jest.mock('features/Courses/data/thunks', () => ({
+  ...jest.requireActual('features/Courses/data/thunks'),
+  toggleClassVisibility: jest.fn(() => () => Promise.resolve({ success: true, message: 'Class hidden successfully' })),
 }));
 
 jest.mock('@edx/frontend-platform', () => ({
@@ -202,6 +208,159 @@ describe('columns', () => {
     expect(getByText('Download gradebook')).toBeInTheDocument();
     expect(getByText('Enroll student')).toBeInTheDocument();
     expect(getByText('Delete Class')).toBeInTheDocument();
+  });
+
+  test('shows Hide class action for a visible class and dispatches the toggle', async () => {
+    const actionColumn = columns.find((column) => column.cellClassName === 'dropdownColumn');
+    const ActionColumn = () => actionColumn.Cell({
+      row: {
+        values: { masterCourseName: 'course example' },
+        original: { ...classDataMock, hidden: false },
+      },
+    });
+
+    const mockStore = {
+      classes: {
+        table: {
+          data: [{ ...classDataMock }],
+          count: 1,
+          num_pages: 1,
+          current_page: 1,
+        },
+        allClasses: { data: [{ ...classDataMock }] },
+      },
+    };
+
+    const { getByText, getByTestId } = renderWithProviders(<ActionColumn />, {
+      preloadedState: mockStore,
+      initialEntries: ['/classes/'],
+    });
+
+    fireEvent.click(getByTestId('droprown-action'));
+    expect(getByText('Hide class')).toBeInTheDocument();
+
+    fireEvent.click(getByTestId('toggle-visibility-action'));
+
+    await waitFor(() => {
+      expect(coursesThunks.toggleClassVisibility).toHaveBeenCalledWith(classDataMock.classId, true);
+    });
+  });
+
+  test('shows Show class action for a hidden class and dispatches the toggle', async () => {
+    const actionColumn = columns.find((column) => column.cellClassName === 'dropdownColumn');
+    const ActionColumn = () => actionColumn.Cell({
+      row: {
+        values: { masterCourseName: 'course example' },
+        original: { ...classDataMock, hidden: true },
+      },
+    });
+
+    const mockStore = {
+      classes: {
+        table: {
+          data: [{ ...classDataMock }],
+          count: 1,
+          num_pages: 1,
+          current_page: 1,
+        },
+        allClasses: { data: [{ ...classDataMock }] },
+      },
+    };
+
+    const { getByText, getByTestId } = renderWithProviders(<ActionColumn />, {
+      preloadedState: mockStore,
+      initialEntries: ['/classes/'],
+    });
+
+    fireEvent.click(getByTestId('droprown-action'));
+    expect(getByText('Show class')).toBeInTheDocument();
+
+    fireEvent.click(getByTestId('toggle-visibility-action'));
+
+    await waitFor(() => {
+      expect(coursesThunks.toggleClassVisibility).toHaveBeenCalledWith(classDataMock.classId, false);
+    });
+  });
+
+  test('shows a toast message after toggling visibility', async () => {
+    coursesThunks.toggleClassVisibility.mockReturnValueOnce(
+      () => Promise.resolve({ success: true, message: 'Class hidden successfully' }),
+    );
+
+    const actionColumn = columns.find((column) => column.cellClassName === 'dropdownColumn');
+    const ActionColumn = () => actionColumn.Cell({
+      row: {
+        values: { masterCourseName: 'course example' },
+        original: { ...classDataMock, hidden: false },
+      },
+    });
+
+    const mockStore = {
+      classes: {
+        table: {
+          data: [{ ...classDataMock }],
+          count: 1,
+          num_pages: 1,
+          current_page: 1,
+        },
+        allClasses: { data: [{ ...classDataMock }] },
+      },
+    };
+
+    const { getByTestId, findByTestId } = renderWithProviders(<ActionColumn />, {
+      preloadedState: mockStore,
+      initialEntries: ['/classes/'],
+    });
+
+    fireEvent.click(getByTestId('droprown-action'));
+    fireEvent.click(getByTestId('toggle-visibility-action'));
+
+    const toast = await findByTestId('toast-message');
+    expect(toast).toHaveTextContent('Class hidden successfully');
+  });
+
+  test('does not dispatch a second toggle while one is in flight', async () => {
+    let resolveToggle;
+    coursesThunks.toggleClassVisibility.mockClear();
+    coursesThunks.toggleClassVisibility.mockReturnValueOnce(
+      () => new Promise((resolve) => { resolveToggle = resolve; }),
+    );
+
+    const actionColumn = columns.find((column) => column.cellClassName === 'dropdownColumn');
+    const ActionColumn = () => actionColumn.Cell({
+      row: {
+        values: { masterCourseName: 'course example' },
+        original: { ...classDataMock, hidden: false },
+      },
+    });
+
+    const mockStore = {
+      classes: {
+        table: {
+          data: [{ ...classDataMock }],
+          count: 1,
+          num_pages: 1,
+          current_page: 1,
+        },
+        allClasses: { data: [{ ...classDataMock }] },
+      },
+    };
+
+    const { getByTestId } = renderWithProviders(<ActionColumn />, {
+      preloadedState: mockStore,
+      initialEntries: ['/classes/'],
+    });
+
+    fireEvent.click(getByTestId('droprown-action'));
+    fireEvent.click(getByTestId('toggle-visibility-action'));
+    fireEvent.click(getByTestId('toggle-visibility-action'));
+
+    expect(coursesThunks.toggleClassVisibility).toHaveBeenCalledTimes(1);
+
+    resolveToggle({ success: true, message: 'Class hidden successfully' });
+    await waitFor(() => {
+      expect(coursesThunks.toggleClassVisibility).toHaveBeenCalledTimes(1);
+    });
   });
 
   test('Downloads the gradebook when the action is clicked', async () => {
