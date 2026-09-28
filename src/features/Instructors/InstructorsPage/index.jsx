@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { getConfig } from '@edx/frontend-platform';
+import { Link } from 'react-router-dom';
 
 import { Pagination, useToggle, Container } from '@openedx/paragon';
 import InstructorsTable from 'features/Instructors/InstructorsTable';
@@ -11,7 +13,10 @@ import { Button } from 'react-paragon-topaz';
 import { updateCurrentPage, updateFilters, resetInstructorsRequest } from 'features/Instructors/data/slice';
 import { initialPage, INSTRUCTOR_STATUS_TABS } from 'features/constants';
 
+import './index.scss';
+
 const InstructorsPage = () => {
+  const enableBulkRegistration = getConfig()?.PSS_ENABLE_BULK_REGISTRATION || false;
   const stateInstructors = useSelector((state) => state.instructors);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const dispatch = useDispatch();
@@ -45,13 +50,20 @@ const InstructorsPage = () => {
     <Container className="px-5">
       <div className="d-flex justify-content-between align-items-center">
         <h2 className="title-page">Instructors</h2>
-        <Button onClick={openModal}>
-          Add new instructor
-        </Button>
-        <InstructorForm
-          isOpen={isOpen}
-          onClose={closeModal}
-        />
+        <div className="d-flex align-items-center">
+          <Button onClick={openModal}>
+            Add new instructor
+          </Button>
+          {enableBulkRegistration && selectedInstitution?.hasBulkRegister && (
+          <Link to="/instructors/bulk-registration" className="bulk-registration__link bulk-instructors ml-2" disabled={!enableBulkRegistration}>
+            Bulk Registration
+          </Link>
+          )}
+          <InstructorForm
+            isOpen={isOpen}
+            onClose={closeModal}
+          />
+        </div>
       </div>
       <div className="page-content-container">
         <InstructorsFilters resetPagination={resetPagination} onResetFilters={handleResetFilters} />

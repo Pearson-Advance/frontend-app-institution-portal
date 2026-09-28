@@ -1,0 +1,11 @@
+.bulk-registration {
+    &__link.bulk-instructors {
+        background-color: var(--pgn-color-white);
+        font-size: 0.9rem;
+        padding: 8px 20px;
+
+        &:hover {
+            background-color: var(--pgn-color-primary-base);
+        }
+    }
+}

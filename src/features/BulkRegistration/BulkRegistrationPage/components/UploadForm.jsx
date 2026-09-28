@@ -2,7 +2,9 @@ import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'react-paragon-topaz';
 
-const UploadForm = ({ onUpload }) => {
+import { BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS } from 'features/constants';
+
+const UploadForm = ({ onUpload, requiredColumns }) => {
   const [file, setFile] = useState(null);
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef(null);
@@ -33,7 +35,7 @@ const UploadForm = ({ onUpload }) => {
     <div className="upload-card">
       <div className="required-columns">
         <span className="label">Required columns:</span>
-        {['First name', 'Last name', 'Email', 'Password'].map((col) => (
+        {requiredColumns.map((col) => (
           <span key={col} className="column-chip">{col}</span>
         ))}
       </div>
@@ -85,6 +87,11 @@ const UploadForm = ({ onUpload }) => {
 
 UploadForm.propTypes = {
   onUpload: PropTypes.func.isRequired,
+  requiredColumns: PropTypes.arrayOf(PropTypes.string),
+};
+
+UploadForm.defaultProps = {
+  requiredColumns: BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS,
 };
 
 export default UploadForm;

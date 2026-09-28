@@ -83,6 +83,7 @@ const Main = () => {
     { path: '/students/bulk-registration', component: BulkRegistrationPage },
     { path: '/students/:studentEmail', component: StudentDetailPage },
     { path: '/instructors', component: InstructorsPage },
+    { path: '/instructors/bulk-registration', component: BulkRegistrationPage },
     { path: '/instructors/:instructorUsername', component: InstructorsDetailPage },
     { path: '/courses', component: CoursesPage },
     { path: '/courses/:courseId', component: CoursesDetailPage },

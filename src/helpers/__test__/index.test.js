@@ -10,7 +10,7 @@ import {
 } from 'helpers';
 
 import { assignStaffRole } from 'features/Main/data/api';
-import { BULK_REGISTRATION_REQUIRED_COLUMNS, BULK_REGISTRATION_MAX_ROWS } from 'features/constants';
+import { BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS, BULK_REGISTRATION_MAX_ROWS } from 'features/constants';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -142,7 +142,7 @@ describe('validateCSVFile', () => {
     delete File.prototype.text;
   });
 
-  const buildCSV = (rowCount = 1, headers = BULK_REGISTRATION_REQUIRED_COLUMNS) => {
+  const buildCSV = (rowCount = 1, headers = BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS) => {
     const header = headers.join(',');
     const rows = Array.from({ length: rowCount }, (_, i) => `John${i},Doe${i},John Doe ${i},john${i}@example.com,pass${i}`);
     return [header, ...rows].join('\n');
@@ -213,17 +213,17 @@ describe('validateCSVFile', () => {
     });
 
     test('Should include the missing column names in the error message', async () => {
-      const headers = [...BULK_REGISTRATION_REQUIRED_COLUMNS];
+      const headers = [...BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS];
       headers.splice(0, 2);
       const content = [headers.join(','), 'John Doe,john@example.com,pass'].join('\n');
       const file = makeCSVFile(content);
-      await expect(validateCSVFile(file)).rejects.toThrow('Missing required columns: First Name, Last Name');
+      await expect(validateCSVFile(file)).rejects.toThrow('Missing required columns: First name, Last name');
     });
 
     test('Should throw when only one required column is missing', async () => {
-      const headers = BULK_REGISTRATION_REQUIRED_COLUMNS.filter((c) => c !== 'email');
+      const headers = BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS.filter((c) => c !== 'Email');
       const content = [headers.join(','), 'John,Doe,John Doe,pass'].join('\n');
-      await expect(validateCSVFile(makeCSVFile(content))).toBeTruthy();
+      await expect(validateCSVFile(makeCSVFile(content))).rejects.toThrow('Missing required columns: Email');
     });
 
     test('Should set status 400 on the missing columns error', async () => {
@@ -239,19 +239,19 @@ describe('validateCSVFile', () => {
     });
 
     test('Should strip surrounding quotes from header values before checking', async () => {
-      const quotedHeader = BULK_REGISTRATION_REQUIRED_COLUMNS.map((c) => `"${c}"`).join(',');
+      const quotedHeader = BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS.map((c) => `"${c}"`).join(',');
       const content = [quotedHeader, 'John,Doe,John Doe,john@example.com,pass'].join('\n');
       await expect(validateCSVFile(makeCSVFile(content))).resolves.toBe(true);
     });
 
     test('Should trim whitespace from header values before checking', async () => {
-      const spacedHeader = BULK_REGISTRATION_REQUIRED_COLUMNS.map((c) => `  ${c}  `).join(',');
+      const spacedHeader = BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS.map((c) => `  ${c}  `).join(',');
       const content = [spacedHeader, 'John,Doe,John Doe,john@example.com,pass'].join('\n');
       await expect(validateCSVFile(makeCSVFile(content))).resolves.toBe(true);
     });
 
     test('Should not throw when extra columns beyond required are present', async () => {
-      const headers = [...BULK_REGISTRATION_REQUIRED_COLUMNS, 'phone', 'country'];
+      const headers = [...BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS, 'phone', 'country'];
       const content = [headers.join(','), 'John,Doe,John Doe,john@example.com,pass,555,US'].join('\n');
       await expect(validateCSVFile(makeCSVFile(content))).resolves.toBe(true);
     });
@@ -259,24 +259,24 @@ describe('validateCSVFile', () => {
 
   describe('no data rows', () => {
     test('Should throw when the file contains only the header row', async () => {
-      const file = makeCSVFile(BULK_REGISTRATION_REQUIRED_COLUMNS.join(','));
+      const file = makeCSVFile(BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS.join(','));
       await expect(validateCSVFile(file)).rejects.toThrow('The CSV file must contain at least 1 data row.');
     });
 
     test('Should throw when the only non-empty content is the header', async () => {
-      const content = `${BULK_REGISTRATION_REQUIRED_COLUMNS.join(',')}\n   \n   `;
+      const content = `${BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS.join(',')}\n   \n   `;
       await expect(validateCSVFile(makeCSVFile(content))).rejects.toThrow(
         'The CSV file must contain at least 1 data row.',
       );
     });
 
     test('Should set status 400 on the no data rows error', async () => {
-      const file = makeCSVFile(BULK_REGISTRATION_REQUIRED_COLUMNS.join(','));
+      const file = makeCSVFile(BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS.join(','));
       await expect(validateCSVFile(file)).rejects.toMatchObject({ status: 400 });
     });
 
     test('Should set detail on the no data rows error', async () => {
-      const file = makeCSVFile(BULK_REGISTRATION_REQUIRED_COLUMNS.join(','));
+      const file = makeCSVFile(BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS.join(','));
       await expect(validateCSVFile(file)).rejects.toMatchObject({
         detail: 'The CSV file must contain at least 1 data row.',
       });
