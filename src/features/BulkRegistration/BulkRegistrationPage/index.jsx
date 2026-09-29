@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { getConfig } from '@edx/frontend-platform';
 
 import LoadingScreen from 'features/BulkRegistration/BulkRegistrationPage/components/LoadingScreen';
@@ -9,17 +9,30 @@ import SuccessPartial from 'features/BulkRegistration/BulkRegistrationPage/compo
 import ErrorRows from 'features/BulkRegistration/BulkRegistrationPage/components/ErrorRows';
 import FatalError from 'features/BulkRegistration/BulkRegistrationPage/components/FatalError';
 import UploadForm from 'features/BulkRegistration/BulkRegistrationPage/components/UploadForm';
-import { BULK_REGISTRATION_STATES } from 'features/constants';
+import {
+  BULK_REGISTRATION_STATES,
+  BULK_REGISTRATION_REQUIRED_COLUMNS_INSTRUCTORS,
+  BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS,
+} from 'features/constants';
 import { uploadCSV } from 'features/BulkRegistration/data';
 
 import './index.scss';
 
 const BulkRegister = () => {
+  const location = useLocation();
+  const isInstructor = location.pathname.includes('/instructors');
+
+  const entityName = isInstructor ? 'instructors' : 'students';
+
   const [state, setState] = useState(BULK_REGISTRATION_STATES.IDLE);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const enableBulkRegistration = getConfig()?.PSS_ENABLE_BULK_REGISTRATION || false;
   const selectedInstitution = useSelector((store) => store.main.selectedInstitution);
+
+  const requiredColumns = isInstructor
+    ? BULK_REGISTRATION_REQUIRED_COLUMNS_INSTRUCTORS
+    : BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS;
 
   const handleUpload = useCallback(async (file) => {
     setState(BULK_REGISTRATION_STATES.LOADING);
@@ -40,24 +53,32 @@ const BulkRegister = () => {
   }, []);
 
   if (!selectedInstitution?.hasBulkRegister || !enableBulkRegistration) {
-    return <Navigate to="/students" />;
+    return <Navigate to={`/${entityName}`} />;
   }
 
   return (
     <div className="bulk-register px-4 container-mw-xl container-fluid">
-      <Link className="back-btn" to="/students">
-        <i className="fa-solid fa-arrow-left" /> Back to Students
+      <Link className="back-btn" to={`/${entityName}`}>
+        <i className="fa-solid fa-arrow-left" /> Back to {entityName}
       </Link>
 
       <header className="bulk-register__header">
         <h1 className="bulk-register__title">Bulk Register</h1>
-        <p className="bulk-register__subtitle">Upload a CSV to register multiple students at once</p>
+        <p className="bulk-register__subtitle">Upload a CSV to register multiple {entityName} at once</p>
       </header>
 
       <main className="bulk-register__content">
-        {state === BULK_REGISTRATION_STATES.IDLE && <UploadForm onUpload={handleUpload} />}
+        {state === BULK_REGISTRATION_STATES.IDLE
+        && <UploadForm onUpload={handleUpload} requiredColumns={requiredColumns} />}
         {state === BULK_REGISTRATION_STATES.LOADING && <LoadingScreen />}
-        {state === BULK_REGISTRATION_STATES.SUCCESS_ALL && <SuccessAll data={result} onReset={handleReset} />}
+        {state === BULK_REGISTRATION_STATES.SUCCESS_ALL
+         && (
+         <SuccessAll
+           data={result}
+           onReset={handleReset}
+           entityName={entityName}
+         />
+         )}
         {state === BULK_REGISTRATION_STATES.SUCCESS_PARTIAL && <SuccessPartial data={result} onReset={handleReset} />}
         {state === BULK_REGISTRATION_STATES.ERROR_ROWS && <ErrorRows data={result} onReset={handleReset} />}
         {state === BULK_REGISTRATION_STATES.ERROR_FATAL && <FatalError error={error} onReset={handleReset} />}

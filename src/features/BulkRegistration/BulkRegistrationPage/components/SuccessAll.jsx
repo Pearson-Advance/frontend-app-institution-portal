@@ -1,14 +1,17 @@
 import PropTypes from 'prop-types';
 import { Button } from 'react-paragon-topaz';
 
-const SuccessAll = ({ data, onReset }) => (
+const SuccessAll = ({
+  data, onReset, entityName,
+}) => (
   <div className="state-card state-card--success">
     <div className="success-banner">
       <span className="success-banner__icon">✓</span>
       <div>
         <p className="success-banner__title">All registrations successful!</p>
         <p className="success-banner__subtitle">
-          We&apos;ve successfully registered all {data.totalRegistered} {data.totalRegistered > 1 ? 'students' : 'student'} from your uploaded file.
+          We&apos;ve successfully registered all {data.totalRegistered}
+          {data.totalRegistered > 1 ? entityName : entityName.slice(0, -1)} from your uploaded file.
         </p>
       </div>
     </div>
@@ -26,6 +29,11 @@ SuccessAll.propTypes = {
     totalRegistered: PropTypes.number.isRequired,
   }).isRequired,
   onReset: PropTypes.func.isRequired,
+  entityName: PropTypes.string,
+};
+
+SuccessAll.defaultProps = {
+  entityName: 'students',
 };
 
 export default SuccessAll;

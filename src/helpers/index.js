@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { logError } from '@edx/frontend-platform/logging';
 
 import { assignStaffRole } from 'features/Main/data/api';
-import { BULK_REGISTRATION_MAX_ROWS, BULK_REGISTRATION_REQUIRED_COLUMNS } from 'features/constants';
+import { BULK_REGISTRATION_MAX_ROWS, BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS } from 'features/constants';
 
 /**
  * Format a UTC date
@@ -212,7 +212,7 @@ export async function validateCSVFile(file) {
   }
 
   const headers = lines[0].split(',').map((h) => h.trim().replace(/^"|"$/g, ''));
-  const missingColumns = BULK_REGISTRATION_REQUIRED_COLUMNS.filter((col) => !headers.includes(col));
+  const missingColumns = BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS.filter((col) => !headers.includes(col));
 
   if (missingColumns.length > 0) {
     throw Object.assign(

@@ -321,14 +321,24 @@ export const BULK_REGISTRATION_STATES = {
 };
 
 /**
- * Required column names expected in the CSV header.
+ * Required column names expected in the CSV header for student records.
  * These columns must exist in the first row of the uploaded CSV file
  * for the validation to pass.
  *
  * @constant
  * @type {string[]}
  */
-export const BULK_REGISTRATION_REQUIRED_COLUMNS = ['First Name', 'Last Name', 'Email', 'Password'];
+export const BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS = ['First name', 'Last name', 'Email', 'Password'];
+
+/**
+ * Required column names expected in the CSV header for instructor records.
+ * These columns must exist in the first row of the uploaded CSV file
+ * for the validation to pass.
+ *
+ * @constant
+ * @type {string[]}
+ */
+export const BULK_REGISTRATION_REQUIRED_COLUMNS_INSTRUCTORS = ['First name', 'Last name', 'Email'];
 
 /**
  * Maximum number of data rows allowed in the CSV file (excluding the header).

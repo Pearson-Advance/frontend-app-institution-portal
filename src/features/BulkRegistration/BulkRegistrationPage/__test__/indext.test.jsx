@@ -269,7 +269,12 @@ describe('Success', () => {
   test('Should show the full success screen when all registrations succeed', async () => {
     await selectFileAndSubmit(makeFile('students.csv'));
     expect(screen.getByText('All registrations successful!')).toBeInTheDocument();
-    expect(screen.getByText(/successfully registered all 8 students/i)).toBeInTheDocument();
+    expect(screen.getByText((content, element) => {
+      const hasText = (node) => node.textContent.includes('successfully registered all') && node.textContent.includes('8') && node.textContent.includes('students');
+      const nodeHasText = hasText(element);
+      const childrenDontHaveText = Array.from(element.children).every(child => !hasText(child));
+      return nodeHasText && childrenDontHaveText;
+    })).toBeInTheDocument();
   });
 
   test('Should show the partial success summary with correct stat labels', async () => {
