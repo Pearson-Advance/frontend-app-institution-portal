@@ -123,4 +123,24 @@ describe('Class Details Actions - Hide/Show', () => {
       expect(coursesThunks.toggleClassVisibility).toHaveBeenCalledWith(classId, false);
     });
   });
+
+  test('opens the CCX Coach Dashboard in a new tab when Schedule is clicked', () => {
+    const openSpy = jest.spyOn(window, 'open').mockImplementation(() => {});
+
+    useGetClassesByCourseQuery.mockReturnValue({
+      data: [{ classId, className: 'Test class', hidden: false }],
+    });
+
+    const { getByText } = renderActions();
+
+    fireEvent.click(getByText('Schedule'));
+
+    expect(openSpy).toHaveBeenCalledWith(
+      `/courses/${classId}/ccx_coach`,
+      '_blank',
+      'noopener,noreferrer',
+    );
+
+    openSpy.mockRestore();
+  });
 });

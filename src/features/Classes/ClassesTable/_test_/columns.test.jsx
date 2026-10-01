@@ -210,6 +210,49 @@ describe('columns', () => {
     expect(getByText('Delete Class')).toBeInTheDocument();
   });
 
+  test('opens the CCX Coach Dashboard in a new tab when Schedule is clicked', async () => {
+    const openSpy = jest.spyOn(window, 'open').mockImplementation(() => {});
+
+    const ActionColumn = () => columns[0].Cell({
+      row: {
+        values: {
+          masterCourseName: 'course example',
+        },
+        original: { ...classDataMock, classId: 'ccx-v1:VUE+cs2026+2026_t1+ccx@100' },
+      },
+    });
+
+    const mockStore = {
+      classes: {
+        table: {
+          data: [{ ...classDataMock }],
+          count: 1,
+          num_pages: 1,
+          current_page: 1,
+        },
+        allClasses: {
+          data: [{ ...classDataMock }],
+        },
+      },
+    };
+
+    const { getByText, getByTestId } = renderWithProviders(<ActionColumn />, {
+      preloadedState: mockStore,
+      initialEntries: ['/classes/'],
+    });
+
+    fireEvent.click(getByTestId('droprown-action'));
+    fireEvent.click(getByText('Schedule'));
+
+    expect(openSpy).toHaveBeenCalledWith(
+      '/courses/ccx-v1:VUE+cs2026+2026_t1+ccx@100/ccx_coach',
+      '_blank',
+      'noopener,noreferrer',
+    );
+
+    openSpy.mockRestore();
+  });
+
   test('shows Hide class action for a visible class and dispatches the toggle', async () => {
     const actionColumn = columns.find((column) => column.cellClassName === 'dropdownColumn');
     const ActionColumn = () => actionColumn.Cell({
