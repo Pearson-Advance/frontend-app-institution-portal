@@ -1,6 +1,10 @@
 import { validateCSVFile } from 'helpers';
-import { BULK_REGISTRATION_STATES } from 'features/constants';
-import { postBulkRegister } from 'features/BulkRegistration/data/api';
+import {
+  BULK_REGISTRATION_STATES,
+  BULK_REGISTRATION_REQUIRED_COLUMNS_INSTRUCTORS,
+  BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS,
+} from 'features/constants';
+import { postBulkRegisterStudents, postBulkRegisterInstructors } from 'features/BulkRegistration/data/api';
 
 function parseFailedRows(rows) {
   return rows.map((row) => {
@@ -24,16 +28,18 @@ function parseFailedRows(rows) {
 }
 
 function parseRegistrationResult(data) {
-  const summary = data?.errors?.summary ?? {};
+  const summary = data?.summary ?? data?.errors?.summary ?? {};
+  const rows = data?.rows ?? data?.errors?.rows ?? [];
+
   const totalRows = Number(summary.total_rows || 0);
   const created = Number(summary.created || 0);
   const existed = Number(summary.existed || 0);
   const failed = Number(summary.failed || 0);
 
-  if (failed > 0 && data?.errors.rows?.length) {
+  if (failed > 0 && rows.length > 0) {
     return {
       type: BULK_REGISTRATION_STATES.ERROR_ROWS,
-      failedRows: parseFailedRows(data.errors.rows),
+      failedRows: parseFailedRows(rows),
       totalRows,
       alreadyExisted: existed,
       createdSuccessfully: created,
@@ -81,21 +87,64 @@ function handleUploadError(error) {
     }
   }
 
+  const errorMessage = response?.data?.detail
+    || error?.detail
+    || error?.message
+    || 'Internal server error. Please contact support.';
+
+  const errorStatus = response?.status || error?.status || 500;
+
   throw Object.assign(
-    new Error(response?.data?.detail || 'Internal server error. Please contact support.'),
+    new Error(errorMessage),
     {
-      status: response?.status || 500,
-      detail: response?.data?.detail || error?.message,
+      status: errorStatus,
+      detail: errorMessage,
     },
   );
 }
 
-export async function uploadCSV(file) {
+/**
+ * Returns the list of required CSV header columns based on the registration target.
+ *
+ * @param {boolean} [isInstructor=false] - Indicates whether the request is for instructors.
+ * @returns {string[]} An array of required column names.
+ */
+export const getRequiredColumns = (isInstructor = false) => (
+  isInstructor
+    ? BULK_REGISTRATION_REQUIRED_COLUMNS_INSTRUCTORS
+    : BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS
+);
+
+/**
+ * Resolves the appropriate bulk registration API endpoint function based on the entity type.
+ *
+ * @param {boolean} [isInstructor=false] - Indicates whether to retrieve the instructor API handler.
+ * @returns {Function} The API function responsible for executing the HTTP request.
+ */
+export const getBulkRegisterApi = (isInstructor = false) => (
+  isInstructor ? postBulkRegisterInstructors : postBulkRegisterStudents
+);
+
+/**
+ * Orchestrates the bulk user registration workflow by validating the file,
+ * executing the API call, parsing the result, and handling potential errors.
+ *
+ * @async
+ * @param {File} file - The uploaded CSV file object.
+ * @param {boolean} [isInstructor=false] - Indicates whether the upload is for instructors.
+ * @returns {Promise<Object>} The parsed result object or formatted error state.
+ */
+export const processBulkRegistration = async (file, isInstructor = false, institutionId = null) => {
   try {
-    await validateCSVFile(file);
-    const { data } = await postBulkRegister(file);
+    const requiredColumns = getRequiredColumns(isInstructor);
+
+    await validateCSVFile(file, requiredColumns);
+
+    const apiCall = getBulkRegisterApi(isInstructor);
+    const { data } = await apiCall(file, institutionId);
+
     return parseRegistrationResult(data);
   } catch (error) {
     return handleUploadError(error);
   }
-}
+};

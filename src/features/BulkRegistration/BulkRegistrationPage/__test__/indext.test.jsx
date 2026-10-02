@@ -8,6 +8,7 @@ import { getConfig } from '@edx/frontend-platform';
 
 import { renderWithProviders } from 'test-utils';
 import BulkRegister from 'features/BulkRegistration/BulkRegistrationPage';
+import { postBulkRegisterStudents, postBulkRegisterInstructors } from 'features/BulkRegistration/data/api';
 
 jest.mock('@openedx/paragon', () => {
   const actual = jest.requireActual('@openedx/paragon');
@@ -49,8 +50,8 @@ jest.mock('helpers', () => ({
   }),
 }));
 
-jest.mock('features/BulkRegistration/data/api', () => ({
-  postBulkRegister: jest.fn((file) => {
+jest.mock('features/BulkRegistration/data/api', () => {
+  const mockStudentsHandler = jest.fn((file) => {
     if (file.name === 'students.csv') {
       return Promise.resolve({
         data: {
@@ -129,28 +130,115 @@ jest.mock('features/BulkRegistration/data/api', () => ({
         },
       },
     });
-  }),
-}));
+  });
+
+  const mockInstructorsHandler = jest.fn((file) => {
+    if (file.name === 'instructors.csv') {
+      return Promise.resolve({
+        data: {
+          summary: {
+            total_rows: '5', created: '5', existed: '0', failed: '0',
+          },
+          rows: [],
+        },
+      });
+    }
+
+    if (file.name === 'instructors_partial.csv') {
+      return Promise.resolve({
+        data: {
+          summary: {
+            total_rows: '4', created: '3', existed: '1', failed: '0',
+          },
+          rows: [],
+        },
+      });
+    }
+
+    if (file.name === 'instructors_error.csv') {
+      return Promise.resolve({
+        data: {
+          summary: {
+            total_rows: '3', created: '1', existed: '0', failed: '2',
+          },
+          rows: [
+            {
+              row_number: '2',
+              email: 'bad.email@example.com',
+              status: 'Validation failed',
+              errors: { email: ['Invalid email format'] },
+            },
+            {
+              row_number: '3',
+              email: 'duplicate@example.com',
+              status: 'Validation failed',
+              errors: { email: ['Instructor already exists'] },
+            },
+          ],
+        },
+      });
+    }
+
+    if (file.name === 'fatal.csv') {
+      const err = Object.assign(new Error('Server error'), {
+        response: {
+          status: 500,
+          data: { detail: 'Internal server error. Please contact support.' },
+        },
+      });
+      return Promise.reject(err);
+    }
+
+    return Promise.resolve({
+      data: {
+        summary: {
+          total_rows: '0', created: '0', existed: '0', failed: '0',
+        },
+        rows: [],
+      },
+    });
+  });
+
+  return {
+    postBulkRegisterStudents: mockStudentsHandler,
+    postBulkRegisterInstructors: mockInstructorsHandler,
+  };
+});
 
 const makeFile = (name, type = 'text/csv') => new File(['first_name,last_name\nJohn,Doe'], name, { type });
 
 let renderResult;
 
-const renderComponent = () => {
+const renderComponent = (initialEntry = '/students/bulk-registration') => {
   renderResult = renderWithProviders(
-    <Route
-      path="/students/bulk-registration"
-      element={<BulkRegister />}
-    />,
+    <Routes>
+      <Route
+        path="/students/bulk-registration"
+        element={<BulkRegister />}
+      />
+      <Route
+        path="/instructors/bulk-registration"
+        element={<BulkRegister />}
+      />
+      <Route
+        path="/students"
+        element={<div>Students page</div>}
+      />
+      <Route
+        path="/instructors"
+        element={<div>Instructors page</div>}
+      />
+    </Routes>,
     {
       preloadedState: {
         main: {
           selectedInstitution: {
+            id: 'inst-123',
             hasBulkRegister: true,
           },
         },
       },
-      initialEntries: ['/students/bulk-registration'],
+      initialEntries: [initialEntry],
     },
   );
   return renderResult;
@@ -172,7 +260,6 @@ const selectFileAndSubmit = async (file) => {
 beforeEach(() => {
   getConfig.mockReturnValue({ PSS_ENABLE_BULK_REGISTRATION: true });
   jest.useFakeTimers();
-  renderComponent();
 });
 
 afterEach(() => {
@@ -181,13 +268,17 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('Initial load', () => {
-  test('Should render the Bulk Register title and subtitle', () => {
+describe('Initial load — Students Context', () => {
+  beforeEach(() => {
+    renderComponent('/students/bulk-registration');
+  });
+
+  test('Should render the Bulk Register title and student subtitle', () => {
     expect(screen.getByText('Bulk Register')).toBeInTheDocument();
     expect(screen.getByText('Upload a CSV to register multiple students at once')).toBeInTheDocument();
   });
 
-  test('Should display all required column chips', () => {
+  test('Should display all required student column chips', () => {
     ['First name', 'Last name', 'Email', 'Password'].forEach((col) => {
       expect(screen.getByText(col)).toBeInTheDocument();
     });
@@ -206,7 +297,32 @@ describe('Initial load', () => {
   });
 });
 
+describe('Initial load — Instructors Context', () => {
+  beforeEach(() => {
+    renderComponent('/instructors/bulk-registration');
+  });
+
+  test('Should render the instructor subtitle', () => {
+    expect(screen.getByText('Upload a CSV to register multiple instructors at once')).toBeInTheDocument();
+  });
+
+  test('Should display required instructor column chips (without Password)', () => {
+    ['First name', 'Last name', 'Email'].forEach((col) => {
+      expect(screen.getByText(col)).toBeInTheDocument();
+    });
+    expect(screen.queryByText('Password')).not.toBeInTheDocument();
+  });
+
+  test('Should render the Back to Instructors button', () => {
+    expect(screen.getByRole('link', { name: /back to instructors/i })).toBeInTheDocument();
+  });
+});
+
 describe('File selection', () => {
+  beforeEach(() => {
+    renderComponent('/students/bulk-registration');
+  });
+
   test('Should enable the upload button after a valid CSV file is selected', () => {
     selectFile(makeFile('students.csv'));
     expect(screen.getByRole('button', { name: /upload & process/i })).toBeEnabled();
@@ -229,6 +345,10 @@ describe('File selection', () => {
 });
 
 describe('Loading', () => {
+  beforeEach(() => {
+    renderComponent('/students/bulk-registration');
+  });
+
   test('Should show the loading screen immediately after clicking Upload & Process', () => {
     selectFile(makeFile('students.csv'));
 
@@ -265,8 +385,12 @@ describe('Loading', () => {
   });
 });
 
-describe('Success', () => {
-  test('Should show the full success screen when all registrations succeed', async () => {
+describe('Success — Students', () => {
+  beforeEach(() => {
+    renderComponent('/students/bulk-registration');
+  });
+
+  test('Should show the full success screen when all student registrations succeed', async () => {
     await selectFileAndSubmit(makeFile('students.csv'));
     expect(screen.getByText('All registrations successful!')).toBeInTheDocument();
     expect(screen.getByText((content, element) => {
@@ -275,9 +399,10 @@ describe('Success', () => {
       const childrenDontHaveText = Array.from(element.children).every(child => !hasText(child));
       return nodeHasText && childrenDontHaveText;
     })).toBeInTheDocument();
+    expect(postBulkRegisterStudents).toHaveBeenCalledWith(expect.anything(), 'inst-123');
   });
 
-  test('Should show the partial success summary with correct stat labels', async () => {
+  test('Should show the partial success summary with correct stat labels for students', async () => {
     await selectFileAndSubmit(makeFile('partial.csv'));
     expect(screen.getByText('Summary')).toBeInTheDocument();
     expect(screen.getByText('Total rows')).toBeInTheDocument();
@@ -298,7 +423,37 @@ describe('Success', () => {
   });
 });
 
-describe('Error', () => {
+describe('Success — Instructors', () => {
+  beforeEach(() => {
+    renderComponent('/instructors/bulk-registration');
+  });
+
+  test('Should call postBulkRegisterInstructors with institutionId and show success screen', async () => {
+    await selectFileAndSubmit(makeFile('instructors.csv'));
+    expect(postBulkRegisterInstructors).toHaveBeenCalledWith(expect.anything(), 'inst-123');
+    expect(screen.getByText('All registrations successful!')).toBeInTheDocument();
+    expect(screen.getByText((content, element) => {
+      const hasText = (node) => node.textContent.includes('successfully registered all') && node.textContent.includes('5') && node.textContent.includes('instructors');
+      const nodeHasText = hasText(element);
+      const childrenDontHaveText = Array.from(element.children).every(child => !hasText(child));
+      return nodeHasText && childrenDontHaveText;
+    })).toBeInTheDocument();
+  });
+
+  test('Should display partial success stats correctly for instructors', async () => {
+    await selectFileAndSubmit(makeFile('instructors_partial.csv'));
+    expect(screen.getByText('Summary')).toBeInTheDocument();
+    expect(screen.getByText('4')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText('3')).toBeInTheDocument();
+  });
+});
+
+describe('Error — Students', () => {
+  beforeEach(() => {
+    renderComponent('/students/bulk-registration');
+  });
+
   test('Should show the error state with the failed rows description', async () => {
     await selectFileAndSubmit(makeFile('error.csv'));
     expect(screen.getByText(/we detected errors in your data/i)).toBeInTheDocument();
@@ -364,20 +519,36 @@ describe('Error', () => {
   });
 });
 
+describe('Error — Instructors', () => {
+  beforeEach(() => {
+    renderComponent('/instructors/bulk-registration');
+  });
+
+  test('Should render error rows table correctly for instructor bulk registration failures', async () => {
+    await selectFileAndSubmit(makeFile('instructors_error.csv'));
+    expect(screen.getByText(/we detected errors in your data/i)).toBeInTheDocument();
+    expect(screen.getByText(/failed rows \(2\)/i)).toBeInTheDocument();
+    expect(screen.getByText('bad.email@example.com')).toBeInTheDocument();
+    expect(screen.getByText('duplicate@example.com')).toBeInTheDocument();
+  });
+});
+
 describe('Navigation', () => {
-  test('Should keep the Back to Students button visible after a successful upload', async () => {
+  test('Should keep the Back to Students button visible after a successful student upload', async () => {
+    renderComponent('/students/bulk-registration');
     await selectFileAndSubmit(makeFile('students.csv'));
     expect(screen.getByRole('link', { name: /back to students/i })).toBeInTheDocument();
   });
 
-  test('Should keep the Back to Students button visible on the fatal error screen', async () => {
-    await selectFileAndSubmit(makeFile('fatal.csv'));
-    expect(screen.getByRole('link', { name: /back to students/i })).toBeInTheDocument();
+  test('Should keep the Back to Instructors button visible after a successful instructor upload', async () => {
+    renderComponent('/instructors/bulk-registration');
+    await selectFileAndSubmit(makeFile('instructors.csv'));
+    expect(screen.getByRole('link', { name: /back to instructors/i })).toBeInTheDocument();
   });
 });
 
 describe('Redirect', () => {
-  test('Should redirect to /students when hasBulkRegister is false', () => {
+  test('Should redirect to /students when hasBulkRegister is false on student route', () => {
     const { container } = renderWithProviders(
       <Routes>
         <Route
@@ -397,6 +568,28 @@ describe('Redirect', () => {
       },
     );
     expect(container).toHaveTextContent('Students page');
+  });
+
+  test('Should redirect to /instructors when hasBulkRegister is false on instructor route', () => {
+    const { container } = renderWithProviders(
+      <Routes>
+        <Route
+          path="/instructors/bulk-registration"
+          element={<BulkRegister />}
+        />
+        <Route
+          path="/instructors"
+          element={<div>Instructors page</div>}
+        />
+      </Routes>,
+      {
+        preloadedState: {
+          main: { selectedInstitution: { hasBulkRegister: false } },
+        },
+        initialEntries: ['/instructors/bulk-registration'],
+      },
+    );
+    expect(container).toHaveTextContent('Instructors page');
   });
 
   test('Should redirect to /students when PSS_ENABLE_BULK_REGISTRATION is false', () => {

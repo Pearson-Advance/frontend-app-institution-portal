@@ -10,7 +10,7 @@ const SuccessAll = ({
       <div>
         <p className="success-banner__title">All registrations successful!</p>
         <p className="success-banner__subtitle">
-          We&apos;ve successfully registered all {data.totalRegistered}
+          We&apos;ve successfully registered all {data.totalRegistered}{' '}
           {data.totalRegistered > 1 ? entityName : entityName.slice(0, -1)} from your uploaded file.
         </p>
       </div>
