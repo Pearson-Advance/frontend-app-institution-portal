@@ -82,6 +82,10 @@ const columns = [
         window.open(`${gradebookUrl}/gradebook/${classId}`, '_blank', 'noopener,noreferrer');
       };
 
+      const handleScheduleButton = () => {
+        window.open(`${getConfig().LMS_BASE_URL}/courses/${classId}/ccx_coach`, '_blank', 'noopener,noreferrer');
+      };
+
       const handleDownloadGradebook = async () => {
         if (isDownloadingGradebook) {
           return;
@@ -221,6 +225,10 @@ const columns = [
             >
               <i className="fa-regular fa-download mr-2 mb-1" />
               {isDownloadingGradebook ? 'Downloading gradebook…' : 'Download gradebook'}
+            </Dropdown.Item>
+            <Dropdown.Item onClick={handleScheduleButton}>
+              <i className="fa-regular fa-calendar mr-2 mb-1" />
+              Schedule
             </Dropdown.Item>
             {classesDashboardUrl && (
               <Dropdown.Item
