@@ -117,14 +117,18 @@ const Actions = ({ previousPage }) => {
 
   const handleDeleteClass = async () => {
     try {
-      await dispatch(deleteClass(classIdDecoded));
+      const result = await dispatch(deleteClass(classIdDecoded));
 
       setDeletionState({
         isModalOpen: false,
         isRequestComplete: true,
       });
 
-      navigate('/classes');
+      if (result && result.success) {
+        navigate('/classes');
+      } else if (result && !result.success) {
+        showToast(result.message);
+      }
     } catch (error) {
       logError(error);
     } finally {

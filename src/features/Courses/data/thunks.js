@@ -118,10 +118,35 @@ function deleteClass(classId) {
       const response = await handleDeleteClass(classId);
       dispatch(newClassSuccess(response.data));
       dispatch(updateNotificationMsg('Class Deleted successfully'));
+      return { success: true, data: response.data };
     } catch (error) {
       dispatch(newClassFailed());
       logError(error);
-      dispatch(updateNotificationMsg('Class could not be deleted'));
+      let errorMessage = 'Class could not be deleted';
+
+      if (error?.response?.status === 409 && error?.response?.data) {
+        const { data } = error.response;
+        const mainMsg = Array.isArray(data.class_id)
+          ? data.class_id.join(' ')
+          : data.class_id || 'Cannot delete the class due to active student labs.';
+
+        const studentsList = data.students_with_active_labs || [];
+
+        if (studentsList.length > 0) {
+          const studentDetails = studentsList
+            ? studentsList.map(s => `• ${s.full_name} (${s.email})`).join('\n')
+            : '';
+          errorMessage = `${mainMsg}\n\n${studentDetails}`;
+        } else {
+          errorMessage = mainMsg;
+        }
+      } else if (error?.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      }
+
+      dispatch(updateNotificationMsg(errorMessage));
+
+      return { success: false, message: errorMessage, errorData: error?.response?.data };
     }
   };
 }

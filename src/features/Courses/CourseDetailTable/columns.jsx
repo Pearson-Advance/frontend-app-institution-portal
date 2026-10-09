@@ -74,14 +74,16 @@ const columns = [
 
       const handleDeleteClass = async (rowClassId) => {
         try {
-          await dispatch(deleteClass(rowClassId));
+          const result = await dispatch(deleteClass(rowClassId));
 
           setDeletionState({
             isModalOpen: false,
             isRequestComplete: true,
           });
 
-          await dispatch(fetchClassesData(institution.id, initialPage, masterCourseId));
+          if (result && result.success) {
+            await dispatch(fetchClassesData(institution.id, initialPage, masterCourseId));
+          }
         } catch (error) {
           logError(error);
         } finally {
@@ -179,6 +181,7 @@ const columns = [
           <Toast
             onClose={handleResetDeletion}
             show={deletionClassState.isRequestComplete}
+            className="toast-message"
           >
             {decodeURIComponent(toastMessage)}
           </Toast>
