@@ -16,7 +16,7 @@ import { initialPage, INSTRUCTOR_STATUS_TABS } from 'features/constants';
 import './index.scss';
 
 const InstructorsPage = () => {
-  const enableBulkRegistration = getConfig()?.PSS_ENABLE_BULK_REGISTRATION_INSTRUCTORS || false;
+  const enableBulkRegistration = getConfig()?.PSS_ENABLE_BULK_REGISTRATION || false;
   const stateInstructors = useSelector((state) => state.instructors);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const dispatch = useDispatch();

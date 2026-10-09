@@ -187,7 +187,7 @@ export const formatSelectOptions = (options) => {
  *
  * @returns {Promise<boolean>} Resolves to `true` if the file passes all validations.
  */
-export async function validateCSVFile(file) {
+export async function validateCSVFile(file, requiredColumns = BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS) {
   const isCSV = file.type === 'text/csv'
     || file.name.toLowerCase().endsWith('.csv');
 
@@ -212,7 +212,7 @@ export async function validateCSVFile(file) {
   }
 
   const headers = lines[0].split(',').map((h) => h.trim().replace(/^"|"$/g, ''));
-  const missingColumns = BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS.filter((col) => !headers.includes(col));
+  const missingColumns = requiredColumns.filter((col) => !headers.includes(col));
 
   if (missingColumns.length > 0) {
     throw Object.assign(

@@ -11,10 +11,8 @@ import FatalError from 'features/BulkRegistration/BulkRegistrationPage/component
 import UploadForm from 'features/BulkRegistration/BulkRegistrationPage/components/UploadForm';
 import {
   BULK_REGISTRATION_STATES,
-  BULK_REGISTRATION_REQUIRED_COLUMNS_INSTRUCTORS,
-  BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS,
 } from 'features/constants';
-import { uploadCSV } from 'features/BulkRegistration/data';
+import { processBulkRegistration, getRequiredColumns } from 'features/BulkRegistration/data';
 
 import './index.scss';
 
@@ -30,21 +28,19 @@ const BulkRegister = () => {
   const enableBulkRegistration = getConfig()?.PSS_ENABLE_BULK_REGISTRATION || false;
   const selectedInstitution = useSelector((store) => store.main.selectedInstitution);
 
-  const requiredColumns = isInstructor
-    ? BULK_REGISTRATION_REQUIRED_COLUMNS_INSTRUCTORS
-    : BULK_REGISTRATION_REQUIRED_COLUMNS_STUDENTS;
+  const requiredColumns = getRequiredColumns(isInstructor);
 
   const handleUpload = useCallback(async (file) => {
     setState(BULK_REGISTRATION_STATES.LOADING);
     try {
-      const res = await uploadCSV(file);
+      const res = await processBulkRegistration(file, isInstructor, selectedInstitution?.id);
       setResult(res);
       setState(res.type);
     } catch (err) {
       setError(err);
       setState(BULK_REGISTRATION_STATES.ERROR_FATAL);
     }
-  }, []);
+  }, [isInstructor, selectedInstitution?.id]);
 
   const handleReset = useCallback(() => {
     setState(BULK_REGISTRATION_STATES.IDLE);
