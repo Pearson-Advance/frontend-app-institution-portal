@@ -102,14 +102,18 @@ const columns = [
 
       const handleDeleteClass = async (rowClassId) => {
         try {
-          await dispatch(deleteClass(rowClassId));
+          const result = await dispatch(deleteClass(rowClassId));
 
           setDeletionState({
             isModalOpen: false,
             isRequestComplete: true,
           });
 
-          dispatch(classesApi.util.invalidateTags(['Classes']));
+          if (result && result.success) {
+            dispatch(classesApi.util.invalidateTags(['Classes']));
+          } else if (result && !result.success) {
+            showToast(result.message);
+          }
         } catch (error) {
           logError(error);
         } finally {
