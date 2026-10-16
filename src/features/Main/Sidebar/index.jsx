@@ -14,7 +14,7 @@ import {
 
 import { updateActiveTab } from 'features/Main/data/slice';
 
-import { useInstitutionIdQueryParam } from 'hooks';
+import { useInstitutionIdQueryParam, useOfferingsAccess } from 'hooks';
 
 import './index.scss';
 
@@ -58,10 +58,26 @@ export const Sidebar = () => {
   const activeTab = useSelector((state) => state.main.activeTab);
   const institution = useSelector((state) => state.main.selectedInstitution);
   const menuItems = [...baseItems];
+  const offeringsEnabled = useOfferingsAccess();
   const instructorPortalPath = getConfig().INSTRUCTOR_PORTAL_PATH || '';
   const isNavyInstitution = (
     getConfig().NAVY_INSTITUTIONS || []
   ).includes(institution?.uuid);
+
+  if (offeringsEnabled) {
+    menuItems.push(
+      {
+        link: 'offerings',
+        label: 'Programs',
+        icon: <i className="fa-regular fa-layer-group" />,
+      },
+      {
+        link: 'offering-runs',
+        label: 'Sessions',
+        icon: <i className="fa-regular fa-calendar-day" />,
+      },
+    );
+  }
 
   if (roles.includes(USER_ROLES.INSTRUCTOR) && instructorPortalPath.length > 0) {
     menuItems.push({

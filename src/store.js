@@ -7,6 +7,8 @@ import { reducer as studentsReducer } from 'features/Students/data';
 import { reducer as dashboardReducer } from 'features/Dashboard/data';
 import { reducer as licensesReducer } from 'features/Licenses/data';
 import { reducer as classesReducer } from 'features/Classes/data';
+import { reducer as offeringsReducer } from 'features/Offerings/data';
+import { reducer as offeringRunsReducer } from 'features/OfferingRuns/data';
 import { classesApi } from 'features/Classes/data/classesApi';
 import { coursesApi } from 'features/Courses/data/coursesApi';
 import { instructorsApi } from 'features/Instructors/data/instructorsApi';
@@ -22,6 +24,8 @@ export function initializeStore(preloadedState = undefined) {
       dashboard: dashboardReducer,
       licenses: licensesReducer,
       classes: classesReducer,
+      offerings: offeringsReducer,
+      offeringRuns: offeringRunsReducer,
       [classesApi.reducerPath]: classesApi.reducer,
       [coursesApi.reducerPath]: coursesApi.reducer,
       [instructorsApi.reducerPath]: instructorsApi.reducer,
