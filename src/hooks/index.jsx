@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
+import { getConfig } from '@edx/frontend-platform';
 
 import { INSTITUTION_QUERY_ID } from 'features/constants';
 
@@ -16,6 +17,21 @@ export const useInstitutionIdQueryParam = () => {
   };
 
   return addQueryParam;
+};
+
+/**
+ * Controls visibility of the Offerings feature (nav items + routes).
+ *
+ * Visible only when the `PSS_ENABLE_OFFERINGS` feature flag is on AND the backend
+ * reports the selected institution with `has_offerings` enabled.
+ *
+ * @returns {boolean} Whether the Offerings feature should be exposed.
+ */
+export const useOfferingsAccess = () => {
+  const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
+  const isFlagEnabled = Boolean(getConfig().PSS_ENABLE_OFFERINGS);
+
+  return isFlagEnabled && Boolean(selectedInstitution?.hasOfferings);
 };
 
 /**

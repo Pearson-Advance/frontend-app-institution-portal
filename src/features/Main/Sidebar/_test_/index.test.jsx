@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { Sidebar } from 'features/Main/Sidebar';
 import { renderWithProviders } from 'test-utils';
+import { getConfig } from '@edx/frontend-platform';
 import * as paragonTopaz from 'react-paragon-topaz';
 
 const mockHistoryPush = jest.fn();
@@ -85,5 +86,72 @@ describe('Sidebar', () => {
 
     const contactSupportLink = getByText('Contact Support').closest('a');
     expect(contactSupportLink).toHaveAttribute('href', defaultSupportLink);
+  });
+
+  test('hides Offering nav items when the feature is disabled', () => {
+    getConfig.mockReturnValue({ INSTRUCTOR_PORTAL_PATH: '' });
+
+    const { queryByText } = renderWithProviders(
+      <Sidebar />,
+      {
+        preloadedState: {
+          main: { activeTab: 'dashboard', selectedInstitution: { hasOfferings: true } },
+        },
+      },
+    );
+
+    expect(queryByText('Programs')).not.toBeInTheDocument();
+    expect(queryByText('Sessions')).not.toBeInTheDocument();
+  });
+
+  test('does not show Offering nav items when the flag is on but institution lacks offerings', () => {
+    getConfig.mockReturnValue({ PSS_ENABLE_OFFERINGS: true });
+
+    const { queryByText } = renderWithProviders(
+      <Sidebar />,
+      {
+        preloadedState: {
+          main: { activeTab: 'dashboard', selectedInstitution: { hasOfferings: false } },
+        },
+      },
+    );
+
+    expect(queryByText('Programs')).not.toBeInTheDocument();
+    expect(queryByText('Sessions')).not.toBeInTheDocument();
+  });
+
+  test('shows Offering nav items when the flag is on and institution has offerings', () => {
+    getConfig.mockReturnValue({ PSS_ENABLE_OFFERINGS: true });
+
+    const { getByText } = renderWithProviders(
+      <Sidebar />,
+      {
+        preloadedState: {
+          main: { activeTab: 'dashboard', selectedInstitution: { hasOfferings: true } },
+        },
+      },
+    );
+
+    expect(getByText('Programs')).toBeInTheDocument();
+    expect(getByText('Sessions')).toBeInTheDocument();
+  });
+
+  test('navigates to the offerings routes when the feature is enabled', () => {
+    getConfig.mockReturnValue({ PSS_ENABLE_OFFERINGS: true });
+
+    const { getByText } = renderWithProviders(
+      <Sidebar />,
+      {
+        preloadedState: {
+          main: { activeTab: 'dashboard', selectedInstitution: { hasOfferings: true } },
+        },
+      },
+    );
+
+    fireEvent.click(getByText('Programs'));
+    expect(mockHistoryPush).toHaveBeenCalledWith('/offerings');
+
+    fireEvent.click(getByText('Sessions'));
+    expect(mockHistoryPush).toHaveBeenCalledWith('/offering-runs');
   });
 });

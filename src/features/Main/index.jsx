@@ -33,11 +33,13 @@ import ActiveTabUpdater from 'features/Main//ActiveTabUpdater';
 import ManageInstructors from 'features/Instructors/ManageInstructors';
 import InstitutionSelector from 'features/Main/InstitutionSelector';
 import UnauthorizedPage from 'features/Main/UnauthorizedPage';
+import OfferingsPage from 'features/Offerings/OfferingsPage';
+import OfferingRunsPage from 'features/OfferingRuns/OfferingRunsPage';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
 import { updateSelectedInstitution } from 'features/Main/data/slice';
 
-import { useInstitutionIdQueryParam } from 'hooks';
+import { useInstitutionIdQueryParam, useOfferingsAccess } from 'hooks';
 import { useResetClassesFiltersOnLeave } from 'features/Classes/hooks';
 
 import { cookieText, INSTITUTION_QUERY_ID, RequestStatus } from 'features/constants';
@@ -61,6 +63,8 @@ const Main = () => {
 
   const requiredRoles = [USER_ROLES.GLOBAL_STAFF, USER_ROLES.INSTITUTION_ADMIN];
   const isAuthorizedUser = requiredRoles.some(role => roles.includes(role));
+
+  const offeringsEnabled = useOfferingsAccess();
 
   useResetClassesFiltersOnLeave();
 
@@ -92,6 +96,10 @@ const Main = () => {
     { path: '/licenses/:licenseId', component: LicensesDetailPage },
     { path: '/classes', component: ClassesPage },
     { path: '/manage-instructors/:courseId/:classId', component: ManageInstructors },
+    ...(offeringsEnabled ? [
+      { path: '/offerings', component: OfferingsPage },
+      { path: '/offering-runs', component: OfferingRunsPage },
+    ] : []),
   ];
 
   return (
