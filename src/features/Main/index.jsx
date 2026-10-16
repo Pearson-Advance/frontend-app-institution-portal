@@ -33,11 +33,13 @@ import ActiveTabUpdater from 'features/Main//ActiveTabUpdater';
 import ManageInstructors from 'features/Instructors/ManageInstructors';
 import InstitutionSelector from 'features/Main/InstitutionSelector';
 import UnauthorizedPage from 'features/Main/UnauthorizedPage';
+import ProgramsPage from 'features/Programs/ProgramsPage';
+import SessionsPage from 'features/Sessions/SessionsPage';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
 import { updateSelectedInstitution } from 'features/Main/data/slice';
 
-import { useInstitutionIdQueryParam } from 'hooks';
+import { useInstitutionIdQueryParam, useProgramsAccess } from 'hooks';
 import { useResetClassesFiltersOnLeave } from 'features/Classes/hooks';
 
 import { cookieText, INSTITUTION_QUERY_ID, RequestStatus } from 'features/constants';
@@ -61,6 +63,8 @@ const Main = () => {
 
   const requiredRoles = [USER_ROLES.GLOBAL_STAFF, USER_ROLES.INSTITUTION_ADMIN];
   const isAuthorizedUser = requiredRoles.some(role => roles.includes(role));
+
+  const programsEnabled = useProgramsAccess();
 
   useResetClassesFiltersOnLeave();
 
@@ -92,6 +96,10 @@ const Main = () => {
     { path: '/licenses/:licenseId', component: LicensesDetailPage },
     { path: '/classes', component: ClassesPage },
     { path: '/manage-instructors/:courseId/:classId', component: ManageInstructors },
+    ...(programsEnabled ? [
+      { path: '/programs', component: ProgramsPage },
+      { path: '/sessions', component: SessionsPage },
+    ] : []),
   ];
 
   return (
