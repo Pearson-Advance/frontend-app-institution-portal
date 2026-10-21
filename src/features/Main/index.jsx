@@ -66,12 +66,23 @@ const Main = () => {
   const isAuthorizedUser = requiredRoles.some(role => roles.includes(role));
 
   const programsEnabled = useProgramsAccess();
+  const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
 
   useResetClassesFiltersOnLeave();
 
   useEffect(() => {
     dispatch(fetchInstitutionData());
   }, [dispatch]);
+
+  // Redirect to home when the active institution lacks the Programs feature and
+  // the user is on a programs/sessions route (e.g. after switching institution).
+  useEffect(() => {
+    const isProgramsRoute = /^\/(programs|sessions)(\/|$)/.test(location.pathname);
+
+    if (isProgramsRoute && selectedInstitution?.id && !programsEnabled) {
+      navigate(addQueryParam('/dashboard'), { replace: true });
+    }
+  }, [location.pathname, programsEnabled, selectedInstitution, navigate, addQueryParam]);
 
   useEffect(() => {
     if (institutions.length === 1) {
