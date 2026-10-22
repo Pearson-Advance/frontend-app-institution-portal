@@ -8,11 +8,12 @@ import { reducer as dashboardReducer } from 'features/Dashboard/data';
 import { reducer as licensesReducer } from 'features/Licenses/data';
 import { reducer as classesReducer } from 'features/Classes/data';
 import { reducer as programsReducer } from 'features/Programs/data';
-import { reducer as sessionsReducer } from 'features/Sessions/data';
+import { reducer as sessionsReducer, sessionsApi } from 'features/Sessions/data';
 import { classesApi } from 'features/Classes/data/classesApi';
 import { coursesApi } from 'features/Courses/data/coursesApi';
 import { instructorsApi } from 'features/Instructors/data/instructorsApi';
 import { studentsApi } from 'features/Students/data/studentsApi';
+import { programsApi } from 'features/Programs/data/programsApi';
 
 export function initializeStore(preloadedState = undefined) {
   return configureStore({
@@ -30,12 +31,16 @@ export function initializeStore(preloadedState = undefined) {
       [coursesApi.reducerPath]: coursesApi.reducer,
       [instructorsApi.reducerPath]: instructorsApi.reducer,
       [studentsApi.reducerPath]: studentsApi.reducer,
+      [sessionsApi.reducerPath]: sessionsApi.reducer,
+      [programsApi.reducerPath]: programsApi.reducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
       classesApi.middleware,
       coursesApi.middleware,
       instructorsApi.middleware,
       studentsApi.middleware,
+      sessionsApi.middleware,
+      programsApi.middleware,
     ),
     preloadedState,
   });

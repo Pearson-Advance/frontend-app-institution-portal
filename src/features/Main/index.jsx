@@ -35,6 +35,7 @@ import InstitutionSelector from 'features/Main/InstitutionSelector';
 import UnauthorizedPage from 'features/Main/UnauthorizedPage';
 import ProgramsPage from 'features/Programs/ProgramsPage';
 import SessionsPage from 'features/Sessions/SessionsPage';
+import ProgramDetailPage from 'features/Programs/ProgramDetailPage';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
 import { updateSelectedInstitution } from 'features/Main/data/slice';
@@ -99,6 +100,7 @@ const Main = () => {
     ...(programsEnabled ? [
       { path: '/programs', component: ProgramsPage },
       { path: '/sessions', component: SessionsPage },
+      { path: '/programs/:programId', component: ProgramDetailPage },
     ] : []),
   ];
 
