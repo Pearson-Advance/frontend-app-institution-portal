@@ -3,16 +3,8 @@ import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import {
-  Form,
-  Toast,
-  Spinner,
-  FormGroup,
-  ModalDialog,
-  ModalCloseButton,
-} from '@openedx/paragon';
-import { Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
+import EnrollModal from 'features/Common/EnrollModal';
 
 import { handleEnrollments, getMessages } from 'features/Students/data/api';
 import { studentsApi } from 'features/Students/data/studentsApi';
@@ -114,62 +106,17 @@ const EnrollStudent = ({
   };
 
   return (
-    <>
-      <Toast
-        onClose={() => setShowToast(false)}
-        show={showToast}
-        className="toast-message"
-        data-testid="toast-message"
-      >
-        {toastMessage}
-      </Toast>
-      <ModalDialog
-        title="Invite student to enroll"
-        isOpen={isOpen}
-        onClose={onClose}
-        isOverflowVisible={false}
-        hasCloseButton
-      >
-        <ModalDialog.Header>
-          <ModalDialog.Title>Invite student to enroll</ModalDialog.Title>
-        </ModalDialog.Header>
-        <ModalDialog.Body className="body-container h-100">
-          <p className="text-uppercase font-weight-bold sub-title">
-            Class: {classInfo.className || classNameDisplay}
-          </p>
-          {isLoading && (
-            <div className="w-100 h-100 d-flex justify-content-center align-items-center">
-              <Spinner
-                animation="border"
-                className="mie-3"
-                screenReaderText="loading"
-              />
-            </div>
-          )}
-          {!isLoading && (
-            <Form onSubmit={handleEnrollStudent}>
-              <FormGroup controlId="studentInfo">
-                <Form.Control
-                  as="textarea"
-                  placeholder="Enter email of the student to enroll"
-                  floatingLabel="Email"
-                  className="my-4 mr-0 student-email"
-                  name="studentEmail"
-                  required
-                  autoResize
-                />
-              </FormGroup>
-              <div className="d-flex justify-content-end">
-                <ModalCloseButton className="btntpz btn-text btn-tertiary mr-2">
-                  Cancel
-                </ModalCloseButton>
-                <Button type="submit">Send invite</Button>
-              </div>
-            </Form>
-          )}
-        </ModalDialog.Body>
-      </ModalDialog>
-    </>
+    <EnrollModal
+      isOpen={isOpen}
+      onClose={onClose}
+      subtitleLabel="Class"
+      subtitleValue={classInfo.className || classNameDisplay}
+      onSubmit={handleEnrollStudent}
+      isLoading={isLoading}
+      showToast={showToast}
+      setShowToast={setShowToast}
+      toastMessage={toastMessage}
+    />
   );
 };
 

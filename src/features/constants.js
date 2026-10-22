@@ -348,3 +348,12 @@ export const BULK_REGISTRATION_REQUIRED_COLUMNS_INSTRUCTORS = ['First name', 'La
  * @type {number}
  */
 export const BULK_REGISTRATION_MAX_ROWS = 100;
+
+/**
+ * Texts for session delete modal.
+ * @constant {object}
+ */
+export const sessionModalDeleteText = {
+  title: 'Delete this session',
+  body: 'This action will permanently delete this session and its associated data. Students currently enrolled in this session will not be affected by this action.',
+};
