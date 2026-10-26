@@ -36,6 +36,7 @@ import UnauthorizedPage from 'features/Main/UnauthorizedPage';
 import ProgramsPage from 'features/Programs/ProgramsPage';
 import SessionsPage from 'features/Sessions/SessionsPage';
 import ProgramDetailPage from 'features/Programs/ProgramDetailPage';
+import SessionDetailPage from 'features/Sessions/SessionDetailPage';
 
 import { fetchInstitutionData } from 'features/Main/data/thunks';
 import { updateSelectedInstitution } from 'features/Main/data/slice';
@@ -112,6 +113,7 @@ const Main = () => {
       { path: '/programs', component: ProgramsPage },
       { path: '/sessions', component: SessionsPage },
       { path: '/programs/:programId', component: ProgramDetailPage },
+      { path: '/sessions/:sessionId', component: SessionDetailPage },
     ] : []),
   ];
 

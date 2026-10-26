@@ -8,6 +8,7 @@ import {
   handleDeleteSession,
   enrollStudentToSession,
   getSessionsByOffering,
+  getSessionDetail,
 } from 'features/Sessions/data/api';
 import { initialPage } from 'features/constants';
 
@@ -43,6 +44,27 @@ export const sessionsApi = createApi({
         }
       },
       providesTags: ['Sessions'],
+    }),
+    getSessionDetail: builder.query({
+      async queryFn({ institutionId, sessionId, params = {} }) {
+        try {
+          const response = camelCaseObject(
+            await getSessionDetail(institutionId, sessionId, params),
+          );
+
+          return {
+            data: response.data,
+          };
+        } catch (error) {
+          return {
+            error: {
+              status: error?.response?.status,
+              message: error?.message,
+            },
+          };
+        }
+      },
+      providesTags: ['SessionDetail'],
     }),
     addSession: builder.mutation({
       async queryFn(sessionData) {
@@ -97,4 +119,5 @@ export const {
   useEditSessionMutation,
   useDeleteSessionMutation,
   useEnrollStudentInSessionMutation,
+  useGetSessionDetailQuery,
 } = sessionsApi;
