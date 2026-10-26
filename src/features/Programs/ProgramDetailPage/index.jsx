@@ -17,8 +17,6 @@ import { useGetSessionsByOfferingQuery } from 'features/Sessions/data/sessionsAp
 import { initialPage } from 'features/constants';
 import { useInstitutionIdQueryParam } from 'hooks';
 
-import './index.scss';
-
 const ProgramDetailPage = () => {
   const navigate = useNavigate();
   const { programId } = useParams();
@@ -92,7 +90,7 @@ const ProgramDetailPage = () => {
           href=""
           target="_blank"
           rel="noopener noreferrer"
-          className="text-decoration-none btn-view-courses mr-3"
+          className="text-decoration-none btn-outline-primary mr-3"
           variant="outline-primary"
         >
           View courses

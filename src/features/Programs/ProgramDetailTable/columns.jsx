@@ -142,7 +142,7 @@ const columns = [
       const { programId } = useParams();
       return (
         <LinkWithQuery
-          to={`/sessions/${encodeURIComponent(row.original.sessionId)}?programId=${programId}`}
+          to={`/sessions/${encodeURIComponent(row.original.sessionId)}?programId=${encodeURIComponent(programId)}`}
           className="link"
         >
           {row.values.sessionName}

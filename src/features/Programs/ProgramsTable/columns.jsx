@@ -10,6 +10,7 @@ import {
 import { MoreHoriz } from '@openedx/paragon/icons';
 
 import AddSessionModal from 'features/Sessions/AddSessionModal';
+import LinkWithQuery from 'features/Main/LinkWithQuery';
 
 const ProgramActions = ({ row }) => {
   const { id, name } = row.original;
@@ -54,6 +55,14 @@ const columns = [
   {
     Header: 'Programs',
     accessor: 'name',
+    Cell: ({ row }) => (
+      <LinkWithQuery
+        to={`/programs/${encodeURIComponent(row.original.id)}`}
+        className="link"
+      >
+        {row.original.name}
+      </LinkWithQuery>
+    ),
   },
   {
     Header: 'Courses',
