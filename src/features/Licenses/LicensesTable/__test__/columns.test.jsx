@@ -1,4 +1,4 @@
-import { columns } from 'features/Licenses/LicensesTable/columns';
+import { columns, getColumns } from 'features/Licenses/LicensesTable/columns';
 
 describe('columns in license table', () => {
   test('returns an array of columns with correct properties', () => {
@@ -27,5 +27,33 @@ describe('columns in license table', () => {
 
     expect(numberOfPendingStudents).toHaveProperty('Header', 'Remaining');
     expect(numberOfPendingStudents).toHaveProperty('accessor', 'remaining');
+  });
+});
+
+describe('getColumns in license table', () => {
+  test('returns the base columns when Offerings data is disabled', () => {
+    expect(getColumns(false)).toEqual(columns);
+    expect(getColumns()).toHaveLength(5);
+  });
+
+  test('adds Type and Consumed columns when Offerings data is enabled', () => {
+    const result = getColumns(true);
+
+    expect(result).toHaveLength(7);
+    expect(result.map((column) => column.Header)).toEqual([
+      'License Pool',
+      'Type',
+      'Purchased',
+      'Consumed',
+      'Enrolled',
+      'Pending',
+      'Remaining',
+    ]);
+
+    const typeColumn = result.find((column) => column.Header === 'Type');
+    const consumedColumn = result.find((column) => column.Header === 'Consumed');
+
+    expect(typeColumn).toHaveProperty('accessor', 'type');
+    expect(consumedColumn).toHaveProperty('accessor', 'consumed');
   });
 });

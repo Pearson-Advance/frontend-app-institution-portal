@@ -3,14 +3,16 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { Row, Col } from '@openedx/paragon';
-import { columns } from 'features/Licenses/LicensesTable/columns';
+import { getColumns } from 'features/Licenses/LicensesTable/columns';
 import Table from 'features/Main/Table';
 
+import { useProgramsAccess } from 'hooks';
 import { RequestStatus } from 'features/constants';
 
 const LicensesTable = ({ data, count }) => {
   const licensesRequest = useSelector((state) => state.licenses.table.status);
-  const COLUMNS = useMemo(() => columns, []);
+  const showOfferingsData = useProgramsAccess();
+  const COLUMNS = useMemo(() => getColumns(showOfferingsData), [showOfferingsData]);
   const isLoading = licensesRequest === RequestStatus.LOADING;
 
   return (
