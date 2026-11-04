@@ -5,11 +5,11 @@ import { useLocation } from 'react-router-dom';
 
 import ClassesTable from 'features/Classes/ClassesTable';
 import ClassesFilters from 'features/Classes/ClassesFilters';
-import StatusFilters from 'features/Classes/StatusFilters';
+import StatusFilters from 'features/Common/StatusFilters';
 
-import { updateCurrentPage } from 'features/Classes/data/slice';
+import { updateCurrentPage, updateFilters } from 'features/Classes/data/slice';
 import { useGetClassesQuery } from 'features/Classes/data/classesApi';
-import { initialPage, CLASS_STATUS_TABS } from 'features/constants';
+import { initialPage, STATUS_TABS_VISIBILITY } from 'features/constants';
 
 const ClassesPage = () => {
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ const ClassesPage = () => {
   const storedFilters = useSelector((state) => state.classes.filters);
   const currentPage = useSelector((state) => state.classes.table.currentPage) || initialPage;
   const resetFiltersRef = useRef(false);
-  const [statusFilter, setStatusFilter] = useState(CLASS_STATUS_TABS.VISIBLE);
+  const [statusFilter, setStatusFilter] = useState(STATUS_TABS_VISIBILITY.VISIBLE);
 
   const queryParams = new URLSearchParams(location.search);
   const queryNotInstructors = queryParams.get('instructors');
@@ -54,6 +54,9 @@ const ClassesPage = () => {
         <StatusFilters
           statusFilter={statusFilter}
           setStatusFilter={setStatusFilter}
+          selectFilters={storedFilters}
+          updateFiltersAction={updateFilters}
+          updateCurrentPageAction={updateCurrentPage}
         />
         <ClassesTable
           data={classes}

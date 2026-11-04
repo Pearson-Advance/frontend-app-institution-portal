@@ -170,10 +170,10 @@ export const INSTRUCTOR_STATUS_TABS = {
 };
 
 /**
- * Classes visibility status to be used in filters.
+ * Visibility status to be used in filters.
  * @constant {Object}
  */
-export const CLASS_STATUS_TABS = {
+export const STATUS_TABS_VISIBILITY = {
   ALL: 'All',
   VISIBLE: 'Visible',
   HIDDEN: 'Hidden',

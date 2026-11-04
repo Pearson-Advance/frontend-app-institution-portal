@@ -9,6 +9,7 @@ import {
   enrollStudentToSession,
   getSessionsByOffering,
   getSessionDetail,
+  getAllSessions,
 } from 'features/Sessions/data/api';
 import { initialPage } from 'features/constants';
 
@@ -17,6 +18,32 @@ export const sessionsApi = createApi({
   baseQuery: fakeBaseQuery(),
   tagTypes: ['Sessions', 'SessionsOptions'],
   endpoints: (builder) => ({
+    getSessionsList: builder.query({
+      async queryFn({ institutionId, page = initialPage, params = {} }) {
+        try {
+          const response = camelCaseObject(
+            await getAllSessions(institutionId, page, 10, params),
+          );
+
+          const sortedSessions = sortAlphabetically(response.data.results || []);
+
+          return {
+            data: {
+              ...response.data,
+              results: sortedSessions,
+            },
+          };
+        } catch (error) {
+          return {
+            error: {
+              status: error?.response?.status,
+              message: error?.message,
+            },
+          };
+        }
+      },
+      providesTags: ['Sessions'],
+    }),
     getSessionsByOffering: builder.query({
       async queryFn({
         institutionId, offeringId, page = initialPage, params = {},
@@ -114,6 +141,7 @@ export const sessionsApi = createApi({
 });
 
 export const {
+  useGetSessionsListQuery,
   useGetSessionsByOfferingQuery,
   useAddSessionMutation,
   useEditSessionMutation,
