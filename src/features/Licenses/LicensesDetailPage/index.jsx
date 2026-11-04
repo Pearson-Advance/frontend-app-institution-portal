@@ -7,13 +7,16 @@ import { Container, Pagination, Spinner } from '@openedx/paragon';
 import Table from 'features/Main/Table';
 import LinkWithQuery from 'features/Main/LinkWithQuery';
 
-import { columns } from 'features/Licenses/LicenseDetailTable/columns';
+import { columns, getColumns } from 'features/Licenses/LicenseDetailTable/columns';
 import { fetchCoursesData } from 'features/Courses/data/thunks';
 import { resetCoursesTable, updateCurrentPage } from 'features/Courses/data/slice';
 import { fetchLicensesData } from 'features/Licenses/data';
+import { withMockConsumedData, withMockProgramCourses } from 'features/Licenses/data/mocks';
 
-import { initialPage, licenseBuyLink, RequestStatus } from 'features/constants';
-import { useInstitutionIdQueryParam } from 'hooks';
+import {
+  initialPage, licenseBuyLink, RequestStatus, LICENSE_POOL_TYPES,
+} from 'features/constants';
+import { useInstitutionIdQueryParam, useProgramsAccess } from 'hooks';
 
 import 'features/Licenses/LicensesDetailPage/index.scss';
 
@@ -31,6 +34,7 @@ const LicensesDetailPage = () => {
     purchasedSeats: '-',
     numberOfStudents: '-',
     numberOfPendingStudents: '-',
+    consumed: '-',
   };
 
   const institution = useSelector((state) => state.main.selectedInstitution);
@@ -40,6 +44,20 @@ const LicensesDetailPage = () => {
     .find((license) => license?.licenseId === parseInt(licenseId, 10)) || defaultLicenseInfo;
   const isLoadingCourses = coursesTable.table.status === RequestStatus.LOADING;
   const isLoadingLicenses = licenseTable.status === RequestStatus.LOADING;
+
+  const showOfferingsData = useProgramsAccess();
+  const isProgramType = showOfferingsData && licenseInfo.type === LICENSE_POOL_TYPES.PROGRAM;
+  const programCourses = isProgramType
+    ? withMockProgramCourses(licenseInfo, coursesTable.table.data)
+    : coursesTable.table.data;
+  const detailData = isProgramType ? withMockConsumedData(programCourses) : programCourses;
+  const detailColumns = isProgramType
+    ? getColumns({
+      licenseName: licenseInfo.licenseName,
+      totalCourses: licenseInfo.numberOfCourses ?? coursesTable.table.count,
+      to: `/programs/${licenseInfo.programId ?? ''}`,
+    })
+    : columns;
 
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
@@ -78,7 +96,9 @@ const LicensesDetailPage = () => {
           <div>
             <h3 className="h2 mb-0 course-title">License pool: {licenseInfo.licenseName}</h3>
             <p>
-              Courses for which a license can be used/assigned from this pool.
+              {isProgramType
+                ? 'Program-type licenses are assigned from this pool'
+                : 'Courses for which a license can be used/assigned from this pool.'}
             </p>
           </div>
         </div>
@@ -100,6 +120,17 @@ const LicensesDetailPage = () => {
                   {licenseInfo.purchasedSeats}
                 </span>
               </div>
+              {isProgramType && (
+                <>
+                  <div className="separator mx-4" />
+                  <div className="d-flex flex-column align-items-center">
+                    <p className="title">Consumed</p>
+                    <span className="value number-of-consumed">
+                      {licenseInfo.consumed}
+                    </span>
+                  </div>
+                </>
+              )}
               <div className="separator mx-4" />
               <div className="d-flex flex-column align-items-center">
                 <p className="title">Enrolled</p>
@@ -132,8 +163,8 @@ const LicensesDetailPage = () => {
         </div>
         <Table
           isLoading={isLoadingCourses}
-          columns={columns}
-          data={coursesTable.table.data}
+          columns={detailColumns}
+          data={detailData}
           count={coursesTable.table.count}
           text="No courses found."
         />
