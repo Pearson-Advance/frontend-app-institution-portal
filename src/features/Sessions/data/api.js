@@ -81,6 +81,89 @@ export const MOCK_SESSION_DETAIL = {
   ],
 };
 
+export const MOCK_ALL_SESSIONS_LIST = {
+  count: 3,
+  num_pages: 1,
+  results: [
+    {
+      session_id: 'session-2026-spring',
+      session_name: 'Spring 2026 Cohort',
+      program_name: 'Computer Science Professional Certificate',
+      number_of_students: 22,
+      min_students_allowed: 10,
+      max_students: 35,
+      start_date: '2026-03-01T00:00:00Z',
+      end_date: '2026-06-30T00:00:00Z',
+      hidden: false,
+      instructors_with_status: [
+        { name: 'Dr. Jane Doe', status: 'assigned' },
+        { name: 'Prof. Alan Turing', status: 'assigned' },
+      ],
+    },
+    {
+      session_id: 'session-2026-summer',
+      session_name: 'Summer 2026 Cohort',
+      program_name: 'Data Science Specialist',
+      number_of_students: 18,
+      min_students_allowed: 8,
+      max_students: 30,
+      start_date: '2026-07-01T00:00:00Z',
+      end_date: '2026-10-31T00:00:00Z',
+      hidden: true,
+      instructors_with_status: [
+        { name: 'Grace Hopper', status: 'assigned' },
+      ],
+    },
+    {
+      session_id: 'session-2026-fall',
+      session_name: 'Fall 2026 Cohort',
+      program_name: 'Web Engineering Bootcamp',
+      number_of_students: 14,
+      min_students_allowed: 5,
+      max_students: 20,
+      start_date: '2026-11-01T00:00:00Z',
+      end_date: '2027-02-28T00:00:00Z',
+      hidden: false,
+      instructors_with_status: [],
+    },
+  ],
+};
+
+function getAllSessions(institutionId, page = 1, limit = 10, params = {}) {
+  if (USE_MOCK) {
+    return new Promise((resolve) => {
+      let filteredResults = [...MOCK_ALL_SESSIONS_LIST.results];
+
+      if (params.hidden !== undefined) {
+        filteredResults = filteredResults.filter((item) => item.hidden === params.hidden);
+      }
+      setTimeout(() => {
+        resolve({
+          data: {
+            count: filteredResults.length,
+            num_pages: Math.ceil(filteredResults.length / limit) || 1,
+            results: filteredResults,
+          },
+        });
+      }, 500);
+    });
+  }
+
+  const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
+
+  return getAuthenticatedHttpClient().get(
+    `${apiV2BaseUrl}/offerings-runs/`,
+    {
+      params: {
+        institution_id: institutionId,
+        page,
+        limit,
+        ...params,
+      },
+    },
+  );
+}
+
 function getSessionsByOffering(institutionId, offeringId, page = 1, limit = 10, params = {}) {
   if (USE_MOCK) {
     return new Promise((resolve) => {
@@ -197,4 +280,5 @@ export {
   handleDeleteSession,
   enrollStudentToSession,
   getSessionDetail,
+  getAllSessions,
 };
