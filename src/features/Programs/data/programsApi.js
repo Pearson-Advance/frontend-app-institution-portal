@@ -1,6 +1,6 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import { camelCaseObject } from '@edx/frontend-platform';
-import { getProgramDetail } from 'features/Programs/data/api';
+import { getProgramDetail, getCoursesByProgram } from 'features/Programs/data/api';
 
 export const programsApi = createApi({
   reducerPath: 'programsApi',
@@ -25,7 +25,29 @@ export const programsApi = createApi({
       },
       providesTags: ['ProgramDetail'],
     }),
+
+    getCoursesByProgram: builder.query({
+      async queryFn({ programId, institutionId, page }) {
+        try {
+          const response = camelCaseObject(
+            await getCoursesByProgram(programId, institutionId, page),
+          );
+          return { data: response.data };
+        } catch (error) {
+          return {
+            error: {
+              status: error?.response?.status,
+              message: error?.message,
+            },
+          };
+        }
+      },
+      providesTags: ['ProgramCourses'],
+    }),
   }),
 });
 
-export const { useGetProgramDetailQuery } = programsApi;
+export const {
+  useGetProgramDetailQuery,
+  useGetCoursesByProgramQuery,
+} = programsApi;

@@ -51,6 +51,10 @@ const ProgramDetailPage = () => {
     setCurrentPage(targetPage);
   };
 
+  const handleViewCourses = () => {
+    navigate(addQueryParam(`/programs/${encodeURIComponent(programIdDecoded)}/courses`));
+  };
+
   useEffect(() => {
     if (institution?.id !== undefined && institutionRef.current === undefined) {
       institutionRef.current = institution.id;
@@ -86,12 +90,9 @@ const ProgramDetailPage = () => {
 
       <div className="d-flex justify-content-end align-items-center my-3">
         <Button
-          as="a"
-          href=""
-          target="_blank"
-          rel="noopener noreferrer"
           className="text-decoration-none btn-outline-primary mr-3"
           variant="outline-primary"
+          onClick={handleViewCourses}
         >
           View courses
         </Button>
