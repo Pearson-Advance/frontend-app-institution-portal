@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from 'react';
+import PropTypes from 'prop-types';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Container, Pagination } from '@openedx/paragon';
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,11 +38,12 @@ import 'features/Classes/Class/ClassPage/index.scss';
 
 const isConfigEnabled = (value) => value === true || value === 'true';
 
-const ClassPage = () => {
+const ClassPage = ({ variant }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { courseId, classId } = useParams();
+  const isSessionVariant = variant === 'session';
   const queryParams = new URLSearchParams(location.search);
   const previousPage = queryParams.get('previous') || 'classes';
   const courseIdDecoded = decodeURIComponent(courseId);
@@ -219,8 +221,9 @@ const ClassPage = () => {
       displayVoucherOptions,
       enableVoucherColumn,
       onVoucherActionSuccess: refreshStudentsList,
+      variant,
     })
-  ), [displayVoucherOptions, enableVoucherColumn, refreshStudentsList]);
+  ), [displayVoucherOptions, enableVoucherColumn, refreshStudentsList, variant]);
 
   useEffect(() => {
     let isMounted = true;
@@ -258,12 +261,12 @@ const ClassPage = () => {
 
     document.title = classIdDecoded;
     // Leaves a gap time space to prevent being override by ActiveTabUpdater component
-    setTimeout(() => dispatch(updateActiveTab('classes')), 100);
+    setTimeout(() => dispatch(updateActiveTab(isSessionVariant ? 'sessions' : 'classes')), 100);
 
     return () => {
       document.title = initialTitle;
     };
-  }, [dispatch, classIdDecoded]);
+  }, [dispatch, classIdDecoded, isSessionVariant]);
 
   useEffect(() => {
     if (institution.id && displayVoucherOptions) {
@@ -277,7 +280,7 @@ const ClassPage = () => {
     }
 
     if (institution.id !== institutionRef.current) {
-      navigate(addQueryParam('/courses'));
+      navigate(addQueryParam(isSessionVariant ? '/sessions' : '/courses'));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [institution, navigate]);
@@ -301,7 +304,7 @@ const ClassPage = () => {
         </InstructorCard>
         <div>
           <div className="d-flex justify-content-end my-3 flex-wrap">
-            <Actions previousPage={previousPage} />
+            <Actions previousPage={previousPage} variant={variant} />
           </div>
           <Table
             isLoading={isLoadingStudents}
@@ -325,6 +328,14 @@ const ClassPage = () => {
       </div>
     </Container>
   );
+};
+
+ClassPage.propTypes = {
+  variant: PropTypes.oneOf(['course', 'session']),
+};
+
+ClassPage.defaultProps = {
+  variant: 'course',
 };
 
 export default ClassPage;

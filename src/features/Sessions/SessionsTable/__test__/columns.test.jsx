@@ -202,6 +202,16 @@ describe('Sessions Table columns', () => {
       expect(screen.getByText(mockRowData.programName)).toBeInTheDocument();
     });
 
+    test('renders Session Name as a link to the session detail view', () => {
+      renderCell('Session', createCellProps());
+
+      const link = screen.getByText(mockRowData.sessionName).closest('a');
+      expect(link).toHaveAttribute(
+        'href',
+        `/sessions/${encodeURIComponent(mockRowData.sessionId)}`,
+      );
+    });
+
     test('renders fallback "-" for empty Program Name', () => {
       renderCell('Program', createCellProps({ programName: null }));
       expect(screen.getByText('-')).toBeInTheDocument();

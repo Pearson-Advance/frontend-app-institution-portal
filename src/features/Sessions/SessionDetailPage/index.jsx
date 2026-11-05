@@ -120,6 +120,7 @@ const SessionDetailPage = () => {
           isLoading={isLoadingSession}
           count={sessionInfo.classes?.length || 0}
           data={sessionInfo.classes || []}
+          sessionId={sessionIdDecoded}
         />
       </div>
     </Container>

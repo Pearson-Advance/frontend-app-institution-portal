@@ -2,10 +2,12 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Table from 'features/Main/Table';
 
-import { columns } from './columns';
+import { getColumns } from './columns';
 
-const SessionDetailTable = ({ data, count, isLoading }) => {
-  const COLUMNS = useMemo(() => columns, []);
+const SessionDetailTable = ({
+  data, count, isLoading, sessionId,
+}) => {
+  const COLUMNS = useMemo(() => getColumns({ sessionId }), [sessionId]);
 
   return (
     <Table
@@ -23,12 +25,14 @@ SessionDetailTable.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape({})),
   count: PropTypes.number,
   isLoading: PropTypes.bool,
+  sessionId: PropTypes.string,
 };
 
 SessionDetailTable.defaultProps = {
   data: [],
   count: 0,
   isLoading: false,
+  sessionId: '',
 };
 
 export default SessionDetailTable;

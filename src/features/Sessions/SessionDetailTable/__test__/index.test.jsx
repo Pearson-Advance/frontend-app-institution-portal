@@ -17,10 +17,10 @@ jest.mock('features/Main/Table', () => jest.fn(({
 )));
 
 jest.mock('features/Sessions/SessionDetailTable/columns', () => ({
-  columns: [
+  getColumns: jest.fn(() => [
     { Header: 'Class Name', accessor: 'className' },
     { Header: 'Course Name', accessor: 'courseName' },
-  ],
+  ]),
 }));
 
 describe('SessionDetailTable', () => {

@@ -461,3 +461,46 @@ describe('Voucher Status column', () => {
     expect(getText(rendered)).toBe('unknown');
   });
 });
+
+describe('getColumns session variant', () => {
+  test('omits Voucher Status, Exam Ready and Last exam date columns', () => {
+    const columns = getColumns({ enableVoucherColumn: true, variant: 'session' });
+    const headers = columns.map((col) => col.Header);
+
+    expect(columns).toHaveLength(8);
+    expect(headers).not.toContain('Voucher Status');
+    expect(headers).not.toContain('Exam Ready');
+    expect(headers).not.toContain('Last exam date');
+  });
+
+  test('does NOT render Delete Enrollment action for a student row', () => {
+    const columns = getColumns({ variant: 'session' });
+
+    const ActionColumn = () => columns[0].Cell({
+      row: {
+        values: { classId: 'CCX1' },
+        original: {
+          classId: 'CCX1',
+          userId: '1',
+          learnerEmail: 'testuser@example.com',
+          courseId: 'course-v1:demo+demo1+2020',
+          status: 'Active',
+        },
+      },
+    });
+
+    const component = renderWithProviders(
+      <ActionColumn />,
+      {
+        preloadedState: {
+          main: { selectedInstitution: { id: 1 } },
+          students: { table: { data: [] } },
+        },
+      },
+    );
+
+    fireEvent.click(component.getByTestId('droprown-action'));
+
+    expect(component.queryByText('Delete Enrollment')).not.toBeInTheDocument();
+  });
+});

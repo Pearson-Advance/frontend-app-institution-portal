@@ -83,7 +83,7 @@ const columns = [
                   to={`/sessions/${encodeURIComponent(sessionId)}`}
                   className="text-truncate text-decoration-none custom-text-black"
                 >
-                  <i className="fa-regular fa-eye mr-2 mb-1" />
+                  <i className="mb-1 mr-2 fa-regular fa-eye" />
                   View classes
                 </LinkWithQuery>
               </Dropdown.Item>
@@ -97,7 +97,7 @@ const columns = [
                 onClick={() => setIsDeleteModalOpen(true)}
                 className="text-danger"
               >
-                <i className="fa-regular fa-trash mr-2 mb-1" />
+                <i className="mb-1 mr-2 fa-regular fa-trash" />
                 Delete session
               </Dropdown.Item>
             </Dropdown.Menu>
@@ -118,7 +118,14 @@ const columns = [
   {
     Header: 'Session',
     accessor: 'sessionName',
-    Cell: ({ row }) => <span>{row.values.sessionName}</span>,
+    Cell: ({ row }) => (
+      <LinkWithQuery
+        to={`/sessions/${encodeURIComponent(row.original.sessionId)}`}
+        className="link"
+      >
+        {row.values.sessionName}
+      </LinkWithQuery>
+    ),
   },
   {
     Header: 'Program',

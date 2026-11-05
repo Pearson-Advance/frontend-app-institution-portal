@@ -2,7 +2,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { columns } from 'features/Sessions/SessionDetailTable/columns';
+import { getColumns } from 'features/Sessions/SessionDetailTable/columns';
 
 jest.mock('helpers', () => ({
   formatUTCDate: jest.fn((date) => `formatted-${date}`),
@@ -54,6 +54,7 @@ describe('SessionDetailTable columns', () => {
   };
 
   const renderCell = (columnHeader, props) => {
+    const columns = getColumns({ sessionId: 'session-2026-spring' });
     const column = columns.find((col) => col.Header === columnHeader || col.accessor === columnHeader);
     const CellComponent = column.Cell;
 
@@ -108,6 +109,17 @@ describe('SessionDetailTable columns', () => {
       const courseNameProps = createCellProps('courseName');
       renderCell('Course Name', courseNameProps);
       expect(screen.getByText(mockRowData.courseName)).toBeInTheDocument();
+    });
+
+    it('renders Class Name as a link to the session class detail view', () => {
+      const classNameProps = createCellProps('className');
+      renderCell('Class Name', classNameProps);
+
+      const link = screen.getByText(mockRowData.className).closest('a');
+      expect(link).toHaveAttribute(
+        'href',
+        `/sessions/${encodeURIComponent('session-2026-spring')}/${encodeURIComponent(mockRowData.masterCourseId)}/${encodeURIComponent(mockRowData.classId)}`,
+      );
     });
 
     it('renders instructors list when instructors are assigned', () => {

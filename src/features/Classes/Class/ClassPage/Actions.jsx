@@ -32,12 +32,13 @@ const initialDeletionClassState = {
   isRequestComplete: false,
 };
 
-const Actions = ({ previousPage }) => {
+const Actions = ({ previousPage, variant }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { courseId, classId } = useParams();
   const courseIdDecoded = decodeURIComponent(courseId);
   const classIdDecoded = decodeURIComponent(classId);
+  const isSessionVariant = variant === 'session';
   const deletionState = useSelector((state) => state.courses.newClass.status);
   const selectedInstitution = useSelector((state) => state.main.selectedInstitution);
   const gradebookUrl = getConfig().GRADEBOOK_MICROFRONTEND_URL || getConfig().LMS_BASE_URL;
@@ -175,12 +176,14 @@ const Actions = ({ previousPage }) => {
       >
         {message}
       </Toast>
+      {!isSessionVariant && (
       <Button
         onClick={handleEnrollStudentModal}
         className="text-decoration-none text-white button-view-class mr-3"
       >
         Invite students to enroll
       </Button>
+      )}
       <Dropdown className="dropdowntpz">
         <Dropdown.Toggle
           id="dropdown-toggle-with-iconbutton"
@@ -226,6 +229,7 @@ const Actions = ({ previousPage }) => {
               Lab Dashboard
             </Dropdown.Item>
           )}
+          {!isSessionVariant && (
           <Dropdown.Item
             onClick={handleToggleVisibility}
             disabled={isTogglingVisibility}
@@ -234,10 +238,13 @@ const Actions = ({ previousPage }) => {
             <i className={`fa-regular ${classInfo?.hidden ? 'fa-eye' : 'fa-eye-slash'} mr-2 mb-1`} />
             {classInfo?.hidden ? 'Show class' : 'Hide class'}
           </Dropdown.Item>
+          )}
+          {!isSessionVariant && (
           <Dropdown.Item onClick={handleOpenDeleteModal} className="text-danger">
             <i className="fa-regular fa-trash mr-2 mb-1" />
             Delete class
           </Dropdown.Item>
+          )}
         </Dropdown.Menu>
       </Dropdown>
       <AddClass
@@ -270,10 +277,12 @@ const Actions = ({ previousPage }) => {
 
 Actions.propTypes = {
   previousPage: PropTypes.string,
+  variant: PropTypes.oneOf(['course', 'session']),
 };
 
 Actions.defaultProps = {
   previousPage: 'courses',
+  variant: 'course',
 };
 
 export default Actions;
