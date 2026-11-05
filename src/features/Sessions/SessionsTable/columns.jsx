@@ -118,7 +118,14 @@ const columns = [
   {
     Header: 'Session',
     accessor: 'sessionName',
-    Cell: ({ row }) => <span>{row.values.sessionName}</span>,
+    Cell: ({ row }) => (
+      <LinkWithQuery
+        to={`/sessions/${encodeURIComponent(row.original.sessionId)}`}
+        className="link"
+      >
+        {row.values.sessionName}
+      </LinkWithQuery>
+    ),
   },
   {
     Header: 'Program',
