@@ -48,6 +48,8 @@ import { cookieText, INSTITUTION_QUERY_ID, RequestStatus } from 'features/consta
 
 import './index.scss';
 
+const SessionClassPage = () => <ClassPage variant="session" />;
+
 const Main = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -114,6 +116,10 @@ const Main = () => {
       { path: '/sessions', component: SessionsPage },
       { path: '/programs/:programId', component: ProgramDetailPage },
       { path: '/sessions/:sessionId', component: SessionDetailPage },
+      {
+        path: '/sessions/:sessionId/:courseId/:classId',
+        component: SessionClassPage,
+      },
     ] : []),
   ];
 

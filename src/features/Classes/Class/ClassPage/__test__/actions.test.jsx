@@ -144,3 +144,39 @@ describe('Class Details Actions - Hide/Show', () => {
     openSpy.mockRestore();
   });
 });
+
+describe('Class Details Actions - session variant', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const renderSessionActions = () => renderWithProviders(
+    <Route path={routePath} element={<Actions previousPage="sessions" variant="session" />} />,
+    { preloadedState, initialEntries: [routeUrl] },
+  );
+
+  test('hides Invite students, Hide/Show class and Delete class actions', () => {
+    useGetClassesByCourseQuery.mockReturnValue({
+      data: [{ classId, className: 'Test class', hidden: false }],
+    });
+
+    const { queryByText } = renderSessionActions();
+
+    expect(queryByText('Invite students to enroll')).not.toBeInTheDocument();
+    expect(queryByText('Hide class')).not.toBeInTheDocument();
+    expect(queryByText('Show class')).not.toBeInTheDocument();
+    expect(queryByText('Delete class')).not.toBeInTheDocument();
+  });
+
+  test('keeps the remaining actions available', () => {
+    useGetClassesByCourseQuery.mockReturnValue({
+      data: [{ classId, className: 'Test class', hidden: false }],
+    });
+
+    const { getByText } = renderSessionActions();
+
+    expect(getByText('Edit class')).toBeInTheDocument();
+    expect(getByText('Gradebook')).toBeInTheDocument();
+    expect(getByText('Schedule')).toBeInTheDocument();
+  });
+});

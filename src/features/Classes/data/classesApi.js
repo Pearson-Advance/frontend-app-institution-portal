@@ -2,6 +2,11 @@ import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import { camelCaseObject } from '@edx/frontend-platform';
 
 import { getClassesByInstitution } from 'features/Common/data/api';
+import {
+  isOfferingsFlagEnabled,
+  isSessionMockCourse,
+  getMockSessionClasses,
+} from 'features/Sessions/data/mocks';
 import { initialPage } from 'features/constants';
 
 export const classesApi = createApi({
@@ -46,6 +51,11 @@ export const classesApi = createApi({
     getClassesByCourse: builder.query({
       async queryFn({ institutionId, courseId = '' }) {
         try {
+          // Dummy class data for session (Offerings) classes; flag-gated, course view untouched.
+          if (isOfferingsFlagEnabled() && isSessionMockCourse(courseId)) {
+            return { data: getMockSessionClasses(courseId) };
+          }
+
           const response = camelCaseObject(
             await getClassesByInstitution(institutionId, courseId, false),
           );

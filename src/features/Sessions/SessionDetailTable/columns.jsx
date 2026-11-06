@@ -15,7 +15,7 @@ import LinkWithQuery from 'features/Main/LinkWithQuery';
 
 import 'assets/global.scss';
 
-const columns = [
+const getColumns = ({ sessionId = '' } = {}) => [
   {
     Header: '',
     accessor: 'actions',
@@ -86,7 +86,18 @@ const columns = [
   {
     Header: 'Class Name',
     accessor: 'className',
-    Cell: ({ row }) => <span>{row.values.className}</span>,
+    Cell: ({ row }) => {
+      const { classId, masterCourseId } = row.original;
+
+      return (
+        <LinkWithQuery
+          to={`/sessions/${encodeURIComponent(sessionId)}/${encodeURIComponent(masterCourseId)}/${encodeURIComponent(classId)}`}
+          className="link"
+        >
+          {row.values.className}
+        </LinkWithQuery>
+      );
+    },
   },
   {
     Header: 'Course Name',
@@ -139,4 +150,4 @@ const columns = [
   },
 ];
 
-export { columns };
+export { getColumns };
