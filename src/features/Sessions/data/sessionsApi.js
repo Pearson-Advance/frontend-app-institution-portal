@@ -94,12 +94,18 @@ export const sessionsApi = createApi({
       providesTags: ['SessionDetail'],
     }),
     addSession: builder.mutation({
-      async queryFn(sessionData) {
+      async queryFn(body) {
         try {
-          const response = await handleNewSession(sessionData);
+          const response = await handleNewSession(body);
           return { data: response.data };
         } catch (error) {
-          return { error: error?.response?.data || error?.message };
+          return {
+            error: {
+              status: error?.response?.status,
+              data: error?.response?.data,
+              message: error?.message,
+            },
+          };
         }
       },
       invalidatesTags: ['Sessions', 'SessionsOptions'],

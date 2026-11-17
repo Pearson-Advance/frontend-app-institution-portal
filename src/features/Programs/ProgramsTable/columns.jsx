@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import {
   Dropdown,
@@ -8,13 +9,81 @@ import {
   useToggle,
 } from '@openedx/paragon';
 import { MoreHoriz } from '@openedx/paragon/icons';
+import { logError } from '@edx/frontend-platform/logging';
 
 import AddSessionModal from 'features/Sessions/AddSessionModal';
 import LinkWithQuery from 'features/Main/LinkWithQuery';
+import { useAddSessionMutation } from 'features/Sessions/data/sessionsApi';
+import { programsApi } from 'features/Programs/data/programsApi';
+
+import { formatUTCDate, buildFilterParams } from 'helpers';
+
+const getApiErrorMessage = (error) => {
+  const errorData = error?.data;
+
+  if (errorData && typeof errorData === 'object') {
+    if (errorData.detail) { return errorData.detail; }
+    if (errorData.message) { return errorData.message; }
+    if (Array.isArray(errorData.non_field_errors)) {
+      return errorData.non_field_errors.join(' ');
+    }
+
+    const fieldErrors = Object.entries(errorData)
+      .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`)
+      .join('\n');
+
+    if (fieldErrors) { return fieldErrors; }
+  }
+
+  return 'An unexpected error occurred while creating the session.';
+};
 
 const ProgramActions = ({ row }) => {
-  const { id, name } = row.original;
+  const dispatch = useDispatch();
+  const institution = useSelector((state) => state.main.selectedInstitution);
+
+  const {
+    id,
+    licenseId,
+    license,
+  } = row.original;
+
   const [isCreateSessionOpen, openCreateSession, closeCreateSession] = useToggle(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  const [addSession, { isLoading: isCreatingSession }] = useAddSessionMutation();
+
+  const handleCreateSession = async (formData) => {
+    const resolvedLicenseId = licenseId ?? license?.id;
+
+    const body = buildFilterParams({
+      offering_id: Number(id),
+      institution_id: institution?.id,
+      license_id: Number(resolvedLicenseId),
+      name: formData.sessionName.trim(),
+      start_date: formatUTCDate(formData.startDate, "yyyy-MM-dd'T'00:00:00'Z'"),
+    });
+
+    try {
+      const result = await addSession(body).unwrap();
+
+      if (result?.status === 'creation_failed') {
+        setToastMessage('Session created with issues. Some course classes failed to initialize.');
+      } else {
+        setToastMessage('Session created successfully.');
+      }
+
+      dispatch(programsApi.util.invalidateTags(['ProgramDetail', 'Programs']));
+      setShowToast(true);
+      return closeCreateSession();
+    } catch (error) {
+      logError(error);
+      setToastMessage(getApiErrorMessage(error));
+      setShowToast(true);
+      return closeCreateSession();
+    }
+  };
 
   return (
     <>
@@ -38,7 +107,11 @@ const ProgramActions = ({ row }) => {
       <AddSessionModal
         isOpen={isCreateSessionOpen}
         onClose={closeCreateSession}
-        programInfo={{ programId: String(id), programTitle: name }}
+        onSubmit={handleCreateSession}
+        isLoading={isCreatingSession}
+        showToast={showToast}
+        setShowToast={setShowToast}
+        toastMessage={toastMessage}
       />
     </>
   );

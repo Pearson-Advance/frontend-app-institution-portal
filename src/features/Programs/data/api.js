@@ -12,6 +12,7 @@ export const MOCK_PROGRAM_DETAIL = {
   consumed_seats: 45,
   enrolled_students: 54,
   remaining_seats: 55,
+  license_id: 1,
 };
 export const MOCK_PROGRAM_COURSES = {
   count: 3,
@@ -23,6 +24,7 @@ export const MOCK_PROGRAM_COURSES = {
       number_of_sessions: 2,
       instructors: ['Dr. John Doe', 'Prof. Jane Smith'],
       number_of_students: 28,
+      license_id: 1,
     },
     {
       course_id: 'course-v1:Edx+DS201+2026',
@@ -30,6 +32,7 @@ export const MOCK_PROGRAM_COURSES = {
       number_of_sessions: 1,
       instructors: ['Dr. Alan Turing'],
       number_of_students: 26,
+      license_id: 1,
     },
     {
       course_id: 'course-v1:Edx+AI301+2026',
@@ -37,6 +40,7 @@ export const MOCK_PROGRAM_COURSES = {
       number_of_sessions: 0,
       instructors: [],
       number_of_students: 0,
+      license_id: 1,
     },
   ],
 };
