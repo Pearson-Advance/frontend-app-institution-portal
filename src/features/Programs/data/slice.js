@@ -18,6 +18,7 @@ export const SEED_PROGRAMS = [
     numberOfCourses: 3,
     numberOfRuns: 2,
     studentsEnrolled: 48,
+    licenseId: 3,
     courses: [
       {
         id: 101, sequence: 1, name: 'Cloud Foundations', weight: 20,
@@ -36,6 +37,7 @@ export const SEED_PROGRAMS = [
     numberOfCourses: 2,
     numberOfRuns: 0,
     studentsEnrolled: 0,
+    licenseId: 3,
     courses: [
       {
         id: 201, sequence: 1, name: 'Data Analysis Fundamentals', weight: 40,

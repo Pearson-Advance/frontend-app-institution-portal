@@ -7,15 +7,20 @@ import {
   useToggle,
 } from '@openedx/paragon';
 import { Button } from 'react-paragon-topaz';
+import { logError } from '@edx/frontend-platform/logging';
 
 import LinkWithQuery from 'features/Main/LinkWithQuery';
 import AddSessionModal from 'features/Sessions/AddSessionModal';
 import ProgramDetailTable from 'features/Programs/ProgramDetailTable';
 
 import { useGetProgramDetailQuery } from 'features/Programs/data/programsApi';
-import { useGetSessionsByOfferingQuery } from 'features/Sessions/data/sessionsApi';
+import {
+  useGetSessionsByOfferingQuery,
+  useAddSessionMutation,
+} from 'features/Sessions/data/sessionsApi';
 import { initialPage } from 'features/constants';
 import { useInstitutionIdQueryParam } from 'hooks';
+import { formatUTCDate, buildFilterParams } from 'helpers';
 
 const ProgramDetailPage = () => {
   const navigate = useNavigate();
@@ -27,10 +32,15 @@ const ProgramDetailPage = () => {
   const institutionRef = useRef(undefined);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [isOpenAddModal, openAddModal, closeAddModal] = useToggle(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   const institution = useSelector((state) => state.main.selectedInstitution);
 
-  const { data: programInfo = { programTitle: '-', numberOfStudents: 0, totalSessions: 0 } } = useGetProgramDetailQuery(
+  const {
+    data: programInfo = { programTitle: '-', numberOfStudents: 0, totalSessions: 0 },
+    refetch: refetchProgramDetail,
+  } = useGetProgramDetailQuery(
     { programId: programIdDecoded, institutionId: institution?.id },
     { skip: !institution?.id || !programIdDecoded },
   );
@@ -47,12 +57,65 @@ const ProgramDetailPage = () => {
     { skip: !institution?.id || !programIdDecoded },
   );
 
+  const [addSession, { isLoading: isCreatingSession }] = useAddSessionMutation();
+
   const handlePagination = (targetPage) => {
     setCurrentPage(targetPage);
   };
 
   const handleViewCourses = () => {
     navigate(addQueryParam(`/programs/${encodeURIComponent(programIdDecoded)}/courses`));
+  };
+
+  const getApiErrorMessage = (error) => {
+    const errorData = error?.data;
+
+    if (errorData && typeof errorData === 'object') {
+      if (errorData.detail) { return errorData.detail; }
+      if (errorData.message) { return errorData.message; }
+      if (Array.isArray(errorData.non_field_errors)) {
+        return errorData.non_field_errors.join(' ');
+      }
+
+      const fieldErrors = Object.entries(errorData)
+        .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`)
+        .join('\n');
+
+      if (fieldErrors) { return fieldErrors; }
+    }
+
+    return 'An unexpected error occurred while creating the session.';
+  };
+
+  const handleCreateSession = async (formData) => {
+    const licenseId = programInfo.licenseId ?? programInfo.license?.id;
+
+    const body = buildFilterParams({
+      offering_id: Number(programIdDecoded),
+      institution_id: institution?.id,
+      license_id: Number(licenseId),
+      name: formData.sessionName.trim(),
+      start_date: formatUTCDate(formData.startDate, "yyyy-MM-dd'T'00:00:00'Z'"),
+    });
+
+    try {
+      const result = await addSession(body).unwrap();
+
+      if (result?.status === 'creation_failed') {
+        setToastMessage('Session created with issues. Some course classes failed to initialize.');
+      } else {
+        setToastMessage('Session created successfully.');
+      }
+
+      setShowToast(true);
+      refetchProgramDetail();
+      return closeAddModal();
+    } catch (error) {
+      logError(error);
+      setToastMessage(getApiErrorMessage(error));
+      setShowToast(true);
+      return closeAddModal();
+    }
   };
 
   useEffect(() => {
@@ -100,7 +163,11 @@ const ProgramDetailPage = () => {
         <AddSessionModal
           isOpen={isOpenAddModal}
           onClose={closeAddModal}
-          programInfo={{ ...programInfo, programId: programIdDecoded }}
+          onSubmit={handleCreateSession}
+          isLoading={isCreatingSession}
+          showToast={showToast}
+          setShowToast={setShowToast}
+          toastMessage={toastMessage}
         />
       </div>
 

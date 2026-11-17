@@ -226,7 +226,7 @@ function handleNewSession(data) {
   const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
 
   return getAuthenticatedHttpClient().post(
-    `${apiV2BaseUrl}/sessions/`,
+    `${apiV2BaseUrl}/offering-runs/`,
     data,
   );
 }
@@ -238,7 +238,7 @@ function handleEditSession(data) {
   const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
 
   return getAuthenticatedHttpClient().patch(
-    `${apiV2BaseUrl}/sessions/`,
+    `${apiV2BaseUrl}/offering-runs/`,
     data,
   );
 }
