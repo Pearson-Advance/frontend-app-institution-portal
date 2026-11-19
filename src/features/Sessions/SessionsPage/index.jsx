@@ -22,6 +22,12 @@ const SessionsPage = () => {
   const { currentPage, filters } = useSelector((state) => state.sessions);
   const institution = useSelector((state) => state.main.selectedInstitution);
 
+  const queryParams = {
+    ...filters,
+    ...(statusFilter === STATUS_TABS_VISIBILITY.VISIBLE && { hidden: false }),
+    ...(statusFilter === STATUS_TABS_VISIBILITY.HIDDEN && { hidden: true }),
+  };
+
   const {
     data: sessionsResponse = { results: [], count: 0, numPages: 0 },
     isLoading: isLoadingSessions,
@@ -29,7 +35,7 @@ const SessionsPage = () => {
     {
       institutionId: institution?.id,
       page: currentPage,
-      params: filters,
+      params: queryParams,
     },
     { skip: !institution?.id },
   );

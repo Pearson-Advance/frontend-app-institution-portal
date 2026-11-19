@@ -14,7 +14,7 @@ import { logError } from '@edx/frontend-platform/logging';
 import AddSessionModal from 'features/Sessions/AddSessionModal';
 import LinkWithQuery from 'features/Main/LinkWithQuery';
 import { useAddSessionMutation } from 'features/Sessions/data/sessionsApi';
-import { programsApi } from 'features/Programs/data/programsApi';
+import { programsApi, useGetInstitutionLicensesQuery } from 'features/Programs/data/programsApi';
 
 import { formatUTCDate, buildFilterParams } from 'helpers';
 
@@ -42,11 +42,15 @@ const ProgramActions = ({ row }) => {
   const dispatch = useDispatch();
   const institution = useSelector((state) => state.main.selectedInstitution);
 
+  const { id } = row.original;
+
   const {
-    id,
-    licenseId,
-    license,
-  } = row.original;
+    data: licenseOptions = [],
+    isLoading: isLoadingLicenses,
+  } = useGetInstitutionLicensesQuery(
+    { institutionId: institution?.id },
+    { skip: !institution?.id },
+  );
 
   const [isCreateSessionOpen, openCreateSession, closeCreateSession] = useToggle(false);
   const [showToast, setShowToast] = useState(false);
@@ -55,12 +59,10 @@ const ProgramActions = ({ row }) => {
   const [addSession, { isLoading: isCreatingSession }] = useAddSessionMutation();
 
   const handleCreateSession = async (formData) => {
-    const resolvedLicenseId = licenseId ?? license?.id;
-
     const body = buildFilterParams({
       offering_id: Number(id),
       institution_id: institution?.id,
-      license_id: Number(resolvedLicenseId),
+      license_id: Number(formData.licenseId),
       name: formData.sessionName.trim(),
       start_date: formatUTCDate(formData.startDate, "yyyy-MM-dd'T'00:00:00'Z'"),
     });
@@ -112,6 +114,8 @@ const ProgramActions = ({ row }) => {
         showToast={showToast}
         setShowToast={setShowToast}
         toastMessage={toastMessage}
+        licenseOptions={licenseOptions}
+        isLoadingLicenses={isLoadingLicenses}
       />
     </>
   );

@@ -8,11 +8,12 @@ import {
   Col,
   Toast,
 } from '@openedx/paragon';
-import { Button } from 'react-paragon-topaz';
+import { Button, Select } from 'react-paragon-topaz';
 
 const initialFormData = {
   sessionName: '',
   startDate: '',
+  selectedLicense: null,
 };
 
 const AddSessionModal = ({
@@ -25,6 +26,8 @@ const AddSessionModal = ({
   showToast,
   setShowToast,
   toastMessage,
+  licenseOptions,
+  isLoadingLicenses,
 }) => {
   const [formData, setFormData] = useState(initialFormData);
   const [validated, setValidated] = useState(false);
@@ -41,20 +44,35 @@ const AddSessionModal = ({
     setValidated(false);
 
     if (isEditing && sessionData) {
+      const matchedLicense = licenseOptions.find(
+        (opt) => opt.value === sessionData.licenseId,
+      ) || null;
+
       setFormData({
         sessionName: sessionData.sessionName || '',
         startDate: sessionData.startDate ? sessionData.startDate.split('T')[0] : '',
+        selectedLicense: matchedLicense,
       });
     } else {
-      setFormData(initialFormData);
+      setFormData({
+        ...initialFormData,
+        selectedLicense: licenseOptions.length === 1 ? licenseOptions[0] : null,
+      });
     }
-  }, [isEditing, sessionData, isOpen]);
+  }, [isEditing, sessionData, isOpen, licenseOptions]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  const handleLicenseChange = (option) => {
+    setFormData((prev) => ({
+      ...prev,
+      selectedLicense: option,
     }));
   };
 
@@ -68,13 +86,16 @@ const AddSessionModal = ({
     e.preventDefault();
     const form = e.currentTarget;
 
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() === false || (!isEditing && !formData.selectedLicense)) {
       e.stopPropagation();
       setValidated(true);
       return;
     }
 
-    await onSubmit(formData);
+    await onSubmit({
+      ...formData,
+      licenseId: formData.selectedLicense?.value,
+    });
   };
 
   return (
@@ -104,6 +125,26 @@ const AddSessionModal = ({
               />
             </Form.Group>
 
+            {!isEditing && (
+              <Form.Group className="mb-3 mr-2">
+                <Select
+                  placeholder="Select a license"
+                  name="licenseId"
+                  className="select"
+                  options={licenseOptions}
+                  onChange={handleLicenseChange}
+                  value={formData.selectedLicense}
+                  isLoading={isLoadingLicenses}
+                  isDisabled={isLoadingLicenses}
+                />
+                {validated && !formData.selectedLicense && (
+                  <div className="invalid-feedback d-block">
+                    Please select a license.
+                  </div>
+                )}
+              </Form.Group>
+            )}
+
             <Row>
               <Col>
                 <Form.Group>
@@ -128,7 +169,10 @@ const AddSessionModal = ({
                 Cancel
               </ModalCloseButton>
 
-              <Button type="submit" disabled={isLoading}>
+              <Button
+                type="submit"
+                disabled={isLoading || (!isEditing && !formData.selectedLicense)}
+              >
                 {getSubmitButtonText()}
               </Button>
             </div>
@@ -157,11 +201,17 @@ AddSessionModal.propTypes = {
     sessionId: PropTypes.string,
     sessionName: PropTypes.string,
     startDate: PropTypes.string,
+    licenseId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }),
   isEditing: PropTypes.bool,
   showToast: PropTypes.bool,
   setShowToast: PropTypes.func,
   toastMessage: PropTypes.string,
+  licenseOptions: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    label: PropTypes.string.isRequired,
+  })),
+  isLoadingLicenses: PropTypes.bool,
 };
 
 AddSessionModal.defaultProps = {
@@ -171,6 +221,8 @@ AddSessionModal.defaultProps = {
   showToast: false,
   setShowToast: () => {},
   toastMessage: '',
+  licenseOptions: [],
+  isLoadingLicenses: false,
 };
 
 export default AddSessionModal;

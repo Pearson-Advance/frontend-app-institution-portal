@@ -1,12 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import {
-  render, screen, fireEvent, waitFor,
-} from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import { IntlProvider } from 'react-intl';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { logError } from '@edx/frontend-platform/logging';
-import { useDeleteSessionMutation } from 'features/Sessions/data/sessionsApi';
+import { renderWithProviders } from 'test-utils';
+import * as sessionsApiModule from 'features/Sessions/data/sessionsApi';
 import { columns } from 'features/Sessions/SessionsTable/columns';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
@@ -40,10 +37,6 @@ jest.mock('features/Common/DeleteModal', () => function MockDeleteModal({
   ) : null;
 });
 
-jest.mock('features/Sessions/data/sessionsApi', () => ({
-  useDeleteSessionMutation: jest.fn(),
-}));
-
 jest.mock('react-paragon-topaz', () => ({
   Badge: ({ children, variant }) => (
     <span data-testid="mock-badge" data-variant={variant}>
@@ -54,18 +47,25 @@ jest.mock('react-paragon-topaz', () => ({
 
 describe('Sessions Table columns', () => {
   const mockDeleteSession = jest.fn();
+  const mockEditSession = jest.fn();
 
   const mockRowData = {
-    sessionId: 'session-123',
-    sessionName: 'Spring 2026 Cohort',
-    programName: 'CS Certificate',
-    missingClassesForInstructor: 0,
-    minStudentsAllowed: 10,
-    maxStudents: 30,
-    numberOfStudents: 22,
+    id: 'session-123',
+    name: 'Spring 2026 Cohort',
+    offeringId: 10,
+    offeringName: 'CS Certificate',
+    instructors: ['Dr. Jane Doe', 'Prof. Alan Turing'],
+    classesCount: 3,
+    studentsEnrolled: 22,
     startDate: '2026-03-01',
     endDate: '2026-06-30',
     hidden: false,
+  };
+
+  const preloadedState = {
+    main: {
+      selectedInstitution: { id: 1, name: 'Institution 1' },
+    },
   };
 
   const createCellProps = (customData = {}) => {
@@ -74,12 +74,11 @@ describe('Sessions Table columns', () => {
       row: {
         original: data,
         values: {
-          sessionName: data.sessionName,
-          programName: data.programName,
-          missingClassesForInstructor: data.missingClassesForInstructor,
-          minStudentsAllowed: data.minStudentsAllowed,
-          maxStudents: data.maxStudents,
-          numberOfStudents: data.numberOfStudents,
+          name: data.name,
+          offeringName: data.offeringName,
+          instructors: data.instructors,
+          classesCount: data.classesCount,
+          studentsEnrolled: data.studentsEnrolled,
           startDate: data.startDate,
           endDate: data.endDate,
           hidden: data.hidden,
@@ -94,21 +93,23 @@ describe('Sessions Table columns', () => {
     );
     const CellComponent = column.Cell;
 
-    return render(
-      <IntlProvider locale="en" messages={{}}>
-        <MemoryRouter>
-          <CellComponent {...props} />
-        </MemoryRouter>
-      </IntlProvider>,
-    );
+    return renderWithProviders(<CellComponent {...props} />, { preloadedState });
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    useDeleteSessionMutation.mockReturnValue([
+    jest.spyOn(sessionsApiModule, 'useDeleteSessionMutation').mockReturnValue([
       mockDeleteSession,
       { isLoading: false },
     ]);
+    jest.spyOn(sessionsApiModule, 'useEditSessionMutation').mockReturnValue([
+      mockEditSession,
+      { isLoading: false },
+    ]);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   describe('Actions Column', () => {
@@ -120,7 +121,7 @@ describe('Sessions Table columns', () => {
       fireEvent.click(dropdownBtn);
 
       const viewClassesLink = screen.getByText('View classes').closest('a');
-      expect(viewClassesLink).toHaveAttribute('href', `/sessions/${mockRowData.sessionId}`);
+      expect(viewClassesLink).toHaveAttribute('href', `/sessions/${mockRowData.id}`);
     });
 
     test('renders "Hide session" when hidden is false, and "Show session" when hidden is true', () => {
@@ -133,6 +134,31 @@ describe('Sessions Table columns', () => {
       renderCell('actions', createCellProps({ hidden: true }));
       fireEvent.click(screen.getByTestId('dropdown-action'));
       expect(screen.getByText('Show session')).toBeInTheDocument();
+    });
+
+    test('toggles session visibility successfully and displays toast', async () => {
+      mockEditSession.mockReturnValue({
+        unwrap: jest.fn().mockResolvedValue({}),
+      });
+
+      renderCell('actions', createCellProps({ hidden: false }));
+
+      fireEvent.click(screen.getByTestId('dropdown-action'));
+      fireEvent.click(screen.getByText('Hide session'));
+
+      await waitFor(() => {
+        expect(mockEditSession).toHaveBeenCalledWith({
+          data: {
+            offering_run_id: 'session-123',
+            offering_id: 10,
+            hidden: true,
+          },
+          params: {
+            institution_id: 1,
+          },
+        });
+        expect(screen.getByText('Session hidden successfully.')).toBeInTheDocument();
+      });
     });
 
     test('opens and closes the DeleteModal', () => {
@@ -162,7 +188,7 @@ describe('Sessions Table columns', () => {
       fireEvent.click(screen.getByText('Confirm Delete'));
 
       await waitFor(() => {
-        expect(mockDeleteSession).toHaveBeenCalledWith(mockRowData.sessionId);
+        expect(mockDeleteSession).toHaveBeenCalledWith(mockRowData.id);
         expect(screen.getByText('Session deleted successfully.')).toBeInTheDocument();
       });
 
@@ -194,73 +220,60 @@ describe('Sessions Table columns', () => {
   describe('Data Columns', () => {
     test('renders Session Name and Program Name correctly', () => {
       const { unmount } = renderCell('Session', createCellProps());
-      expect(screen.getByText(mockRowData.sessionName)).toBeInTheDocument();
+      expect(screen.getByText(mockRowData.name)).toBeInTheDocument();
 
       unmount();
 
       renderCell('Program', createCellProps());
-      expect(screen.getByText(mockRowData.programName)).toBeInTheDocument();
+      expect(screen.getByText(mockRowData.offeringName)).toBeInTheDocument();
     });
 
     test('renders Session Name as a link to the session detail view', () => {
       renderCell('Session', createCellProps());
 
-      const link = screen.getByText(mockRowData.sessionName).closest('a');
+      const link = screen.getByText(mockRowData.name).closest('a');
       expect(link).toHaveAttribute(
         'href',
-        `/sessions/${encodeURIComponent(mockRowData.sessionId)}`,
+        `/sessions/${encodeURIComponent(mockRowData.id)}`,
       );
     });
 
     test('renders fallback "-" for empty Program Name', () => {
-      renderCell('Program', createCellProps({ programName: null }));
+      renderCell('Program', createCellProps({ offeringName: null }));
       expect(screen.getByText('-')).toBeInTheDocument();
     });
 
-    describe('Instructor Column', () => {
-      test('renders "Ready" badge when missingClassesForInstructor is 0', () => {
-        renderCell('Instructor', createCellProps({ missingClassesForInstructor: 0 }));
-
-        const badge = screen.getByTestId('mock-badge');
-        expect(badge).toHaveTextContent('Ready');
-        expect(badge).toHaveAttribute('data-variant', 'success');
+    describe('Instructors Column', () => {
+      test('renders comma-separated instructors when assigned', () => {
+        renderCell('Instructors', createCellProps());
+        expect(screen.getByText('Dr. Jane Doe, Prof. Alan Turing')).toBeInTheDocument();
       });
 
-      test('renders "Missing (N)" badge when missingClassesForInstructor is greater than 0', () => {
-        renderCell('Instructor', createCellProps({ missingClassesForInstructor: 3 }));
+      test('renders "Unassigned" badge when instructors list is empty', () => {
+        renderCell('Instructors', createCellProps({ instructors: [] }));
 
         const badge = screen.getByTestId('mock-badge');
-        expect(badge).toHaveTextContent('Missing (3)');
+        expect(badge).toHaveTextContent('Unassigned');
         expect(badge).toHaveAttribute('data-variant', 'danger');
       });
     });
 
-    describe('Capacity & Students Columns', () => {
-      test('renders numeric values for Min, Max, and Students Enrolled', () => {
-        const { unmount: unmountMin } = renderCell('Min', createCellProps());
-        expect(screen.getByText('10')).toBeInTheDocument();
-        unmountMin();
-
-        const { unmount: unmountMax } = renderCell('Max', createCellProps());
-        expect(screen.getByText('30')).toBeInTheDocument();
-        unmountMax();
+    describe('Classes & Students Columns', () => {
+      test('renders numeric values for Classes and Students Enrolled', () => {
+        const { unmount } = renderCell('Classes', createCellProps());
+        expect(screen.getByText('3')).toBeInTheDocument();
+        unmount();
 
         renderCell('Students Enrolled', createCellProps());
         expect(screen.getByText('22')).toBeInTheDocument();
       });
 
-      test('renders fallback values when Min is null or undefined', () => {
-        renderCell('Min', createCellProps({ minStudentsAllowed: null }));
-        expect(screen.getByText('-')).toBeInTheDocument();
-      });
+      test('renders fallback 0 when classesCount or studentsEnrolled is null', () => {
+        const { unmount } = renderCell('Classes', createCellProps({ classesCount: null }));
+        expect(screen.getByText('0')).toBeInTheDocument();
+        unmount();
 
-      test('renders fallback values when Max is null or undefined', () => {
-        renderCell('Max', createCellProps({ maxStudents: null }));
-        expect(screen.getByText('-')).toBeInTheDocument();
-      });
-
-      test('renders fallback 0 when numberOfStudents is null or undefined', () => {
-        renderCell('Students Enrolled', createCellProps({ numberOfStudents: null }));
+        renderCell('Students Enrolled', createCellProps({ studentsEnrolled: null }));
         expect(screen.getByText('0')).toBeInTheDocument();
       });
     });

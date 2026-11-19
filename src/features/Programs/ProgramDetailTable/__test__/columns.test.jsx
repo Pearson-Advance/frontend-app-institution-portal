@@ -57,31 +57,24 @@ jest.mock('features/Main/LinkWithQuery', () => function ({ to, children, classNa
 
 jest.mock('helpers', () => ({
   formatUTCDate: jest.fn((date) => (date ? '03/01/26' : '-')),
-  formatInstructorsWithStatus: jest.fn((instructors) => (
-    instructors && instructors.length > 0
-      ? instructors.map((i) => i.name)
-      : null
-  )),
 }));
 
-describe('Sessions Table Columns Configuration', () => {
+describe('ProgramDetailTable Columns Configuration', () => {
   const mockRowData = {
     original: {
-      sessionId: 'session-2026-spring',
-      sessionName: 'Spring 2026 Cohort',
+      id: 'session-2026-spring',
+      name: 'Spring 2026 Cohort',
       startDate: '2026-03-01T00:00:00Z',
       endDate: '2026-06-30T00:00:00Z',
-      numberOfStudents: 22,
-      instructorsWithStatus: [
-        { name: 'Dr. Jane Doe', status: 'assigned' },
-        { name: 'Prof. Alan Turing', status: 'assigned' },
-      ],
+      studentsEnrolled: 22,
+      instructors: ['Dr. Jane Doe', 'Prof. Alan Turing'],
     },
     values: {
-      sessionName: 'Spring 2026 Cohort',
-      numberOfStudents: 22,
+      name: 'Spring 2026 Cohort',
+      studentsEnrolled: 22,
       startDate: '2026-03-01T00:00:00Z',
       endDate: '2026-06-30T00:00:00Z',
+      instructors: ['Dr. Jane Doe', 'Prof. Alan Turing'],
     },
   };
 
@@ -101,7 +94,7 @@ describe('Sessions Table Columns Configuration', () => {
   });
 
   it('renders Session Name cell with LinkWithQuery', () => {
-    const sessionNameColumn = columns.find((col) => col.accessor === 'sessionName');
+    const sessionNameColumn = columns.find((col) => col.accessor === 'name');
     const CellComponent = sessionNameColumn.Cell;
 
     renderWithProviders(<CellComponent row={mockRowData} />);
@@ -128,7 +121,8 @@ describe('Sessions Table Columns Configuration', () => {
 
     const rowWithoutInstructors = {
       ...mockRowData,
-      original: { ...mockRowData.original, instructorsWithStatus: [] },
+      original: { ...mockRowData.original, instructors: [] },
+      values: { ...mockRowData.values, instructors: [] },
     };
 
     renderWithProviders(<CellComponent row={rowWithoutInstructors} />);
@@ -139,7 +133,7 @@ describe('Sessions Table Columns Configuration', () => {
   });
 
   it('renders Students Enrolled count', () => {
-    const studentsColumn = columns.find((col) => col.accessor === 'numberOfStudents');
+    const studentsColumn = columns.find((col) => col.accessor === 'studentsEnrolled');
     const CellComponent = studentsColumn.Cell;
 
     renderWithProviders(<CellComponent row={mockRowData} />);

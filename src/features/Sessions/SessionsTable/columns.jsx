@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Dropdown,
   IconButton,
@@ -18,9 +19,134 @@ import { sessionModalDeleteText } from 'features/constants';
 
 import {
   useDeleteSessionMutation,
+  useEditSessionMutation,
 } from 'features/Sessions/data/sessionsApi';
 
 import 'assets/global.scss';
+
+const SessionActions = ({ row }) => {
+  const institution = useSelector((state) => state.main.selectedInstitution);
+
+  const {
+    id,
+    offeringId,
+    hidden,
+  } = row.original;
+
+  const [deleteSession, { isLoading: isDeleting }] = useDeleteSessionMutation();
+  const [editSession, { isLoading: isUpdatingVisibility }] = useEditSessionMutation();
+
+  const [toastConfig, setToastConfig] = useState({ show: false, message: '' });
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const handleToggleVisibility = async () => {
+    const newHiddenState = !hidden;
+
+    try {
+      await editSession({
+        data: {
+          offering_run_id: id,
+          offering_id: offeringId,
+          hidden: newHiddenState,
+        },
+        params: {
+          institution_id: institution?.id,
+        },
+      }).unwrap();
+
+      setToastConfig({
+        show: true,
+        message: newHiddenState
+          ? 'Session hidden successfully.'
+          : 'Session is now visible.',
+      });
+    } catch (error) {
+      logError(error);
+      setToastConfig({
+        show: true,
+        message: error?.data?.detail || error?.message || 'Could not update session visibility.',
+      });
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteSession(id).unwrap();
+      setIsDeleteModalOpen(false);
+      setToastConfig({
+        show: true,
+        message: 'Session deleted successfully.',
+      });
+    } catch (error) {
+      logError(error);
+      setIsDeleteModalOpen(false);
+      setToastConfig({
+        show: true,
+        message: error?.detail || error?.message || 'Could not delete session.',
+      });
+    }
+  };
+
+  return (
+    <>
+      <Toast
+        onClose={() => setToastConfig({ show: false, message: '' })}
+        show={toastConfig.show}
+        className="toast-message"
+      >
+        {toastConfig.message}
+      </Toast>
+
+      <Dropdown className="dropdowntpz">
+        <Dropdown.Toggle
+          id={`dropdown-${id}`}
+          as={IconButton}
+          src={MoreHoriz}
+          iconAs={Icon}
+          variant="primary"
+          data-testid="dropdown-action"
+          alt="menu for actions"
+        />
+        <Dropdown.Menu popperConfig={{ strategy: 'fixed' }}>
+          <Dropdown.Item>
+            <LinkWithQuery
+              to={`/sessions/${encodeURIComponent(id)}`}
+              className="text-truncate text-decoration-none custom-text-black"
+            >
+              <i className="mb-1 mr-2 fa-regular fa-eye" />
+              View classes
+            </LinkWithQuery>
+          </Dropdown.Item>
+
+          <Dropdown.Item
+            onClick={handleToggleVisibility}
+            disabled={isUpdatingVisibility}
+          >
+            <i className={`fa-regular ${hidden ? 'fa-eye' : 'fa-eye-slash'} mr-2 mb-1`} />
+            {hidden ? 'Show session' : 'Hide session'}
+          </Dropdown.Item>
+
+          <Dropdown.Item
+            onClick={() => setIsDeleteModalOpen(true)}
+            className="text-danger"
+          >
+            <i className="mb-1 mr-2 fa-regular fa-trash" />
+            Delete session
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+
+      <DeleteModal
+        isLoading={isDeleting}
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        handleDelete={handleDelete}
+        title={sessionModalDeleteText?.title || 'Delete Session'}
+        textModal={sessionModalDeleteText?.body || 'Are you sure you want to delete this session?'}
+      />
+    </>
+  );
+};
 
 const columns = [
   {
@@ -28,133 +154,45 @@ const columns = [
     accessor: 'actions',
     cellClassName: 'dropdownColumn',
     disableSortBy: true,
-    Cell: ({ row }) => {
-      const {
-        sessionId,
-        hidden,
-      } = row.original;
-
-      const [deleteSession, { isLoading: isDeleting }] = useDeleteSessionMutation();
-
-      const [toastConfig, setToastConfig] = useState({ show: false, message: '' });
-      const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-      const handleDelete = async () => {
-        try {
-          await deleteSession(sessionId).unwrap();
-          setIsDeleteModalOpen(false);
-          setToastConfig({
-            show: true,
-            message: 'Session deleted successfully.',
-          });
-        } catch (error) {
-          logError(error);
-          setIsDeleteModalOpen(false);
-          setToastConfig({
-            show: true,
-            message: error?.detail || error?.message || 'Could not delete session.',
-          });
-        }
-      };
-
-      return (
-        <>
-          <Toast
-            onClose={() => setToastConfig({ show: false, message: '' })}
-            show={toastConfig.show}
-            className="toast-message"
-          >
-            {toastConfig.message}
-          </Toast>
-
-          <Dropdown className="dropdowntpz">
-            <Dropdown.Toggle
-              id={`dropdown-${sessionId}`}
-              as={IconButton}
-              src={MoreHoriz}
-              iconAs={Icon}
-              variant="primary"
-              data-testid="dropdown-action"
-              alt="menu for actions"
-            />
-            <Dropdown.Menu popperConfig={{ strategy: 'fixed' }}>
-              <Dropdown.Item>
-                <LinkWithQuery
-                  to={`/sessions/${encodeURIComponent(sessionId)}`}
-                  className="text-truncate text-decoration-none custom-text-black"
-                >
-                  <i className="mb-1 mr-2 fa-regular fa-eye" />
-                  View classes
-                </LinkWithQuery>
-              </Dropdown.Item>
-
-              <Dropdown.Item>
-                <i className={`fa-regular ${hidden ? 'fa-eye' : 'fa-eye-slash'} mr-2 mb-1`} />
-                {hidden ? 'Show session' : 'Hide session'}
-              </Dropdown.Item>
-
-              <Dropdown.Item
-                onClick={() => setIsDeleteModalOpen(true)}
-                className="text-danger"
-              >
-                <i className="mb-1 mr-2 fa-regular fa-trash" />
-                Delete session
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-
-          <DeleteModal
-            isLoading={isDeleting}
-            isOpen={isDeleteModalOpen}
-            onClose={() => setIsDeleteModalOpen(false)}
-            handleDelete={handleDelete}
-            title={sessionModalDeleteText?.title || 'Delete Session'}
-            textModal={sessionModalDeleteText?.body || 'Are you sure you want to delete this session?'}
-          />
-        </>
-      );
-    },
+    Cell: SessionActions,
   },
   {
     Header: 'Session',
-    accessor: 'sessionName',
+    accessor: 'name',
     Cell: ({ row }) => (
       <LinkWithQuery
-        to={`/sessions/${encodeURIComponent(row.original.sessionId)}`}
+        to={`/sessions/${encodeURIComponent(row.original.id)}`}
         className="link"
       >
-        {row.values.sessionName}
+        {row.values.name}
       </LinkWithQuery>
     ),
   },
   {
     Header: 'Program',
-    accessor: 'programName',
-    Cell: ({ row }) => <span>{row.values.programName || '-'}</span>,
+    accessor: 'offeringName',
+    Cell: ({ row }) => <span>{row.values.offeringName || '-'}</span>,
   },
   {
-    Header: 'Instructor',
-    accessor: 'missingClassesForInstructor',
-    Cell: ({ row }) => (
-      row.values.missingClassesForInstructor > 0
-        ? <Badge variant="danger" light>Missing ({row.values.missingClassesForInstructor})</Badge>
-        : <Badge variant="success" light>Ready</Badge>
-    ),
+    Header: 'Instructors',
+    accessor: 'instructors',
+    Cell: ({ row }) => {
+      const instructorsList = row.values.instructors || [];
+      if (instructorsList.length === 0) {
+        return <Badge variant="danger" light>Unassigned</Badge>;
+      }
+      return <span>{instructorsList.join(', ')}</span>;
+    },
   },
   {
-    Header: 'Min',
-    accessor: 'minStudentsAllowed',
-    Cell: ({ row }) => <span>{row.values.minStudentsAllowed ?? '-'}</span>,
-  },
-  {
-    Header: 'Max',
-    accessor: 'maxStudents',
-    Cell: ({ row }) => <span>{row.values.maxStudents ?? '-'}</span>,
+    Header: 'Classes',
+    accessor: 'classesCount',
+    Cell: ({ row }) => <span>{row.values.classesCount ?? 0}</span>,
   },
   {
     Header: 'Students Enrolled',
-    accessor: 'numberOfStudents',
-    Cell: ({ row }) => <span>{row.values.numberOfStudents ?? 0}</span>,
+    accessor: 'studentsEnrolled',
+    Cell: ({ row }) => <span>{row.values.studentsEnrolled ?? 0}</span>,
   },
   {
     Header: 'Start Date',

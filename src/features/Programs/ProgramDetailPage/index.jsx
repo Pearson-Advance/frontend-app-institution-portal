@@ -13,7 +13,7 @@ import LinkWithQuery from 'features/Main/LinkWithQuery';
 import AddSessionModal from 'features/Sessions/AddSessionModal';
 import ProgramDetailTable from 'features/Programs/ProgramDetailTable';
 
-import { useGetProgramDetailQuery } from 'features/Programs/data/programsApi';
+import { useGetProgramDetailQuery, useGetInstitutionLicensesQuery } from 'features/Programs/data/programsApi';
 import {
   useGetSessionsByOfferingQuery,
   useAddSessionMutation,
@@ -38,7 +38,11 @@ const ProgramDetailPage = () => {
   const institution = useSelector((state) => state.main.selectedInstitution);
 
   const {
-    data: programInfo = { programTitle: '-', numberOfStudents: 0, totalSessions: 0 },
+    data: programInfo = {
+      name: '-',
+      studentsEnrolled: 0,
+      runsCount: 0,
+    },
     refetch: refetchProgramDetail,
   } = useGetProgramDetailQuery(
     { programId: programIdDecoded, institutionId: institution?.id },
@@ -55,6 +59,14 @@ const ProgramDetailPage = () => {
       page: currentPage,
     },
     { skip: !institution?.id || !programIdDecoded },
+  );
+
+  const {
+    data: licenseOptions = [],
+    isLoading: isLoadingLicenses,
+  } = useGetInstitutionLicensesQuery(
+    { institutionId: institution?.id },
+    { skip: !institution?.id },
   );
 
   const [addSession, { isLoading: isCreatingSession }] = useAddSessionMutation();
@@ -88,12 +100,10 @@ const ProgramDetailPage = () => {
   };
 
   const handleCreateSession = async (formData) => {
-    const licenseId = programInfo.licenseId ?? programInfo.license?.id;
-
     const body = buildFilterParams({
       offering_id: Number(programIdDecoded),
       institution_id: institution?.id,
-      license_id: Number(licenseId),
+      license_id: Number(formData.licenseId),
       name: formData.sessionName.trim(),
       start_date: formatUTCDate(formData.startDate, "yyyy-MM-dd'T'00:00:00'Z'"),
     });
@@ -135,18 +145,18 @@ const ProgramDetailPage = () => {
           <LinkWithQuery to="/programs" className="mr-3 link">
             <i className="fa-solid fa-arrow-left" />
           </LinkWithQuery>
-          <h3 className="h2 mb-0 program-title">Program: {programInfo.programTitle}</h3>
+          <h3 className="h2 mb-0 program-title">Program: {programInfo.name || '-'}</h3>
         </div>
 
         <div className="card-container d-flex justify-content-around align-items-center">
           <div className="d-flex flex-column align-items-center">
             <p className="title">Students enrolled</p>
-            <span className="value">{programInfo.numberOfStudents}</span>
+            <span className="value">{programInfo.studentsEnrolled ?? programInfo.numberOfStudents ?? 0}</span>
           </div>
           <div className="separator mx-4" />
           <div className="d-flex flex-column align-items-center">
             <p className="title">Sessions</p>
-            <span className="value">{programInfo.totalSessions}</span>
+            <span className="value">{programInfo.runsCount ?? 0}</span>
           </div>
         </div>
       </div>
@@ -168,6 +178,8 @@ const ProgramDetailPage = () => {
           showToast={showToast}
           setShowToast={setShowToast}
           toastMessage={toastMessage}
+          licenseOptions={licenseOptions}
+          isLoadingLicenses={isLoadingLicenses}
         />
       </div>
 

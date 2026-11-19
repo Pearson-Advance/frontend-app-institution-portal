@@ -1,17 +1,12 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { Row, Col } from '@openedx/paragon';
 import { columns } from 'features/Programs/ProgramsTable/columns';
 import Table from 'features/Main/Table';
 
-import { RequestStatus } from 'features/constants';
-
-const ProgramsTable = ({ data, count }) => {
-  const programsRequest = useSelector((state) => state.programs.table.status);
+const ProgramsTable = ({ data, count, isLoading }) => {
   const COLUMNS = useMemo(() => columns, []);
-  const isLoading = programsRequest === RequestStatus.LOADING;
 
   return (
     <Row className="justify-content-center my-4 my-3 mx-0">
@@ -30,13 +25,15 @@ const ProgramsTable = ({ data, count }) => {
 };
 
 ProgramsTable.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.shape([])),
+  data: PropTypes.arrayOf(PropTypes.shape({})),
   count: PropTypes.number,
+  isLoading: PropTypes.bool,
 };
 
 ProgramsTable.defaultProps = {
   data: [],
   count: 0,
+  isLoading: false,
 };
 
 export default ProgramsTable;
