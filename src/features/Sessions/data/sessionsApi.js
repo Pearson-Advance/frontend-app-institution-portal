@@ -1,6 +1,5 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
 import { camelCaseObject } from '@edx/frontend-platform';
-import { sortAlphabetically } from 'react-paragon-topaz';
 
 import {
   handleNewSession,
@@ -16,21 +15,19 @@ import { initialPage } from 'features/constants';
 export const sessionsApi = createApi({
   reducerPath: 'sessionsApi',
   baseQuery: fakeBaseQuery(),
-  tagTypes: ['Sessions', 'SessionsOptions'],
+  tagTypes: ['Sessions', 'SessionsOptions', 'SessionDetail'],
   endpoints: (builder) => ({
     getSessionsList: builder.query({
       async queryFn({ institutionId, page = initialPage, params = {} }) {
         try {
           const response = camelCaseObject(
-            await getAllSessions(institutionId, page, 10, params),
+            await getAllSessions(institutionId, page, params),
           );
-
-          const sortedSessions = sortAlphabetically(response.data.results || []);
 
           return {
             data: {
               ...response.data,
-              results: sortedSessions,
+              results: response.data.results || [],
             },
           };
         } catch (error) {
@@ -50,15 +47,13 @@ export const sessionsApi = createApi({
       }) {
         try {
           const response = camelCaseObject(
-            await getSessionsByOffering(institutionId, offeringId, page, 10, params),
+            await getSessionsByOffering(institutionId, offeringId, page, params),
           );
-
-          const sortedSessions = sortAlphabetically(response.data.results || []);
 
           return {
             data: {
               ...response.data,
-              results: sortedSessions,
+              results: response.data.results || [],
             },
           };
         } catch (error) {
@@ -111,15 +106,21 @@ export const sessionsApi = createApi({
       invalidatesTags: ['Sessions', 'SessionsOptions'],
     }),
     editSession: builder.mutation({
-      async queryFn(sessionData) {
+      async queryFn({ data, params }) {
         try {
-          const response = await handleEditSession(sessionData);
+          const response = await handleEditSession(data, params);
           return { data: response.data };
         } catch (error) {
-          return { error: error?.response?.data || error?.message };
+          return {
+            error: {
+              status: error?.response?.status,
+              data: error?.response?.data,
+              message: error?.message,
+            },
+          };
         }
       },
-      invalidatesTags: ['Sessions'],
+      invalidatesTags: ['Sessions', 'SessionDetail'],
     }),
     deleteSession: builder.mutation({
       async queryFn(sessionId) {

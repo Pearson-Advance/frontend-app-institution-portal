@@ -38,7 +38,7 @@ describe('ProgramDetailTable Component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders Table component with default props when no data is provided', () => {
+  test('renders Table component with default props when no data is provided', () => {
     renderWithProviders(<ProgramDetailTable />);
 
     expect(screen.getByTestId('mock-table')).toBeInTheDocument();
@@ -49,13 +49,13 @@ describe('ProgramDetailTable Component', () => {
     expect(screen.getByTestId('empty-text')).toHaveTextContent('No sessions were found.');
   });
 
-  it('passes isLoading state correctly to Table component', () => {
+  test('passes isLoading state correctly to Table component', () => {
     renderWithProviders(<ProgramDetailTable isLoading />);
 
     expect(screen.getByTestId('is-loading')).toHaveTextContent('loading');
   });
 
-  it('passes data, count, and columns correctly to Table component', () => {
+  test('passes data, count, and columns correctly to Table component', () => {
     renderWithProviders(
       <ProgramDetailTable data={mockData} count={2} isLoading={false} />,
     );

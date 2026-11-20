@@ -1,50 +1,71 @@
 import { waitFor } from '@testing-library/react';
-import ProgramsPage from 'features/Programs/ProgramsPage';
-import { renderWithProviders } from 'test-utils';
 import { Route } from 'react-router-dom';
+import ProgramsPage from 'features/Programs/ProgramsPage';
+import { getPrograms } from 'features/Programs/data/api';
+import { getLicensesByInstitution } from 'features/Common/data/api';
+import { renderWithProviders } from 'test-utils';
 
-const mockStore = {
+jest.mock('features/Programs/data/api', () => ({
+  getPrograms: jest.fn(),
+  getProgramDetail: jest.fn(),
+}));
+
+jest.mock('features/Common/data/api', () => ({
+  getLicensesByInstitution: jest.fn(),
+}));
+
+const mockProgramsResponse = {
+  data: {
+    count: 2,
+    num_pages: 1,
+    results: [
+      {
+        id: 1,
+        name: 'Cloud Practitioner Program',
+        courses_count: 3,
+        runs_count: 2,
+      },
+      {
+        id: 2,
+        name: 'Data Analytics Program',
+        courses_count: 2,
+        runs_count: 0,
+      },
+    ],
+  },
+};
+
+const defaultPreloadedState = {
+  main: {
+    selectedInstitution: { id: 1, name: 'Test Institution' },
+  },
   programs: {
-    table: {
-      data: [
-        {
-          id: 1,
-          name: 'Cloud Practitioner Program',
-          numberOfCourses: 3,
-          numberOfRuns: 2,
-          studentsEnrolled: 48,
-          courses: [],
-        },
-        {
-          id: 2,
-          name: 'Data Analytics Program',
-          numberOfCourses: 2,
-          numberOfRuns: 0,
-          studentsEnrolled: 0,
-          courses: [],
-        },
-      ],
-      count: 2,
-      status: 'success',
-    },
+    currentPage: 1,
   },
 };
 
 describe('ProgramsPage component', () => {
-  test('renders the programs listing with program, courses, sessions and enrollment columns', async () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    getLicensesByInstitution.mockResolvedValue({ data: [] });
+  });
+
+  test('renders the programs listing with program, courses and sessions columns', async () => {
+    getPrograms.mockResolvedValueOnce(mockProgramsResponse);
+
     const component = renderWithProviders(
       <Route path="/programs" element={<ProgramsPage />} />,
       {
-        preloadedState: mockStore,
+        preloadedState: defaultPreloadedState,
         initialEntries: ['/programs'],
       },
     );
 
     await waitFor(() => {
+      expect(getPrograms).toHaveBeenCalledWith(1, 1, {});
       expect(component.container).toHaveTextContent('Programs');
       expect(component.container).toHaveTextContent('Courses');
       expect(component.container).toHaveTextContent('Sessions');
-      expect(component.container).toHaveTextContent('Students enrolled');
       expect(component.container).toHaveTextContent('Cloud Practitioner Program');
       expect(component.container).toHaveTextContent('Data Analytics Program');
       expect(component.container).not.toHaveTextContent('No programs found.');
@@ -55,12 +76,14 @@ describe('ProgramsPage component', () => {
   });
 
   test('renders the empty state when there are no programs', async () => {
+    getPrograms.mockResolvedValueOnce({
+      data: { count: 0, num_pages: 1, results: [] },
+    });
+
     const component = renderWithProviders(
       <Route path="/programs" element={<ProgramsPage />} />,
       {
-        preloadedState: {
-          programs: { table: { data: [], count: 0, status: 'success' } },
-        },
+        preloadedState: defaultPreloadedState,
         initialEntries: ['/programs'],
       },
     );

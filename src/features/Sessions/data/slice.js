@@ -3,14 +3,14 @@ import { createSlice } from '@reduxjs/toolkit';
 import { RequestStatus, initialPage } from 'features/constants';
 
 const initialState = {
+  currentPage: initialPage,
+  filters: {
+    hidden: false,
+  },
   table: {
     data: [],
     status: RequestStatus.SUCCESS,
     count: 0,
-    currentPage: initialPage,
-    filters: {
-      hidden: false,
-    },
   },
 };
 
@@ -29,7 +29,6 @@ export const sessionsSlice = createSlice({
       state.currentPage = initialPage;
       state.filters = initialState.filters;
     },
-
   },
 });
 

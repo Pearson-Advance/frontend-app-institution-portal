@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState, useEffect, useRef, useCallback,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Container, Pagination } from '@openedx/paragon';
+import { Container, Pagination, Toast } from '@openedx/paragon';
 
 import SessionsTable from 'features/Sessions/SessionsTable';
 import StatusFilters from 'features/Common/StatusFilters';
@@ -18,6 +20,11 @@ const SessionsPage = () => {
   const institutionRef = useRef(undefined);
 
   const [statusFilter, setStatusFilter] = useState(STATUS_TABS_VISIBILITY.VISIBLE);
+  const [toastConfig, setToastConfig] = useState({ show: false, message: '' });
+
+  const handleShowToast = useCallback((message) => {
+    setToastConfig({ show: true, message });
+  }, []);
 
   const { currentPage, filters } = useSelector((state) => state.sessions);
   const institution = useSelector((state) => state.main.selectedInstitution);
@@ -50,6 +57,14 @@ const SessionsPage = () => {
 
   return (
     <Container className="px-5 mt-3">
+      <Toast
+        onClose={() => setToastConfig({ show: false, message: '' })}
+        show={toastConfig.show}
+        className="toast-message"
+      >
+        {toastConfig.message}
+      </Toast>
+
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h2 className="h2 mb-0 session-title">Sessions</h2>
@@ -71,6 +86,7 @@ const SessionsPage = () => {
           isLoading={isLoadingSessions}
           count={sessionsResponse.count}
           data={sessionsResponse.results}
+          onShowToast={handleShowToast}
         />
         {sessionsResponse.numPages > 1 && (
           <Pagination

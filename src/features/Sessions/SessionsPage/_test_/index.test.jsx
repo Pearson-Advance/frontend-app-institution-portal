@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { renderWithProviders } from 'test-utils';
 
 import { useGetSessionsListQuery } from 'features/Sessions/data/sessionsApi';
 import { updateCurrentPage, updateFilters } from 'features/Sessions/data/slice';
@@ -14,10 +15,12 @@ import SessionsPage from 'features/Sessions/SessionsPage';
 const mockHiddenStatus = 'Hidden';
 
 jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
   useDispatch: jest.fn(),
 }));
@@ -27,10 +30,12 @@ jest.mock('hooks', () => ({
 }));
 
 jest.mock('features/Sessions/data/sessionsApi', () => ({
+  ...jest.requireActual('features/Sessions/data/sessionsApi'),
   useGetSessionsListQuery: jest.fn(),
 }));
 
 jest.mock('features/Sessions/data/slice', () => ({
+  ...jest.requireActual('features/Sessions/data/slice'),
   updateCurrentPage: jest.fn((page) => ({ type: 'sessions/updateCurrentPage', payload: page })),
   updateFilters: jest.fn((filters) => ({ type: 'sessions/updateFilters', payload: filters })),
 }));
@@ -76,12 +81,20 @@ jest.mock('features/Sessions/SessionsTable', () => function MockSessionsTable({
   isLoading,
   count,
   data,
+  onShowToast,
 }) {
   return (
     <div data-testid="mock-sessions-table">
       <span data-testid="table-loading">{String(isLoading)}</span>
       <span data-testid="table-count">{count}</span>
       <span data-testid="table-items-count">{data.length}</span>
+      <button
+        type="button"
+        data-testid="btn-trigger-toast"
+        onClick={() => onShowToast('Session hidden successfully.')}
+      >
+        Trigger Toast
+      </button>
     </div>
   );
 });
@@ -95,8 +108,8 @@ describe('SessionsPage Component', () => {
     count: 25,
     numPages: 3,
     results: [
-      { sessionId: 'session-1', sessionName: 'Spring 2026' },
-      { sessionId: 'session-2', sessionName: 'Summer 2026' },
+      { id: 'session-1', name: 'Spring 2026' },
+      { id: 'session-2', name: 'Summer 2026' },
     ],
   };
 
@@ -130,7 +143,7 @@ describe('SessionsPage Component', () => {
   });
 
   test('renders title, status filters, and table with data', () => {
-    render(<SessionsPage />);
+    renderWithProviders(<SessionsPage />);
 
     expect(screen.getByRole('heading', { name: /^sessions$/i })).toBeInTheDocument();
     expect(screen.getByTestId('mock-status-filters')).toBeInTheDocument();
@@ -142,8 +155,16 @@ describe('SessionsPage Component', () => {
     expect(screen.getByTestId('table-items-count')).toHaveTextContent('2');
   });
 
+  test('displays toast message triggered by SessionsTable', () => {
+    renderWithProviders(<SessionsPage />);
+
+    fireEvent.click(screen.getByTestId('btn-trigger-toast'));
+
+    expect(screen.getByText('Session hidden successfully.')).toBeInTheDocument();
+  });
+
   test('renders pagination when numPages > 1 and handles page selection', () => {
-    render(<SessionsPage />);
+    renderWithProviders(<SessionsPage />);
 
     const paginationNav = screen.getByLabelText('paginationNavigation');
     expect(paginationNav).toBeInTheDocument();
@@ -165,13 +186,13 @@ describe('SessionsPage Component', () => {
       isLoading: false,
     });
 
-    render(<SessionsPage />);
+    renderWithProviders(<SessionsPage />);
 
     expect(screen.queryByLabelText('paginationNavigation')).not.toBeInTheDocument();
   });
 
   test('passes Redux filters and action handlers to StatusFilters and updates internal statusFilter state', () => {
-    render(<SessionsPage />);
+    renderWithProviders(<SessionsPage />);
 
     expect(screen.getByTestId('applied-filters')).toHaveTextContent(JSON.stringify({ hidden: false }));
 
@@ -187,7 +208,7 @@ describe('SessionsPage Component', () => {
   });
 
   test('redirects to /programs when selected institution changes', () => {
-    const { rerender } = render(<SessionsPage />);
+    const { rerender } = renderWithProviders(<SessionsPage />);
 
     expect(mockNavigate).not.toHaveBeenCalled();
 
@@ -204,7 +225,7 @@ describe('SessionsPage Component', () => {
       isLoading: true,
     });
 
-    render(<SessionsPage />);
+    renderWithProviders(<SessionsPage />);
 
     expect(screen.getByTestId('table-loading')).toHaveTextContent('true');
     expect(screen.getByTestId('table-count')).toHaveTextContent('0');

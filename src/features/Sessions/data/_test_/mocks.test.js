@@ -17,7 +17,7 @@ describe('Sessions data mocks', () => {
     jest.clearAllMocks();
   });
 
-  it('isOfferingsFlagEnabled reflects the PSS_ENABLE_OFFERINGS flag', () => {
+  test('isOfferingsFlagEnabled reflects the PSS_ENABLE_OFFERINGS flag', () => {
     getConfig.mockReturnValue({ PSS_ENABLE_OFFERINGS: true });
     expect(isOfferingsFlagEnabled()).toBe(true);
 
@@ -25,7 +25,7 @@ describe('Sessions data mocks', () => {
     expect(isOfferingsFlagEnabled()).toBe(false);
   });
 
-  it('identifies seeded session courses and returns their classes', () => {
+  test('identifies seeded session courses and returns their classes', () => {
     expect(isSessionMockCourse('course-v1:EdX+CS101+2026')).toBe(true);
     expect(isSessionMockCourse('course-v1:Real+Course+2026')).toBe(false);
 
@@ -34,7 +34,7 @@ describe('Sessions data mocks', () => {
     expect(classes[0]).toHaveProperty('classId', 'class-101-a');
   });
 
-  it('identifies seeded session classes and returns their students', () => {
+  test('identifies seeded session classes and returns their students', () => {
     expect(isSessionMockClass('class-101-a')).toBe(true);
     expect(isSessionMockClass('unknown-class')).toBe(false);
 
@@ -44,7 +44,7 @@ describe('Sessions data mocks', () => {
     expect(students.results[0]).toHaveProperty('learnerName');
   });
 
-  it('returns an empty students payload for an unknown class', () => {
+  test('returns an empty students payload for an unknown class', () => {
     const students = getMockSessionStudents('unknown-class');
     expect(students.results).toEqual([]);
     expect(students.count).toBe(0);

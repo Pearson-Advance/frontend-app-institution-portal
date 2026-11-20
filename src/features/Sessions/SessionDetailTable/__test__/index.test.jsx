@@ -29,7 +29,7 @@ describe('SessionDetailTable', () => {
     { classId: '2', className: 'CS102 - B' },
   ];
 
-  it('renders correctly with default props', () => {
+  test('renders correctly with default props', () => {
     render(<SessionDetailTable />);
 
     expect(screen.getByTestId('mock-table')).toBeInTheDocument();
@@ -41,7 +41,7 @@ describe('SessionDetailTable', () => {
     expect(screen.getByTestId('columns-count')).toHaveTextContent('2');
   });
 
-  it('passes custom data, count, and isLoading props to the Table component', () => {
+  test('passes custom data, count, and isLoading props to the Table component', () => {
     render(
       <SessionDetailTable
         data={mockData}

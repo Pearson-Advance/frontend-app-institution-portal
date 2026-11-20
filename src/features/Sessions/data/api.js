@@ -1,190 +1,36 @@
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { getConfig } from '@edx/frontend-platform';
+import { MAX_TABLE_RECORDS } from 'features/constants';
 
-const USE_MOCK = true;
-
-// MOCK TO TEST - REMOVE THIS WHEN THE API IS READY
-export const MOCK_SESSION_DETAIL = {
-  count: 3,
-  num_pages: 1,
-  results: [
-    {
-      session_id: 'session-2026-spring',
-      session_name: 'Spring 2026 Cohort',
-      program_title: 'Computer Science Professional Certificate',
-      number_of_students: 42,
-      total_classes: 3,
-      start_date: '2026-03-01T00:00:00Z',
-      end_date: '2026-06-30T00:00:00Z',
-      classes: [
-        {
-          class_id: 'class-101-a',
-          class_name: 'Introduction to Computer Science - Section A',
-          course_name: 'CS101: Computer Science Basics',
-          master_course_id: 'course-v1:EdX+CS101+2026',
-          number_of_students: 22,
-          min_students: 10,
-          max_students: 30,
-          start_date: '2026-03-01T00:00:00Z',
-          end_date: '2026-06-30T00:00:00Z',
-          instructors_with_status: [
-            { name: 'Dr. Jane Doe', status: 'assigned' },
-            { name: 'Prof. Alan Turing', status: 'assigned' },
-          ],
-        },
-        {
-          class_id: 'class-102-b',
-          class_name: 'Data Structures - Section B',
-          course_name: 'CS102: Data Structures & Algorithms',
-          master_course_id: 'course-v1:EdX+CS102+2026',
-          number_of_students: 18,
-          min_students: 5,
-          max_students: 25,
-          start_date: '2026-03-15T00:00:00Z',
-          end_date: '2026-06-15T00:00:00Z',
-          instructors_with_status: [
-            { name: 'Grace Hopper', status: 'assigned' },
-          ],
-        },
-        {
-          class_id: 'class-103-c',
-          class_name: 'Web Development Lab',
-          course_name: 'CS103: Modern Web Applications',
-          master_course_id: 'course-v1:EdX+CS103+2026',
-          number_of_students: 14,
-          min_students: 8,
-          max_students: 20,
-          start_date: '2026-04-01T00:00:00Z',
-          end_date: '2026-06-30T00:00:00Z',
-          instructors_with_status: [],
-        },
-      ],
-    },
-    {
-      session_id: 'session-2026-summer',
-      session_name: 'Summer 2026 Cohort',
-      number_of_students: 18,
-      start_date: '2026-07-01T00:00:00Z',
-      end_date: '2026-10-31T00:00:00Z',
-      instructors_with_status: [
-        { name: 'Grace Hopper', status: 'assigned' },
-      ],
-    },
-    {
-      session_id: 'session-2026-fall',
-      session_name: 'Fall 2026 Cohort',
-      number_of_students: 14,
-      start_date: '2026-11-01T00:00:00Z',
-      end_date: '2027-02-28T00:00:00Z',
-      instructors_with_status: [],
-    },
-  ],
-};
-
-export const MOCK_ALL_SESSIONS_LIST = {
-  count: 3,
-  num_pages: 1,
-  results: [
-    {
-      session_id: 'session-2026-spring',
-      session_name: 'Spring 2026 Cohort',
-      program_name: 'Computer Science Professional Certificate',
-      number_of_students: 22,
-      min_students_allowed: 10,
-      max_students: 35,
-      start_date: '2026-03-01T00:00:00Z',
-      end_date: '2026-06-30T00:00:00Z',
-      hidden: false,
-      instructors_with_status: [
-        { name: 'Dr. Jane Doe', status: 'assigned' },
-        { name: 'Prof. Alan Turing', status: 'assigned' },
-      ],
-    },
-    {
-      session_id: 'session-2026-summer',
-      session_name: 'Summer 2026 Cohort',
-      program_name: 'Data Science Specialist',
-      number_of_students: 18,
-      min_students_allowed: 8,
-      max_students: 30,
-      start_date: '2026-07-01T00:00:00Z',
-      end_date: '2026-10-31T00:00:00Z',
-      hidden: true,
-      instructors_with_status: [
-        { name: 'Grace Hopper', status: 'assigned' },
-      ],
-    },
-    {
-      session_id: 'session-2026-fall',
-      session_name: 'Fall 2026 Cohort',
-      program_name: 'Web Engineering Bootcamp',
-      number_of_students: 14,
-      min_students_allowed: 5,
-      max_students: 20,
-      start_date: '2026-11-01T00:00:00Z',
-      end_date: '2027-02-28T00:00:00Z',
-      hidden: false,
-      instructors_with_status: [],
-    },
-  ],
-};
-
-function getAllSessions(institutionId, page = 1, limit = 10, params = {}) {
-  if (USE_MOCK) {
-    return new Promise((resolve) => {
-      let filteredResults = [...MOCK_ALL_SESSIONS_LIST.results];
-
-      if (params.hidden !== undefined) {
-        filteredResults = filteredResults.filter((item) => item.hidden === params.hidden);
-      }
-      setTimeout(() => {
-        resolve({
-          data: {
-            count: filteredResults.length,
-            num_pages: Math.ceil(filteredResults.length / limit) || 1,
-            results: filteredResults,
-          },
-        });
-      }, 500);
-    });
-  }
-
+function getAllSessions(institutionId, page = 1, params = {}) {
   const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
 
   return getAuthenticatedHttpClient().get(
-    `${apiV2BaseUrl}/offerings-runs/`,
+    `${apiV2BaseUrl}/offering-runs/`,
     {
       params: {
         institution_id: institutionId,
         page,
-        limit,
+        limit: true,
+        page_size: MAX_TABLE_RECORDS,
         ...params,
       },
     },
   );
 }
 
-function getSessionsByOffering(institutionId, offeringId, page = 1, limit = 10, params = {}) {
-  if (USE_MOCK) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          data: MOCK_SESSION_DETAIL,
-        });
-      }, 500);
-    });
-  }
-
+function getSessionsByOffering(institutionId, offeringId, page = 1, params = {}) {
   const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
 
   return getAuthenticatedHttpClient().get(
-    `${apiV2BaseUrl}/offerings-runs/`,
+    `${apiV2BaseUrl}/offering-runs/`,
     {
       params: {
         institution_id: institutionId,
         offering_id: offeringId,
         page,
-        limit,
+        limit: true,
+        page_size: MAX_TABLE_RECORDS,
         ...params,
       },
     },
@@ -192,24 +38,10 @@ function getSessionsByOffering(institutionId, offeringId, page = 1, limit = 10, 
 }
 
 function getSessionDetail(institutionId, sessionId, params = {}) {
-  if (USE_MOCK) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const session = MOCK_SESSION_DETAIL.results.find(
-          (item) => item.session_id === sessionId,
-        ) || MOCK_SESSION_DETAIL.results[0];
-
-        resolve({
-          data: session,
-        });
-      }, 500);
-    });
-  }
-
   const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
 
   return getAuthenticatedHttpClient().get(
-    `${apiV2BaseUrl}/offerings-runs/${sessionId}/`,
+    `${apiV2BaseUrl}/offering-runs/${sessionId}/`,
     {
       params: {
         institution_id: institutionId,
@@ -232,14 +64,15 @@ function handleNewSession(data) {
 }
 
 /**
- * Updates an existing session.
+ * Updates an existing session (e.g. toggling hidden visibility).
  */
-function handleEditSession(data) {
+function handleEditSession(data, params = {}) {
   const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
 
   return getAuthenticatedHttpClient().patch(
     `${apiV2BaseUrl}/offering-runs/`,
     data,
+    { params },
   );
 }
 
@@ -268,7 +101,7 @@ function enrollStudentToSession(data) {
   const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
 
   return getAuthenticatedHttpClient().post(
-    `${apiV2BaseUrl}/sessions/enroll/`,
+    `${apiV2BaseUrl}/offering-runs/${data.offeringRunId}/enrollments/`,
     data,
   );
 }

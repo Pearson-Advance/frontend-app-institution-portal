@@ -46,15 +46,15 @@ jest.mock('features/Programs/ProgramDetailTable', () => function ({ isLoading, c
 
 describe('ProgramDetailPage Component', () => {
   const mockProgramData = {
-    programTitle: 'Master in Computer Science',
-    numberOfStudents: 45,
-    totalSessions: 3,
+    name: 'Master in Computer Science',
+    studentsEnrolled: 45,
+    runsCount: 3,
   };
 
   const mockSessionsData = {
     results: [
-      { sessionId: 's1', sessionName: 'Cohort 1' },
-      { sessionId: 's2', sessionName: 'Cohort 2' },
+      { id: 's1', name: 'Cohort 1' },
+      { id: 's2', name: 'Cohort 2' },
     ],
     count: 2,
     numPages: 2,
@@ -72,6 +72,12 @@ describe('ProgramDetailPage Component', () => {
     jest.spyOn(programsApiModule, 'useGetProgramDetailQuery').mockReturnValue({
       data: mockProgramData,
       isLoading: false,
+      refetch: jest.fn(),
+    });
+
+    jest.spyOn(programsApiModule, 'useGetInstitutionLicensesQuery').mockReturnValue({
+      data: [{ value: 1, label: 'License Offering' }],
+      isLoading: false,
     });
 
     jest.spyOn(sessionsApiModule, 'useGetSessionsByOfferingQuery').mockReturnValue({
@@ -84,7 +90,7 @@ describe('ProgramDetailPage Component', () => {
     jest.restoreAllMocks();
   });
 
-  it('renders program details header, cards, and action buttons', () => {
+  test('renders program details header, cards, and action buttons', () => {
     renderWithProviders(<ProgramDetailPage />, { preloadedState });
 
     expect(screen.getByText('Program: Master in Computer Science')).toBeInTheDocument();
@@ -97,7 +103,7 @@ describe('ProgramDetailPage Component', () => {
     expect(screen.getByText('View courses')).toBeInTheDocument();
   });
 
-  it('renders table and pagination when numPages is greater than 1', () => {
+  test('renders table and pagination when numPages is greater than 1', () => {
     renderWithProviders(<ProgramDetailPage />, { preloadedState });
 
     expect(screen.getByTestId('program-detail-table')).toBeInTheDocument();
@@ -105,7 +111,7 @@ describe('ProgramDetailPage Component', () => {
     expect(screen.getByRole('navigation', { name: /paginationnavigation/i })).toBeInTheDocument();
   });
 
-  it('opens and closes the AddSessionModal', () => {
+  test('opens and closes the AddSessionModal', () => {
     renderWithProviders(<ProgramDetailPage />, { preloadedState });
 
     expect(screen.queryByTestId('add-session-modal')).not.toBeInTheDocument();

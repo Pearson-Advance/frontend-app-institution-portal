@@ -57,31 +57,24 @@ jest.mock('features/Main/LinkWithQuery', () => function ({ to, children, classNa
 
 jest.mock('helpers', () => ({
   formatUTCDate: jest.fn((date) => (date ? '03/01/26' : '-')),
-  formatInstructorsWithStatus: jest.fn((instructors) => (
-    instructors && instructors.length > 0
-      ? instructors.map((i) => i.name)
-      : null
-  )),
 }));
 
-describe('Sessions Table Columns Configuration', () => {
+describe('ProgramDetailTable Columns Configuration', () => {
   const mockRowData = {
     original: {
-      sessionId: 'session-2026-spring',
-      sessionName: 'Spring 2026 Cohort',
+      id: 'session-2026-spring',
+      name: 'Spring 2026 Cohort',
       startDate: '2026-03-01T00:00:00Z',
       endDate: '2026-06-30T00:00:00Z',
-      numberOfStudents: 22,
-      instructorsWithStatus: [
-        { name: 'Dr. Jane Doe', status: 'assigned' },
-        { name: 'Prof. Alan Turing', status: 'assigned' },
-      ],
+      studentsEnrolled: 22,
+      instructors: ['Dr. Jane Doe', 'Prof. Alan Turing'],
     },
     values: {
-      sessionName: 'Spring 2026 Cohort',
-      numberOfStudents: 22,
+      name: 'Spring 2026 Cohort',
+      studentsEnrolled: 22,
       startDate: '2026-03-01T00:00:00Z',
       endDate: '2026-06-30T00:00:00Z',
+      instructors: ['Dr. Jane Doe', 'Prof. Alan Turing'],
     },
   };
 
@@ -100,8 +93,8 @@ describe('Sessions Table Columns Configuration', () => {
     jest.restoreAllMocks();
   });
 
-  it('renders Session Name cell with LinkWithQuery', () => {
-    const sessionNameColumn = columns.find((col) => col.accessor === 'sessionName');
+  test('renders Session Name cell with LinkWithQuery', () => {
+    const sessionNameColumn = columns.find((col) => col.accessor === 'name');
     const CellComponent = sessionNameColumn.Cell;
 
     renderWithProviders(<CellComponent row={mockRowData} />);
@@ -112,7 +105,7 @@ describe('Sessions Table Columns Configuration', () => {
     expect(linkElement).toHaveAttribute('href', '/sessions/session-2026-spring?programId=program-123');
   });
 
-  it('renders Instructors list when instructors exist', () => {
+  test('renders Instructors list when instructors exist', () => {
     const instructorColumn = columns.find((col) => col.accessor === 'instructors');
     const CellComponent = instructorColumn.Cell;
 
@@ -122,13 +115,14 @@ describe('Sessions Table Columns Configuration', () => {
     expect(screen.getByText('Prof. Alan Turing')).toBeInTheDocument();
   });
 
-  it('renders "Unassigned" badge in Instructors cell when no instructors are assigned', () => {
+  test('renders "Unassigned" badge in Instructors cell when no instructors are assigned', () => {
     const instructorColumn = columns.find((col) => col.accessor === 'instructors');
     const CellComponent = instructorColumn.Cell;
 
     const rowWithoutInstructors = {
       ...mockRowData,
-      original: { ...mockRowData.original, instructorsWithStatus: [] },
+      original: { ...mockRowData.original, instructors: [] },
+      values: { ...mockRowData.values, instructors: [] },
     };
 
     renderWithProviders(<CellComponent row={rowWithoutInstructors} />);
@@ -138,8 +132,8 @@ describe('Sessions Table Columns Configuration', () => {
     expect(unassignedBadge).toHaveClass('text-danger');
   });
 
-  it('renders Students Enrolled count', () => {
-    const studentsColumn = columns.find((col) => col.accessor === 'numberOfStudents');
+  test('renders Students Enrolled count', () => {
+    const studentsColumn = columns.find((col) => col.accessor === 'studentsEnrolled');
     const CellComponent = studentsColumn.Cell;
 
     renderWithProviders(<CellComponent row={mockRowData} />);
@@ -147,7 +141,7 @@ describe('Sessions Table Columns Configuration', () => {
     expect(screen.getByText('22')).toBeInTheDocument();
   });
 
-  it('renders formatted Start Date and End Date', () => {
+  test('renders formatted Start Date and End Date', () => {
     const startDateColumn = columns.find((col) => col.accessor === 'startDate');
     const endDateColumn = columns.find((col) => col.accessor === 'endDate');
 
@@ -160,7 +154,7 @@ describe('Sessions Table Columns Configuration', () => {
     expect(screen.getAllByText('03/01/26')).toHaveLength(2);
   });
 
-  it('opens and closes AddSessionModal from action dropdown', async () => {
+  test('hides Edit session action until editing is supported', () => {
     const actionsColumn = columns.find((col) => col.accessor === 'actions');
     const ActionsCell = actionsColumn.Cell;
 
@@ -169,18 +163,10 @@ describe('Sessions Table Columns Configuration', () => {
     const dropdownToggle = screen.getByTestId('dropdown-action');
     fireEvent.click(dropdownToggle);
 
-    const editOption = screen.getByText('Edit session');
-    fireEvent.click(editOption);
-
-    expect(screen.getByTestId('add-session-modal')).toBeInTheDocument();
-
-    const closeBtn = screen.getByRole('button', { name: /close edit modal/i });
-    fireEvent.click(closeBtn);
-
-    expect(screen.queryByTestId('add-session-modal')).not.toBeInTheDocument();
+    expect(screen.queryByText('Edit session')).not.toBeInTheDocument();
   });
 
-  it('opens and closes EnrollStudentModal from action dropdown', async () => {
+  test('opens and closes EnrollStudentModal from action dropdown', async () => {
     const actionsColumn = columns.find((col) => col.accessor === 'actions');
     const ActionsCell = actionsColumn.Cell;
 
@@ -200,7 +186,7 @@ describe('Sessions Table Columns Configuration', () => {
     expect(screen.queryByTestId('enroll-student-modal')).not.toBeInTheDocument();
   });
 
-  it('handles successful session deletion and shows success Toast', async () => {
+  test('handles successful session deletion and shows success Toast', async () => {
     mockDeleteSession.mockReturnValue({ unwrap: jest.fn().mockResolvedValue({}) });
 
     const actionsColumn = columns.find((col) => col.accessor === 'actions');
@@ -225,7 +211,7 @@ describe('Sessions Table Columns Configuration', () => {
     });
   });
 
-  it('handles session deletion failure and shows error Toast', async () => {
+  test('handles session deletion failure and shows error Toast', async () => {
     const mockError = { message: 'Failed to delete session due to network error' };
     mockDeleteSession.mockReturnValue({ unwrap: jest.fn().mockRejectedValue(mockError) });
 

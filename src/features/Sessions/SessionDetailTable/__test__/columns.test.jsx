@@ -66,7 +66,7 @@ describe('SessionDetailTable columns', () => {
   };
 
   describe('Actions Column', () => {
-    it('renders dropdown button and handles opening "Edit Class" modal', () => {
+    test('renders dropdown button and handles opening "Edit Class" modal', () => {
       const props = createCellProps('actions');
       renderCell('', props);
 
@@ -85,7 +85,7 @@ describe('SessionDetailTable columns', () => {
       expect(screen.getByTestId('add-class-modal')).toBeInTheDocument();
     });
 
-    it('renders correct link path for Manage Instructors option', () => {
+    test('renders correct link path for Manage Instructors option', () => {
       const props = createCellProps('actions');
       renderCell('', props);
 
@@ -101,7 +101,7 @@ describe('SessionDetailTable columns', () => {
   });
 
   describe('Data Columns', () => {
-    it('renders Class Name and Course Name correctly', () => {
+    test('renders Class Name and Course Name correctly', () => {
       const classNameProps = createCellProps('className');
       renderCell('Class Name', classNameProps);
       expect(screen.getByText(mockRowData.className)).toBeInTheDocument();
@@ -111,7 +111,7 @@ describe('SessionDetailTable columns', () => {
       expect(screen.getByText(mockRowData.courseName)).toBeInTheDocument();
     });
 
-    it('renders Class Name as a link to the session class detail view', () => {
+    test('renders Class Name as a link to the session class detail view', () => {
       const classNameProps = createCellProps('className');
       renderCell('Class Name', classNameProps);
 
@@ -122,7 +122,7 @@ describe('SessionDetailTable columns', () => {
       );
     });
 
-    it('renders instructors list when instructors are assigned', () => {
+    test('renders instructors list when instructors are assigned', () => {
       const props = createCellProps('instructors');
       renderCell('Instructors', props);
 
@@ -130,7 +130,7 @@ describe('SessionDetailTable columns', () => {
       expect(screen.getByText('Prof. Alan Turing')).toBeInTheDocument();
     });
 
-    it('renders "Unassigned" when no instructors are provided', () => {
+    test('renders "Unassigned" when no instructors are provided', () => {
       const props = createCellProps('instructors', { instructorsWithStatus: [] });
       renderCell('Instructors', props);
 
@@ -139,7 +139,7 @@ describe('SessionDetailTable columns', () => {
       expect(unassignedSpan).toHaveClass('text-danger');
     });
 
-    it('renders Min, Max, and Students Enrolled values', () => {
+    test('renders Min, Max, and Students Enrolled values', () => {
       renderCell('Min', createCellProps('minStudents'));
       expect(screen.getByText('10')).toBeInTheDocument();
 
@@ -150,7 +150,7 @@ describe('SessionDetailTable columns', () => {
       expect(screen.getByText('20')).toBeInTheDocument();
     });
 
-    it('renders formatted Start Date and End Date', () => {
+    test('renders formatted Start Date and End Date', () => {
       renderCell('Start date', createCellProps('startDate'));
       expect(screen.getByText(`formatted-${mockRowData.startDate}`)).toBeInTheDocument();
 

@@ -1,4 +1,4 @@
-export { reducer, resetProgramsTable, SEED_PROGRAMS } from 'features/Programs/data/slice';
+export { reducer, resetProgramsTable } from 'features/Programs/data/slice';
 export {
   programsApi,
   useGetProgramDetailQuery,

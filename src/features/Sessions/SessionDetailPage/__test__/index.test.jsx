@@ -102,7 +102,7 @@ describe('SessionDetailPage Component', () => {
     });
   });
 
-  it('renders session header, dates and stats cards correctly', () => {
+  test('renders session header, dates and stats cards correctly', () => {
     const { container } = render(<SessionDetailPage />);
 
     expect(screen.getByText('Session: Spring 2026 Cohort')).toBeInTheDocument();
@@ -117,7 +117,7 @@ describe('SessionDetailPage Component', () => {
     expect(screen.getByTestId('back-link')).toHaveAttribute('href', '/programs');
   });
 
-  it('omits start and end date labels if they are null', () => {
+  test('omits start and end date labels if they are null', () => {
     useGetSessionDetailQuery.mockReturnValue({
       data: {
         ...mockSessionData,
@@ -133,7 +133,7 @@ describe('SessionDetailPage Component', () => {
     expect(screen.queryByText(/End Date:/i)).not.toBeInTheDocument();
   });
 
-  it('passes data and loading state down to SessionDetailTable', () => {
+  test('passes data and loading state down to SessionDetailTable', () => {
     useGetSessionDetailQuery.mockReturnValue({
       data: mockSessionData,
       isLoading: true,
@@ -147,7 +147,7 @@ describe('SessionDetailPage Component', () => {
     expect(screen.getByTestId('table-items-length')).toHaveTextContent('2');
   });
 
-  it('handles opening and closing the Enroll Student modal', () => {
+  test('handles opening and closing the Enroll Student modal', () => {
     render(<SessionDetailPage />);
 
     const enrollBtn = screen.getByRole('button', { name: /enroll student/i });
@@ -163,7 +163,7 @@ describe('SessionDetailPage Component', () => {
     expect(screen.queryByTestId('enroll-student-modal')).not.toBeInTheDocument();
   });
 
-  it('handles opening and closing the Edit Session modal', () => {
+  test('handles opening and closing the Edit Session modal', () => {
     render(<SessionDetailPage />);
 
     const editBtn = screen.getByRole('button', { name: /edit session/i });
@@ -180,7 +180,7 @@ describe('SessionDetailPage Component', () => {
     expect(screen.queryByTestId('edit-session-modal')).not.toBeInTheDocument();
   });
 
-  it('redirects to /programs when selected institution changes', () => {
+  test('redirects to /programs when selected institution changes', () => {
     const { rerender } = render(<SessionDetailPage />);
 
     expect(mockNavigate).not.toHaveBeenCalled();
