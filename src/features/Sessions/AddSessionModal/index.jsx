@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
   ModalDialog,
@@ -9,6 +9,8 @@ import {
   Toast,
 } from '@openedx/paragon';
 import { Button, Select } from 'react-paragon-topaz';
+
+const EMPTY_OPTIONS = [];
 
 const initialFormData = {
   sessionName: '',
@@ -26,11 +28,13 @@ const AddSessionModal = ({
   showToast,
   setShowToast,
   toastMessage,
-  licenseOptions,
+  licenseOptions = EMPTY_OPTIONS,
   isLoadingLicenses,
+  isErrorLicenses,
 }) => {
   const [formData, setFormData] = useState(initialFormData);
   const [validated, setValidated] = useState(false);
+  const prevIsOpenRef = useRef(false);
 
   const modalTitle = isEditing ? 'Edit session' : 'Add session';
 
@@ -41,6 +45,11 @@ const AddSessionModal = ({
   };
 
   useEffect(() => {
+    const justOpened = isOpen && !prevIsOpenRef.current;
+    prevIsOpenRef.current = isOpen;
+
+    if (!justOpened) { return; }
+
     setValidated(false);
 
     if (isEditing && sessionData) {
@@ -59,7 +68,15 @@ const AddSessionModal = ({
         selectedLicense: licenseOptions.length === 1 ? licenseOptions[0] : null,
       });
     }
-  }, [isEditing, sessionData, isOpen, licenseOptions]);
+  }, [isOpen, isEditing, sessionData, licenseOptions]);
+
+  useEffect(() => {
+    if (!isOpen || isEditing || licenseOptions.length !== 1) { return; }
+
+    setFormData((prev) => (
+      prev.selectedLicense ? prev : { ...prev, selectedLicense: licenseOptions[0] }
+    ));
+  }, [isOpen, isEditing, licenseOptions]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -135,9 +152,14 @@ const AddSessionModal = ({
                   onChange={handleLicenseChange}
                   value={formData.selectedLicense}
                   isLoading={isLoadingLicenses}
-                  isDisabled={isLoadingLicenses}
+                  isDisabled={isLoadingLicenses || isErrorLicenses}
                 />
-                {validated && !formData.selectedLicense && (
+                {isErrorLicenses && (
+                  <div className="invalid-feedback d-block" role="alert">
+                    Unable to load licenses. Please refresh and try again.
+                  </div>
+                )}
+                {!isErrorLicenses && validated && !formData.selectedLicense && (
                   <div className="invalid-feedback d-block">
                     Please select a license.
                   </div>
@@ -212,6 +234,7 @@ AddSessionModal.propTypes = {
     label: PropTypes.string.isRequired,
   })),
   isLoadingLicenses: PropTypes.bool,
+  isErrorLicenses: PropTypes.bool,
 };
 
 AddSessionModal.defaultProps = {
@@ -221,8 +244,9 @@ AddSessionModal.defaultProps = {
   showToast: false,
   setShowToast: () => {},
   toastMessage: '',
-  licenseOptions: [],
+  licenseOptions: EMPTY_OPTIONS,
   isLoadingLicenses: false,
+  isErrorLicenses: false,
 };
 
 export default AddSessionModal;

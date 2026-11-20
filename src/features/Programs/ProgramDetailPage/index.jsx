@@ -22,6 +22,8 @@ import { initialPage } from 'features/constants';
 import { useInstitutionIdQueryParam } from 'hooks';
 import { formatUTCDate, buildFilterParams } from 'helpers';
 
+const EMPTY_LICENSE_OPTIONS = [];
+
 const ProgramDetailPage = () => {
   const navigate = useNavigate();
   const { programId } = useParams();
@@ -62,8 +64,9 @@ const ProgramDetailPage = () => {
   );
 
   const {
-    data: licenseOptions = [],
+    data: licenseOptions = EMPTY_LICENSE_OPTIONS,
     isLoading: isLoadingLicenses,
+    isError: isErrorLicenses,
   } = useGetInstitutionLicensesQuery(
     { institutionId: institution?.id },
     { skip: !institution?.id },
@@ -180,6 +183,7 @@ const ProgramDetailPage = () => {
           toastMessage={toastMessage}
           licenseOptions={licenseOptions}
           isLoadingLicenses={isLoadingLicenses}
+          isErrorLicenses={isErrorLicenses}
         />
       </div>
 

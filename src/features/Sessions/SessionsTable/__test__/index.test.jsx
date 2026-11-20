@@ -20,21 +20,26 @@ jest.mock('features/Main/Table', () => jest.fn(({
   </div>
 )));
 
-jest.mock('features/Sessions/SessionsTable/columns', () => ({
-  columns: [
-    { Header: 'Session', accessor: 'sessionName' },
-    { Header: 'Program', accessor: 'programName' },
+jest.mock('features/Sessions/SessionsTable/columns', () => {
+  const cols = [
+    { Header: 'Session', accessor: 'name' },
+    { Header: 'Program', accessor: 'offeringName' },
     { Header: 'Status', accessor: 'hidden' },
-  ],
-}));
+  ];
+
+  return {
+    columns: cols,
+    getColumns: jest.fn(() => cols),
+  };
+});
 
 describe('SessionsTable Component', () => {
   const mockSessionsData = [
-    { sessionId: '1', sessionName: 'Cohort A', programName: 'CS' },
-    { sessionId: '2', sessionName: 'Cohort B', programName: 'Data Science' },
+    { id: '1', name: 'Cohort A', offeringName: 'CS' },
+    { id: '2', name: 'Cohort B', offeringName: 'Data Science' },
   ];
 
-  it('renders correctly with default props', () => {
+  test('renders correctly with default props', () => {
     render(<SessionsTable />);
 
     expect(screen.getByTestId('mock-table')).toBeInTheDocument();
@@ -46,7 +51,7 @@ describe('SessionsTable Component', () => {
     expect(screen.getByTestId('table-columns-count')).toHaveTextContent('3');
   });
 
-  it('passes custom data, count, and isLoading props to the Table component', () => {
+  test('passes custom data, count, and isLoading props to the Table component', () => {
     render(
       <SessionsTable
         data={mockSessionsData}
@@ -60,7 +65,7 @@ describe('SessionsTable Component', () => {
     expect(screen.getByTestId('table-data-length')).toHaveTextContent('2');
   });
 
-  it('maintains memoized columns across re-renders', () => {
+  test('maintains memoized columns across re-renders', () => {
     const { rerender } = render(<SessionsTable data={[]} count={0} isLoading={false} />);
     expect(screen.getByTestId('table-columns-count')).toHaveTextContent('3');
 

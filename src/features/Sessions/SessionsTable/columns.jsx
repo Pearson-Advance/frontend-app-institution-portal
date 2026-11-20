@@ -5,7 +5,6 @@ import {
   Dropdown,
   IconButton,
   Icon,
-  Toast,
 } from '@openedx/paragon';
 import { MoreHoriz } from '@openedx/paragon/icons';
 import { logError } from '@edx/frontend-platform/logging';
@@ -24,7 +23,7 @@ import {
 
 import 'assets/global.scss';
 
-const SessionActions = ({ row }) => {
+const SessionActions = ({ row, onShowToast = () => {} }) => {
   const institution = useSelector((state) => state.main.selectedInstitution);
 
   const {
@@ -36,7 +35,6 @@ const SessionActions = ({ row }) => {
   const [deleteSession, { isLoading: isDeleting }] = useDeleteSessionMutation();
   const [editSession, { isLoading: isUpdatingVisibility }] = useEditSessionMutation();
 
-  const [toastConfig, setToastConfig] = useState({ show: false, message: '' });
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleToggleVisibility = async () => {
@@ -54,18 +52,16 @@ const SessionActions = ({ row }) => {
         },
       }).unwrap();
 
-      setToastConfig({
-        show: true,
-        message: newHiddenState
+      onShowToast(
+        newHiddenState
           ? 'Session hidden successfully.'
           : 'Session is now visible.',
-      });
+      );
     } catch (error) {
       logError(error);
-      setToastConfig({
-        show: true,
-        message: error?.data?.detail || error?.message || 'Could not update session visibility.',
-      });
+      onShowToast(
+        error?.data?.detail || error?.message || 'Could not update session visibility.',
+      );
     }
   };
 
@@ -73,30 +69,18 @@ const SessionActions = ({ row }) => {
     try {
       await deleteSession(id).unwrap();
       setIsDeleteModalOpen(false);
-      setToastConfig({
-        show: true,
-        message: 'Session deleted successfully.',
-      });
+      onShowToast('Session deleted successfully.');
     } catch (error) {
       logError(error);
       setIsDeleteModalOpen(false);
-      setToastConfig({
-        show: true,
-        message: error?.detail || error?.message || 'Could not delete session.',
-      });
+      onShowToast(
+        error?.detail || error?.message || 'Could not delete session.',
+      );
     }
   };
 
   return (
     <>
-      <Toast
-        onClose={() => setToastConfig({ show: false, message: '' })}
-        show={toastConfig.show}
-        className="toast-message"
-      >
-        {toastConfig.message}
-      </Toast>
-
       <Dropdown className="dropdowntpz">
         <Dropdown.Toggle
           id={`dropdown-${id}`}
@@ -148,13 +132,13 @@ const SessionActions = ({ row }) => {
   );
 };
 
-const columns = [
+const getColumns = (onShowToast) => [
   {
     Header: '',
     accessor: 'actions',
     cellClassName: 'dropdownColumn',
     disableSortBy: true,
-    Cell: SessionActions,
+    Cell: ({ row }) => <SessionActions row={row} onShowToast={onShowToast} />,
   },
   {
     Header: 'Session',
@@ -213,4 +197,6 @@ const columns = [
   },
 ];
 
-export { columns };
+const columns = getColumns();
+
+export { columns, getColumns };

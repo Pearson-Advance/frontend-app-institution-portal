@@ -4,7 +4,7 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { logError } from '@edx/frontend-platform/logging';
 import { renderWithProviders } from 'test-utils';
 import * as sessionsApiModule from 'features/Sessions/data/sessionsApi';
-import { columns } from 'features/Sessions/SessionsTable/columns';
+import { getColumns } from 'features/Sessions/SessionsTable/columns';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
@@ -48,6 +48,7 @@ jest.mock('react-paragon-topaz', () => ({
 describe('Sessions Table columns', () => {
   const mockDeleteSession = jest.fn();
   const mockEditSession = jest.fn();
+  const mockOnShowToast = jest.fn();
 
   const mockRowData = {
     id: 'session-123',
@@ -88,7 +89,8 @@ describe('Sessions Table columns', () => {
   };
 
   const renderCell = (columnHeaderOrAccessor, props) => {
-    const column = columns.find(
+    const cols = getColumns(mockOnShowToast);
+    const column = cols.find(
       (col) => col.Header === columnHeaderOrAccessor || col.accessor === columnHeaderOrAccessor,
     );
     const CellComponent = column.Cell;
@@ -136,7 +138,7 @@ describe('Sessions Table columns', () => {
       expect(screen.getByText('Show session')).toBeInTheDocument();
     });
 
-    test('toggles session visibility successfully and displays toast', async () => {
+    test('toggles session visibility successfully and triggers toast callback', async () => {
       mockEditSession.mockReturnValue({
         unwrap: jest.fn().mockResolvedValue({}),
       });
@@ -157,7 +159,7 @@ describe('Sessions Table columns', () => {
             institution_id: 1,
           },
         });
-        expect(screen.getByText('Session hidden successfully.')).toBeInTheDocument();
+        expect(mockOnShowToast).toHaveBeenCalledWith('Session hidden successfully.');
       });
     });
 
@@ -175,7 +177,7 @@ describe('Sessions Table columns', () => {
       expect(screen.queryByTestId('mock-delete-modal')).not.toBeInTheDocument();
     });
 
-    test('deletes session successfully and displays success toast', async () => {
+    test('deletes session successfully and triggers success toast callback', async () => {
       mockDeleteSession.mockReturnValue({
         unwrap: jest.fn().mockResolvedValue({}),
       });
@@ -189,13 +191,13 @@ describe('Sessions Table columns', () => {
 
       await waitFor(() => {
         expect(mockDeleteSession).toHaveBeenCalledWith(mockRowData.id);
-        expect(screen.getByText('Session deleted successfully.')).toBeInTheDocument();
+        expect(mockOnShowToast).toHaveBeenCalledWith('Session deleted successfully.');
       });
 
       expect(screen.queryByTestId('mock-delete-modal')).not.toBeInTheDocument();
     });
 
-    test('handles delete failure, logs error, and shows failure toast', async () => {
+    test('handles delete failure, logs error, and triggers failure toast callback', async () => {
       const errorObj = { message: 'Network Error' };
       mockDeleteSession.mockReturnValue({
         unwrap: jest.fn().mockRejectedValue(errorObj),
@@ -210,7 +212,7 @@ describe('Sessions Table columns', () => {
 
       await waitFor(() => {
         expect(logError).toHaveBeenCalledWith(errorObj);
-        expect(screen.getByText('Network Error')).toBeInTheDocument();
+        expect(mockOnShowToast).toHaveBeenCalledWith('Network Error');
       });
 
       expect(screen.queryByTestId('mock-delete-modal')).not.toBeInTheDocument();

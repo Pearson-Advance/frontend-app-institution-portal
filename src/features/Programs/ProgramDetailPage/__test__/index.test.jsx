@@ -90,7 +90,7 @@ describe('ProgramDetailPage Component', () => {
     jest.restoreAllMocks();
   });
 
-  it('renders program details header, cards, and action buttons', () => {
+  test('renders program details header, cards, and action buttons', () => {
     renderWithProviders(<ProgramDetailPage />, { preloadedState });
 
     expect(screen.getByText('Program: Master in Computer Science')).toBeInTheDocument();
@@ -103,7 +103,7 @@ describe('ProgramDetailPage Component', () => {
     expect(screen.getByText('View courses')).toBeInTheDocument();
   });
 
-  it('renders table and pagination when numPages is greater than 1', () => {
+  test('renders table and pagination when numPages is greater than 1', () => {
     renderWithProviders(<ProgramDetailPage />, { preloadedState });
 
     expect(screen.getByTestId('program-detail-table')).toBeInTheDocument();
@@ -111,7 +111,7 @@ describe('ProgramDetailPage Component', () => {
     expect(screen.getByRole('navigation', { name: /paginationnavigation/i })).toBeInTheDocument();
   });
 
-  it('opens and closes the AddSessionModal', () => {
+  test('opens and closes the AddSessionModal', () => {
     renderWithProviders(<ProgramDetailPage />, { preloadedState });
 
     expect(screen.queryByTestId('add-session-modal')).not.toBeInTheDocument();

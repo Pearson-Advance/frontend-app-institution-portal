@@ -18,6 +18,8 @@ import { programsApi, useGetInstitutionLicensesQuery } from 'features/Programs/d
 
 import { formatUTCDate, buildFilterParams } from 'helpers';
 
+const EMPTY_LICENSE_OPTIONS = [];
+
 const getApiErrorMessage = (error) => {
   const errorData = error?.data;
 
@@ -45,8 +47,9 @@ const ProgramActions = ({ row }) => {
   const { id } = row.original;
 
   const {
-    data: licenseOptions = [],
+    data: licenseOptions = EMPTY_LICENSE_OPTIONS,
     isLoading: isLoadingLicenses,
+    isError: isErrorLicenses,
   } = useGetInstitutionLicensesQuery(
     { institutionId: institution?.id },
     { skip: !institution?.id },
@@ -116,6 +119,7 @@ const ProgramActions = ({ row }) => {
         toastMessage={toastMessage}
         licenseOptions={licenseOptions}
         isLoadingLicenses={isLoadingLicenses}
+        isErrorLicenses={isErrorLicenses}
       />
     </>
   );

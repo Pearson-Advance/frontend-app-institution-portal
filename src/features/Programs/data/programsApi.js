@@ -7,15 +7,15 @@ import { initialPage } from 'features/constants';
 export const programsApi = createApi({
   reducerPath: 'programsApi',
   baseQuery: fakeBaseQuery(),
-  tagTypes: ['Programs', 'ProgramDetail', 'ProgramCourses'],
+  tagTypes: ['Programs', 'ProgramDetail', 'ProgramCourses', 'InstitutionLicenses'],
   endpoints: (builder) => ({
     getProgramsList: builder.query({
       async queryFn({
-        institutionId, page = initialPage, limit = 10, params = {},
+        institutionId, page = initialPage, params = {},
       }) {
         try {
           const response = camelCaseObject(
-            await getPrograms(institutionId, page, limit, params),
+            await getPrograms(institutionId, page, params),
           );
 
           return {

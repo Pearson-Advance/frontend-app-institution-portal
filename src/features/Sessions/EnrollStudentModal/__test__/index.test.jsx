@@ -64,14 +64,14 @@ describe('EnrollStudentModal Component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders EnrollModal with correct subtitle props when open', () => {
+  test('renders EnrollModal with correct subtitle props when open', () => {
     renderWithProviders(<EnrollStudentModal {...defaultProps} />);
 
     expect(screen.getByTestId('enroll-base-modal')).toBeInTheDocument();
     expect(screen.getByText('Session: Cohort Fall 2026')).toBeInTheDocument();
   });
 
-  it('handles successful enrollment with valid emails', async () => {
+  test('handles successful enrollment with valid emails', async () => {
     handleEnrollments.mockResolvedValueOnce({
       data: {
         results: [
@@ -97,7 +97,7 @@ describe('EnrollStudentModal Component', () => {
     });
   });
 
-  it('handles enrollment response containing invalid emails', async () => {
+  test('handles enrollment response containing invalid emails', async () => {
     handleEnrollments.mockResolvedValueOnce({
       data: {
         results: [
@@ -122,7 +122,7 @@ describe('EnrollStudentModal Component', () => {
     });
   });
 
-  it('handles server-side warning/error returned in a 200 response via getMessages', async () => {
+  test('handles server-side warning/error returned in a 200 response via getMessages', async () => {
     handleEnrollments.mockResolvedValueOnce({
       data: { results: [] },
     });
@@ -149,7 +149,7 @@ describe('EnrollStudentModal Component', () => {
     });
   });
 
-  it('catches submission exceptions and shows generic error message', async () => {
+  test('catches submission exceptions and shows generic error message', async () => {
     handleEnrollments.mockRejectedValueOnce(new Error('Network error'));
 
     renderWithProviders(<EnrollStudentModal {...defaultProps} />);
@@ -166,7 +166,7 @@ describe('EnrollStudentModal Component', () => {
     });
   });
 
-  it('calls onClose when clicking the Cancel button', () => {
+  test('calls onClose when clicking the Cancel button', () => {
     renderWithProviders(<EnrollStudentModal {...defaultProps} />);
 
     const cancelBtn = screen.getByRole('button', { name: /cancel modal/i });

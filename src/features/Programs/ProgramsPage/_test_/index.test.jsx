@@ -62,7 +62,7 @@ describe('ProgramsPage component', () => {
     );
 
     await waitFor(() => {
-      expect(getPrograms).toHaveBeenCalledWith(1, 1, 10, {});
+      expect(getPrograms).toHaveBeenCalledWith(1, 1, {});
       expect(component.container).toHaveTextContent('Programs');
       expect(component.container).toHaveTextContent('Courses');
       expect(component.container).toHaveTextContent('Sessions');

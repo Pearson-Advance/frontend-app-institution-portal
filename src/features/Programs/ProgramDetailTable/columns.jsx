@@ -23,6 +23,8 @@ import { sessionModalDeleteText } from 'features/constants';
 import { useDeleteSessionMutation } from 'features/Sessions/data/sessionsApi';
 
 import 'assets/global.scss';
+// TODO: Enable once session editing endpoint is wired up in the follow-up story
+const ENABLE_EDIT_SESSION = false;
 
 const SessionRowActions = ({ row }) => {
   const {
@@ -83,10 +85,12 @@ const SessionRowActions = ({ row }) => {
           alt="menu for actions"
         />
         <Dropdown.Menu popperConfig={{ strategy: 'fixed' }}>
-          <Dropdown.Item onClick={openEditModal}>
-            <i className="fa-solid fa-pencil mr-2 mb-1" />
-            Edit session
-          </Dropdown.Item>
+          {ENABLE_EDIT_SESSION && (
+            <Dropdown.Item onClick={openEditModal}>
+              <i className="fa-solid fa-pencil mr-2 mb-1" />
+              Edit session
+            </Dropdown.Item>
+          )}
           <Dropdown.Item onClick={openEnrollModal}>
             <i className="fa-solid fa-user-plus mr-2" />
             Enroll student
