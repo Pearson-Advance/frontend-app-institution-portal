@@ -1,4 +1,4 @@
-import { waitFor } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { Route } from 'react-router-dom';
 import ProgramsPage from 'features/Programs/ProgramsPage';
 import { getPrograms } from 'features/Programs/data/api';
@@ -41,6 +41,7 @@ const defaultPreloadedState = {
   },
   programs: {
     currentPage: 1,
+    filters: {},
   },
 };
 
@@ -72,7 +73,10 @@ describe('ProgramsPage component', () => {
     });
 
     // header row + two data rows.
-    expect(component.getAllByRole('row')).toHaveLength(3);
+    const rows = component.getAllByRole('row');
+    expect(rows).toHaveLength(3);
+    expect(rows[1]).toHaveTextContent('Cloud Practitioner Program32');
+    expect(component.container).not.toHaveTextContent('Students enrolled');
   });
 
   test('renders the empty state when there are no programs', async () => {
@@ -91,5 +95,51 @@ describe('ProgramsPage component', () => {
     await waitFor(() => {
       expect(component.container).toHaveTextContent('No programs found.');
     });
+  });
+
+  test('sends the name filter to the API and resets it', async () => {
+    getPrograms.mockResolvedValue(mockProgramsResponse);
+
+    const component = renderWithProviders(
+      <Route path="/programs" element={<ProgramsPage />} />,
+      {
+        preloadedState: { ...defaultPreloadedState, programs: { currentPage: 2, filters: {} } },
+        initialEntries: ['/programs'],
+      },
+    );
+
+    await waitFor(() => expect(getPrograms).toHaveBeenCalledWith(1, 1, {}));
+
+    fireEvent.change(component.getByTestId('program-name-filter'), { target: { value: ' cloud ' } });
+    fireEvent.click(component.getByRole('button', { name: 'Apply' }));
+
+    await waitFor(() => {
+      expect(getPrograms).toHaveBeenLastCalledWith(1, 1, { name: 'cloud' });
+      expect(component.store.getState().programs).toEqual({ currentPage: 1, filters: { name: 'cloud' } });
+    });
+
+    fireEvent.click(component.getByRole('button', { name: 'Reset' }));
+
+    await waitFor(() => {
+      expect(component.store.getState().programs.filters).toEqual({});
+    });
+  });
+
+  test('shows an error message instead of the empty state when the request fails', async () => {
+    getPrograms.mockRejectedValueOnce({ response: { status: 500 }, message: 'Server error' });
+
+    const component = renderWithProviders(
+      <Route path="/programs" element={<ProgramsPage />} />,
+      {
+        preloadedState: defaultPreloadedState,
+        initialEntries: ['/programs'],
+      },
+    );
+
+    await waitFor(() => {
+      expect(component.container).toHaveTextContent('Unable to load programs. Please try again later.');
+    });
+    expect(component.container).not.toHaveTextContent('No programs found.');
+    expect(component.queryByRole('table')).not.toBeInTheDocument();
   });
 });

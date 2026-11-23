@@ -2,6 +2,7 @@ import {
   reducer,
   resetProgramsTable,
   updateCurrentPage,
+  updateFilters,
 } from 'features/Programs/data/slice';
 import { initialPage } from 'features/constants';
 
@@ -11,6 +12,7 @@ describe('programs slice', () => {
 
     expect(state).toEqual({
       currentPage: initialPage,
+      filters: {},
     });
   });
 
@@ -20,11 +22,17 @@ describe('programs slice', () => {
     expect(state.currentPage).toBe(3);
   });
 
-  test('resetProgramsTable restores the initial page', () => {
-    const dirtyState = { currentPage: 4 };
+  test('updateFilters stores the applied filters', () => {
+    const state = reducer(undefined, updateFilters({ name: 'cloud' }));
+
+    expect(state.filters).toEqual({ name: 'cloud' });
+  });
+
+  test('resetProgramsTable restores the initial page and filters', () => {
+    const dirtyState = { currentPage: 4, filters: { name: 'cloud' } };
 
     const state = reducer(dirtyState, resetProgramsTable());
 
-    expect(state.currentPage).toBe(initialPage);
+    expect(state).toEqual({ currentPage: initialPage, filters: {} });
   });
 });
