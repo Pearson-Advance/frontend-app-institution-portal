@@ -55,26 +55,21 @@ describe('ProgramsTable columns', () => {
     original: {
       id: 1,
       name: 'Cloud Practitioner Program',
-      numberOfCourses: 3,
-      numberOfRuns: 2,
-      studentsEnrolled: 48,
+      coursesCount: 3,
+      runsCount: 2,
     },
     values: { name: 'Cloud Practitioner Program' },
   };
 
-  test('defines the program, courses, sessions and enrollment columns', () => {
-    const headers = columns.map((column) => column.Header);
+  test('maps the offering list fields to the program, courses and sessions columns', () => {
+    const accessors = columns.map((column) => [column.Header, column.accessor]);
 
-    expect(headers).toEqual(expect.arrayContaining([
-      'Programs',
-      'Courses',
-      'Sessions',
-      'Students enrolled',
+    expect(accessors).toEqual(expect.arrayContaining([
+      ['Programs', 'name'],
+      ['Courses', 'coursesCount'],
+      ['Sessions', 'runsCount'],
     ]));
-
-    expect(columns.find((column) => column.accessor === 'numberOfCourses')).toBeDefined();
-    expect(columns.find((column) => column.accessor === 'numberOfRuns')).toBeDefined();
-    expect(columns.find((column) => column.accessor === 'studentsEnrolled')).toBeDefined();
+    expect(columns.find((column) => column.Header === 'Students enrolled')).toBeUndefined();
   });
 
   test('action menu exposes create a session', () => {

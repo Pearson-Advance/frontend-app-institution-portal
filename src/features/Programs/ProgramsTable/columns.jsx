@@ -147,15 +147,11 @@ const columns = [
   },
   {
     Header: 'Courses',
-    accessor: 'numberOfCourses',
+    accessor: 'coursesCount',
   },
   {
     Header: 'Sessions',
-    accessor: 'numberOfRuns',
-  },
-  {
-    Header: 'Students enrolled',
-    accessor: 'studentsEnrolled',
+    accessor: 'runsCount',
   },
 ];
 
