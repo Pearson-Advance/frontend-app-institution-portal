@@ -1,58 +1,19 @@
-/* eslint-disable react/prop-types, func-names */
+/* eslint-disable react/prop-types */
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { logError } from '@edx/frontend-platform/logging';
 import { renderWithProviders } from 'test-utils';
 
 import EnrollStudentModal from 'features/Sessions/EnrollStudentModal';
-import { handleEnrollments, getMessages } from 'features/Students/data/api';
-
-jest.mock('features/Students/data/api', () => ({
-  handleEnrollments: jest.fn(),
-  getMessages: jest.fn(),
-}));
+import * as sessionsApiModule from 'features/Sessions/data/sessionsApi';
 
 jest.mock('@edx/frontend-platform/logging', () => ({
   logError: jest.fn(),
 }));
 
-jest.mock('features/Common/EnrollModal', () => function ({
-  isOpen,
-  onClose,
-  subtitleLabel,
-  subtitleValue,
-  onSubmit,
-  isLoading,
-  showToast,
-  setShowToast,
-  toastMessage,
-}) {
-  return isOpen ? (
-    <div data-testid="enroll-base-modal">
-      <span>{subtitleLabel}: {subtitleValue}</span>
-      <span data-testid="is-loading">{isLoading ? 'loading' : 'idle'}</span>
-
-      {showToast && (
-        <div data-testid="toast-container">
-          <span>{toastMessage}</span>
-          <button onClick={() => setShowToast(false)} type="button">
-            Close Toast
-          </button>
-        </div>
-      )}
-
-      <form onSubmit={onSubmit} data-testid="enroll-form">
-        <input name="studentEmail" defaultValue="student@example.com" />
-        <button type="submit">Submit Form</button>
-      </form>
-
-      <button onClick={onClose} type="button">
-        Cancel Modal
-      </button>
-    </div>
-  ) : null;
-});
-
 describe('EnrollStudentModal Component', () => {
+  const mockEnrollStudentInSession = jest.fn();
+
   const defaultProps = {
     isOpen: true,
     onClose: jest.fn(),
@@ -62,116 +23,152 @@ describe('EnrollStudentModal Component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(sessionsApiModule, 'useEnrollStudentInSessionMutation').mockReturnValue([
+      mockEnrollStudentInSession,
+      { isLoading: false },
+    ]);
   });
 
-  test('renders EnrollModal with correct subtitle props when open', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  test('renders modal header, session subtitle, textarea, and buttons when open', () => {
     renderWithProviders(<EnrollStudentModal {...defaultProps} />);
 
-    expect(screen.getByTestId('enroll-base-modal')).toBeInTheDocument();
-    expect(screen.getByText('Session: Cohort Fall 2026')).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: /invite student to enroll/i })).toBeInTheDocument();
+    expect(screen.getByText(/session: cohort fall 2026/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/email or username/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /send invite/i })).toBeInTheDocument();
   });
 
-  test('handles successful enrollment with valid emails', async () => {
-    handleEnrollments.mockResolvedValueOnce({
-      data: {
+  test('shows spinner while mutation is loading', () => {
+    jest.spyOn(sessionsApiModule, 'useEnrollStudentInSessionMutation').mockReturnValue([
+      mockEnrollStudentInSession,
+      { isLoading: true },
+    ]);
+
+    renderWithProviders(<EnrollStudentModal {...defaultProps} />);
+
+    expect(screen.getByText('loading')).toBeInTheDocument();
+    expect(screen.queryByLabelText(/email or username/i)).not.toBeInTheDocument();
+  });
+
+  test('handles full successful enrollment, shows toast, and closes modal', async () => {
+    mockEnrollStudentInSession.mockReturnValue({
+      unwrap: jest.fn().mockResolvedValue({
         results: [
-          { invalidIdentifier: false, identifier: 'student1@example.com' },
-          { invalidIdentifier: false, identifier: 'student2@example.com' },
+          { identifier: 'student1@example.com', status: 'completed', error: null },
+          { identifier: 'student2@example.com', status: 'completed', error: null },
         ],
-      },
-    });
-
-    getMessages.mockResolvedValueOnce({
-      data: { results: [] },
+      }),
     });
 
     renderWithProviders(<EnrollStudentModal {...defaultProps} />);
 
-    const form = screen.getByTestId('enroll-form');
-    fireEvent.submit(form);
+    const textarea = screen.getByLabelText(/email or username/i);
+    fireEvent.change(textarea, {
+      target: { value: 'student1@example.com\nstudent2@example.com' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /send invite/i }));
 
     await waitFor(() => {
-      expect(handleEnrollments).toHaveBeenCalledTimes(1);
-      expect(getMessages).toHaveBeenCalledTimes(1);
-      expect(defaultProps.onClose).toHaveBeenCalled();
+      expect(mockEnrollStudentInSession).toHaveBeenCalledWith({
+        offeringRunId: 'session-2026-101',
+        data: { identifiers: 'student1@example.com, student2@example.com' },
+      });
+      expect(screen.getByTestId('toast-message')).toHaveTextContent(
+        'Successfully enrolled: student1@example.com, student2@example.com.',
+      );
+      expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
     });
   });
 
-  test('handles enrollment response containing invalid emails', async () => {
-    handleEnrollments.mockResolvedValueOnce({
-      data: {
+  test('groups partial failure/rejected results below textarea, keeps failed identifiers, and switches button to Retry', async () => {
+    mockEnrollStudentInSession.mockReturnValue({
+      unwrap: jest.fn().mockResolvedValue({
         results: [
-          { invalidIdentifier: true, identifier: 'invalid-email' },
-          { invalidIdentifier: false, identifier: 'valid@example.com' },
-        ],
-      },
-    });
-
-    getMessages.mockResolvedValueOnce({
-      data: { results: [] },
-    });
-
-    renderWithProviders(<EnrollStudentModal {...defaultProps} />);
-
-    const form = screen.getByTestId('enroll-form');
-    fireEvent.submit(form);
-
-    await waitFor(() => {
-      expect(handleEnrollments).toHaveBeenCalledTimes(1);
-      expect(defaultProps.onClose).toHaveBeenCalled();
-    });
-  });
-
-  test('handles server-side warning/error returned in a 200 response via getMessages', async () => {
-    handleEnrollments.mockResolvedValueOnce({
-      data: { results: [] },
-    });
-
-    getMessages.mockResolvedValueOnce({
-      data: {
-        results: [
+          { identifier: 'ok@example.com', status: 'completed', error: null },
           {
-            tags: 'error',
-            message: encodeURIComponent('User is already enrolled'),
+            identifier: 'fail1@example.com',
+            status: 'failed',
+            error: 'The license reached the maximum limit of purchased seats.',
+          },
+          {
+            identifier: 'fail2@example.com',
+            status: 'failed',
+            error: 'The license reached the maximum limit of purchased seats.',
+          },
+          {
+            identifier: 'unknown@example',
+            status: 'rejected',
+            error: 'No registered user matches this username or email.',
           },
         ],
-      },
+      }),
     });
 
     renderWithProviders(<EnrollStudentModal {...defaultProps} />);
 
-    const form = screen.getByTestId('enroll-form');
-    fireEvent.submit(form);
+    const textarea = screen.getByLabelText(/email or username/i);
+    fireEvent.change(textarea, {
+      target: { value: 'ok@example.com, fail1@example.com, fail2@example.com, unknown@example' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /send invite/i }));
 
     await waitFor(() => {
-      expect(getMessages).toHaveBeenCalledTimes(1);
-      expect(defaultProps.onClose).toHaveBeenCalled();
+      const feedback = screen.getByTestId('enrollment-results-feedback');
+      expect(feedback).toHaveTextContent('Successfully enrolled (1): ok@example.com');
+      expect(feedback).toHaveTextContent(
+        'The license reached the maximum limit of purchased seats. (2): fail1@example.com, fail2@example.com',
+      );
+      expect(feedback).toHaveTextContent(
+        'No registered user matches this username or email. (1): unknown@example',
+      );
     });
+
+    expect(defaultProps.onClose).not.toHaveBeenCalled();
+    expect(textarea).toHaveValue('fail1@example.com, fail2@example.com, unknown@example');
+    expect(screen.getByRole('button', { name: /retry/i })).toBeInTheDocument();
   });
 
-  test('catches submission exceptions and shows generic error message', async () => {
-    handleEnrollments.mockRejectedValueOnce(new Error('Network error'));
+  test('handles API error, shows error toast, preserves input, and switches button to Retry', async () => {
+    const apiError = {
+      status: 400,
+      data: { detail: 'The Offering Run is not fully set up yet.' },
+    };
+
+    mockEnrollStudentInSession.mockReturnValue({
+      unwrap: jest.fn().mockRejectedValue(apiError),
+    });
 
     renderWithProviders(<EnrollStudentModal {...defaultProps} />);
 
-    const form = screen.getByTestId('enroll-form');
-    fireEvent.submit(form);
+    const textarea = screen.getByLabelText(/email or username/i);
+    fireEvent.change(textarea, { target: { value: 'learner1' } });
+
+    fireEvent.click(screen.getByRole('button', { name: /send invite/i }));
 
     await waitFor(() => {
-      expect(screen.getByTestId('toast-container')).toBeInTheDocument();
-      expect(
-        screen.getByText('An error occurred while attempting to enroll the student.'),
-      ).toBeInTheDocument();
-      expect(defaultProps.onClose).not.toHaveBeenCalled();
+      expect(logError).toHaveBeenCalledWith(apiError);
+      expect(screen.getByTestId('toast-message')).toHaveTextContent(
+        'The Offering Run is not fully set up yet.',
+      );
     });
+
+    expect(defaultProps.onClose).not.toHaveBeenCalled();
+    expect(textarea).toHaveValue('learner1');
+    expect(screen.getByRole('button', { name: /retry/i })).toBeInTheDocument();
   });
 
   test('calls onClose when clicking the Cancel button', () => {
     renderWithProviders(<EnrollStudentModal {...defaultProps} />);
 
-    const cancelBtn = screen.getByRole('button', { name: /cancel modal/i });
-    fireEvent.click(cancelBtn);
+    fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
 
-    expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
+    expect(defaultProps.onClose).toHaveBeenCalled();
   });
 });

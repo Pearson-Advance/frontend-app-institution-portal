@@ -42,7 +42,7 @@ jest.mock('features/Sessions/AddSessionModal', () => function MockAddSessionModa
   return isOpen ? (
     <div data-testid="edit-session-modal">
       <span>Edit Modal Active (isEditing: {String(isEditing)})</span>
-      <span data-testid="modal-session-name">{sessionData.sessionName}</span>
+      <span data-testid="modal-session-name">{sessionData.name}</span>
       <button onClick={onClose} type="button">Close Edit Modal</button>
     </div>
   ) : null;
@@ -76,14 +76,13 @@ describe('SessionDetailPage Component', () => {
   const mockAddQueryParam = jest.fn((path) => `${path}?institutionId=inst-1`);
 
   const mockSessionData = {
-    sessionId: 'session-2026',
-    sessionName: 'Spring 2026 Cohort',
-    programTitle: 'Fullstack Certificate',
-    numberOfStudents: 25,
-    totalClasses: 2,
+    id: 'session-2026',
+    name: 'Spring 2026 Cohort',
+    offeringName: 'Fullstack Certificate',
+    studentsEnrolled: 25,
     classes: [
-      { classId: 'cls-1', className: 'Frontend 101' },
-      { classId: 'cls-2', className: 'Backend 101' },
+      { id: 1, courseId: 'cls-1', ccxId: 'ccx-1' },
+      { id: 2, courseId: 'cls-2', ccxId: 'ccx-2' },
     ],
     startDate: '2026-03-01T00:00:00Z',
     endDate: '2026-06-30T00:00:00Z',

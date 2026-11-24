@@ -28,11 +28,10 @@ const SessionDetailPage = () => {
   const institution = useSelector((state) => state.main.selectedInstitution);
   const {
     data: sessionInfo = {
-      sessionId: '',
-      sessionName: '-',
-      programTitle: '-',
-      numberOfStudents: 0,
-      totalClasses: 0,
+      id: '',
+      name: '-',
+      offeringName: '-',
+      studentsEnrolled: 0,
       classes: [],
       startDate: null,
       endDate: null,
@@ -61,8 +60,8 @@ const SessionDetailPage = () => {
             <i className="fa-solid fa-arrow-left" />
           </LinkWithQuery>
           <div>
-            <h3 className="h2 mb-0 session-title">Session: {sessionInfo.sessionName}</h3>
-            <span className="text-muted small">Program: {sessionInfo.programTitle}</span>
+            <h3 className="h2 mb-0 session-title">Session: {sessionInfo.name}</h3>
+            <span className="text-muted small">Program: {sessionInfo.offeringName}</span>
             <p>
               {sessionInfo.startDate && (
               <span className="text-muted small">
@@ -81,12 +80,12 @@ const SessionDetailPage = () => {
         <div className="card-container d-flex justify-content-around align-items-center">
           <div className="d-flex flex-column align-items-center">
             <p className="title">Students enrolled</p>
-            <span className="value">{sessionInfo.numberOfStudents}</span>
+            <span className="value">{sessionInfo.studentsEnrolled ?? 0}</span>
           </div>
           <div className="separator mx-4" />
           <div className="d-flex flex-column align-items-center">
             <p className="title">Number of classes</p>
-            <span className="value">{sessionInfo.totalClasses || sessionInfo.classes?.length || 0}</span>
+            <span className="value">{sessionInfo.classes?.length || 0}</span>
           </div>
         </div>
       </div>
@@ -111,7 +110,7 @@ const SessionDetailPage = () => {
           isOpen={isOpenEnrollModal}
           onClose={closeEnrollModal}
           sessionId={sessionIdDecoded}
-          sessionName={sessionInfo.sessionName}
+          sessionName={sessionInfo.name}
         />
       </div>
 

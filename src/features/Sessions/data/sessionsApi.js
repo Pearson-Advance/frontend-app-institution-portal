@@ -134,15 +134,21 @@ export const sessionsApi = createApi({
       invalidatesTags: ['Sessions', 'SessionsOptions'],
     }),
     enrollStudentInSession: builder.mutation({
-      async queryFn(enrollmentData) {
+      async queryFn({ offeringRunId, data }) {
         try {
-          const response = await enrollStudentToSession(enrollmentData);
+          const response = await enrollStudentToSession(offeringRunId, data);
           return { data: response.data };
         } catch (error) {
-          return { error: error?.response?.data || error?.message };
+          return {
+            error: {
+              status: error?.response?.status,
+              data: error?.response?.data,
+              message: error?.message,
+            },
+          };
         }
       },
-      invalidatesTags: ['Sessions'],
+      invalidatesTags: ['Sessions', 'SessionDetail'],
     }),
   }),
 });

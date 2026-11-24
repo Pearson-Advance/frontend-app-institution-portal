@@ -95,13 +95,13 @@ function handleDeleteSession(sessionId) {
 }
 
 /**
- * Enrolls a student into a session (cascades across constituent classes).
+ * Enrolls learner(s) into a session (cascades across constituent classes).
  */
-function enrollStudentToSession(data) {
+function enrollStudentToSession(offeringRunId, data) {
   const apiV2BaseUrl = getConfig().COURSE_OPERATIONS_API_V2_BASE_URL;
 
   return getAuthenticatedHttpClient().post(
-    `${apiV2BaseUrl}/offering-runs/${data.offeringRunId}/enrollments/`,
+    `${apiV2BaseUrl}/offering-runs/${encodeURIComponent(offeringRunId)}/enrollments/bulk/`,
     data,
   );
 }
