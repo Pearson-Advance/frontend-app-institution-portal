@@ -10,6 +10,7 @@ import {
   getSessionDetail,
   getAllSessions,
 } from 'features/Sessions/data/api';
+import { studentsApi } from 'features/Students/data/studentsApi';
 import { initialPage } from 'features/constants';
 
 export const sessionsApi = createApi({
@@ -148,7 +149,15 @@ export const sessionsApi = createApi({
           };
         }
       },
-      invalidatesTags: ['Sessions', 'SessionDetail'],
+      async onQueryStarted(_args, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(studentsApi.util.invalidateTags(['StudentsClass']));
+        } catch {
+          // Mutation failed; nothing to invalidate.
+        }
+      },
+      invalidatesTags: ['Sessions', 'SessionDetail', 'SessionsOptions'],
     }),
   }),
 });
