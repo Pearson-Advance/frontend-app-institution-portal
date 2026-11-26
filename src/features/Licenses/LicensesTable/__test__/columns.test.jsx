@@ -36,24 +36,22 @@ describe('getColumns in license table', () => {
     expect(getColumns()).toHaveLength(5);
   });
 
-  test('adds Type and Consumed columns when Offerings data is enabled', () => {
+  test('adds the Type column when Offerings data is enabled', () => {
     const result = getColumns(true);
 
-    expect(result).toHaveLength(7);
+    expect(result).toHaveLength(6);
     expect(result.map((column) => column.Header)).toEqual([
       'License Pool',
       'Type',
       'Purchased',
-      'Consumed',
       'Enrolled',
       'Pending',
       'Remaining',
     ]);
 
     const typeColumn = result.find((column) => column.Header === 'Type');
-    const consumedColumn = result.find((column) => column.Header === 'Consumed');
 
-    expect(typeColumn).toHaveProperty('accessor', 'type');
-    expect(consumedColumn).toHaveProperty('accessor', 'consumed');
+    expect(typeColumn).toHaveProperty('accessor', 'licenseType');
+    expect(result.find((column) => column.Header === 'Consumed')).toBeUndefined();
   });
 });
