@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
-
+import {
+  Form,
+  Toast,
+  Spinner,
+  FormGroup,
+  ModalDialog,
+  ModalCloseButton,
+} from '@openedx/paragon';
+import { Button } from 'react-paragon-topaz';
 import { logError } from '@edx/frontend-platform/logging';
-import EnrollModal from 'features/Common/EnrollModal';
 
-import { handleEnrollments, getMessages } from 'features/Students/data/api';
-import { studentsApi } from 'features/Students/data/studentsApi';
-import { sessionsApi } from 'features/Sessions/data';
+import { useEnrollStudentInSessionMutation } from 'features/Sessions/data/sessionsApi';
+import {
+  parseIdentifiers,
+  isEnrollmentSuccessful,
+  mergeEnrollmentResults,
+  groupEnrollmentResults,
+  extractApiErrorMessage,
+} from 'features/Sessions/data/utils';
 
 import 'features/Classes/EnrollStudent/index.scss';
 
@@ -17,97 +28,172 @@ const EnrollStudentModal = ({
   sessionId,
   sessionName,
 }) => {
-  const dispatch = useDispatch();
-
+  const [identifiersText, setIdentifiersText] = useState('');
+  const [hasFailedAttempt, setHasFailedAttempt] = useState(false);
+  const [enrollmentResults, setEnrollmentResults] = useState([]);
   const [showToast, setShowToast] = useState(false);
-  const [isLoading, setLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+
+  const [enrollStudentInSession, { isLoading }] = useEnrollStudentInSessionMutation();
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIdentifiersText('');
+      setHasFailedAttempt(false);
+      setEnrollmentResults([]);
+    }
+  }, [isOpen]);
+
+  const groupedFeedback = useMemo(
+    () => groupEnrollmentResults(enrollmentResults),
+    [enrollmentResults],
+  );
 
   const handleEnrollStudent = async (e) => {
     e.preventDefault();
 
-    const form = e.target;
-    const formData = new FormData(form);
+    const identifiers = parseIdentifiers(identifiersText);
 
-    const { studentEmail } = Object.fromEntries(formData.entries());
-
-    formData.delete('studentEmail');
-    formData.append('identifiers', studentEmail);
-    formData.append('session_id', sessionId);
-    formData.append('action', 'enroll');
-    formData.append('auto_enroll', 'true');
-    formData.append('email_students', 'true');
+    if (identifiers.length === 0) { return; }
 
     try {
-      setLoading(true);
-      const response = await handleEnrollments(formData, sessionId);
-      const validationEmailList = response?.data?.results || [];
-      const messages = await getMessages();
-      const validEmails = [];
-      const invalidEmails = [];
-      let textToast = '';
+      const response = await enrollStudentInSession({
+        offeringRunId: sessionId,
+        data: { identifiers: identifiers.join(', ') },
+      }).unwrap();
 
-      /**
-       * Checks for server error messages returned in status 200 responses
-       */
-      if (messages?.data?.results[0]?.tags === 'error') {
-        setToastMessage(decodeURIComponent(messages?.data?.results[0]?.message));
-        setShowToast(true);
-        return onClose();
+      const results = response?.results || [];
+      const unsuccessful = results.filter((item) => !isEnrollmentSuccessful(item.status));
+
+      if (unsuccessful.length > 0) {
+        setEnrollmentResults((previous) => mergeEnrollmentResults(previous, results));
+        setIdentifiersText(
+          unsuccessful.map((item) => item.identifier).join(', '),
+        );
+        setHasFailedAttempt(true);
+        return;
       }
 
-      validationEmailList.forEach(({ invalidIdentifier, identifier }) => {
-        (invalidIdentifier ? invalidEmails : validEmails).push(identifier);
-      });
-
-      if (invalidEmails.length > 0) {
-        textToast = `The following email ${
-          invalidEmails.length === 1 ? 'address is invalid' : 'addresses are invalid'
-        }:\n${invalidEmails.join('\n')}\n`;
-      }
-
-      if (validEmails.length > 0) {
-        textToast += `Successfully enrolled and sent email to the following ${
-          validEmails.length === 1 ? 'user' : 'users'
-        }:\n${validEmails.join('\n')}`;
-      }
-
-      setToastMessage(textToast);
-
-      dispatch(studentsApi.util.invalidateTags(['StudentsClass']));
-      dispatch(sessionsApi.util.invalidateTags(['SessionsOptions']));
-
+      const enrolledList = results.map((item) => item.identifier).join(', ');
+      setEnrollmentResults([]);
+      setHasFailedAttempt(false);
+      setIdentifiersText('');
+      setToastMessage(
+        enrolledList
+          ? `Successfully enrolled: ${enrolledList}.`
+          : 'Successfully enrolled student(s) in the session.',
+      );
       setShowToast(true);
-      return onClose();
+      onClose();
     } catch (error) {
       logError(error);
-      setToastMessage('An error occurred while attempting to enroll the student.');
+      setHasFailedAttempt(true);
+      setToastMessage(extractApiErrorMessage(error));
       setShowToast(true);
-      return null;
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <EnrollModal
-      isOpen={isOpen}
-      onClose={onClose}
-      subtitleLabel="Session"
-      subtitleValue={sessionName}
-      onSubmit={handleEnrollStudent}
-      isLoading={isLoading}
-      showToast={showToast}
-      setShowToast={setShowToast}
-      toastMessage={toastMessage}
-    />
+    <>
+      <Toast
+        onClose={() => setShowToast(false)}
+        show={showToast}
+        className="toast-message"
+        data-testid="toast-message"
+      >
+        {toastMessage}
+      </Toast>
+
+      <ModalDialog
+        title="Invite student to enroll"
+        isOpen={isOpen}
+        onClose={onClose}
+        isOverflowVisible={false}
+        hasCloseButton
+      >
+        <ModalDialog.Header>
+          <ModalDialog.Title>Invite student to enroll</ModalDialog.Title>
+        </ModalDialog.Header>
+
+        <ModalDialog.Body className="body-container h-100">
+          <p className="text-uppercase font-weight-bold sub-title">
+            Session: {sessionName}
+          </p>
+
+          <Form onSubmit={handleEnrollStudent}>
+            <FormGroup controlId="studentInfo" className="mb-3">
+              <Form.Control
+                as="textarea"
+                placeholder="Enter email or username of the student to enroll"
+                floatingLabel="Email or username"
+                className="mt-4 mb-2 mr-0 student-email"
+                name="studentEmail"
+                value={identifiersText}
+                onChange={(e) => setIdentifiersText(e.target.value)}
+                required
+                autoResize
+                disabled={isLoading}
+              />
+
+              {enrollmentResults.length > 0 && (
+                <div
+                  className="mt-2 small"
+                  style={{ maxHeight: '150px', overflowY: 'auto' }}
+                  data-testid="enrollment-results-feedback"
+                >
+                  {groupedFeedback.completed.length > 0 && (
+                    <div className="mb-2 text-success">
+                      <strong>
+                        Successfully enrolled ({groupedFeedback.completed.length}):
+                      </strong>{' '}
+                      {groupedFeedback.completed.join(', ')}
+                    </div>
+                  )}
+
+                  {groupedFeedback.errorGroups.map(({ error, identifiers }) => (
+                    <div key={error} className="mb-2 text-danger">
+                      <strong>
+                        {error} ({identifiers.length}):
+                      </strong>{' '}
+                      {identifiers.join(', ')}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </FormGroup>
+
+            <div className="d-flex justify-content-end mt-3">
+              <ModalCloseButton
+                className="btntpz btn-text btn-tertiary mr-2"
+                onClick={onClose}
+                disabled={isLoading}
+              >
+                Cancel
+              </ModalCloseButton>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading && (
+                  <Spinner
+                    animation="border"
+                    size="sm"
+                    className="mr-2"
+                    screenReaderText="loading"
+                    data-testid="enroll-submit-spinner"
+                  />
+                )}
+                {hasFailedAttempt ? 'Retry' : 'Send invite'}
+              </Button>
+            </div>
+          </Form>
+        </ModalDialog.Body>
+      </ModalDialog>
+    </>
   );
 };
 
 EnrollStudentModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  sessionId: PropTypes.string.isRequired,
+  sessionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   sessionName: PropTypes.string,
 };
 

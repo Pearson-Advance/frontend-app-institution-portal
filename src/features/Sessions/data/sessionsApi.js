@@ -10,6 +10,7 @@ import {
   getSessionDetail,
   getAllSessions,
 } from 'features/Sessions/data/api';
+import { studentsApi } from 'features/Students/data/studentsApi';
 import { initialPage } from 'features/constants';
 
 export const sessionsApi = createApi({
@@ -134,15 +135,29 @@ export const sessionsApi = createApi({
       invalidatesTags: ['Sessions', 'SessionsOptions'],
     }),
     enrollStudentInSession: builder.mutation({
-      async queryFn(enrollmentData) {
+      async queryFn({ offeringRunId, data }) {
         try {
-          const response = await enrollStudentToSession(enrollmentData);
+          const response = await enrollStudentToSession(offeringRunId, data);
           return { data: response.data };
         } catch (error) {
-          return { error: error?.response?.data || error?.message };
+          return {
+            error: {
+              status: error?.response?.status,
+              data: error?.response?.data,
+              message: error?.message,
+            },
+          };
         }
       },
-      invalidatesTags: ['Sessions'],
+      async onQueryStarted(_args, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          dispatch(studentsApi.util.invalidateTags(['StudentsClass']));
+        } catch {
+          // Mutation failed; nothing to invalidate.
+        }
+      },
+      invalidatesTags: ['Sessions', 'SessionDetail', 'SessionsOptions'],
     }),
   }),
 });

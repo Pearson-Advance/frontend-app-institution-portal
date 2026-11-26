@@ -23,8 +23,11 @@ const getColumns = ({ sessionId = '' } = {}) => [
     disableSortBy: true,
     Cell: ({ row }) => {
       const {
+        id,
         classId,
+        ccxId,
         className,
+        courseId,
         masterCourseId,
         masterCourseName,
         minStudents,
@@ -33,13 +36,16 @@ const getColumns = ({ sessionId = '' } = {}) => [
         endDate,
       } = row.original;
 
+      const resolvedClassId = classId || ccxId || id;
+      const resolvedCourseId = masterCourseId || courseId;
+
       const [isOpenEditClassModal, openEditClassModal, closeEditClassModal] = useToggle(false);
 
       return (
         <>
           <Dropdown className="dropdowntpz">
             <Dropdown.Toggle
-              id={`dropdown-${classId}`}
+              id={`dropdown-${resolvedClassId}`}
               as={IconButton}
               src={MoreHoriz}
               iconAs={Icon}
@@ -54,14 +60,13 @@ const getColumns = ({ sessionId = '' } = {}) => [
               </Dropdown.Item>
               <Dropdown.Item>
                 <LinkWithQuery
-                  to={`/manage-instructors/${encodeURIComponent(masterCourseId)}/${encodeURIComponent(classId)}`}
+                  to={`/manage-instructors/${encodeURIComponent(resolvedCourseId)}/${encodeURIComponent(resolvedClassId)}`}
                   className="text-truncate text-decoration-none custom-text-black"
                 >
                   <i className="fa-regular fa-chalkboard-user mr-2 mb-1" />
                   Manage Instructors
                 </LinkWithQuery>
               </Dropdown.Item>
-
             </Dropdown.Menu>
           </Dropdown>
           <AddClass
@@ -69,9 +74,9 @@ const getColumns = ({ sessionId = '' } = {}) => [
             onClose={closeEditClassModal}
             courseInfo={{
               masterCourseName,
-              masterCourseId,
-              classId,
-              className,
+              masterCourseId: resolvedCourseId,
+              classId: resolvedClassId,
+              className: className || ccxId,
               startDate,
               endDate,
               minStudents,
@@ -85,24 +90,35 @@ const getColumns = ({ sessionId = '' } = {}) => [
   },
   {
     Header: 'Class Name',
-    accessor: 'className',
+    accessor: 'ccxId',
     Cell: ({ row }) => {
-      const { classId, masterCourseId } = row.original;
+      const {
+        id,
+        classId,
+        ccxId,
+        className,
+        courseId,
+        masterCourseId,
+      } = row.original;
+
+      const resolvedClassId = classId || ccxId || id;
+      const resolvedCourseId = masterCourseId || courseId;
+      const displayLabel = className || ccxId || '-';
 
       return (
         <LinkWithQuery
-          to={`/sessions/${encodeURIComponent(sessionId)}/${encodeURIComponent(masterCourseId)}/${encodeURIComponent(classId)}`}
+          to={`/sessions/${encodeURIComponent(sessionId)}/${encodeURIComponent(resolvedCourseId)}/${encodeURIComponent(resolvedClassId)}`}
           className="link"
         >
-          {row.values.className}
+          {displayLabel}
         </LinkWithQuery>
       );
     },
   },
   {
     Header: 'Course Name',
-    accessor: 'courseName',
-    Cell: ({ row }) => <span>{row.values.courseName}</span>,
+    accessor: 'courseId',
+    Cell: ({ row }) => <span>{row.original.courseName || row.original.courseId || '-'}</span>,
   },
   {
     Header: 'Instructors',
@@ -136,7 +152,7 @@ const getColumns = ({ sessionId = '' } = {}) => [
   {
     Header: 'Students Enrolled',
     accessor: 'numberOfStudents',
-    Cell: ({ row }) => <span>{row.values.numberOfStudents}</span>,
+    Cell: ({ row }) => <span>{row.values.numberOfStudents ?? 0}</span>,
   },
   {
     Header: 'Start date',
