@@ -44,17 +44,15 @@ export const daysWeek = 7;
 export const licenseBuyLink = 'https://www.mindhubpro.com/';
 
 /**
- * License pool types.
- *
- * Extensible map of the pool types a license can represent. `CATALOG` is
- * anticipated but not yet delivered by the backend, so it is intentionally
- * left out until it exists.
+ * License pool types, matching the `license_type` values returned by the backend.
+ * `OFFERING` is the program-type license.
  * @readonly
  * @enum {string}
  */
 export const LICENSE_POOL_TYPES = {
-  COURSES: 'Courses',
-  PROGRAM: 'Program',
+  COURSES: 'courses',
+  CATALOG: 'catalog',
+  OFFERING: 'offering',
 };
 
 /**

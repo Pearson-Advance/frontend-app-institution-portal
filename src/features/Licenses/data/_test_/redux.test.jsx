@@ -1,11 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { initializeMockApp } from '@edx/frontend-platform/testing';
-import { mergeConfig } from '@edx/frontend-platform';
 import { fetchLicensesData } from 'features/Licenses/data';
 import { updateCurrentPage, updateFilters } from 'features/Licenses/data/slice';
-import { updateSelectedInstitution } from 'features/Main/data/slice';
-import { DUMMY_LICENSE_POOLS } from 'features/Licenses/data/mocks';
 import { LICENSE_POOL_TYPES } from 'features/constants';
 import { executeThunk } from 'test-utils';
 import { initializeStore } from 'store';
@@ -69,45 +66,41 @@ describe('Licenses redux tests', () => {
       .toEqual('success');
   });
 
-  test('appends dummy license pools when Offerings is enabled for the institution', async () => {
-    mergeConfig({ PSS_ENABLE_OFFERINGS: true });
-    store.dispatch(updateSelectedInstitution({ id: 1, hasOfferings: true }));
-
+  test('maps license_type from the API to licenseType without adding mock data', async () => {
     const licensesApiUrl = `${process.env.COURSE_OPERATIONS_API_V2_BASE_URL}/license-pool`
     + '/?limit=true&institution_id=1';
-    const mockResponse = {
-      results: [
-        {
-          licenseId: 1,
-          licenseName: 'License Name 1',
-          purchasedSeats: 20,
-          numberOfStudents: 6,
-          numberOfPendingStudents: 11,
-        },
-      ],
-      count: 1,
-      num_pages: 1,
-      current_page: 1,
-    };
     axiosMock.onGet(licensesApiUrl)
-      .reply(200, mockResponse);
+      .reply(200, {
+        results: [
+          {
+            license_id: 2,
+            license_name: 'lincense2',
+            license_type: LICENSE_POOL_TYPES.COURSES,
+            purchased_seats: 80,
+            number_of_students: 4,
+            number_of_pending_students: 1,
+          },
+        ],
+        count: 1,
+        num_pages: 1,
+        current_page: 1,
+      });
 
     await executeThunk(fetchLicensesData(1), store.dispatch, store.getState);
 
     const { data, count } = store.getState().licenses.table;
 
-    // Real row enriched with mock fields.
-    expect(data[0]).toMatchObject({
-      licenseName: 'License Name 1',
-      type: LICENSE_POOL_TYPES.COURSES,
-      consumed: 17,
-    });
-    // Dummy pools appended at the end.
-    expect(data).toHaveLength(mockResponse.results.length + DUMMY_LICENSE_POOLS.length);
-    expect(data.slice(-DUMMY_LICENSE_POOLS.length)).toEqual(DUMMY_LICENSE_POOLS);
-    expect(count).toBe(mockResponse.count + DUMMY_LICENSE_POOLS.length);
-
-    mergeConfig({ PSS_ENABLE_OFFERINGS: false });
+    expect(count).toBe(1);
+    expect(data).toEqual([
+      {
+        licenseId: 2,
+        licenseName: 'lincense2',
+        licenseType: LICENSE_POOL_TYPES.COURSES,
+        purchasedSeats: 80,
+        numberOfStudents: 4,
+        numberOfPendingStudents: 1,
+      },
+    ]);
   });
 
   test('failed fetch licenses data', async () => {

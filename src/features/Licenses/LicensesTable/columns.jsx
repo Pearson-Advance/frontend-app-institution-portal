@@ -9,13 +9,8 @@ const licenseNameColumn = {
 
 const typeColumn = {
   Header: 'Type',
-  accessor: 'type',
-  Cell: ({ row }) => (<span>{row.original.type}</span>),
-};
-
-const consumedColumn = {
-  Header: 'Consumed',
-  accessor: 'consumed',
+  accessor: 'licenseType',
+  Cell: ({ row }) => (<span className="text-capitalize">{row.values.licenseType}</span>),
 };
 
 const baseColumns = [
@@ -44,8 +39,8 @@ const baseColumns = [
 /**
  * Builds the license listing columns.
  *
- * When the Offerings feature is enabled the table also exposes the pool `Type`
- * and `Consumed` seats; otherwise it renders exactly as before.
+ * When the Offerings feature is enabled the table also exposes the pool `Type`;
+ * otherwise it renders exactly as before.
  * @param {boolean} showOfferingsData - Whether Offerings columns are enabled.
  * @returns {Array} Column definitions for the licenses table.
  */
@@ -55,7 +50,7 @@ const getColumns = (showOfferingsData = false) => {
   }
 
   const [licensePool, purchased, ...rest] = baseColumns;
-  return [licensePool, typeColumn, purchased, consumedColumn, ...rest];
+  return [licensePool, typeColumn, purchased, ...rest];
 };
 
 const columns = baseColumns;
